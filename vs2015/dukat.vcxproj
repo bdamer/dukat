@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>dukat</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)..\lib\$(PlatformTarget)\</OutDir>
+    <IntDir>dukat\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)..\include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)..\lib\$(PlatformTarget)\</OutDir>
+    <IntDir>dukat\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)..\include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)..\lib\$(PlatformTarget)\</OutDir>
+    <IntDir>dukat\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)..\include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)..\lib\$(PlatformTarget)\</OutDir>
+    <IntDir>dukat\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)..\include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="..\src\dukat\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\dukat\aabb2.h" />
+    <ClInclude Include="..\src\dukat\aabb3.h" />
+    <ClInclude Include="..\src\dukat\application.h" />
+    <ClInclude Include="..\src\dukat\boundingbody2.h" />
+    <ClInclude Include="..\src\dukat\boundingbody3.h" />
+    <ClInclude Include="..\src\dukat\boundingsphere.h" />
+    <ClInclude Include="..\src\dukat\bytestream.h" />
+    <ClInclude Include="..\src\dukat\camera2.h" />
+    <ClInclude Include="..\src\dukat\camera3.h" />
+    <ClInclude Include="..\src\dukat\color.h" />
+    <ClInclude Include="..\src\dukat\dds.h" />
+    <ClInclude Include="..\src\dukat\devicemanager.h" />
+    <ClInclude Include="..\src\dukat\effect.h" />
+    <ClInclude Include="..\src\dukat\eulerangles.h" />
+    <ClInclude Include="..\src\dukat\gamepaddevice.h" />
+    <ClInclude Include="..\src\dukat\geometry.h" />
+    <ClInclude Include="..\src\dukat\buffers.h" />
+    <ClInclude Include="..\src\dukat\light.h" />
+    <ClInclude Include="..\src\dukat\material.h" />
+    <ClInclude Include="..\src\dukat\matrix2.h" />
+    <ClInclude Include="..\src\dukat\mesh.h" />
+    <ClInclude Include="..\src\dukat\meshbuilder2.h" />
+    <ClInclude Include="..\src\dukat\meshbuilder3.h" />
+    <ClInclude Include="..\src\dukat\meshcache.h" />
+    <ClInclude Include="..\src\dukat\meshgroup.h" />
+    <ClInclude Include="..\src\dukat\meshinstance.h" />
+    <ClInclude Include="..\src\dukat\obb2.h" />
+    <ClInclude Include="..\src\dukat\particle.h" />
+    <ClInclude Include="..\src\dukat\particlemanager.h" />
+    <ClInclude Include="..\src\dukat\ray2.h" />
+    <ClInclude Include="..\src\dukat\recipient.h" />
+    <ClInclude Include="..\src\dukat\rect.h" />
+    <ClInclude Include="..\src\dukat\renderer.h" />
+    <ClInclude Include="..\src\dukat\renderer2.h" />
+    <ClInclude Include="..\src\dukat\renderer3.h" />
+    <ClInclude Include="..\src\dukat\renderlayer2.h" />
+    <ClInclude Include="..\src\dukat\shaderprogram.h" />
+    <ClInclude Include="..\src\dukat\inputdevice.h" />
+    <ClInclude Include="..\src\dukat\keyboarddevice.h" />
+    <ClInclude Include="..\src\dukat\log.h" />
+    <ClInclude Include="..\src\dukat\mathutil.h" />
+    <ClInclude Include="..\src\dukat\matrix4.h" />
+    <ClInclude Include="..\src\dukat\perfcounter.h" />
+    <ClInclude Include="..\src\dukat\plane.h" />
+    <ClInclude Include="..\src\dukat\quaternion.h" />
+    <ClInclude Include="..\src\dukat\ray3.h" />
+    <ClInclude Include="..\src\dukat\settings.h" />
+    <ClInclude Include="..\src\dukat\shadercache.h" />
+    <ClInclude Include="..\src\dukat\sprite.h" />
+    <ClInclude Include="..\src\dukat\stdafx.h" />
+    <ClInclude Include="..\src\dukat\surface.h" />
+    <ClInclude Include="..\src\dukat\sysutil.h" />
+    <ClInclude Include="..\src\dukat\targetver.h" />
+    <ClInclude Include="..\src\dukat\textmeshbuilder.h" />
+    <ClInclude Include="..\src\dukat\texturecache.h" />
+    <ClInclude Include="..\src\dukat\timermanager.h" />
+    <ClInclude Include="..\src\dukat\transform2.h" />
+    <ClInclude Include="..\src\dukat\transform3.h" />
+    <ClInclude Include="..\src\dukat\vector2.h" />
+    <ClInclude Include="..\src\dukat\vector3.h" />
+    <ClInclude Include="..\src\dukat\vertextypes2.h" />
+    <ClInclude Include="..\src\dukat\vertextypes3.h" />
+    <ClInclude Include="..\src\dukat\window.h" />
+    <ClInclude Include="..\src\dukat\xboxdevice.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\dukat\aabb2.cpp" />
+    <ClCompile Include="..\src\dukat\aabb3.cpp" />
+    <ClCompile Include="..\src\dukat\application.cpp" />
+    <ClCompile Include="..\src\dukat\boundingsphere.cpp" />
+    <ClCompile Include="..\src\dukat\camera2.cpp" />
+    <ClCompile Include="..\src\dukat\camera3.cpp" />
+    <ClCompile Include="..\src\dukat\dds.cpp" />
+    <ClCompile Include="..\src\dukat\devicemanager.cpp" />
+    <ClCompile Include="..\src\dukat\eulerangles.cpp" />
+    <ClCompile Include="..\src\dukat\gamepaddevice.cpp" />
+    <ClCompile Include="..\src\dukat\geometry.cpp" />
+    <ClCompile Include="..\src\dukat\buffers.cpp" />
+    <ClCompile Include="..\src\dukat\matrix2.cpp" />
+    <ClCompile Include="..\src\dukat\mesh.cpp" />
+    <ClCompile Include="..\src\dukat\meshbuilder2.cpp" />
+    <ClCompile Include="..\src\dukat\meshbuilder3.cpp" />
+    <ClCompile Include="..\src\dukat\meshcache.cpp" />
+    <ClCompile Include="..\src\dukat\meshgroup.cpp" />
+    <ClCompile Include="..\src\dukat\meshinstance.cpp" />
+    <ClCompile Include="..\src\dukat\obb2.cpp" />
+    <ClCompile Include="..\src\dukat\particlemanager.cpp" />
+    <ClCompile Include="..\src\dukat\renderer.cpp" />
+    <ClCompile Include="..\src\dukat\renderer2.cpp" />
+    <ClCompile Include="..\src\dukat\renderer3.cpp" />
+    <ClCompile Include="..\src\dukat\renderlayer2.cpp" />
+    <ClCompile Include="..\src\dukat\shaderprogram.cpp" />
+    <ClCompile Include="..\src\dukat\inputdevice.cpp" />
+    <ClCompile Include="..\src\dukat\keyboarddevice.cpp" />
+    <ClCompile Include="..\src\dukat\log.cpp" />
+    <ClCompile Include="..\src\dukat\mathutil.cpp" />
+    <ClCompile Include="..\src\dukat\matrix4.cpp" />
+    <ClCompile Include="..\src\dukat\perfcounter.cpp" />
+    <ClCompile Include="..\src\dukat\quaternion.cpp" />
+    <ClCompile Include="..\src\dukat\ray3.cpp" />
+    <ClCompile Include="..\src\dukat\settings.cpp" />
+    <ClCompile Include="..\src\dukat\shadercache.cpp" />
+    <ClCompile Include="..\src\dukat\sprite.cpp" />
+    <ClCompile Include="..\src\dukat\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\surface.cpp" />
+    <ClCompile Include="..\src\dukat\sysutil.cpp" />
+    <ClCompile Include="..\src\dukat\textmeshbuilder.cpp" />
+    <ClCompile Include="..\src\dukat\texturecache.cpp" />
+    <ClCompile Include="..\src\dukat\timermanager.cpp" />
+    <ClCompile Include="..\src\dukat\transform3.cpp" />
+    <ClCompile Include="..\src\dukat\vector2.cpp" />
+    <ClCompile Include="..\src\dukat\vector3.cpp" />
+    <ClCompile Include="..\src\dukat\window.cpp" />
+    <ClCompile Include="..\src\dukat\xboxdevice.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

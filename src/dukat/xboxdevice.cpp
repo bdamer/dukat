@@ -1,0 +1,79 @@
+#include "stdafx.h"
+#include "xboxdevice.h"
+#include "mathutil.h"
+
+#ifdef XBOX_SUPPORT
+
+namespace dukat
+{
+	XBoxDevice::XBoxDevice(SDL_JoystickID id) : InputDevice(id, false)
+	{
+		ZeroMemory(&state, sizeof(XINPUT_STATE));
+		mapping[VirtualButton::PrimaryAction] = XINPUT_GAMEPAD_A;
+        mapping[VirtualButton::SecondaryAction] = XINPUT_GAMEPAD_B;
+		mapping[VirtualButton::Pause] = XINPUT_GAMEPAD_START;
+		mapping[VirtualButton::Debug1] = XINPUT_GAMEPAD_DPAD_UP;
+		mapping[VirtualButton::Debug2] = XINPUT_GAMEPAD_DPAD_RIGHT;
+		mapping[VirtualButton::Debug3] = XINPUT_GAMEPAD_DPAD_DOWN;
+		mapping[VirtualButton::Debug4] = XINPUT_GAMEPAD_DPAD_LEFT;
+	}
+
+	XBoxDevice::~XBoxDevice(void)
+	{
+	}
+
+	void XBoxDevice::update(void)
+	{
+		if (XInputGetState((DWORD)id, &state) != ERROR_SUCCESS)
+		{
+			return; // could not poll
+		}
+		if (state.dwPacketNumber != last_package)
+		{
+			last_package = state.dwPacketNumber;
+			normalize_axis(state.Gamepad.sThumbLX, state.Gamepad.sThumbLY, lx, ly, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+			normalize_axis(state.Gamepad.sThumbRX, state.Gamepad.sThumbRY, rx, ry, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+			normalize_trigger(state.Gamepad.bLeftTrigger, lt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+			normalize_trigger(state.Gamepad.bRightTrigger, rt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+			for (int i = 0; i < VirtualButton::_Count; i++)
+			{
+				udapte_button_state((VirtualButton)i, (state.Gamepad.wButtons & mapping[i]) != 0);
+			}
+		}
+	}
+
+	bool XBoxDevice::is_pressed(VirtualButton button) const
+	{
+		return ((state.Gamepad.wButtons & mapping[button]) != 0);
+	}
+
+	void XBoxDevice::normalize_axis(SHORT ix, SHORT iy, float& ox, float& oy, SHORT deadzone)
+	{
+		// determine how far the controller is pushed
+		float magnitude = sqrtf((float)(ix * ix + iy * iy));
+		if (magnitude <= deadzone)
+		{
+			ox = 0.0f;
+			oy = 0.0f;
+		}
+		else
+		{
+			ox = normalize((short)ix);
+			oy = normalize((short)iy);
+		}
+	}
+
+	void XBoxDevice::normalize_trigger(BYTE i, float& o, BYTE deadzone)
+	{
+		if (i <= deadzone)
+		{
+			o = 0.0f;
+		}
+		else
+		{
+			o = normalize(i);
+		}
+	}
+}
+
+#endif

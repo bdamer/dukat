@@ -27,3 +27,13 @@
 *.exe
 *.out
 *.app
+
+# Externals
+include/*
+
+# Visual Studio Files
+*.pdb
+.vs
+Debug
+*.VC.db
+*.VC.opendb
