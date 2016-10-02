@@ -14,12 +14,13 @@ namespace dukat
 {
 	class AABB2;
 	class Camera2;
-	class Effect;
+	class Effect2;
 	class Matrix4;
 	struct Particle;
 	class Renderer2;
 	class ShaderCache;
 	class ShaderProgram;
+	class TextMeshInstance;
 	struct VertexBuffer;
 
 	class RenderLayer2
@@ -30,14 +31,16 @@ namespace dukat
 		ShaderProgram* particle_program;
 		VertexBuffer* sprite_buffer;
 		VertexBuffer* particle_buffer;
-		std::vector<std::unique_ptr<Effect>> effects;
+		std::vector<std::unique_ptr<Effect2>> effects;
 		std::vector<Sprite*> sprites;
 		std::deque<Particle*> particles;
+		std::vector<TextMeshInstance*> texts;
 		bool is_visible;
 
 		void render_effects(Renderer2* renderer, const AABB2& camera_bb);
 		void render_sprites(Renderer2* renderer, const AABB2& camera_bb);
 		void render_particles(Renderer2* renderer, const AABB2& camera_bb);
+		void render_text(Renderer2* renderer, const AABB2& camera_bb);
 
 		// Fills up priority queue with visible sprites.
 		void fill_sprite_queue(const AABB2& camera_bb, 
@@ -58,13 +61,16 @@ namespace dukat
 		bool has_effects(void) const { return !effects.empty(); }
 		bool has_sprites(void) const { return !sprites.empty(); }
 		bool has_particles(void) const { return !particles.empty(); }
+		bool has_text(void) const { return !texts.empty(); }
 
-		Effect* add(std::unique_ptr<Effect> fx);
-		void remove(Effect* fx);
+		Effect2* add(std::unique_ptr<Effect2> fx);
+		void remove(Effect2* fx);
 		void add(Sprite* sprite);
 		void remove(Sprite* sprite);
 		void add(Particle* p);
 		void remove(Particle* p);
+		void add(TextMeshInstance* text);
+		void remove(TextMeshInstance* text);
 		
 		void render(Renderer2* renderer);
 		void show(void) { is_visible = true; }

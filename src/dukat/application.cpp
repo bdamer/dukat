@@ -10,7 +10,8 @@
 
 namespace dukat
 {
-	Application::Application(const Settings& settings) : settings(settings), title(settings.get_string("window.title")), done(false)
+	Application::Application(const Settings& settings)
+		: settings(settings), title(settings.get_string("window.title")), paused(false), done(false)
 	{
 		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");
 		window = std::make_unique<Window>(settings.get_int("window.width", 640), 
@@ -37,8 +38,13 @@ namespace dukat
 		while (!done)
 		{
 			ticks = SDL_GetTicks();
-			update(((float)(ticks - last_update)) / 1000.0f);
-			last_update = SDL_GetTicks();
+
+			if (!paused)
+			{
+				device_manager->update();
+				update(((float)(ticks - last_update)) / 1000.0f);
+				last_update = SDL_GetTicks();
+			}
 
 			// update FPS counter
 			if (ticks - last_frame >= 1000)
@@ -53,11 +59,51 @@ namespace dukat
 			{
 				handle_event(e);
 			}
+			
+			// render to screen
 			render();
 			perfc.inc(PerformanceCounter::FRAMES);
 			perfc.reset();
 		}
 
+		release();
+
 		return 0;
 	}
+
+	void Application::handle_event(const SDL_Event& e)
+	{
+		switch (e.type)
+		{
+		case SDL_QUIT:
+			done = true;
+			break;
+		case SDL_KEYDOWN:
+			handle_keyboard(e);
+			break;
+		case SDL_JOYDEVICEADDED:
+			device_manager->add_joystick(e.jdevice.which);
+			break;
+		case SDL_JOYDEVICEREMOVED:
+			device_manager->remove_joystick(e.jdevice.which);
+			break;
+		}
+	}
+
+	void Application::handle_keyboard(const SDL_Event& e)
+	{
+		switch (e.key.keysym.sym)
+		{
+		case SDLK_ESCAPE:
+			done = true;
+			break;
+		case SDLK_RETURN:
+			if (e.key.keysym.mod & KMOD_ALT)
+			{
+				window->toggle_fullscreen();
+			}
+			break;
+		}
+	}
+
 }

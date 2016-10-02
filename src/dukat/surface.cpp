@@ -24,53 +24,31 @@ namespace dukat
 		}
 	}
 
-	void Surface::convert_format(Uint32 format)
+	void Surface::query_pixel_format(GLenum& format, GLenum& type) const
 	{
-		SDL_Surface* tmp = SDL_ConvertSurfaceFormat(surface, format, 0);
-		if (tmp == nullptr)
+		switch (surface->format->format)
 		{
-			std::stringstream ss;
-			ss << "Could not convert surface: " << SDL_GetError();
-			throw std::runtime_error(ss.str());
-		}
-		SDL_FreeSurface(surface);
-		surface = tmp;
-	}
-
-	void Surface::flip_horizontal(void)
-	{
-		Uint8* top = (Uint8*)surface->pixels;
-		Uint8* bottom = ((Uint8*)surface->pixels) + surface->pitch * (surface->h - 1);
-		while (top < bottom)
-		{
-			for (int i = 0; i < surface->pitch; i++)
-			{
-				Uint8 tmp = *top;
-				*top++ = *bottom;
-				*bottom++ = tmp;
-			}
-			bottom -= 2 * surface->pitch;
-		}
-	}
-
-	void Surface::flip_vertical(void)
-	{
-		Uint8 bpp = surface->format->BytesPerPixel;
-		for (int row = 0; row < surface->h; row++)
-		{
-			Uint8* left = (Uint8*)surface->pixels + row * surface->pitch;
-			Uint8* right = left + surface->pitch - bpp;
-			while (left < right)
-			{
-				for (int i = 0; i < bpp; i++)
-				{
-					Uint8 tmp = left[i];
-					left[i] = right[i];
-					right[i] = tmp;
-				}
-				left += bpp;
-				right -= bpp;
-			}
+		// 24 bit
+		case SDL_PIXELFORMAT_BGR24:
+		case SDL_PIXELFORMAT_BGR888:
+			format = GL_BGR;
+			type = GL_UNSIGNED_BYTE;
+		case SDL_PIXELFORMAT_RGB24:
+		case SDL_PIXELFORMAT_RGB888:
+			format = GL_RGB;
+			type = GL_UNSIGNED_BYTE;
+			break;
+		// 32 bit
+		case SDL_PIXELFORMAT_ABGR8888:
+			format = GL_RGBA;
+			type = surface->format->Rshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8 : GL_UNSIGNED_INT_8_8_8_8_REV;
+			break;
+		case SDL_PIXELFORMAT_RGBA8888:
+			format = GL_RGBA;
+			type = surface->format->Rshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
+			break;
+		default:
+			throw std::exception("Unsupported pixel format.", surface->format->format);
 		}
 	}
 
@@ -210,7 +188,87 @@ namespace dukat
 		draw_line(x, y + height, x, y, color);
 	}
 
-	void Surface::blend(Surface& another)
+	void Surface::fill_circle(int x0, int y0, int radius, Uint32 color)
+	{
+		int x = radius, y = 0;
+		int radiusError = 1 - x;
+		while (x >= y)
+		{
+			draw_line(x0 - x, y + y0, x0 + x, y + y0, color);
+			draw_line(x0 - y, x + y0, x0 + y, x + y0, color);
+			draw_line(x0 - x, y0 - y, x0 + x, y0 - y, color);
+			draw_line(x0 - y, y0 - x, x0 + y, y0 - x, color);
+			y++;
+
+			if (radiusError < 0)
+			{
+				radiusError += 2 * y + 1;
+			}
+			else
+			{
+				x--;
+				radiusError += 2 * (y - x + 1);
+			}
+		}
+	}
+
+	void Surface::fill_rect(int x, int y, int width, int height, Uint32 color)
+	{
+		SDL_Rect rect = { x, y, width, height };
+		SDL_FillRect(surface, &rect, color);
+	}
+
+	void Surface::convert_format(Uint32 format)
+	{
+		SDL_Surface* tmp = SDL_ConvertSurfaceFormat(surface, format, 0);
+		if (tmp == nullptr)
+		{
+			std::stringstream ss;
+			ss << "Could not convert surface: " << SDL_GetError();
+			throw std::runtime_error(ss.str());
+		}
+		SDL_FreeSurface(surface);
+		surface = tmp;
+	}
+
+	void Surface::flip_horizontal(void)
+	{
+		Uint8* top = (Uint8*)surface->pixels;
+		Uint8* bottom = ((Uint8*)surface->pixels) + surface->pitch * (surface->h - 1);
+		while (top < bottom)
+		{
+			for (int i = 0; i < surface->pitch; i++)
+			{
+				Uint8 tmp = *top;
+				*top++ = *bottom;
+				*bottom++ = tmp;
+			}
+			bottom -= 2 * surface->pitch;
+		}
+	}
+
+	void Surface::flip_vertical(void)
+	{
+		Uint8 bpp = surface->format->BytesPerPixel;
+		for (int row = 0; row < surface->h; row++)
+		{
+			Uint8* left = (Uint8*)surface->pixels + row * surface->pitch;
+			Uint8* right = left + surface->pitch - bpp;
+			while (left < right)
+			{
+				for (int i = 0; i < bpp; i++)
+				{
+					Uint8 tmp = left[i];
+					left[i] = right[i];
+					right[i] = tmp;
+				}
+				left += bpp;
+				right -= bpp;
+			}
+		}
+	}
+
+	void Surface::blend(const Surface& another)
 	{
 		SDL_BlitSurface(another.get_surface(), nullptr, surface, nullptr);
 	}

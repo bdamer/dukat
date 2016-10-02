@@ -39,7 +39,7 @@ namespace dukat
 		// Draws the scene.
 		void render(void);
 		// Creates a new layer with a given priority.
-		RenderLayer2* create_layer(const std::string& id, float pirority, float parallax = 1.0f);
+		RenderLayer2* create_layer(const std::string& id, float priority, float parallax = 1.0f);
 		// Returns a pointer to a named layer.
 		RenderLayer2* get_layer(const std::string& id) const;
 		// Adds sprite to layer.

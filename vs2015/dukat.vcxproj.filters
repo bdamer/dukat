@@ -213,9 +213,6 @@
     <ClInclude Include="..\src\dukat\particlemanager.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\effect.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\meshinstance.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
@@ -244,6 +241,30 @@
       <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\textmeshbuilder.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\game2.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\gamebase.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\effect2.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\game3.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\component.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\messenger.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\event.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\textmeshinstance.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
   </ItemGroup>
@@ -390,6 +411,21 @@
       <Filter>Source Files\math</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\textmeshbuilder.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\gamebase.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\game2.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\game3.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\messenger.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\textmeshinstance.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>

@@ -27,7 +27,7 @@ namespace dukat
 		bool visible;
 
 		MeshInstance(void);
-		~MeshInstance(void) { }
+		virtual ~MeshInstance(void) { }
 
 		void set_mesh(Mesh* mesh) { this->mesh = mesh; }
 		Mesh* get_mesh(void) const { return mesh; }

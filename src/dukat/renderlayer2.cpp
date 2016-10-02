@@ -3,12 +3,13 @@
 #include "aabb2.h"
 #include "buffers.h"
 #include "camera2.h"
-#include "effect.h"
+#include "effect2.h"
 #include "matrix4.h"
 #include "particle.h"
 #include "perfcounter.h"
 #include "shadercache.h"
 #include "sprite.h"
+#include "textmeshinstance.h"
 #include "renderer2.h"
 #include "vertextypes2.h"
 
@@ -40,7 +41,7 @@ namespace dukat
 		sprites.erase(std::remove(sprites.begin(), sprites.end(), sprite), sprites.end());
 	}
 
-	Effect* RenderLayer2::add(std::unique_ptr<Effect> fx)
+	Effect2* RenderLayer2::add(std::unique_ptr<Effect2> fx)
 	{
 		auto res = fx.get();
 		fx->set_layer(this);
@@ -48,11 +49,11 @@ namespace dukat
 		return res;
 	}
 
-	void RenderLayer2::remove(Effect* fx)
+	void RenderLayer2::remove(Effect2* fx)
 	{
 		fx->set_layer(nullptr);
 		auto it = std::find_if(effects.begin(), effects.end(), 
-			[fx](const std::unique_ptr<Effect>& ptr) -> bool { return fx == ptr.get(); });
+			[fx](const std::unique_ptr<Effect2>& ptr) -> bool { return fx == ptr.get(); });
 		if (it != effects.end())
 		{
 			effects.erase(it, effects.end());
@@ -67,6 +68,16 @@ namespace dukat
 	void RenderLayer2::remove(Particle* p)
 	{
 		particles.erase(std::remove(particles.begin(), particles.end(), p), particles.end());
+	}
+
+	void RenderLayer2::add(TextMeshInstance * text)
+	{
+		texts.push_back(text);
+	}
+
+	void RenderLayer2::remove(TextMeshInstance* text)
+	{
+		texts.erase(std::remove(texts.begin(), texts.end(), text), texts.end());
 	}
 
 	void RenderLayer2::render(Renderer2* renderer)
@@ -90,6 +101,10 @@ namespace dukat
 		if (has_particles())
 		{
 			render_particles(renderer, camera_bb);
+		}
+		if (has_text())
+		{
+			render_text(renderer, camera_bb);
 		}
 	}
 
@@ -248,6 +263,17 @@ namespace dukat
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 #endif
+	}
+
+	void RenderLayer2::render_text(Renderer2* renderer, const AABB2& camera_bb)
+	{
+		Matrix4 mat;
+		mat.identity();
+		for (const auto& text : texts)
+		{
+			// TODO: boundary check
+			text->render(renderer, mat);
+		}
 	}
 
 	void RenderLayer2::render_effects(Renderer2* renderer, const AABB2& camera_bb)

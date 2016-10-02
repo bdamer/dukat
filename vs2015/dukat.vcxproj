@@ -159,10 +159,15 @@
     <ClInclude Include="..\src\dukat\camera2.h" />
     <ClInclude Include="..\src\dukat\camera3.h" />
     <ClInclude Include="..\src\dukat\color.h" />
+    <ClInclude Include="..\src\dukat\component.h" />
     <ClInclude Include="..\src\dukat\dds.h" />
     <ClInclude Include="..\src\dukat\devicemanager.h" />
-    <ClInclude Include="..\src\dukat\effect.h" />
+    <ClInclude Include="..\src\dukat\effect2.h" />
     <ClInclude Include="..\src\dukat\eulerangles.h" />
+    <ClInclude Include="..\src\dukat\event.h" />
+    <ClInclude Include="..\src\dukat\game3.h" />
+    <ClInclude Include="..\src\dukat\gamebase.h" />
+    <ClInclude Include="..\src\dukat\game2.h" />
     <ClInclude Include="..\src\dukat\gamepaddevice.h" />
     <ClInclude Include="..\src\dukat\geometry.h" />
     <ClInclude Include="..\src\dukat\buffers.h" />
@@ -175,6 +180,7 @@
     <ClInclude Include="..\src\dukat\meshcache.h" />
     <ClInclude Include="..\src\dukat\meshgroup.h" />
     <ClInclude Include="..\src\dukat\meshinstance.h" />
+    <ClInclude Include="..\src\dukat\messenger.h" />
     <ClInclude Include="..\src\dukat\obb2.h" />
     <ClInclude Include="..\src\dukat\particle.h" />
     <ClInclude Include="..\src\dukat\particlemanager.h" />
@@ -202,6 +208,7 @@
     <ClInclude Include="..\src\dukat\surface.h" />
     <ClInclude Include="..\src\dukat\sysutil.h" />
     <ClInclude Include="..\src\dukat\targetver.h" />
+    <ClInclude Include="..\src\dukat\textmeshinstance.h" />
     <ClInclude Include="..\src\dukat\textmeshbuilder.h" />
     <ClInclude Include="..\src\dukat\texturecache.h" />
     <ClInclude Include="..\src\dukat\timermanager.h" />
@@ -224,6 +231,9 @@
     <ClCompile Include="..\src\dukat\dds.cpp" />
     <ClCompile Include="..\src\dukat\devicemanager.cpp" />
     <ClCompile Include="..\src\dukat\eulerangles.cpp" />
+    <ClCompile Include="..\src\dukat\game2.cpp" />
+    <ClCompile Include="..\src\dukat\game3.cpp" />
+    <ClCompile Include="..\src\dukat\gamebase.cpp" />
     <ClCompile Include="..\src\dukat\gamepaddevice.cpp" />
     <ClCompile Include="..\src\dukat\geometry.cpp" />
     <ClCompile Include="..\src\dukat\buffers.cpp" />
@@ -234,6 +244,7 @@
     <ClCompile Include="..\src\dukat\meshcache.cpp" />
     <ClCompile Include="..\src\dukat\meshgroup.cpp" />
     <ClCompile Include="..\src\dukat\meshinstance.cpp" />
+    <ClCompile Include="..\src\dukat\messenger.cpp" />
     <ClCompile Include="..\src\dukat\obb2.cpp" />
     <ClCompile Include="..\src\dukat\particlemanager.cpp" />
     <ClCompile Include="..\src\dukat\renderer.cpp" />
@@ -261,6 +272,7 @@
     <ClCompile Include="..\src\dukat\surface.cpp" />
     <ClCompile Include="..\src\dukat\sysutil.cpp" />
     <ClCompile Include="..\src\dukat\textmeshbuilder.cpp" />
+    <ClCompile Include="..\src\dukat\textmeshinstance.cpp" />
     <ClCompile Include="..\src\dukat\texturecache.cpp" />
     <ClCompile Include="..\src\dukat\timermanager.cpp" />
     <ClCompile Include="..\src\dukat\transform3.cpp" />

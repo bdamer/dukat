@@ -6,7 +6,7 @@ namespace dukat
 	class RenderLayer2;
 	class Renderer2;
 
-	class Effect
+	class Effect2
 	{
 	private:
 		RenderLayer2* layer;

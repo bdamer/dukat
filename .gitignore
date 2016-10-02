@@ -34,6 +34,10 @@ include/*
 # Visual Studio Files
 *.pdb
 .vs
-Debug
 *.VC.db
 *.VC.opendb
+Debug
+Release
+ipch
+x64
+x86

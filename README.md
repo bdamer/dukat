@@ -12,3 +12,13 @@ Place the following static library files in the lib/x86 or lib/x64 directory:
 * SDL2_main.lib
 
 # Usage
+Place the following runtime libraries files in the bin/x86 or lib/x64 directory to run the examples:
+* glew32.dll
+* libjpeg-9.dll
+* libpng16-16.dll
+* libtiff-5.dll
+* libwebp-4.dll
+* SDL2.dll
+* SDL2_image.dll
+* zlib1.dll
+

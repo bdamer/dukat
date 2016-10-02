@@ -22,4 +22,11 @@ namespace dukat
 			return nullptr;
 		}
 	}
+
+	std::string MeshCache::generate_id(void)
+	{
+		std::stringstream ss;
+		ss << "_generated_" << ++last_id;
+		return ss.str();
+	}
 }

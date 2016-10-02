@@ -83,7 +83,7 @@ namespace dukat
 		// scale * rotation * translation
 		if (pixel_aligned)
 		{
-			mat_model.setup_translation(Vector3((int)p.x, (int)p.y, 0.0f));
+			mat_model.setup_translation(Vector3(round(p.x), round(p.y), 0.0f));
 		}
 		else
 		{
