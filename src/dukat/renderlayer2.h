@@ -76,7 +76,9 @@ namespace dukat
 		void show(void) { is_visible = true; }
 		void hide(void) { is_visible = false; }
 		bool visible(void) const { return is_visible; }
-	
+		// Removes all renderables from this layer.
+		void clear(void);
+
 		ShaderProgram* get_sprite_program(void) const { return sprite_program; }
 		void set_sprite_program(ShaderProgram* sprite_program) { this->sprite_program = sprite_program; }
 		ShaderProgram* get_particle_program(void) const { return particle_program; }

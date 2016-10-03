@@ -54,10 +54,12 @@ namespace dukat
 		layer->add(info_text.get());
 
 		// Set up debug layer
+		auto debug_layer = renderer->create_layer("debug", 1000.0f);
 		debug_text = create_text_mesh(4.0f);
 		debug_text->transform.position = Vector3(-texture_width / 2, -texture_height / 2, 0);
 		debug_text->transform.update();
-		renderer->get_layer("debug")->add(debug_text.get());
+		debug_layer->add(debug_text.get());
+		debug_layer->hide();
 	}
 
 	void Game::handle_keyboard(const SDL_Event & e)

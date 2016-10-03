@@ -26,14 +26,6 @@ namespace dukat
 		return mesh_instance;
 	}
 
-	void Game2::init(void)
-	{
-		GameBase::init();
-		// create debug layer
-		auto debug_layer = renderer->create_layer("debug", 1000.0f);
-		debug_layer->hide();
-	}
-
 	void Game2::update(float delta)
 	{
 		GameBase::update(delta);

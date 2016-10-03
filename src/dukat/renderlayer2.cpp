@@ -108,6 +108,14 @@ namespace dukat
 		}
 	}
 
+	void RenderLayer2::clear(void)
+	{
+		sprites.clear();
+		effects.clear();
+		particles.clear();
+		texts.clear();
+	}
+
 	void RenderLayer2::fill_sprite_queue(const AABB2& camera_bb,
 		std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator>& queue)
 	{
