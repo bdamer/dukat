@@ -16,6 +16,9 @@ namespace dukat
 {
 	class Sprite;
 
+	// 2D Renderer
+	// The coordinate system used assumes that the x-axis goes towards the right and the y-axis
+	// towards the bottom of the screen.
 	class Renderer2 : public Renderer
 	{
 	private:

@@ -18,6 +18,7 @@ namespace dukat
 		ShaderProgram* active_program;
 		// Uniform buffers
 		std::unique_ptr<GenericBuffer> uniform_buffers;
+		bool use_wireframe;
 
 		void test_capabilities(void);
 
@@ -57,6 +58,9 @@ namespace dukat
 
 		// Called on window resize
 		virtual void resize(int width, int height);
+
+		// Display settings
+		void toggle_wireframe(void);
 
 		// Changes active program.
 		void switch_shader(ShaderProgram* program);

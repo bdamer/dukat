@@ -9,10 +9,7 @@
 namespace dukat
 {
 	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache)
-	{
-		// Default settings
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
+	{ 
 		// Enable transparency
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -42,10 +39,10 @@ namespace dukat
 		//	0 2	  3
 		//	1	4 5
 		TexturedVertex2 vertices[] = {
-			{ -0.5f,  0.5f, 0.0f, 1.0f },
 			{ -0.5f, -0.5f, 0.0f, 0.0f },
-			{ 0.5f,  0.5f, 1.0f, 1.0f },
-			{ 0.5f, -0.5f, 1.0f, 0.0f }
+			{ -0.5f,  0.5f, 0.0f, 1.0f },
+			{  0.5f, -0.5f, 1.0f, 0.0f },
+			{  0.5f,  0.5f, 1.0f, 1.0f }
 		};
 
 		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(TexturedVertex2), vertices, GL_STATIC_DRAW);

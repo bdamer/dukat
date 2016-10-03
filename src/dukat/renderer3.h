@@ -28,7 +28,6 @@ namespace dukat
 		static const int fbo_size = 256;
 
 		bool use_fbo;
-		bool use_wireframe;
 
 		std::unique_ptr<Camera3> camera;
 
@@ -63,8 +62,6 @@ namespace dukat
 		void enable_fbo(void) { use_fbo = true; }
 		void disable_fbo(void) { use_fbo = false; }
 		void toggle_fbo(void) { use_fbo = !use_fbo; }
-		// Display settings
-		void toggle_wirefame(void);
 
 		void set_camera(std::unique_ptr<Camera3> camera) { this->camera = std::move(camera); }
 		Camera3* get_camera(void) const { return camera.get(); }

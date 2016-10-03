@@ -14,26 +14,14 @@
 namespace dukat
 {
 	Renderer3::Renderer3(Window* window, ShaderCache* shader_cache, TextureCache* textures)
-		: Renderer(window, shader_cache), use_fbo(true), use_wireframe(false)
+		: Renderer(window, shader_cache), use_fbo(true)
 	{
-		// Default settings
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		// Enable transparency
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		// Enable depth buffer
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
-		// Enable back-face culling
-		glFrontFace(GL_CCW);
-
-#ifdef _DEBUG
-		glPolygonMode(GL_BACK, GL_LINE);
-		glPolygonMode(GL_FRONT, GL_FILL);
-#else
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-#endif
 
 		light.position = { 0.0f, 0.0f, 100.0f };
 		light.color = { 1.0f, 1.0f, 0.66f, 1.0f };
@@ -175,20 +163,5 @@ namespace dukat
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform3), &camera->transform, GL_STREAM_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &light, GL_STREAM_DRAW);
-	}
-
-	void Renderer3::toggle_wirefame(void)
-	{
-		use_wireframe = !use_wireframe;
-		if (use_wireframe)
-		{
-			glPolygonMode(GL_BACK, GL_LINE);
-			glPolygonMode(GL_FRONT, GL_LINE);
-		}
-		else
-		{
-			glPolygonMode(GL_BACK, GL_LINE);
-			glPolygonMode(GL_FRONT, GL_FILL);
-		}
 	}
 }
