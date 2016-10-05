@@ -35,6 +35,9 @@ namespace dukat
 			_COUNT
 		};
 
+		// Limits
+		static constexpr const int max_texture_units = 4;
+
 		// Vertex attributes
 		static constexpr const char* at_pos = "a_position";
 		static constexpr const char* at_normal = "a_normal";
@@ -43,7 +46,6 @@ namespace dukat
 		// Uniform variables
 		static constexpr const char* uf_color = "u_color";
 		static constexpr const char* uf_model = "u_model";
-		// TODO: use a single array
 		static constexpr const char* uf_tex0 = "u_tex0";
 		static constexpr const char* uf_tex1 = "u_tex1";
 		static constexpr const char* uf_tex2 = "u_tex2";

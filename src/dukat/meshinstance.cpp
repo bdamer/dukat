@@ -23,6 +23,12 @@ namespace dukat
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Material), &material, GL_STATIC_DRAW);
 	}
 
+	void MeshInstance::set_texture(Texture* texture, int index)
+	{
+		assert(index >= 0 && index < Renderer::max_texture_units);
+		this->texture[index] = texture;
+	}
+
 	void MeshInstance::render(Renderer* renderer, const Matrix4& mat)
 	{
 		renderer->switch_shader(program);
@@ -37,11 +43,16 @@ namespace dukat
 		glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
 
 		// Bind texture
-		if (texture != nullptr)
+		for (auto i = 0; i < Renderer::max_texture_units; i++)
 		{
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture->id);
-			glUniform1i(program->attr(Renderer::uf_tex0), 0);
+			if (texture[i] != nullptr)
+			{
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D, texture[i]->id);
+				std::stringstream ss;
+				ss << "u_tex" << i;
+				glUniform1i(program->attr(ss.str()), i);
+			}
 		}
 
 		mesh->render(program);

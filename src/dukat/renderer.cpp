@@ -35,8 +35,17 @@ namespace dukat
 
 	void Renderer::test_capabilities(void)
 	{
-		logger << "Testing rendering capabilities" << std::endl;
 		GLint param;
+		logger << "Testing rendering capabilities" << std::endl;
+
+		auto shader_version = std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+		logger << "GL_SHADING_LANGUAGE_VERSION: " << shader_version << std::endl;
+		logger << "Geometry shader support: " << (GLEW_ARB_geometry_shader4 ? "yes" : "no") << std::endl;
+
+		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &param);
+		logger << "GL_MAX_TEXTURE_UNITS: " << param << std::endl;
+		assert(param >= Renderer::max_texture_units);
+
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &param);
 		logger << "GL_MAX_UNIFORM_BUFFER_BINDINGS: " << param << std::endl;
 		assert(param >= UniformBuffer::_COUNT);
@@ -44,10 +53,7 @@ namespace dukat
 		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &param);
 		logger << "GL_MAX_UNIFORM_BLOCK_SIZE: " << param << std::endl;
 
-		auto shader_version = std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
-		logger << "GL_SHADING_LANGUAGE_VERSION: " << shader_version << std::endl;
 
-		logger << "Geometry shader support: " << (GLEW_ARB_geometry_shader4 ? "yes" : "no") << std::endl;
 
 		// test capabilities as needed...
 	}
@@ -78,12 +84,10 @@ namespace dukat
 		use_wireframe = !use_wireframe;
 		if (use_wireframe)
 		{
-//			glPolygonMode(GL_BACK, GL_LINE);
 			glPolygonMode(GL_FRONT, GL_LINE);
 		}
 		else
 		{
-//			glPolygonMode(GL_BACK, GL_LINE);
 			glPolygonMode(GL_FRONT, GL_FILL);
 		}
 	}

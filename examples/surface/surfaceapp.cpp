@@ -39,7 +39,7 @@ namespace dukat
 
 		// Set up info text
 		info_text = create_text_mesh(8.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
-		info_text->transform.position = Vector3(-texture_width / 2, 0, 0);
+		info_text->transform.position = Vector3(-0.5f * (float)texture_width, 0.0f, 0.0f);
 		info_text->transform.update();
 		std::stringstream ss;
 		ss << "Surface Test" << std::endl
@@ -56,7 +56,7 @@ namespace dukat
 		// Set up debug layer
 		auto debug_layer = renderer->create_layer("debug", 1000.0f);
 		debug_text = create_text_mesh(4.0f);
-		debug_text->transform.position = Vector3(-texture_width / 2, -texture_height / 2, 0);
+		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.5f * (float)texture_height, 0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();

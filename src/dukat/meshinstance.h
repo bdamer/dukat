@@ -6,12 +6,12 @@
 #include "mesh.h"
 #include "texturecache.h"
 #include "transform3.h"
+#include "renderer.h"
 
 namespace dukat
 {
 	struct GenericBuffer;
 	class ShaderProgram;
-	class Renderer;
 
 	class MeshInstance
 	{
@@ -19,7 +19,7 @@ namespace dukat
 		Mesh* mesh;
 		std::unique_ptr<GenericBuffer> uniform_buffers;
 		ShaderProgram* program;
-		Texture* texture;
+		Texture* texture[Renderer::max_texture_units];
 		Material material;
 
 	public:
@@ -34,7 +34,7 @@ namespace dukat
 		void set_material(const Material& material);
 		Material get_material(void) { return material; }
 		void set_program(ShaderProgram* program) { this->program = program; }
-		void set_texture(Texture* texture) { this->texture = texture; }
+		void set_texture(Texture* texture, int index = 0);
 		// Renders mesh instance using transformation specified in mat.
 		void render(Renderer* renderer, const Matrix4& mat);
 	};
