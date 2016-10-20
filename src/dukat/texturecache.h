@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include "surface.h"
 
 namespace dukat
 {
@@ -13,7 +14,10 @@ namespace dukat
 
 		Texture(void) : id(0), w(0), h(0) { }
 		Texture(int w, int h) : id(0), w(w), h(h) { }
+		Texture(const Surface& surface);
 		~Texture(void) { glDeleteTextures(1, &id); }
+	
+		void load_data(const Surface& surface);
 	};
 
 	class TextureCache
@@ -36,6 +40,8 @@ namespace dukat
 		Texture* get(const TextureId id) const;
 		// Puts texture entry into cache.
 		void put(const std::string& name, std::unique_ptr<Texture> texture) { textures.insert( std::make_pair(name, std::move(texture))); }
+		// Helper method to load a surface from a file.
+		std::unique_ptr<Surface> load_surface(const std::string& filename);
 
 		// Frees all cached textures.
 		void free_all(void);

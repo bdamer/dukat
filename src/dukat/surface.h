@@ -1,6 +1,7 @@
 #pragma once
 
 #include "color.h"
+#include "rect.h"
 
 namespace dukat
 {
@@ -49,15 +50,16 @@ namespace dukat
 		void convert_format(Uint32 format);
 		// Blends another surface on top of this one
 		void blend(const Surface& another);
+		void blend(const Surface& another, const Rect& src, const Rect& dest);
 		// Flips surface 
 		void flip_horizontal(void);
 		void flip_vertical(void);
-
 		// Drawing methods
 		void draw_line(int x0, int y0, int x1, int y1, Uint32 color);
 		void draw_circle(int x0, int y0, int radius, Uint32 color);
 		void draw_rect(int x, int y, int width, int height, Uint32 color);
 		void fill_circle(int x0, int y0, int radius, Uint32 color);
 		void fill_rect(int x, int y, int width, int height, Uint32 color);
+		void fill(Uint32 color);
 	};
 }

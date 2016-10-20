@@ -218,6 +218,11 @@ namespace dukat
 		SDL_FillRect(surface, &rect, color);
 	}
 
+	void Surface::fill(Uint32 color)
+	{
+		SDL_FillRect(surface, nullptr, color);
+	}
+
 	void Surface::convert_format(Uint32 format)
 	{
 		SDL_Surface* tmp = SDL_ConvertSurfaceFormat(surface, format, 0);
@@ -271,6 +276,11 @@ namespace dukat
 	void Surface::blend(const Surface& another)
 	{
 		SDL_BlitSurface(another.get_surface(), nullptr, surface, nullptr);
+	}
+
+	void Surface::blend(const Surface& another, const Rect& src, const Rect& dest)
+	{
+		SDL_BlitSurface(another.get_surface(), (SDL_Rect*)&src, surface, (SDL_Rect*)&dest);
 	}
 
 	std::unique_ptr<Surface> Surface::from_file(const std::string& filename)
