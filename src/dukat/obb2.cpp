@@ -62,19 +62,33 @@ namespace dukat
 		return axis[0].x == 0.0f && axis[0].y == 0.0f;
 	}
 
-	bool OBB2::contains(const Vector2 & p) const
+	bool OBB2::contains(const Vector2& p) const
+	{
+		// if the point lies on the inside of the box, the area
+		// of each triangle formed by the a pair of the 4 sides
+		// of the box and the point will be positive.
+		for (int i0 = 0; i0 < 4; i0++)
+		{
+			int i1 = i0 < 3 ? i0 + 1 : 0;
+			// Area defined as:
+			//            | c[i].x		c[i].y		1 |
+			// A = 0.5f * | c[i + 1].x	c[i + 1].y	1 |
+			//            | p.x			p.y			1 |			
+			auto res = 0.5f * (corners[i1].x * p.y - corners[i1].y * p.x - corners[i0].x * p.y
+				+ corners[i0].y * p.x + corners[i0].x * corners[i1].y - corners[i0].y * corners[i1].x);
+			if (res < 0.0f)
+				return false;
+		}
+		return true;
+	}
+
+	bool OBB2::intersect_circle(const Vector2& center, float radius) const
 	{
 		// TODO: implement
 		return false;
 	}
 
-	bool OBB2::intersect_circle(const Vector2 & center, float radius) const
-	{
-		// TODO: implement
-		return false;
-	}
-
-	float OBB2::intersect_ray(const Ray2 & ray, float near, float) const
+	float OBB2::intersect_ray(const Ray2& ray, float near, float) const
 	{
 		// TODO: implement
 		return no_intersection;
@@ -133,7 +147,7 @@ namespace dukat
 		return true;
 	}
 
-	bool OBB2::overlaps(const OBB2 & other) const
+	bool OBB2::overlaps(const OBB2& other) const
 	{
 		return overlap_test(other) && other.overlap_test(*this);
 	}	
