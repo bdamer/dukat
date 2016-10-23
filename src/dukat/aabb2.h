@@ -15,7 +15,7 @@ namespace dukat
 		Vector2 max;
 
 		// Constructors
-		AABB2(void) { empty(); }
+		AABB2(void) { clear(); }
 		AABB2(const Vector2& min, const Vector2& max) : min(min), max(max) { }
 
 		// Dimension queries

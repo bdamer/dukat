@@ -64,6 +64,8 @@ namespace dukat
 
 	bool OBB2::contains(const Vector2& p) const
 	{
+		if (empty())
+			return false;
 		// if the point lies on the inside of the box, the area
 		// of each triangle formed by the a pair of the 4 sides
 		// of the box and the point will be positive.

@@ -20,7 +20,7 @@ namespace dukat
 
 	RenderLayer2::RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
 		const std::string& id, float priority, float parallax)
-		: id(id), priority(priority), parallax(parallax), is_visible(true), 
+		: id(id), priority(priority), parallax(parallax), is_visible(true),
 		shader_cache(shader_cache), sprite_buffer(sprite_buffer), particle_buffer(particle_buffer)
 	{
 		sprite_program = shader_cache->get_program("sc_sprite.vsh", "sc_sprite.fsh");
@@ -122,17 +122,27 @@ namespace dukat
 		// Fill queue with sprites ordered by priority from low to high
 		for (auto sprite : sprites)
 		{
-			Vector2 half_dim(sprite->scale * sprite->w / 2.0f, sprite->scale * sprite->h / 2.0f);
-			AABB2 sprite_bb(sprite->p - half_dim, sprite->p + half_dim);
-			if (!camera_bb.overlaps(sprite_bb))
+			if (sprite->relative)
 			{
-				sprite->rendered = false;
-			}
-			else
-			{
+				// TODO: perform occlusion check against untranslated camera bounding box
 				sprite->rendered = true;
 				queue.push(sprite);
 				perfc.inc(PerformanceCounter::SPRITES);
+			}
+			else
+			{
+				Vector2 half_dim(sprite->scale * sprite->w / 2.0f, sprite->scale * sprite->h / 2.0f);
+				AABB2 sprite_bb(sprite->p - half_dim, sprite->p + half_dim);
+				if (!camera_bb.overlaps(sprite_bb))
+				{
+					sprite->rendered = false;
+				}
+				else
+				{
+					sprite->rendered = true;
+					queue.push(sprite);
+					perfc.inc(PerformanceCounter::SPRITES);
+				}
 			}
 		}
 	}
@@ -142,9 +152,7 @@ namespace dukat
 		std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator> queue;
 		fill_sprite_queue(camera_bb, queue);
 		if (queue.empty())
-		{
 			return; // nothing to render
-		}
 
 		renderer->switch_shader(sprite_program);
 
@@ -188,6 +196,14 @@ namespace dukat
 				glActiveTextureARB(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, sprite->texture_id);
 				last_texture = sprite->texture_id;
+			}
+
+			// if we're in relative addressing mode, transpose sprite
+			// position by camera position.
+			// TODO: this changes the sprite position - do we care?
+			if (sprite->relative)
+			{
+				sprite->p += renderer->get_camera()->transform.position;
 			}
 
 			Matrix4 mat_m = sprite->compute_model_matrix();
