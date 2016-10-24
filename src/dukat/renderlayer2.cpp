@@ -291,12 +291,13 @@ namespace dukat
 
 	void RenderLayer2::render_text(Renderer2* renderer, const AABB2& camera_bb)
 	{
-		Matrix4 mat;
-		mat.identity();
+		// set up matrix once
+		Matrix4 mat_identity;
+		mat_identity.identity();
 		for (const auto& text : texts)
 		{
-			// TODO: boundary check
-			text->render(renderer, mat);
+			// TODO: perform boundary check
+			text->render(renderer, mat_identity);
 		}
 	}
 

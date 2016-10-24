@@ -19,6 +19,7 @@ namespace dukat
 		texture_cache = std::make_unique<TextureCache>(settings.get_string("resources.textures"));
 		particle_manager = std::make_unique<ParticleManager>();
 		timer_manager = std::make_unique<TimerManager>();
+		anim_manager = std::make_unique<AnimationManager>();
 		mesh_cache = std::make_unique<dukat::MeshCache>();
 	}
 
@@ -33,6 +34,7 @@ namespace dukat
 	void GameBase::update(float delta)
 	{
 		timer_manager->update(delta);
+		anim_manager->update(delta);
 		particle_manager->update(delta);
 	}
 

@@ -267,6 +267,12 @@
     <ClInclude Include="..\src\dukat\textmeshinstance.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\animation.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\animationmanager.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -427,6 +433,9 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\textmeshinstance.cpp">
       <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\animationmanager.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

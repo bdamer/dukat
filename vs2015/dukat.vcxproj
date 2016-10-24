@@ -151,6 +151,8 @@
   <ItemGroup>
     <ClInclude Include="..\src\dukat\aabb2.h" />
     <ClInclude Include="..\src\dukat\aabb3.h" />
+    <ClInclude Include="..\src\dukat\animation.h" />
+    <ClInclude Include="..\src\dukat\animationmanager.h" />
     <ClInclude Include="..\src\dukat\application.h" />
     <ClInclude Include="..\src\dukat\boundingbody2.h" />
     <ClInclude Include="..\src\dukat\boundingbody3.h" />
@@ -224,6 +226,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\dukat\aabb2.cpp" />
     <ClCompile Include="..\src\dukat\aabb3.cpp" />
+    <ClCompile Include="..\src\dukat\animationmanager.cpp" />
     <ClCompile Include="..\src\dukat\application.cpp" />
     <ClCompile Include="..\src\dukat\boundingsphere.cpp" />
     <ClCompile Include="..\src\dukat\camera2.cpp" />
