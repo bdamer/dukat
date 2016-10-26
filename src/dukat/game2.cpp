@@ -16,7 +16,7 @@ namespace dukat
 		auto mesh_instance = std::make_unique<TextMeshInstance>();
 		mesh_instance->transform.update();
 		mesh_instance->set_texture(texture_cache->get("font_256.png"));
-		mesh_instance->set_program(shader_cache->get_program("sc_ui_texture.vsh", "sc_texture.fsh"));
+		mesh_instance->set_program(shader_cache->get_program("sc_text.vsh", "sc_text.fsh"));
 		TextMeshBuilder mb;
 		auto mesh = mb.build_text_mesh2();
 		mesh_instance->set_mesh(mesh.get());

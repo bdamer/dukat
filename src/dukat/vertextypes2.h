@@ -21,6 +21,13 @@ namespace dukat
 		GLfloat r, g, b, a;
 	};
 
+	struct ColoredTexturedVertex2
+	{
+		GLfloat x, y;
+		GLfloat r, g, b, a;
+		GLfloat u, v;
+	};
+
 	struct ParticleVertex2
 	{
 		GLfloat x, y;

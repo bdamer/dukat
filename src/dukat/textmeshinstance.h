@@ -11,7 +11,7 @@ namespace dukat
 		std::string text;
 
 	public:
-		TextMeshInstance(void);
+		TextMeshInstance(void) { }
 		~TextMeshInstance(void) { }
 
 		void set_text(const std::string& text);
@@ -19,6 +19,6 @@ namespace dukat
 
 		void set_size(float size);
 		void set_color(const Color& color);
-
+		Color get_color(void);
 	};
 }

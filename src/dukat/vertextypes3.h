@@ -33,4 +33,11 @@ namespace dukat
 		Vector pos;
 		Color col;
 	};
+
+	struct VertexPosColTex
+	{
+		Vector pos;
+		Color col;
+		GLfloat u, v;
+	};
 }

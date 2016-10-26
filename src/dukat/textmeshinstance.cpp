@@ -4,10 +4,6 @@
 
 namespace dukat
 {
-	TextMeshInstance::TextMeshInstance(void)
-	{
-	}
-
 	void TextMeshInstance::set_text(const std::string& text)
 	{
 		if (this->text == text)
@@ -26,8 +22,14 @@ namespace dukat
 
 	void TextMeshInstance::set_color(const Color& color)
 	{
-		Material m =get_material();
+		Material m = get_material();
 		m.ambient = color;
 		set_material(m);
+	}
+
+	Color TextMeshInstance::get_color(void)
+	{
+		Material m = get_material();
+		return m.ambient;
 	}
 }
