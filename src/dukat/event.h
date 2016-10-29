@@ -11,6 +11,7 @@ namespace dukat
 		Selected,
 		Deselected,
 		ParentChanged,
+		TransformChanged,
 		VisibilityChanged,
 
 		Any // catch-all to allow subscription to all supported events

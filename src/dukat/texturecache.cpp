@@ -41,29 +41,33 @@ namespace dukat
 		free_all();
 	}
 
-	std::unique_ptr<Surface> TextureCache::load_surface(const std::string& filename)
+	Surface* TextureCache::load_surface(const std::string& filename)
 	{
-		auto fqn = resource_dir + "/" + filename;
-		auto surface = Surface::from_file(fqn);
-		// Perform necessary conversion
-		switch (surface->get_surface()->format->format)
+		if (surfaces.count(filename) == 0)
 		{
-			// 24 bit
-		case SDL_PIXELFORMAT_BGR24:
-		case SDL_PIXELFORMAT_BGR888:
-			logger << "Unexpected 24 bit pixel format, attempting to convert to RGB888." << std::endl;
-			surface->convert_format(SDL_PIXELFORMAT_RGB888);
-			// 32 bit
-		case SDL_PIXELFORMAT_ARGB8888:
-			logger << "Unexpected 32 bit pixel format, attempting to convert to RGB888." << std::endl;
-			surface->convert_format(SDL_PIXELFORMAT_RGBA8888);
+			auto fqn = resource_dir + "/" + filename;
+			auto surface = Surface::from_file(fqn);
+			// Perform necessary conversion
+			switch (surface->get_surface()->format->format)
+			{
+				// 24 bit
+			case SDL_PIXELFORMAT_BGR24:
+			case SDL_PIXELFORMAT_BGR888:
+				logger << "Unexpected 24 bit pixel format, attempting to convert to RGB888." << std::endl;
+				surface->convert_format(SDL_PIXELFORMAT_RGB888);
+				// 32 bit
+			case SDL_PIXELFORMAT_ARGB8888:
+				logger << "Unexpected 32 bit pixel format, attempting to convert to RGB888." << std::endl;
+				surface->convert_format(SDL_PIXELFORMAT_RGBA8888);
+			}
+			if (flip)
+			{
+				// Flip image from SDL to OpenGL orientation
+				surface->flip_horizontal();
+			}
+			surfaces[filename] = std::move(surface);
 		}
-		if (flip)
-		{
-			// Flip image from SDL to OpenGL orientation
-			surface->flip_horizontal();
-		}
-		return surface;
+		return surfaces[filename].get();
 	}
 
 	std::unique_ptr<Texture> TextureCache::load(const std::string& filename)

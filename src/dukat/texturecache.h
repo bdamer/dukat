@@ -25,7 +25,8 @@ namespace dukat
 	private:
 		const std::string resource_dir;
 		const bool flip;
-		std::unordered_map<std::string,std::unique_ptr<Texture>> textures;
+		std::unordered_map<std::string, std::unique_ptr<Texture>> textures;
+		std::unordered_map<std::string, std::unique_ptr<Surface>> surfaces;
 		std::unique_ptr<Texture> load(const std::string& filename);
 
 	public:
@@ -41,7 +42,7 @@ namespace dukat
 		// Puts texture entry into cache.
 		void put(const std::string& name, std::unique_ptr<Texture> texture) { textures.insert( std::make_pair(name, std::move(texture))); }
 		// Helper method to load a surface from a file.
-		std::unique_ptr<Surface> load_surface(const std::string& filename);
+		Surface* load_surface(const std::string& filename);
 
 		// Frees all cached textures.
 		void free_all(void);
