@@ -28,7 +28,7 @@ namespace dukat
 		~TextMeshBuilder(void) { }
 		std::unique_ptr<Mesh> build_text_mesh2(const std::string& text = "") const;
 		std::unique_ptr<Mesh> build_text_mesh3(const std::string& text = "") const;
-		void rebuild_text_mesh2(Mesh* mesh, const std::string& text) const;
-		void rebuild_text_mesh3(Mesh* mesh, const std::string& text) const;
+		void rebuild_text_mesh2(Mesh* mesh, const std::string& text, float& width, float& height) const;
+		void rebuild_text_mesh3(Mesh* mesh, const std::string& text, float& width, float& height) const;
 	};
 }

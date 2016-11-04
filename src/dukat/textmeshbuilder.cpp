@@ -51,7 +51,8 @@ namespace dukat
 		attr.push_back(dukat::VertexAttribute(Renderer::at_color, 4));
 		attr.push_back(dukat::VertexAttribute(Renderer::at_texcoord, 2));
 		auto mesh = std::make_unique<Mesh>(GL_TRIANGLES, max_length * 6, 0, attr);
-		rebuild_text_mesh2(mesh.get(), text);
+		float width, height;
+		rebuild_text_mesh2(mesh.get(), text, width, height);
 		return std::move(mesh);
 	}
 
@@ -62,7 +63,8 @@ namespace dukat
 		attr.push_back(dukat::VertexAttribute(Renderer::at_color, 4));
 		attr.push_back(dukat::VertexAttribute(Renderer::at_texcoord, 2));
 		auto mesh = std::make_unique<Mesh>(GL_TRIANGLES, max_length * 6, 0, attr);
-		rebuild_text_mesh3(mesh.get(), text);
+		float width, height;
+		rebuild_text_mesh3(mesh.get(), text, width, height);
 		return std::move(mesh);
 	}
 
@@ -96,15 +98,14 @@ namespace dukat
 		}
 	}
 
-	void TextMeshBuilder::rebuild_text_mesh2(Mesh* mesh, const std::string& text) const
+	void TextMeshBuilder::rebuild_text_mesh2(Mesh* mesh, const std::string& text, float& width, float& height) const
 	{
 		assert(text.length() <= max_length);
 
 		// build up vertices
-		float x = 0.0f;
-		float y = 0.0f;
-		float tw = 1.0f / (float)cols;
-		float th = 1.0f / (float)rows;
+		float x = 0.0f, y = 0.0f;
+		float tw = 1.0f / (float)cols, th = 1.0f / (float)rows;
+		float max_x = 0.0f;
 		std::vector<ColoredTexturedVertex2> verts;
 		Color color = color_map.at(simple_hash("white"));
 		for (size_t i = 0; i < text.length(); i++)
@@ -131,21 +132,24 @@ namespace dukat
 			verts.push_back({ x + 1.0f, y, color.r, color.g, color.b, color.a, u + tw, v }); // top-right
 			verts.push_back({ x, y + 1.0f, color.r, color.g, color.b, color.a, u, v + th }); // bottom-left
 			verts.push_back({ x + 1.0f, y + 1.0f, color.r, color.g, color.b, color.a, u + tw, v + th }); // bottom-right
+
+			max_x = std::max(x, max_x);
 			x += 1.0f;
 		}
 
+		width = max_x + 1.0f;
+		height = y + 1.0f;
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), (int)verts.size());
 	}
 
-	void TextMeshBuilder::rebuild_text_mesh3(Mesh* mesh, const std::string& text) const
+	void TextMeshBuilder::rebuild_text_mesh3(Mesh* mesh, const std::string& text, float& width, float& height) const
 	{
 		assert(text.length() <= max_length);
 
 		// build up vertices
-		float x = 0.0f;
-		float y = 0.0f;
-		float tw = 1.0f / (float)cols;
-		float th = 1.0f / (float)rows;
+		float x = 0.0f, y = 0.0f;
+		float tw = 1.0f / (float)cols, th = 1.0f / (float)rows;
+		float max_x = 0.0f;
 		std::vector<dukat::ColoredTexturedVertex2> verts;
 		Color color = color_map.at(simple_hash("white"));
 		for (size_t i = 0; i < text.length(); i++)
@@ -172,8 +176,12 @@ namespace dukat
 			verts.push_back({ x, y - 1.0f, color.r, color.g, color.b, color.a, u, 1.0f - (v + th) }); // bottom-left
 			verts.push_back({ x + 1.0f, y - 1.0f, color.r, color.g, color.b, color.a, u + tw, 1.0f - (v + th) }); // bottom-right
 			x += 1.0f;
+
+			max_x = std::max(x, max_x);
 		}
 
+		width = max_x + 1.0f;
+		height = -y + 1.0f;
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), (int)verts.size());
 	}
 }

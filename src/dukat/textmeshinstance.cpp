@@ -11,7 +11,7 @@ namespace dukat
 
 		this->text = text;
 		TextMeshBuilder mb;
-		mb.rebuild_text_mesh2(get_mesh(), text);
+		mb.rebuild_text_mesh2(get_mesh(), text, width, height);
 	}
 
 	void TextMeshInstance::set_size(float size)
