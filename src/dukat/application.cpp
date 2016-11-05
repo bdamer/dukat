@@ -39,12 +39,12 @@ namespace dukat
 		{
 			ticks = SDL_GetTicks();
 
+			device_manager->update();
 			if (!paused)
 			{
-				device_manager->update();
 				update(((float)(ticks - last_update)) / 1000.0f);
-				last_update = SDL_GetTicks();
 			}
+			last_update = SDL_GetTicks();
 
 			// update FPS counter
 			if (ticks - last_frame >= 1000)
