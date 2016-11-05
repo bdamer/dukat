@@ -13,14 +13,11 @@ namespace dukat
 
 	std::unique_ptr<TextMeshInstance> Game2::create_text_mesh(float size)
 	{
-		auto mesh_instance = std::make_unique<TextMeshInstance>();
+		TextMeshBuilder mb;
+		auto mesh_instance = std::make_unique<TextMeshInstance>(mb.build_text_mesh2());
 		mesh_instance->transform.update();
 		mesh_instance->set_texture(texture_cache->get("font_256.png"));
 		mesh_instance->set_program(shader_cache->get_program("sc_text.vsh", "sc_text.fsh"));
-		TextMeshBuilder mb;
-		auto mesh = mb.build_text_mesh2();
-		mesh_instance->set_mesh(mesh.get());
-		mesh_cache->put(mesh_cache->generate_id(), std::move(mesh));
 		mesh_instance->set_size(size);
 		return mesh_instance;
 	}

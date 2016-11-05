@@ -4,6 +4,12 @@
 
 namespace dukat
 {
+	TextMeshInstance::TextMeshInstance(std::unique_ptr<Mesh> text_mesh)
+	{
+		this->text_mesh = std::move(text_mesh);
+		set_mesh(this->text_mesh.get());
+	}
+
 	void TextMeshInstance::set_text(const std::string& text)
 	{
 		if (this->text == text)
