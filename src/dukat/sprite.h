@@ -61,7 +61,7 @@ namespace dukat
 		bool operator<(const Sprite& s) const { return z < s.z; }
 		bool operator>(const Sprite& s) const { return z > s.z; }
 
-		Matrix4 compute_model_matrix(void);
+		Matrix4 compute_model_matrix(const Vector2& camera_position);
 	};
 
 	// Used to order entities by z value. For sprites with the same z value,

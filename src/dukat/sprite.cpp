@@ -77,17 +77,22 @@ namespace dukat
 		return *this;
 	}
 
-	Matrix4 Sprite::compute_model_matrix(void)
+	Matrix4 Sprite::compute_model_matrix(const Vector2& camera_position)
 	{
 		Matrix4 mat_model, tmp;
+
+		// if we're in relative addressing mode, transpose sprite
+		// position by camera position.
+		Vector2 p_tmp = (relative ? p + camera_position : p);
+
 		// scale * rotation * translation
 		if (pixel_aligned)
 		{
-			mat_model.setup_translation(Vector3(round(p.x), round(p.y), 0.0f));
+			mat_model.setup_translation(Vector3(round(p_tmp.x), round(p_tmp.y), 0.0f));
 		}
 		else
 		{
-			mat_model.setup_translation(Vector3(p.x, p.y, 0.0f));
+			mat_model.setup_translation(Vector3(p_tmp.x, p_tmp.y, 0.0f));
 		}
 		if (rot != 0.0f)
 		{

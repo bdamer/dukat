@@ -198,15 +198,7 @@ namespace dukat
 				last_texture = sprite->texture_id;
 			}
 
-			// if we're in relative addressing mode, transpose sprite
-			// position by camera position.
-			// TODO: this changes the sprite position - do we care?
-			if (sprite->relative)
-			{
-				sprite->p += renderer->get_camera()->transform.position;
-			}
-
-			Matrix4 mat_m = sprite->compute_model_matrix();
+			Matrix4 mat_m = sprite->compute_model_matrix(renderer->get_camera()->transform.position);
 			glUniformMatrix4fv(model_id, 1, false, &mat_m.m[0]);
 			glUniform4fv(color_id, 1, &sprite->color.r);
 			glUniform4fv(uvwh_id, 1, sprite->tex);
