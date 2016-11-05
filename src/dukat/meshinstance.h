@@ -32,7 +32,7 @@ namespace dukat
 		void set_mesh(Mesh* mesh) { this->mesh = mesh; }
 		Mesh* get_mesh(void) const { return mesh; }
 		void set_material(const Material& material);
-		Material get_material(void) { return material; }
+		Material get_material(void) const { return material; }
 		void set_program(ShaderProgram* program) { this->program = program; }
 		void set_texture(Texture* texture, int index = 0);
 		// Renders mesh instance using transformation specified in mat.

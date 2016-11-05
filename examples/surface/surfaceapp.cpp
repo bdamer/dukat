@@ -38,7 +38,7 @@ namespace dukat
 		layer->add(sprite.get());
 
 		// Set up info text
-		info_text = create_text_mesh(8.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
+		info_text = create_text_mesh(8.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)texture_width, 0.0f, 0.0f);
 		info_text->transform.update();
 		std::stringstream ss;

@@ -12,7 +12,7 @@ namespace dukat
 		renderer = std::make_unique<dukat::Renderer3>(window.get(), shader_cache.get(), texture_cache.get());
 	}
 
-	std::unique_ptr<TextMeshInstance> Game3::create_text_mesh(float size, const Color& color)
+	std::unique_ptr<TextMeshInstance> Game3::create_text_mesh(float size)
 	{
 		auto mesh_instance = std::make_unique<TextMeshInstance>();
 		mesh_instance->transform.update();
@@ -23,7 +23,6 @@ namespace dukat
 		mesh_instance->set_mesh(mesh.get());
 		mesh_cache->put(mesh_cache->generate_id(), std::move(mesh));
 		mesh_instance->set_size(size);
-		mesh_instance->set_color(color);
 		return mesh_instance;
 	}
 

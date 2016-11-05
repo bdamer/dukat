@@ -14,22 +14,22 @@ namespace dukat
 		mb.rebuild_text_mesh2(get_mesh(), text, width, height);
 	}
 
+	void TextMeshInstance::set_alpha(float alpha)
+	{
+		auto mat = get_material();
+		mat.ambient.a = alpha;
+		set_material(mat);
+	}
+
+	float TextMeshInstance::get_alpha(void) const
+	{
+		auto mat = get_material();
+		return mat.ambient.a;
+	}
+
 	void TextMeshInstance::set_size(float size)
 	{
 		transform.scale = { size, size, size };
 		transform.update();
-	}
-
-	void TextMeshInstance::set_color(const Color& color)
-	{
-		Material m = get_material();
-		m.ambient = color;
-		set_material(m);
-	}
-
-	Color TextMeshInstance::get_color(void)
-	{
-		Material m = get_material();
-		return m.ambient;
 	}
 }

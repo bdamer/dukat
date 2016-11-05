@@ -36,7 +36,7 @@ namespace dukat
 		GameBase(const Settings& settings);
 		virtual ~GameBase(void) { }
 		virtual void toggle_debug(void) { debug = !debug; }
-		virtual std::unique_ptr<TextMeshInstance> create_text_mesh(float size, const Color& color) = 0;
+		virtual std::unique_ptr<TextMeshInstance> create_text_mesh(float size) = 0;
 
 		ShaderCache* get_shaders(void) const { return shader_cache.get(); }
 		TextureCache* get_textures(void) const { return texture_cache.get(); }

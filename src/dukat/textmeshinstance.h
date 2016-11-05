@@ -18,8 +18,8 @@ namespace dukat
 
 		void set_text(const std::string& text);
 		std::string get_text(void) const { return text; }
-		void set_color(const Color& color);
-		Color get_color(void);
+		void set_alpha(float alpha);
+		float get_alpha(void) const;
 
 		void set_size(float size);
 		float get_width(void) const { return width * transform.scale.x; }

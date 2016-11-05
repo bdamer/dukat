@@ -22,7 +22,7 @@ namespace dukat
 		renderer->set_camera(std::move(camera));
 
 		// Set up info text
-		info_text = create_text_mesh(10.0f, { 1.0f, 1.0f, 0.0f, 1.0f });
+		info_text = create_text_mesh(10.0f);
 		std::stringstream ss;
 		ss << "I sing the <#red>body electric</>," << std::endl
 			<< "The <#yellow>armies</> of those I <#magenta>love</> engirth me and I engirth them," << std::endl
