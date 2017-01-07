@@ -37,7 +37,7 @@ namespace dukat
 			normalize_trigger(state.Gamepad.bRightTrigger, rt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 			for (int i = 0; i < VirtualButton::_Count; i++)
 			{
-				udapte_button_state((VirtualButton)i, (state.Gamepad.wButtons & mapping[i]) != 0);
+				update_button_state((VirtualButton)i, (state.Gamepad.wButtons & mapping[i]) != 0);
 			}
 		}
 	}

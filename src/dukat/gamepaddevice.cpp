@@ -48,7 +48,7 @@ namespace dukat
 		rt = SDL_JoystickGetButton(joystick, 7);
 		for (int i = 0; i < VirtualButton::_Count; i++)
 		{
-			udapte_button_state((VirtualButton)i, SDL_JoystickGetButton(joystick, mapping[i]) != 0);
+			update_button_state((VirtualButton)i, SDL_JoystickGetButton(joystick, mapping[i]) != 0);
 		}
 	}
 

@@ -34,7 +34,7 @@ namespace dukat
 
 	protected:
 		int mapping[VirtualButton::_Count];
-		void udapte_button_state(VirtualButton button, bool pressed);
+		void update_button_state(VirtualButton button, bool pressed);
 
 	public:
 		const int id;

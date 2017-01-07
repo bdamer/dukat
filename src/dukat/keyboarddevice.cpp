@@ -80,15 +80,15 @@ namespace dukat
 		{
 			if (VirtualButton::PrimaryAction == (VirtualButton)i)
 			{
-				udapte_button_state(VirtualButton::PrimaryAction, mouse_lb);
+				update_button_state(VirtualButton::PrimaryAction, mouse_lb);
 			}
             else if (VirtualButton::SecondaryAction == (VirtualButton)i)
             {
-                udapte_button_state(VirtualButton::SecondaryAction, mouse_rb);
+				update_button_state(VirtualButton::SecondaryAction, mouse_rb);
             }
 			else
 			{
-				udapte_button_state((VirtualButton)i, keystate[mapping[i]] == 1);
+				update_button_state((VirtualButton)i, keystate[mapping[i]] == 1);
 			}
 		}
 	}
