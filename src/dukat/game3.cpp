@@ -2,25 +2,12 @@
 #include "game3.h"
 #include "renderer3.h"
 #include "mesh.h"
-#include "textmeshinstance.h"
-#include "textmeshbuilder.h"
 
 namespace dukat
 {
 	Game3::Game3(const Settings& settings) : GameBase(settings)
 	{
 		renderer = std::make_unique<dukat::Renderer3>(window.get(), shader_cache.get(), texture_cache.get());
-	}
-
-	std::unique_ptr<TextMeshInstance> Game3::create_text_mesh(float size)
-	{
-		TextMeshBuilder mb;
-		auto mesh_instance = std::make_unique<TextMeshInstance>(mb.build_text_mesh3());
-		mesh_instance->transform.update();
-		mesh_instance->set_texture(texture_cache->get("font_256.png"));
-		mesh_instance->set_program(shader_cache->get_program("sc_text.vsh", "sc_text.fsh"));
-		mesh_instance->set_size(size);
-		return mesh_instance;
 	}
 
 	void Game3::update(float delta)

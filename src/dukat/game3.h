@@ -19,7 +19,6 @@ namespace dukat
 		Game3(const Settings& settings);
 		~Game3(void) { }
 
-		std::unique_ptr<TextMeshInstance> create_text_mesh(float size = 1.0f);
 		Renderer3* get_renderer(void) const { return renderer.get(); }
 	};
 }

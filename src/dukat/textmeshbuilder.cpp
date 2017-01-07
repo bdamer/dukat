@@ -44,7 +44,7 @@ namespace dukat
 		}
 	}
 
-	std::unique_ptr<Mesh> TextMeshBuilder::build_text_mesh2(const std::string& text) const
+	std::unique_ptr<Mesh> TextMeshBuilder::build_text_mesh(const std::string& text) const
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(dukat::VertexAttribute(Renderer::at_pos, 2));
@@ -52,19 +52,7 @@ namespace dukat
 		attr.push_back(dukat::VertexAttribute(Renderer::at_texcoord, 2));
 		auto mesh = std::make_unique<Mesh>(GL_TRIANGLES, max_length * 6, 0, attr);
 		float width, height;
-		rebuild_text_mesh2(mesh.get(), text, width, height);
-		return std::move(mesh);
-	}
-
-	std::unique_ptr<Mesh> TextMeshBuilder::build_text_mesh3(const std::string& text) const
-	{
-		std::vector<VertexAttribute> attr;
-		attr.push_back(dukat::VertexAttribute(Renderer::at_pos, 3));
-		attr.push_back(dukat::VertexAttribute(Renderer::at_color, 4));
-		attr.push_back(dukat::VertexAttribute(Renderer::at_texcoord, 2));
-		auto mesh = std::make_unique<Mesh>(GL_TRIANGLES, max_length * 6, 0, attr);
-		float width, height;
-		rebuild_text_mesh3(mesh.get(), text, width, height);
+		rebuild_text_mesh(mesh.get(), text, width, height);
 		return std::move(mesh);
 	}
 
@@ -98,7 +86,7 @@ namespace dukat
 		}
 	}
 
-	void TextMeshBuilder::rebuild_text_mesh2(Mesh* mesh, const std::string& text, float& width, float& height) const
+	void TextMeshBuilder::rebuild_text_mesh(Mesh* mesh, const std::string& text, float& width, float& height) const
 	{
 		assert(text.length() <= max_length);
 
@@ -139,49 +127,6 @@ namespace dukat
 
 		width = max_x + 1.0f;
 		height = y + 1.0f;
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), (int)verts.size());
-	}
-
-	void TextMeshBuilder::rebuild_text_mesh3(Mesh* mesh, const std::string& text, float& width, float& height) const
-	{
-		assert(text.length() <= max_length);
-
-		// build up vertices
-		float x = 0.0f, y = 0.0f;
-		float tw = 1.0f / (float)cols, th = 1.0f / (float)rows;
-		float max_x = 0.0f;
-		std::vector<dukat::ColoredTexturedVertex2> verts;
-		Color color = color_map.at(simple_hash("white"));
-		for (size_t i = 0; i < text.length(); i++)
-		{
-			char c = text[i];
-			if (c == '<' && (i < text.length() - 1))
-			{
-				if (parse_color(i, text, color))
-					continue;
-			}
-			else if (c == '\n')
-			{
-				y -= 1.0f;
-				x = 0.0f;
-				continue;
-			}
-
-			float u = (float)((c - 32) % 16) * tw;
-			float v = (float)((c - 32) / 16) * th;
-			verts.push_back({ x, y, color.r, color.g, color.b, color.a, u, 1.0f - v }); // top-left
-			verts.push_back({ x, y - 1.0f, color.r, color.g, color.b, color.a, u, 1.0f - (v + th) }); // bottom-left
-			verts.push_back({ x + 1.0f, y, color.r, color.g, color.b, color.a, u + tw, 1.0f - v }); // top-right
-			verts.push_back({ x + 1.0f, y, color.r, color.g, color.b, color.a, u + tw, 1.0f - v }); // top-right
-			verts.push_back({ x, y - 1.0f, color.r, color.g, color.b, color.a, u, 1.0f - (v + th) }); // bottom-left
-			verts.push_back({ x + 1.0f, y - 1.0f, color.r, color.g, color.b, color.a, u + tw, 1.0f - (v + th) }); // bottom-right
-			x += 1.0f;
-
-			max_x = std::max(x, max_x);
-		}
-
-		width = max_x + 1.0f;
-		height = -y + 1.0f;
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), (int)verts.size());
 	}
 }

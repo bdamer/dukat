@@ -19,7 +19,6 @@ namespace dukat
 		Game2(const Settings& settings);
 		virtual ~Game2(void) { }
 
-		std::unique_ptr<TextMeshInstance> create_text_mesh(float size = 1.0f);
 		Renderer2* get_renderer(void) const { return renderer.get(); }
 	};
 }

@@ -5,7 +5,14 @@
 
 namespace dukat
 {
-    void MeshGroup::remove_instance(MeshInstance* instance)
+	MeshInstance* MeshGroup::add_instance(std::unique_ptr<MeshInstance> instance)
+	{
+		auto res = instance.get();
+		instances.push_back(std::move(instance));
+		return res;
+	}
+
+	void MeshGroup::remove_instance(MeshInstance* instance)
     {
         auto it = std::find_if(instances.begin(), instances.end(), [instance](const std::unique_ptr<MeshInstance>& ptr) {
             return ptr.get() == instance;
@@ -15,7 +22,6 @@ namespace dukat
             instances.erase(it);
         }
     }
-
 
 	void MeshGroup::update(float delta)
 	{

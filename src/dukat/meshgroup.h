@@ -23,7 +23,8 @@ namespace dukat
 		MeshGroup(void) : stage(RenderStage::SCENE) { }
 		~MeshGroup(void) { }
 
-		MeshInstance* add_instance(void) { instances.push_back(std::make_unique<MeshInstance>()); return instances.back().get(); }
+		MeshInstance* create_instance(void) { instances.push_back(std::make_unique<MeshInstance>()); return instances.back().get(); }
+		MeshInstance* add_instance(std::unique_ptr<MeshInstance> instance);
         void remove_instance(MeshInstance* instance);
 		MeshInstance* get_instance(unsigned int index) { return instances[index].get(); }
 		unsigned int size(void) { return static_cast<unsigned int>(instances.size()); }

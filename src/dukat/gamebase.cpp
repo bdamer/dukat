@@ -7,6 +7,8 @@
 #include "particlemanager.h"
 #include "settings.h"
 #include "shadercache.h"
+#include "textmeshinstance.h"
+#include "textmeshbuilder.h"
 #include "texturecache.h"
 #include "timermanager.h"
 #include "window.h"
@@ -42,5 +44,16 @@ namespace dukat
 	{
 		device_manager->active->unbind(InputDevice::VirtualButton::Pause);
 		device_manager->active->unbind(InputDevice::VirtualButton::Debug1);
+	}
+
+	std::unique_ptr<TextMeshInstance> GameBase::create_text_mesh(float size)
+	{
+		TextMeshBuilder mb;
+		auto mesh_instance = std::make_unique<TextMeshInstance>(mb.build_text_mesh());
+		mesh_instance->transform.update();
+		mesh_instance->set_texture(texture_cache->get("font_256.png"));
+		mesh_instance->set_program(shader_cache->get_program("sc_text.vsh", "sc_text.fsh"));
+		mesh_instance->set_size(size);
+		return mesh_instance;
 	}
 }

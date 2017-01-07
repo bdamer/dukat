@@ -17,7 +17,7 @@ namespace dukat
 
 		this->text = text;
 		TextMeshBuilder mb;
-		mb.rebuild_text_mesh2(get_mesh(), text, width, height);
+		mb.rebuild_text_mesh(get_mesh(), text, width, height);
 	}
 
 	void TextMeshInstance::set_alpha(float alpha)
