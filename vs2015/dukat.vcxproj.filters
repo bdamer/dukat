@@ -273,6 +273,9 @@
     <ClInclude Include="..\src\dukat\animationmanager.h">
       <Filter>Header Files\system</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\effect3.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">

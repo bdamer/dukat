@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "camera3.h"
+#include "effect3.h"
 #include "light.h"
 #include "renderer.h"
 #include "texturecache.h"
@@ -27,15 +28,11 @@ namespace dukat
 		// Size of FBO used for effects
 		static const int fbo_size = 256;
 
-		bool use_fbo;
-
 		std::unique_ptr<Camera3> camera;
 
-		// Testing
-		ShaderProgram* composite_program;
-		ShaderProgram* threshold_program;
-		ShaderProgram* blur_program;
-
+		bool effects_enabled;
+		// Framebuffer effects
+		std::list<Effect3> effects;
 		// fullscreen framebuffer
 		std::unique_ptr<FrameBuffer> fb0;
 		// effect framebuffer
@@ -45,6 +42,7 @@ namespace dukat
 		FrameBuffer* frame_buffer;
 		// Quad to composite final image onto
 		std::unique_ptr<Mesh> quad;
+		ShaderProgram* composite_program;
 
 		Light light;
 
@@ -59,9 +57,10 @@ namespace dukat
 		void update_uniforms(void);
 
 		// Framebuffer effects
-		void enable_fbo(void) { use_fbo = true; }
-		void disable_fbo(void) { use_fbo = false; }
-		void toggle_fbo(void) { use_fbo = !use_fbo; }
+		void enable_effects(void) { effects_enabled = true; }
+		void disable_effects(void) { effects_enabled = false; }
+		void toggle_effects(void) { effects_enabled = !effects_enabled; }
+		void add_effect(int index, const Effect3& effect);
 
 		void set_camera(std::unique_ptr<Camera3> camera) { this->camera = std::move(camera); }
 		Camera3* get_camera(void) const { return camera.get(); }

@@ -9,12 +9,10 @@
 #include "mesh.h"
 #include "meshgroup.h"
 
-#define BLUR_METHOD_1
-
 namespace dukat
 {
 	Renderer3::Renderer3(Window* window, ShaderCache* shader_cache, TextureCache* textures)
-		: Renderer(window, shader_cache), use_fbo(true)
+		: Renderer(window, shader_cache), effects_enabled(true)
 	{
 		// Enable transparency
 		glEnable(GL_BLEND);
@@ -35,14 +33,7 @@ namespace dukat
 		MeshBuilder2 builder;
 		quad = builder.build_textured_quad();
 		
-		// TODO: cleanup
 		composite_program = shader_cache->get_program("fx_default.vsh", "fx_composite.fsh");
-		threshold_program = shader_cache->get_program("fx_default.vsh", "fx_threshold.fsh");
-#ifdef BLUR_METHOD_1
-		blur_program = shader_cache->get_program("fx_default.vsh", "fx_blur2.fsh");
-#else
-		mBlurProgram = shader_cache->get_program("fx_default.vsh", "fx_blur3.fsh");
-#endif
 	}
 
 	void Renderer3::switch_fbo(void)
@@ -69,7 +60,7 @@ namespace dukat
 	{
 		update_uniforms();
 
-        if (use_fbo)
+        if (effects_enabled)
 		{
 			fb0->bind();
 			frame_buffer = fb0.get();
@@ -86,39 +77,34 @@ namespace dukat
 			}
 		}
 
-		if (use_fbo)
+		if (effects_enabled)
 		{
 			// Effects passes
-
-			// 1st - Threshold
-			switch_fbo();
-			switch_shader(threshold_program);
-			glUniform1i(threshold_program->attr(Renderer::uf_tex0), 0);
-			glUniform1f(threshold_program->attr("u_scale"), 0.025f);
-			glUniform1f(threshold_program->attr("u_threshold"), 0.25f);
-			quad->render(threshold_program);
-
-			// 2nd - Blur
-#ifdef BLUR_METHOD_1
-			switch_fbo();
-			switch_shader(blur_program);
-			glUniform1i(blur_program->attr(Renderer::uf_tex0), 0);
-			glUniform1f(blur_program->attr("u_blur"), 1.5f / 256.0f);
-			glUniform2f(blur_program->attr("u_dir"), 1.0f, 0.0f);
-			quad->render(blur_program);
-
-			switch_fbo();
-			switch_shader(blur_program);
-			glUniform1i(blur_program->attr(Renderer::uf_tex0), 0);
-			glUniform1f(blur_program->attr("u_blur"), 2.0f / 256.0f);
-			glUniform2f(blur_program->attr("u_dir"), 0.0f, 1.0f);
-			quad->render(blur_program);
-#else
-			switchFbo();
-			switchShader(mBlurProgram);
-			glUniform1i(mBlurProgram->attr(Renderer::UF_TEX0), 0);
-			mQuad->render(mBlurProgram);
-#endif
+			for (auto it = effects.begin(); it != effects.end(); ++it)
+			{
+				switch_fbo();
+				switch_shader(it->program);
+				glUniform1i(it->program->attr(Renderer::uf_tex0), 0);
+				for (auto it2 : it->parameters)
+				{
+					switch (it2.second.count)
+					{
+					case 1:
+						glUniform1fv(it->program->attr(it2.first), 1, it2.second.values);
+						break;
+					case 2:
+						glUniform2fv(it->program->attr(it2.first), 1, it2.second.values);
+						break;
+					case 3:
+						glUniform3fv(it->program->attr(it2.first), 1, it2.second.values);
+						break;
+					case 4:
+						glUniform4fv(it->program->attr(it2.first), 1, it2.second.values);
+						break;
+					}
+				}
+				quad->render(it->program);
+			}
 
 			// Composite pass
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -163,5 +149,19 @@ namespace dukat
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform3), &camera->transform, GL_STREAM_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &light, GL_STREAM_DRAW);
+	}
+
+	void Renderer3::add_effect(int index, const Effect3& effect)
+	{
+		int i = 0;
+		for (auto it = effects.begin(); it != effects.end(); ++it, i++)
+		{
+			if (i == index)
+			{
+				effects.insert(it, effect);
+				return;
+			}
+		}
+		effects.push_back(effect);
 	}
 }
