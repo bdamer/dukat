@@ -11,6 +11,7 @@ namespace dukat
 		: window(window), shader_cache(shader_cache), active_program(0), use_wireframe(false)
 	{
 		window->bind(this);
+		enumerate_capabilities();
 		test_capabilities();
 		uniform_buffers = std::make_unique<GenericBuffer>(2);
 
@@ -33,27 +34,46 @@ namespace dukat
 		window->unbind(this);
 	}
 
+	void Renderer::enumerate_capabilities(void)
+	{
+		auto list = (const char*)(glGetString(GL_EXTENSIONS));
+		for (auto ptr = list; *ptr != '\0'; ptr++)
+		{
+			if (*ptr != ' ')
+				continue;
+
+			std::string extension(list, ptr - list);
+			extensions.insert(extension);
+			list = ptr + 1;
+		}
+		logger << "Found " << extensions.size() << " extensions." << std::endl;
+	}
+
 	void Renderer::test_capabilities(void)
 	{
-		GLint param;
+		GLint int_val;
 		logger << "Testing rendering capabilities" << std::endl;
 
 		auto shader_version = std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 		logger << "GL_SHADING_LANGUAGE_VERSION: " << shader_version << std::endl;
 		logger << "Geometry shader support: " << (GLEW_ARB_geometry_shader4 ? "yes" : "no") << std::endl;
 
-		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &param);
-		logger << "GL_MAX_TEXTURE_UNITS: " << param << std::endl;
-		assert(param >= Renderer::max_texture_units);
+		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &int_val);
+		logger << "GL_MAX_TEXTURE_UNITS: " << int_val << std::endl;
+		assert(int_val >= Renderer::max_texture_units);
 
-		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &param);
-		logger << "GL_MAX_UNIFORM_BUFFER_BINDINGS: " << param << std::endl;
-		assert(param >= UniformBuffer::_COUNT);
+		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &int_val);
+		logger << "GL_MAX_UNIFORM_BUFFER_BINDINGS: " << int_val << std::endl;
+		assert(int_val >= UniformBuffer::_COUNT);
 
-		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &param);
-		logger << "GL_MAX_UNIFORM_BLOCK_SIZE: " << param << std::endl;
+		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &int_val);
+		logger << "GL_MAX_UNIFORM_BLOCK_SIZE: " << int_val << std::endl;
 
+		auto supported = is_ext_supported("GL_EXT_texture_filter_anisotropic");
+		logger << "GL_EXT_texture_filter_anisotropic: " << supported << std::endl;
+		assert(supported);
 
+		
 
 		// test capabilities as needed...
 	}

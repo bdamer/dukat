@@ -1,6 +1,8 @@
 #pragma once
 
 #include "window.h"
+#include <set>
+#include <string>
 
 namespace dukat
 {
@@ -14,12 +16,15 @@ namespace dukat
 	protected:		
 		Window* window;
 		ShaderCache* shader_cache;
+		// set of supported extensions
+		std::set<std::string> extensions;
 		// The currently active shader program
 		ShaderProgram* active_program;
 		// Uniform buffers
 		std::unique_ptr<GenericBuffer> uniform_buffers;
 		bool use_wireframe;
 
+		void enumerate_capabilities(void);
 		void test_capabilities(void);
 
 	public:
@@ -70,5 +75,7 @@ namespace dukat
 		ShaderProgram* get_active_program(void) const { return active_program; }
 		// Updates uniform buffers for camera and lighting.
 		virtual void update_uniforms(void) = 0;
+		// Checks if a given extension is supported.
+		inline bool is_ext_supported(const std::string& extension) const { return extensions.count(extension) > 0; }
 	};
 }

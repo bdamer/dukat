@@ -9,14 +9,11 @@ namespace dukat
 	class KeyboardDevice : public InputDevice
 	{
 	private:
-		// Radius of mouse range around center of screen. 
-		const static float mouse_range;
-
-		Window* window;
 		int num_keys;
 		const Uint8* keystate;
 		bool mouse_lb, mouse_rb;
-		int mouse_x, mouse_y;
+		// Mouse sensitivity - 1 is the most sensitive, higher values reduce sensitivity
+		int sensitivity;
 
 	public:
 		static const int keyboard_id = -1;
@@ -25,6 +22,7 @@ namespace dukat
 		~KeyboardDevice(void);
 		void update(void);
 
+		void set_sensitivity(int sensitivity) { this->sensitivity = sensitivity; }
 		bool is_pressed(VirtualButton button) const;
 	};
 }

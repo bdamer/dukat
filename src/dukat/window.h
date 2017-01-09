@@ -18,6 +18,7 @@ namespace dukat
 		int width;
 		int height;
 		bool fullscreen;
+		bool msaa_enabled;
 		SDL_Window* window;
 		SDL_GLContext context;
 		std::vector<WindowEventListener*> event_listeners;
@@ -25,7 +26,7 @@ namespace dukat
 		void on_resize(void);
 
 	public:
-		Window(int width = 640, int height = 480, bool fullscreen = false);
+		Window(int width = 640, int height = 480, bool fullscreen = false, bool msaa = false);
 		~Window();
 
 		void clear(void);
@@ -37,6 +38,7 @@ namespace dukat
 		int get_height(void) const { return height; }
 		int get_width(void) const { return width; }
 		float get_aspect_ratio(void) const { return (float)width / (float)height; }
+		bool is_msaa_enabled(void) const { return msaa_enabled; }
 
 		void present(void);
 

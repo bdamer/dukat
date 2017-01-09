@@ -1,12 +1,15 @@
 #include "stdafx.h"
 #include "xboxdevice.h"
 #include "mathutil.h"
+#include "window.h"
 
 #ifdef XBOX_SUPPORT
 
 namespace dukat
 {
-	XBoxDevice::XBoxDevice(SDL_JoystickID id) : InputDevice(id, false)
+	const float XBoxDevice::sensitivity = 1.0f;
+
+	XBoxDevice::XBoxDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
 	{
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
 		mapping[VirtualButton::PrimaryAction] = XINPUT_GAMEPAD_A;
@@ -39,6 +42,16 @@ namespace dukat
 			{
 				update_button_state((VirtualButton)i, (state.Gamepad.wButtons & mapping[i]) != 0);
 			}
+
+			// compute absolute positions
+			lxa += lx * sensitivity;
+			lya += ly * sensitivity;
+			rxa += rx * sensitivity;
+			rya += ry * sensitivity;
+			clamp(lxa, 0.0f, static_cast<float>(window->get_width()));
+			clamp(lya, 0.0f, static_cast<float>(window->get_height()));
+			clamp(rxa, 0.0f, static_cast<float>(window->get_width()));
+			clamp(rya, 0.0f, static_cast<float>(window->get_height()));
 		}
 	}
 

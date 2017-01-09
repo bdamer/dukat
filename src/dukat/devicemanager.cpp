@@ -22,7 +22,7 @@ namespace dukat
 		// TODO: implement	
 	}
 
-	void DeviceManager::add_joystick(SDL_JoystickID id)
+	void DeviceManager::add_joystick(Window* window, SDL_JoystickID id)
 	{
 		if (!joystick_support)
 			return;
@@ -38,14 +38,14 @@ namespace dukat
 		if (name == "Controller (Xbox 360 Wireless Receiver for Windows)" ||
 			name == "XInput Controller #1")
 		{
-			controllers.push_back(std::make_unique<XBoxDevice>(id));;
+			controllers.push_back(std::make_unique<XBoxDevice>(window, id));;
 		}
 		else
 		{
-			controllers.push_back(std::make_unique<GamepadDevice>(id));;
+			controllers.push_back(std::make_unique<GamepadDevice>(window, id));;
 		}
 #else
-		controllers.push_back(std::make_unique<GamepadDevice>(id));;
+		controllers.push_back(std::make_unique<GamepadDevice>(window, id));;
 #endif
 		active = controllers.back().get();
 	}

@@ -6,11 +6,8 @@
 
 namespace dukat
 {
-	// TODO: this is actually mouse sensitivity - the smaller the value, the more 
-	// sensitive mouse movement it.
-	const float KeyboardDevice::mouse_range = 200.0f;
 
-	KeyboardDevice::KeyboardDevice(Window* window) : InputDevice(keyboard_id, true), window(window)
+	KeyboardDevice::KeyboardDevice(Window* window) : InputDevice(window, keyboard_id, true), sensitivity(2)
 	{
 		mapping[VirtualButton::Pause] = SDL_SCANCODE_P;
 		mapping[VirtualButton::Debug1] = SDL_SCANCODE_GRAVE;
@@ -19,6 +16,7 @@ namespace dukat
 		mapping[VirtualButton::Debug4] = SDL_SCANCODE_4;
 		keystate = SDL_GetKeyboardState(&num_keys);
 		sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
+		SDL_ShowCursor(SDL_ENABLE);
 	}
 
 	KeyboardDevice::~KeyboardDevice(void)
@@ -41,35 +39,15 @@ namespace dukat
 		lt = keystate[SDL_SCANCODE_TAB] ? 1.0f : 0.0f;
 
 		// Right axis comes from mouse cursor
-		int mx, my;
-		auto buttons = SDL_GetRelativeMouseState(&mx, &my);
-		mouse_x += mx;
-		mouse_y += my;
-		// normalize screen coordinates
-		rx = (float)mouse_x / mouse_range;
-		ry = (float)-mouse_y / mouse_range;
-
-		if (normalization == Dependent)
-		{
-			// Normalize both axis based on radidus
-			float r = sqrt(rx * rx + ry * ry);
-			if (r > 1.0)
-			{
-				rx /= r;
-				ry /= r;
-				mouse_x = (int)(rx * mouse_range);
-				mouse_y = (int)(-ry * mouse_range);
-			}
-		}
-		else
-		{
-			// Normalize each axis independently
-			clamp(rx, -1.0f, 1.0f);
-			clamp(ry, -1.0f, 1.0f);
-			mouse_x = (int)(rx * mouse_range);
-			mouse_y = (int)(-ry * mouse_range);
-		}
-
+		int rel_x, rel_y;
+		auto buttons = SDL_GetRelativeMouseState(&rel_x, &rel_y);
+		rx = normalize(rel_x, sensitivity);
+		ry = -normalize(rel_y, sensitivity);
+		
+		int abs_x, abs_y;
+		SDL_GetMouseState(&abs_x, &abs_y);
+		rxa = (float)abs_x;
+		rya = (float)abs_y;
 
 		// Mouse buttons
 		mouse_lb = (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) > 0;

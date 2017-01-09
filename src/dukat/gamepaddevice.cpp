@@ -2,10 +2,13 @@
 #include "gamepaddevice.h"
 #include "log.h"
 #include "mathutil.h"
+#include "window.h"
 
 namespace dukat
 {
-	GamepadDevice::GamepadDevice(SDL_JoystickID id) : InputDevice(id, false)
+	const float GamepadDevice::sensitivity = 1.0f;
+
+	GamepadDevice::GamepadDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
 	{
 		mapping[VirtualButton::PrimaryAction] = 1;
         mapping[VirtualButton::SecondaryAction] = 2;
@@ -50,6 +53,16 @@ namespace dukat
 		{
 			update_button_state((VirtualButton)i, SDL_JoystickGetButton(joystick, mapping[i]) != 0);
 		}
+
+		// compute absolute positions
+		lxa += lx * sensitivity;
+		lya += ly * sensitivity;
+		rxa += rx * sensitivity;
+		rya += ry * sensitivity;
+		clamp(lxa, 0.0f, static_cast<float>(window->get_width()));
+		clamp(lya, 0.0f, static_cast<float>(window->get_height()));
+		clamp(rxa, 0.0f, static_cast<float>(window->get_width()));
+		clamp(rya, 0.0f, static_cast<float>(window->get_height()));
 	}
 
 	bool GamepadDevice::is_pressed(VirtualButton button) const

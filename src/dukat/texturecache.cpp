@@ -7,14 +7,14 @@
 
 namespace dukat
 {
-	Texture::Texture(const Surface& surface) : id(0)
+	Texture::Texture(const Surface& surface, TextureFilterProfile profile) : id(0)
 	{
 		w = surface.get_width();
 		h = surface.get_height();
-		load_data(surface);
+		load_data(surface, profile);
 	}
 
-	void Texture::load_data(const Surface& surface)
+	void Texture::load_data(const Surface& surface, TextureFilterProfile profile)
 	{
 		GLenum format = 0, type = 0;
 		surface.query_pixel_format(format, type);
@@ -24,9 +24,40 @@ namespace dukat
 			glGenTextures(1, &id);
 		}
 		glBindTexture(GL_TEXTURE_2D, id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
+		bool generate_map = false;
+		switch (profile)
+		{
+		case ProfileMipMapped:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			generate_map = true;
+			break;
+		case ProfileAnisotropic:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			GLfloat float_val;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &float_val);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, float_val);
+			generate_map = true;
+			break;
+		case ProfileLinear:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			break;
+		case ProfileNearest:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			break;
+		}
+		
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, format, type, surface.get_surface()->pixels);
+
+		if (generate_map)
+		{
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+
 #ifdef _DEBUG
 		glBindTexture(GL_TEXTURE_2D, 0);
 #endif
@@ -70,20 +101,19 @@ namespace dukat
 		return surfaces[filename].get();
 	}
 
-	std::unique_ptr<Texture> TextureCache::load(const std::string& filename)
+	std::unique_ptr<Texture> TextureCache::load(const std::string& filename, TextureFilterProfile profile)
 	{
 		logger << "Loading texture [" << filename << "]: ";
 		auto surface = load_surface(filename);
 		logger << "Created " << surface->get_width() << " by " << surface->get_height() << " surface." << std::endl;
-		return std::make_unique<Texture>(*surface);
+		return std::make_unique<Texture>(*surface, profile);
 	}
 
-	Texture* TextureCache::get(const std::string& filename)
+	Texture* TextureCache::get(const std::string& filename, TextureFilterProfile profile)
 	{
 		if (textures.count(filename) == 0)
 		{
 			auto ext = get_extension(filename);
-
 			// TODO: base this on file header not extension (use streams if possible)
 			if (ext == "dds" || ext == "tga" || ext == "TGA")
 			{
@@ -91,7 +121,7 @@ namespace dukat
 			}
 			else
 			{
-				textures[filename] = load(filename);
+				textures[filename] = load(filename, profile);
 			}
 		}
 		return textures[filename].get();

@@ -7,6 +7,14 @@ namespace dukat
 {
 	typedef GLuint TextureId;
 
+	enum TextureFilterProfile
+	{
+		ProfileNearest,
+		ProfileLinear,
+		ProfileMipMapped,
+		ProfileAnisotropic
+	};
+
 	struct Texture
 	{
 		TextureId id;
@@ -14,10 +22,10 @@ namespace dukat
 
 		Texture(void) : id(0), w(0), h(0) { }
 		Texture(int w, int h) : id(0), w(w), h(h) { }
-		Texture(const Surface& surface);
+		Texture(const Surface& surface, TextureFilterProfile profile = ProfileNearest);
 		~Texture(void) { glDeleteTextures(1, &id); }
 	
-		void load_data(const Surface& surface);
+		void load_data(const Surface& surface, TextureFilterProfile profile = ProfileNearest);
 	};
 
 	class TextureCache
@@ -27,7 +35,7 @@ namespace dukat
 		const bool flip;
 		std::unordered_map<std::string, std::unique_ptr<Texture>> textures;
 		std::unordered_map<std::string, std::unique_ptr<Surface>> surfaces;
-		std::unique_ptr<Texture> load(const std::string& filename);
+		std::unique_ptr<Texture> load(const std::string& filename, TextureFilterProfile profile);
 
 	public:
 		// Creates a new texture cache. Set flip to true to change images from 
@@ -36,7 +44,7 @@ namespace dukat
 		~TextureCache(void);
 
 		// Returns a texture for a image file.
-		Texture* get(const std::string& filename);
+		Texture* get(const std::string& filename, TextureFilterProfile profile = ProfileNearest);
 		// Returns a texture with a specific id if it exists in the cache.
 		Texture* get(const TextureId id) const;
 		// Puts texture entry into cache.

@@ -5,8 +5,16 @@
 
 namespace dukat
 {
-	Window::Window(int width, int height, bool fullscreen) : width(width), height(height), fullscreen(fullscreen)
+	Window::Window(int width, int height, bool fullscreen, bool msaa)
+		: width(width), height(height), fullscreen(fullscreen)
 	{
+		// Need to request MSAA buffers before creating window
+		if (msaa) 
+		{
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
+		}
+
 		// Create the window
 		if (fullscreen)
 		{
@@ -37,6 +45,16 @@ namespace dukat
 		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
 		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
 		logger << "Created OpenGL context " << major << "." << minor << std::endl;
+
+		if (msaa)
+		{
+			// Check that MSAA buffers are available
+			int msaa_buffers, msaa_samples;
+			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &msaa_buffers);
+			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &msaa_samples);
+			msaa_enabled = msaa_buffers > 0 && msaa_samples > 0;
+			glEnable(GL_MULTISAMPLE);
+		}
 
 		// init glew
 		glewExperimental = GL_TRUE;

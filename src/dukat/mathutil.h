@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <math.h>
+#include <limits>
 
 namespace dukat
 {
@@ -93,14 +94,19 @@ namespace dukat
 			value = max;
 	}
 
-	inline float normalize(short value)
+	inline float normalize(int value, int max_value = INT_MAX)
 	{
-		return ((float)value / 32767.0f);
+		return ((float)value / (float)max_value);
 	}
 
-	inline float normalize(char value)
+	inline float normalize(short value, short max_value = SHRT_MAX)
 	{
-		return ((float)value / 255.0f);
+		return ((float)value / (float)max_value);
+	}
+
+	inline float normalize(char value, char max_value = CHAR_MAX)
+	{
+		return ((float)value / (float)max_value);
 	}
 
 	inline float normalize(unsigned char value)

@@ -8,10 +8,11 @@ namespace dukat
 	class GamepadDevice : public InputDevice
 	{
 	private:
+		const static float sensitivity;
 		SDL_Joystick* joystick;
 
 	public:
-		GamepadDevice(SDL_JoystickID id);
+		GamepadDevice(Window* window, SDL_JoystickID id);
 		~GamepadDevice(void);
 
 		void update(void);
