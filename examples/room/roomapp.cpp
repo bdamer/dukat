@@ -5,6 +5,8 @@
 #include "roomapp.h"
 #include "firstpersoncamera.h"
 
+#include <dukat/devicemanager.h>
+#include <dukat/inputdevice.h>
 #include <dukat/log.h>
 #include <dukat/meshbuilder3.h>
 #include <dukat/renderer3.h>
@@ -79,6 +81,8 @@ namespace dukat
 		camera->set_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
+		device_manager->active->on_press(InputDevice::VirtualButton::SecondaryAction, 
+			std::bind(&FirstPersonCamera::jump, camera.get()));
 		renderer->set_camera(std::move(camera));
 
 		object_meshes.stage = RenderStage::SCENE;

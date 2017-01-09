@@ -10,8 +10,10 @@ namespace dukat
 	const float FirstPersonCamera::yaw_speed = 2.0f;
 	const float FirstPersonCamera::pitch_speed = 2.0f;
 	const float FirstPersonCamera::movement_speed = 2.0f;
+	const float FirstPersonCamera::jump_acceleration = 2.0f;
+	const float FirstPersonCamera::gravity = 3.0f;
 
-	FirstPersonCamera::FirstPersonCamera(Window* window, Game* game) : Camera3(window), game(game)
+	FirstPersonCamera::FirstPersonCamera(Window* window, Game* game) : Camera3(window), game(game), accel(0.0f)
 	{
 	}
 
@@ -41,32 +43,61 @@ namespace dukat
 		mat_rot.extract_rotation_axis(transform.right, transform.up, transform.dir);
 		transform.right = -transform.right;
 
-		// create direction vector without y-component to stay at the same level
-		Vector3 dir(transform.dir.x, 0.0f, transform.dir.z);
-		dir.normalize();
+		// jumping
+		if (accel != 0.0f)
+		{
+			transform.position.y += accel * delta;
+			accel -= gravity * delta;
 
-		// Movement along dir
-		if (dev->ly > 0.0f)
-		{
-			transform.position += movement_speed * delta * dir;
+			if (transform.position.y < 1.0f)
+			{
+				transform.position.y = 1.0f;
+				accel = 0.0f;
+			}
 		}
-		else if (dev->ly < 0.0f)
+		// movement on ground
+		else
 		{
-			transform.position -= movement_speed * delta * dir;
+			// create direction vector without y-component to stay at the same level
+			Vector3 dir(transform.dir.x, 0.0f, transform.dir.z);
+			dir.normalize();
+
+			last_movement = { 0.0f, 0.0f, 0.0f };
+
+			// Movement along dir
+			if (dev->ly > 0.0f)
+			{
+				last_movement += movement_speed * delta * dir;
+			}
+			else if (dev->ly < 0.0f)
+			{
+				last_movement -= movement_speed * delta * dir;
+			}
+
+			// Strafing
+			auto left = cross_product(Vector3::unit_y, dir);
+			left.normalize();
+			if (dev->lx > 0.25f)
+			{
+				last_movement -= left * delta;
+			}
+			else if (dev->lx < -0.25f)
+			{
+				last_movement += left * delta;
+			}
+
 		}
 
-		// Strafing
-		auto left = cross_product(Vector3::unit_y, dir);
-		left.normalize();
-		if (dev->lx > 0.0f)
-		{
-			transform.position -= left * delta;
-		}
-		else if (dev->lx < 0.0f)
-		{
-			transform.position += left * delta;
-		}
+		transform.position += last_movement;
 
 		Camera3::update(delta);
+	}
+
+	void FirstPersonCamera::jump(void)
+	{
+		if (accel == 0.0f)
+		{
+			accel = jump_acceleration;
+		}
 	}
 }
