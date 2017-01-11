@@ -15,7 +15,7 @@
 
 namespace dukat
 {
-	GameBase::GameBase(const Settings& settings) : Application(settings)
+	GameBase::GameBase(const Settings& settings) : Application(settings), debug(false)
 	{
 		shader_cache = std::make_unique<ShaderCache>(settings.get_string("resources.shaders"));
 		texture_cache = std::make_unique<TextureCache>(settings.get_string("resources.textures"));

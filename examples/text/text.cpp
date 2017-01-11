@@ -39,7 +39,7 @@ namespace dukat
 
 		// Set up debug layer
 		auto debug_layer = renderer->create_layer("debug", 1000.0f);
-		debug_text = create_text_mesh(4.0f);
+		debug_text = create_text_mesh(12.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window->get_width(), -0.5f * (float)window->get_height(), 0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
