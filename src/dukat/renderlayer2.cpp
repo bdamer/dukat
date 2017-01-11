@@ -218,7 +218,7 @@ namespace dukat
 	void RenderLayer2::render_particles(Renderer2* renderer, const AABB2& camera_bb)
 	{
 		int particle_count = 0;
-		for (auto& it = particles.begin(); it != particles.end(); )
+		for (auto it = particles.begin(); it != particles.end(); )
 		{
 			Particle* p = (*it);
 			// remove dead particles

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdlib>
-#include <math.h>
-#include <limits>
+#include <cmath>
+#include <climits>
 
 namespace dukat
 {

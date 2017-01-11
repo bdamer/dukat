@@ -5,21 +5,26 @@
 
 #pragma once
 
+#ifdef USE_PRECOMPILED_HEADER
+
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 
+#endif 
+
 // STL
 #include <algorithm>
 #include <assert.h>
+#include <climits>
 #include <cmath>
 #include <cstdint>
 #include <deque>
 #include <iostream>
 #include <fstream>
 #include <functional>
+#include <list>
 #include <map>
-#include <math.h>
 #include <memory>
 #include <ostream>
 #include <queue>
@@ -31,8 +36,8 @@
 #include <vector>
 
 // SDL
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <GL/glew.h>
 
 // TODO: reference additional headers your program requires here

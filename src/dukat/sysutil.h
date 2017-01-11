@@ -6,6 +6,8 @@ namespace dukat
 	// throw a runtime exception.
 	void sdl_check_result(int res, const std::string& operation);
 
+	void gl_check_error(void);
+
 	uint32_t swape32(uint32_t value);
 
 	uint16_t swape16(uint16_t value);

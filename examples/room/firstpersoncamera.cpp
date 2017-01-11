@@ -7,8 +7,8 @@
 
 namespace dukat
 {
-	const float FirstPersonCamera::yaw_speed = 2.0f;
-	const float FirstPersonCamera::pitch_speed = 2.0f;
+	const float FirstPersonCamera::yaw_speed = 1.0f;
+	const float FirstPersonCamera::pitch_speed = 1.0f;
 	const float FirstPersonCamera::movement_speed = 2.0f;
 	const float FirstPersonCamera::jump_acceleration = 2.0f;
 	const float FirstPersonCamera::gravity = 3.0f;

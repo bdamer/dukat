@@ -1,4 +1,4 @@
-#version 140
+#version 150
 ///
 // Default vertex shader for 2D sprites.
 ///

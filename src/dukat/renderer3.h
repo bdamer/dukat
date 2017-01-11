@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <memory>
 #include "camera3.h"
 #include "effect3.h"
@@ -26,7 +27,7 @@ namespace dukat
 	{
 	private:
 		// Size of FBO used for effects
-		static const int fbo_size = 256;
+		static const int fbo_size;
 
 		std::unique_ptr<Camera3> camera;
 

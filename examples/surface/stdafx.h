@@ -5,10 +5,14 @@
 
 #pragma once
 
+#ifdef USE_PRECOMPILED_HEADER
+
 #include "targetver.h"
 
 #include <stdio.h>
 #include <tchar.h>
+
+#endif 
 
 // STL
 #include <assert.h>
@@ -18,7 +22,7 @@
 #include <sstream>
 
 // SDL
-#include <gl/glew.h>
-#include <SDL/SDL.h>
+#include <GL/glew.h>
+#include <SDL2/SDL.h>
 
 // TODO: reference additional headers your program requires here

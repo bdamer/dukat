@@ -41,3 +41,8 @@ Release
 ipch
 x64
 x86
+.vscode
+
+# CMake
+build/*
+bin/*

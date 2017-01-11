@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include "perfcounter.h"
 
 // TODO: revisit number of buffers and need for centralized manager to control resource usage

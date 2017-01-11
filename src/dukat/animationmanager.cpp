@@ -16,7 +16,7 @@ namespace dukat
 
 	void AnimationManager::update(float delta)
 	{
-		for (auto& it = animations.begin(); it != animations.end(); )
+		for (auto it = animations.begin(); it != animations.end(); )
 		{
 			(*it)->step(delta);
 			if ((*it)->is_done())

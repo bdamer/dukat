@@ -12,7 +12,7 @@ namespace dukat
 		Matrix4 mat_view; // view matrix - not used because 
 		Vector2 position; // Position in camera space
 		Vector2 dimension; // Width / height of screen
-		CameraTransform2::CameraTransform2(void) : position(Vector2::origin) { }
+		CameraTransform2(void) : position(Vector2::origin) { }
 	};
 
 	class Camera2 : public WindowEventListener

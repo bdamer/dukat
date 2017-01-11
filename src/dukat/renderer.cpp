@@ -3,6 +3,7 @@
 #include "perfcounter.h"
 #include "renderer.h"
 #include "shadercache.h"
+#include "sysutil.h"
 #include "buffers.h"
 
 namespace dukat
@@ -36,15 +37,11 @@ namespace dukat
 
 	void Renderer::enumerate_capabilities(void)
 	{
-		auto list = (const char*)(glGetString(GL_EXTENSIONS));
-		for (auto ptr = list; *ptr != '\0'; ptr++)
+		GLint n;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+		for (auto i = 0; i < n; i++) 
 		{
-			if (*ptr != ' ')
-				continue;
-
-			std::string extension(list, ptr - list);
-			extensions.insert(extension);
-			list = ptr + 1;
+			extensions.insert((const char*)glGetStringi(GL_EXTENSIONS, i));
 		}
 		logger << "Found " << extensions.size() << " extensions." << std::endl;
 	}
@@ -72,8 +69,6 @@ namespace dukat
 		auto supported = is_ext_supported("GL_EXT_texture_filter_anisotropic");
 		logger << "GL_EXT_texture_filter_anisotropic: " << supported << std::endl;
 		assert(supported);
-
-		
 
 		// test capabilities as needed...
 	}

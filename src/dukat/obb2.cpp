@@ -12,8 +12,8 @@ namespace dukat
 
 	OBB2::OBB2(const Vector2& center, const Vector2& dimension, float rotation)
 	{
-		Vector2 x(cos(rotation), sin(rotation));
-		Vector2 y(-sin(rotation), cos(rotation));
+		Vector2 x(std::cos(rotation), std::sin(rotation));
+		Vector2 y(-std::sin(rotation), std::cos(rotation));
 
 		x *= dimension.x / 2.0f;
 		y *= dimension.x / 2.0f;
@@ -33,8 +33,8 @@ namespace dukat
 
 	void OBB2::set_to_transformed(const AABB2& box, const Transform2& transform)
 	{
-		Vector2 x(cos(transform.rot), sin(transform.rot));
-		Vector2 y(-sin(transform.rot), cos(transform.rot));
+		Vector2 x(std::cos(transform.rot), std::sin(transform.rot));
+		Vector2 y(-std::sin(transform.rot), std::cos(transform.rot));
 
 		auto half_dim = (box.max - box.min) * 0.5f;
 		x *= half_dim.x;

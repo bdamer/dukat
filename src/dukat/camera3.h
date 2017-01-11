@@ -19,7 +19,7 @@ namespace dukat
 		Vector3 up;
 		Vector3 right;
 
-		CameraTransform3::CameraTransform3(void) : position(Vector3::origin), 
+		CameraTransform3(void) : position(Vector3::origin), 
 			dir(-Vector3::unit_z), up(Vector3::unit_y), right(-Vector3::unit_x) { }
 	};
 

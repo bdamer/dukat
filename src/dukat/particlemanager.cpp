@@ -26,7 +26,7 @@ namespace dukat
 
 	void ParticleManager::update(float delta)
 	{
-		for (auto& it = particles.begin(); it != particles.end(); )
+		for (auto it = particles.begin(); it != particles.end(); )
 		{
 			if ((*it)->ttl <= 0.0f)
 			{

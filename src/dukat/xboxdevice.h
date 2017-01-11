@@ -1,7 +1,5 @@
 #pragma once
 
-#define XBOX_SUPPORT
-
 #ifdef XBOX_SUPPORT
 
 #define WIN32_LEAN_AND_MEAN

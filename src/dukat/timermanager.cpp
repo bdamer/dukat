@@ -24,7 +24,7 @@ namespace dukat
 
     void TimerManager::update(float delta)
     {
-        for (auto& it = timers.begin(); it != timers.end(); )
+        for (auto it = timers.begin(); it != timers.end(); )
         {
             (*it)->remaining -= delta;
             // check if timer has expired

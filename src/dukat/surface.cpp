@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "surface.h"
+#include "log.h"
 
 namespace dukat
 {
@@ -48,7 +49,10 @@ namespace dukat
 			type = surface->format->Rshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
 			break;
 		default:
-			throw std::exception("Unsupported pixel format.", surface->format->format);
+			logger << "Unsupported pixel format: " << surface->format->format << std::endl;
+			format = 0;
+			type = 0;
+			break;
 		}
 	}
 

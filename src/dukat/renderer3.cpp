@@ -11,6 +11,8 @@
 
 namespace dukat
 {
+	const int Renderer3::fbo_size = 256;
+
 	Renderer3::Renderer3(Window* window, ShaderCache* shader_cache, TextureCache* textures)
 		: Renderer(window, shader_cache), effects_enabled(true)
 	{

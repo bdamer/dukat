@@ -16,7 +16,6 @@ namespace dukat
 		mapping[VirtualButton::Debug4] = SDL_SCANCODE_4;
 		keystate = SDL_GetKeyboardState(&num_keys);
 		sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
-		SDL_ShowCursor(SDL_ENABLE);
 	}
 
 	KeyboardDevice::~KeyboardDevice(void)

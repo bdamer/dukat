@@ -64,10 +64,10 @@ namespace dukat
 		// Print compilation output, if any
 		char log[1024];
 		glGetShaderInfoLog(shader, 1024, NULL, log);
-		std::string shaderLog(log);
-		if (shaderLog.size() > 0)
+		std::string shader_log(log);
+		if (shader_log.size() > 0)
 		{
-			logger << shaderLog;
+			logger << shader_log << std::endl;
 		}
 		else
 		{
@@ -76,7 +76,7 @@ namespace dukat
 
 		if (!status)
 		{
-			throw std::runtime_error("Could not compile shader");
+			throw std::runtime_error("Could not compile shader.");
 		}
 
 		return shader;

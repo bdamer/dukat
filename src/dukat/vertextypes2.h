@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gl/GL.h>
+#include <GL/glew.h>
 
 namespace dukat
 {
