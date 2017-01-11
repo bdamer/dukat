@@ -5,7 +5,7 @@
 
 #pragma once
 
-#ifdef USE_PRECOMPILED_HEADER
+#ifdef _WIN32
 
 #include "targetver.h"
 
