@@ -9,6 +9,8 @@ namespace dukat
 {
 	MeshInstance::MeshInstance(void) : program(nullptr), visible(true)
 	{
+		for (auto i = 0; i < Renderer::max_texture_units; i++)
+			texture[i] = nullptr;
 		uniform_buffers = std::make_unique<GenericBuffer>(1);
 		glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Material), &material, GL_STATIC_DRAW);
@@ -43,15 +45,15 @@ namespace dukat
 		glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
 
 		// Bind texture
+		std::string id = "u_tex0"; 
 		for (auto i = 0; i < Renderer::max_texture_units; i++)
 		{
 			if (texture[i] != nullptr)
 			{
 				glActiveTexture(GL_TEXTURE0 + i);
 				glBindTexture(GL_TEXTURE_2D, texture[i]->id);
-				std::stringstream ss;
-				ss << "u_tex" << i;
-				glUniform1i(program->attr(ss.str()), i);
+				id[5] = static_cast<char>(48 + i);
+				glUniform1i(program->attr(id), i);
 			}
 		}
 
