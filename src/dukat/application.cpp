@@ -81,6 +81,9 @@ namespace dukat
 		case SDL_KEYDOWN:
 			handle_keyboard(e);
 			break;
+		case SDL_WINDOWEVENT:
+			handle_window_event(e);
+			break;
 		case SDL_JOYDEVICEADDED:
 			device_manager->add_joystick(window.get(), e.jdevice.which);
 			break;
@@ -106,4 +109,16 @@ namespace dukat
 		}
 	}
 
+	void Application::handle_window_event(const SDL_Event& e)
+	{
+		switch (e.window.event)
+		{
+		case SDL_WINDOWEVENT_FOCUS_GAINED:
+			sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
+	        break;
+        case SDL_WINDOWEVENT_FOCUS_LOST:
+    		sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
+	        break;
+		}
+	}
 }

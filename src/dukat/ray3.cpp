@@ -4,12 +4,6 @@
 
 namespace dukat
 {
-	/**
-		* Checks if this ray intersects a plane.
-		* Returns 0 if no intersection, otherwise the value
-		* represents a value t where:
-		* point of intersection = ray.origin + t * ray.dir 
-		*/
 	float Ray3::intersect_plane(const Plane &plane) const 
 	{
 		float denominator = dir * plane.n;

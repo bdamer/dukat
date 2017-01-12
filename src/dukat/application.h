@@ -28,6 +28,8 @@ namespace dukat
 		virtual void handle_event(const SDL_Event& e);
 		// Called to handle keyboard events.
 		virtual void handle_keyboard(const SDL_Event& e);
+		// Called to handle window events.
+		virtual void handle_window_event(const SDL_Event& e);
 		// Called to update the application state.
 		virtual void update(float delta) = 0;
 		// Called to render to the screen.

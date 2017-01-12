@@ -15,6 +15,7 @@ namespace dukat
 		{
 			PrimaryAction,
             SecondaryAction,
+			Jump,
 			Debug1,
 			Debug2,
 			Debug3,
