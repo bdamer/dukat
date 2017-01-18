@@ -5,6 +5,12 @@
 
 namespace dukat
 {
+	MeshGroup::MeshGroup(void) : stage(RenderStage::SCENE), visible(true) 
+	{ 
+		mat_model.identity();
+		bb.clear();
+	}
+
 	MeshInstance* MeshGroup::add_instance(std::unique_ptr<MeshInstance> instance)
 	{
 		auto res = instance.get();

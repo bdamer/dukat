@@ -20,7 +20,7 @@ namespace dukat
 		Matrix4 mat_model;
 		bool visible;
 
-		MeshGroup(void) : stage(RenderStage::SCENE) { }
+		MeshGroup(void);
 		~MeshGroup(void) { }
 
 		MeshInstance* create_instance(void) { instances.push_back(std::make_unique<MeshInstance>()); return instances.back().get(); }

@@ -9,13 +9,13 @@ namespace dukat
 
 	KeyboardDevice::KeyboardDevice(Window* window) : InputDevice(window, keyboard_id, true), sensitivity(2)
 	{
+		mapping[VirtualButton::Jump] = SDL_SCANCODE_SPACE;
 		mapping[VirtualButton::Pause] = SDL_SCANCODE_P;
 		mapping[VirtualButton::Debug1] = SDL_SCANCODE_GRAVE;
 		mapping[VirtualButton::Debug2] = SDL_SCANCODE_2;
 		mapping[VirtualButton::Debug3] = SDL_SCANCODE_3;
 		mapping[VirtualButton::Debug4] = SDL_SCANCODE_4;
 		keystate = SDL_GetKeyboardState(&num_keys);
-		sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
 	}
 
 	KeyboardDevice::~KeyboardDevice(void)
