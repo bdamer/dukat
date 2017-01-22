@@ -4,7 +4,6 @@
 
 namespace dukat
 {
-	// TODO: check
 	// Left-handed coordinate system
 	const Vector2 Vector2::origin(0.0f, 0.0f);
 	const Vector2 Vector2::unit_x(1.0f, 0.0f);

@@ -24,5 +24,3 @@
 // SDL
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
-
-// TODO: reference additional headers your program requires here

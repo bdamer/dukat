@@ -73,7 +73,6 @@ namespace dukat
 		this->height = height;
 
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-		// TODO: do we need to free texture data first?
 
 		// Resize texture
 		glBindTexture(GL_TEXTURE_2D, texture);

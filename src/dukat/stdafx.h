@@ -39,5 +39,3 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <GL/glew.h>
-
-// TODO: reference additional headers your program requires here

@@ -103,16 +103,4 @@ namespace dukat
 		mat_model *= tmp;
 		return mat_model;
 	}
-
-	void indexSpriteColors(Sprite& sprite)
-	{
-		std::set<Uint32> colors;
-		int pixels = sprite.w * sprite.h;
-		for (int i = 0; i < pixels; i++)
-		{
-			// TODO: provide access to sprite data
-			// colors.insert(((Uint32*)sprite.surface->pixels)[i]);
-		}
-		logger << "Indexed " << colors.size() << " colors." << std::endl;
-	}
 }

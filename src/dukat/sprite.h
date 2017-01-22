@@ -103,7 +103,4 @@ namespace dukat
 			}
 		}
 	};
-
-	// TODO: move to proper location
-	void index_sprite_colors(Sprite& sprite);
 }

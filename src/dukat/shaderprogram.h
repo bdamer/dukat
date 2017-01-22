@@ -1,16 +1,15 @@
 #pragma once
 
 #include <GL/glew.h>
-#include <map>
+#include <unordered_map>
 #include <string>
 
 namespace dukat
 {
-	// TODO: revisit use of std::map - hashmap might be better
 	class ShaderProgram
 	{
 	private:
-		std::map<std::string,GLint> attributes;
+		std::unordered_map<std::string,GLint> attributes;
 		void index_attributes(void);
 
 	public:
