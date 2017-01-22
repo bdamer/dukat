@@ -63,7 +63,7 @@ namespace dukat
 		// ignore GL_INVALID_ENUM after glewInit(), see
 		// http://www.opengl.org/wiki/OpenGL_Loading_Library	
 		auto error = glGetError();
-		assert(error == GL_INVALID_ENUM);
+		assert(error == GL_NO_ERROR || error == GL_INVALID_ENUM);
 	}
 
 	Window::~Window()
