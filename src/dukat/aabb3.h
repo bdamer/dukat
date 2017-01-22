@@ -44,11 +44,11 @@ namespace dukat
 		bool contains(const Vector3& p) const;
 		// Checks if AABB intersects sphere.
 		bool intersect_sphere(const Vector3& center, float radius) const;
-        // Checkfs if body intersects ray. Will return the distance along intersection ray or no_intersection.
+        // Checks if body intersects ray. Will return the distance along intersection ray or no_intersection.
         float intersect_ray(const Ray3& ray, float near, float far, Vector3* return_normal = nullptr) const;
 		int classify_plane(const Vector3& n, float d) const;
 		float intersect_plane(const Vector3& n, float planeD, const Vector3& dir) const;
-		bool intersect_aabb(const AABB3& box1, const AABB3& box2, AABB3* box_intersect = 0);
-		float intersect_moving_aabb(const AABB3& stationary_box, const AABB3& moving_box, const Vector3& d);
+		// Checks if body intersects AABB3. 
+		bool intersect_aabb(const AABB3& another) const;
 	};
 }

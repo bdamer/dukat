@@ -218,4 +218,15 @@ namespace dukat
 		//return true;
 		return tmin;
 	}
+
+	bool AABB3::intersect_aabb(const AABB3& another) const
+	{
+		if (max.x < another.min.x) return false; // a is left of b
+		if (min.x > another.max.x) return false; // a is right of b
+		if (max.y < another.min.y) return false; // a is above b
+		if (min.y > another.max.y) return false; // a is below b
+		if (max.z < another.min.z) return false; // a is above b
+		if (min.z > another.max.z) return false; // a is below b
+		return true; // boxes overlap
+	}
 }
