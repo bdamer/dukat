@@ -1,11 +1,11 @@
 #pragma once
 
 #include "gamebase.h"
+#include "renderer3.h"
 
 namespace dukat
 {
 	class MeshCache;
-	class Renderer3;
 	class TextMeshInstance;
 
 	class Game3 : public GameBase

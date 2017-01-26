@@ -1,32 +1,29 @@
 #pragma once
 
 #include <memory>
-#include <dukat/camera3.h>
-#include <dukat/quaternion.h>
+#include "camera3.h"
+#include "quaternion.h"
+#include "vector3.h"
 
 namespace dukat
 {
-	class Game;
+	class GameBase;
 
-	class FirstPersonCamera : public Camera3
+	class FirstPersonCamera3 : public Camera3
 	{
 	private:
 		static const float yaw_speed;
 		static const float pitch_speed;
 		static const float movement_speed;
-		static const float jump_acceleration;
-		static const float gravity;
 		float yaw, pitch;
-		float accel;
-		Game* game;
+		GameBase* game;
 		Vector3 last_movement;
 
 	public:
-		FirstPersonCamera(Window* window, Game* game);
-		~FirstPersonCamera(void) { }
+		FirstPersonCamera3(Window* window, GameBase* game) : Camera3(window), game(game) { }
+		~FirstPersonCamera3(void) { }
 
-		void update(float delta);
-		void jump(void);
+		virtual void update(float delta);
 
 		// Changes distance between camera position and target.
 		float get_distance(void) const { return 0.0f; }
