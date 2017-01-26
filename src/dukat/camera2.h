@@ -37,6 +37,7 @@ namespace dukat
 		void resize(int width, int height);
 		void set_clip(float near, float far) { near_clip = near; far_clip = far; }
 		void refresh(void) { resize(window->get_width(), window->get_height()); }
+		float get_aspect_ratio(void) const { return aspect_ratio; }
 
 		// Updates the camera's view matrix. Subclasses of camera should update
 		// the camera axes and call this method to update the view matrix.

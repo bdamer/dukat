@@ -17,7 +17,7 @@ namespace dukat
         return dist > (radius + this->radius);
     }
 
-    float BoundingSphere::intersect_ray(const Ray3& ray, float near, float, Vector3* return_normal) const
+    float BoundingSphere::intersect_ray(const Ray3& ray, float near, float far, Vector3* return_normal) const
     {
         float a = ray.dir.mag2();
         float b = 2.0f * (ray.dir.x * (ray.origin.x - center.x) + ray.dir.y * (ray.origin.y - center.y) + ray.dir.z * (ray.origin.z - center.z));

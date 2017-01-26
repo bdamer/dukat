@@ -44,7 +44,10 @@ namespace dukat
 		void resize(int width, int height);
 		void set_fov(float fov) { field_of_view = fov; }
 		float get_fov(void) { return field_of_view; }
+		float get_aspect_ratio(void) const { return aspect_ratio; }
 		void set_clip(float near, float far) { near_clip = near; far_clip = far; }
+		float get_near_clip(void) const { return near_clip; }
+		float get_far_clip(void) const { return far_clip; }
 		void refresh(void) { resize(window->get_width(), window->get_height()); }
 
 		// Updates the camera's view matrix. Subclasses of camera should update

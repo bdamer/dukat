@@ -27,7 +27,9 @@ namespace dukat
 			TEXTURES,
 			SHADERS,
 			BUFFER_FREE,
-			SPRITES
+			SPRITES,
+			SAMPLES,
+			BB_CHECKS
 		};
 
 		PerformanceCounter(void);

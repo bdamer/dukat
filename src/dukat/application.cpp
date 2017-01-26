@@ -114,10 +114,16 @@ namespace dukat
 		switch (e.window.event)
 		{
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
-			sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
+			if (settings.get_bool("input.mouse.lock", true))
+			{
+				sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
+			}
 	        break;
         case SDL_WINDOWEVENT_FOCUS_LOST:
-    		sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
+    		if (settings.get_bool("input.mouse.lock", true))
+			{
+				sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
+			}
 	        break;
 		}
 	}
