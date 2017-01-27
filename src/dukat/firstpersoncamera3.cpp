@@ -16,16 +16,19 @@ namespace dukat
 		auto dev = game->get_devices()->active;
 
 		// rotating by negative amount since rotation is clockwise around axis
-		if (dev->rx != 0.0f)
+		if (mouse_look)
 		{
-			yaw += -dev->rx * yaw_speed * delta;
-		}
-		if (dev->ry != 0.0f)
-		{
-			pitch += -dev->ry * pitch_speed * delta;
-			// limit range of pitch
-			float range = pi_over_two - pi_over_eight;
-			clamp(pitch, -range, range);
+			if (dev->rx != 0.0f)
+			{
+				yaw += -dev->rx * yaw_speed * delta;
+			}
+			if (dev->ry != 0.0f)
+			{
+				pitch += -dev->ry * pitch_speed * delta;
+				// limit range of pitch
+				float range = pi_over_two - pi_over_eight;
+				clamp(pitch, -range, range);
+			}
 		}
 
 		// Rotate transform

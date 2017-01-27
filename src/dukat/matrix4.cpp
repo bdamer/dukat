@@ -135,7 +135,7 @@ namespace dukat
 
 	void Matrix4::setup_perspective(float default_fov, float aspect, float near, float far)
 	{
-		float t = tan(default_fov * 0.5f * pi / 180.0f) * near;
+		float t = tan(0.5f * deg_to_rad(default_fov)) * near;
 		float b = -t;
 		float r = aspect * t; 
 		float l = -r;

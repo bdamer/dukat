@@ -19,8 +19,11 @@ namespace dukat
 		GameBase* game;
 		Vector3 last_movement;
 
+
 	public:
-		FirstPersonCamera3(Window* window, GameBase* game) : Camera3(window), game(game) { }
+		bool mouse_look;
+
+		FirstPersonCamera3(Window* window, GameBase* game) : Camera3(window), game(game), mouse_look(true), yaw(0.0f), pitch(0.0f) { }
 		~FirstPersonCamera3(void) { }
 
 		virtual void update(float delta);
