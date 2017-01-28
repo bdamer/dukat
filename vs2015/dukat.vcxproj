@@ -168,6 +168,7 @@
     <ClInclude Include="..\src\dukat\effect3.h" />
     <ClInclude Include="..\src\dukat\eulerangles.h" />
     <ClInclude Include="..\src\dukat\event.h" />
+    <ClInclude Include="..\src\dukat\firstpersoncamera3.h" />
     <ClInclude Include="..\src\dukat\game3.h" />
     <ClInclude Include="..\src\dukat\gamebase.h" />
     <ClInclude Include="..\src\dukat\game2.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="..\src\dukat\meshinstance.h" />
     <ClInclude Include="..\src\dukat\messenger.h" />
     <ClInclude Include="..\src\dukat\obb2.h" />
+    <ClInclude Include="..\src\dukat\octreenode.h" />
     <ClInclude Include="..\src\dukat\particle.h" />
     <ClInclude Include="..\src\dukat\particlemanager.h" />
     <ClInclude Include="..\src\dukat\ray2.h" />
@@ -221,6 +223,7 @@
     <ClInclude Include="..\src\dukat\vector3.h" />
     <ClInclude Include="..\src\dukat\vertextypes2.h" />
     <ClInclude Include="..\src\dukat\vertextypes3.h" />
+    <ClInclude Include="..\src\dukat\voxmodel.h" />
     <ClInclude Include="..\src\dukat\window.h" />
     <ClInclude Include="..\src\dukat\xboxdevice.h" />
   </ItemGroup>
@@ -235,6 +238,7 @@
     <ClCompile Include="..\src\dukat\dds.cpp" />
     <ClCompile Include="..\src\dukat\devicemanager.cpp" />
     <ClCompile Include="..\src\dukat\eulerangles.cpp" />
+    <ClCompile Include="..\src\dukat\firstpersoncamera3.cpp" />
     <ClCompile Include="..\src\dukat\game2.cpp" />
     <ClCompile Include="..\src\dukat\game3.cpp" />
     <ClCompile Include="..\src\dukat\gamebase.cpp" />
@@ -282,6 +286,7 @@
     <ClCompile Include="..\src\dukat\transform3.cpp" />
     <ClCompile Include="..\src\dukat\vector2.cpp" />
     <ClCompile Include="..\src\dukat\vector3.cpp" />
+    <ClCompile Include="..\src\dukat\voxmodel.cpp" />
     <ClCompile Include="..\src\dukat\window.cpp" />
     <ClCompile Include="..\src\dukat\xboxdevice.cpp" />
   </ItemGroup>

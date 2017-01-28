@@ -25,7 +25,6 @@
 #include <dukat/vector3.h>
 #include <dukat/voxmodel.h>
 
-
 namespace dukat
 {
 	void Game::init(void)
@@ -187,18 +186,18 @@ namespace dukat
 		//render_segment({texture_width / 2, texture_height / 2, 1, 1});
 
 		// TODO: profile why no performance gain with multiple threads
-		// int num_threads = 4;
-		// int segment_height = texture_height / num_threads;
-		// std::vector<std::thread> workers;
-		// for (int i = 0; i < num_threads; i++)
-		// {
-		// 	workers.push_back(std::thread(&Game::render_segment, 
-		// 		this, Rect({0, i * segment_height, texture_width, (i + 1) * segment_height})));
-		// }
-		// for (auto& t : workers)
-		// {
-		// 	t.join();
-		// }
+		/*int num_threads = 4;
+		int segment_height = texture_height / num_threads;
+		std::vector<std::thread> workers;
+		for (int i = 0; i < num_threads; i++)
+		{
+			workers.push_back(std::thread(&Game::render_segment, 
+				this, Rect({0, i * segment_height, texture_width, (i + 1) * segment_height})));
+		}
+		for (auto& t : workers)
+		{
+			t.join();
+		}*/
 
 		surface->set_pixel(texture_width / 2, texture_height / 2, 0xffffffff);
 
