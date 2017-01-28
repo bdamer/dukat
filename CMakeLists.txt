@@ -17,9 +17,11 @@ set(SDL2_IMAGE_LIBRARIES /usr/lib/x86_64-linux-gnu/libSDL2_image-2.0.so)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(X11 REQUIRED)
+find_package(Threads REQUIRED)
 
 # The following folders will be included
 add_subdirectory(src/dukat)
 add_subdirectory(examples/surface)
 add_subdirectory(examples/text)
 add_subdirectory(examples/room)
+add_subdirectory(examples/octree)
