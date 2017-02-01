@@ -7,10 +7,6 @@
 
 namespace dukat
 {
-	const float FirstPersonCamera3::yaw_speed = 1.0f;
-	const float FirstPersonCamera3::pitch_speed = 1.0f;
-	const float FirstPersonCamera3::movement_speed = 2.0f;
-
 	void FirstPersonCamera3::update(float delta)
 	{
 		auto dev = game->get_devices()->active;
@@ -61,11 +57,11 @@ namespace dukat
 		left.normalize();
 		if (dev->lx > 0.25f)
 		{
-			last_movement -= left * delta;
+			last_movement -= movement_speed * delta * left;
 		}
 		else if (dev->lx < -0.25f)
 		{
-			last_movement += left * delta;
+			last_movement += movement_speed * delta * left;
 		}
 
 		transform.position += last_movement;
