@@ -89,6 +89,16 @@ namespace dukat
 		//entity->set_octree(builder.build_cube(32));
 		load_model("../assets/models/earth.vox");
 		entity->set_bb(std::make_unique<BoundingSphere>(Vector3::origin, 64.0f));
+
+#ifdef USE_MULTITHREADING
+		// Create worker threads
+		thread_count = settings.get_int("renderer.threads", 1);
+		chunk_count = settings.get_int("renderer.chunks", 1);
+		logger << "Creating " << thread_count << " render threads." << std::endl;
+		for (auto i = 0; i < thread_count; i++) {
+			thread_pool.push_back(std::thread(&Game::thread_render_loop, this));
+		}
+#endif
 	}
 
 	void Game::load_model(const std::string& file)
@@ -182,71 +192,97 @@ namespace dukat
 
 	void Game::render(void)
 	{
-		render_segment({0,0,texture_width,texture_height});
-		//render_segment({texture_width / 2, texture_height / 2, 1, 1});
-
-		// TODO: profile why no performance gain with multiple threads
-		/*int num_threads = 4;
-		int segment_height = texture_height / num_threads;
-		std::vector<std::thread> workers;
-		for (int i = 0; i < num_threads; i++)
+#ifdef USE_MULTITHREADING
+		// Reset counter and queue render tasks
+		finished_count = 0;
+		const int segment_height = texture_height / chunk_count;
+		for (int i = 0; i < chunk_count; i++)
 		{
-			workers.push_back(std::thread(&Game::render_segment, 
-				this, Rect({0, i * segment_height, texture_width, (i + 1) * segment_height})));
+			std::lock_guard<std::mutex> lk(mtx);
+			work_queue.push(dukat::Rect{ 0, i * segment_height, texture_width, (i + 1) * segment_height });
+			cond1.notify_one();
 		}
-		for (auto& t : workers)
-		{
-			t.join();
-		}*/
 
-		surface->set_pixel(texture_width / 2, texture_height / 2, 0xffffffff);
-
-		update_texture();
+		// While main thread is waiting for the workers, present the current screen buffer
 		Game2::render();
+
+		// Block until all chunks have been rendered
+		std::unique_lock<std::mutex> lk(mtx);
+		cond2.wait(lk, [&] { return finished_count == chunk_count; });
+#else
+		// Single-threaded rendering
+		Game2::render();
+		render_segment({0,0,texture_width,texture_height});
+#endif
+
+		// Render white dot at center of screen and update screen buffer
+		surface->set_pixel(texture_width / 2, texture_height / 2, 0xffffffff);
+		update_texture();
+	}
+
+	void Game::thread_render_loop(void)
+	{
+		dukat::Rect rect;
+		while (!is_done())
+		{
+			{
+				std::unique_lock<std::mutex> lk(mtx);
+				cond1.wait(lk, [this] { return !work_queue.empty(); });
+				rect = work_queue.front();
+				work_queue.pop();
+			}
+
+			render_segment(rect);
+
+			std::lock_guard<std::mutex> lk(mtx);
+			finished_count++;
+			cond2.notify_one();
+		}
 	}
 
 	void Game::render_segment(const Rect& rect)
 	{
-		const auto aspect_ratio = ray_camera->get_aspect_ratio();
-		const auto near = ray_camera->get_near_clip();
-		const auto far = ray_camera->get_far_clip();
+		auto cam = ray_camera.get();
+		const auto aspect_ratio = cam->get_aspect_ratio();
+		const auto near_z = cam->get_near_clip();
+		const auto far_z = cam->get_far_clip();
 
 		// Compute tan of half-angle of field of view
-		const auto fov_x = std::tan(deg_to_rad(0.5f * ray_camera->get_fov()));
-		const auto fov_y = std::tan(deg_to_rad(0.5f * ray_camera->get_fov()) / aspect_ratio);
+		const auto fov_x = std::tan(deg_to_rad(0.5f * cam->get_fov()));
+		const auto fov_y = std::tan(deg_to_rad(0.5f * cam->get_fov()) / aspect_ratio);
 
-		Ray3 ray(ray_camera->transform.position, Vector3::origin);
+		Ray3 ray(cam->transform.position, Vector3::origin);
 		auto yf = 0.0f;	// shift on the y for position of current ray [-1,1]
 		auto xf = 0.0f;	// shift on the x for position of current ray [-1,1]
 
 		const SDL_Color empty = { 0, 0, 0, 0 };
 		const SDL_Color magenta = { 255, 0, 255, 255 };
 		const SDL_Color* data;
-		for (auto v = rect.y;v < (rect.y + rect.h); v++)
+		for (auto v = rect.y; v < (rect.y + rect.h); v++)
 		{
 			// Using negative factor to flip y so that -1 is up 
 			yf = -fov_y * ((float)(2 * v - texture_height) / (float)texture_height);
-			for (auto u = rect.x; u < (rect.x + rect.w); u++) 
+			for (auto u = rect.x; u < (rect.x + rect.w); u++)
 			{
 				xf = fov_x * ((float)(2 * u - texture_width) / (float)texture_width);
-				ray.dir.x = ray_camera->transform.dir.x + ray_camera->transform.right.x * xf + ray_camera->transform.up.x * yf;
-				ray.dir.y = ray_camera->transform.dir.y + ray_camera->transform.right.y * xf + ray_camera->transform.up.y * yf;
-				ray.dir.z = ray_camera->transform.dir.z + ray_camera->transform.right.z * xf + ray_camera->transform.up.z * yf;
+				ray.dir.x = cam->transform.dir.x + cam->transform.right.x * xf + cam->transform.up.x * yf;
+				ray.dir.y = cam->transform.dir.y + cam->transform.right.y * xf + cam->transform.up.y * yf;
+				ray.dir.z = cam->transform.dir.z + cam->transform.right.z * xf + cam->transform.up.z * yf;
 				ray.dir.normalize();
 
-				auto best_z = far;
+				auto best_z = far_z;
 				data = &empty;
 				//for (vector<Entity>::const_iterator it = entities.begin(); it != entities.end(); ++it)
 				for (int i = 0; i < 1; i++)
 				{
 					auto e = entity.get();
-					auto t = e->intersects(ray, near, best_z);
+					auto t = e->intersects(ray, near_z, best_z);
 					if (t == no_intersection)
 						continue;
 					//data = &magenta;
 					//continue;
 
-					auto sample = entity->sample(ray, near, best_z);
+					auto sample = entity->sample(ray, near_z, best_z);
 					if (sample == nullptr)
 						continue;
 					data = sample;
@@ -256,6 +292,16 @@ namespace dukat
 				surface->set_pixel(u, v, *data);
 			}
 		}
+	}
+
+	void Game::release(void)
+	{
+#ifdef USE_MULTITHREADING
+		// wait for worker threads to finish
+		std::for_each(thread_pool.begin(), thread_pool.end(),
+			std::mem_fn(&std::thread::join));
+#endif
+		Game2::release();
 	}
 }
 

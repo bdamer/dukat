@@ -17,6 +17,7 @@
 // STL
 #include <assert.h>
 #include <fstream>
+#include <future>
 #include <iomanip>
 #include <memory>
 #include <sstream>
