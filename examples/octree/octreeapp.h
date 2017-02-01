@@ -31,6 +31,8 @@ namespace dukat
 		// number of chunks that have been rendered this frame.
 		int finished_count;
 
+		bool show_bounding_body;
+
 		// Multi-threaded rendering
 		std::vector<std::thread> thread_pool;
 		std::mutex mtx;
@@ -62,7 +64,7 @@ namespace dukat
 		void load_model(const std::string& model);
 
 	public:
-		Game(const Settings& settings) : Game2(settings) { }
+		Game(const Settings& settings) : Game2(settings), show_bounding_body(false) { }
 		~Game(void) { }
 	};
 }

@@ -146,19 +146,35 @@ namespace dukat
 
         /* hight_mnt_size size (gray -> white) */
         /*printf("%d/%d\n", high_mnt_size, _size);*/
-        for(i = low_mnt_size+1; i < terrain_palette.size(); i++) {
+        for(i = low_mnt_size+1; i < (int)terrain_palette.size(); i++) {
             float perc = (float)(i - low_mnt_size - 1) / (float)(terrain_palette.size() - low_mnt_size);
             terrain_palette[i] = rgb(0.5f * perc + 0.5f, 0.5f * perc + 0.5f, 0.5f * perc + 0.5f);
         }
     }
 
-    std::unique_ptr<OctreeNode<SDL_Color>> OctreeBuilder::build_planetoid(int radius)
+	void calculate_min_max(utils::NoiseMap& noise_map, float& min, float& max)
+	{
+		min = 1.0f;
+		max = -1.0f;
+		for (int row = 0; row < noise_map.GetHeight(); row++)
+		{
+			float* ptr = noise_map.GetSlabPtr(row);
+			for (int col = 0; col < noise_map.GetWidth(); col++)
+			{
+				min = std::min(min, *ptr);
+				max = std::max(max, *ptr);
+				ptr++;
+			}
+		}
+	}
+
+    std::unique_ptr<OctreeNode<SDL_Color>> OctreeBuilder::build_planetoid(int radius, int surface_height)
     {
         if (terrain_palette.size() == 0)
             build_palette();
 
-        logger << "Building sphere with radius: " << radius << std::endl;
-        auto size = next_pow_two(2 * radius);
+        logger << "Building planetoid with radius: " << radius << std::endl;
+        auto size = next_pow_two(2 * (radius + surface_height));
         auto root = build_empty(size);
         
         // Generate terrain modules - do this once somewhere
@@ -186,13 +202,13 @@ namespace dukat
         utils::NoiseMapBuilderSphere height_map_builder;
         height_map_builder.SetSourceModule(perlin_terrain);
         height_map_builder.SetDestNoiseMap(height_map);
-        height_map_builder.SetDestSize(radius * 4.0f, radius * 2.0f);
+        height_map_builder.SetDestSize(4 * radius, 2 * radius);
         height_map_builder.SetBounds(-90.0, 90.0, -180.0, 180.0);
         height_map_builder.Build();
         float low, high;
-        height_map.CalculateMinMax(low, high);
+		calculate_min_max(height_map, low, high);
 
-       auto rad2 = ((float)radius - 0.5f) * ((float)radius - 0.5f);
+        auto rad2 = ((float)radius - 0.5f) * ((float)radius - 0.5f);
         for (int x = -radius; x < radius; x++)
         {
             for (int y = -radius; y < radius; y++)
@@ -212,17 +228,17 @@ namespace dukat
 
                         auto value = height_map.GetValue(u, v);
                         // normalize value to 0..1
-                        value = (value - low) / (high - low);
+                        value = std::min(0.9999999f, (value - low) / (high - low));
                         auto& c = terrain_palette[(int)(value * terrain_palette.size())];
 
-                        auto data = std::make_unique<SDL_Color>();
-                        data->r = c.r;
-                        data->g = c.g; 
-                        data->b = c.b;
-                        data->a = 0xff;
-
-                        Vector3 pos(px, py, pz);
-                        root->insert(pos, std::move(data));
+						// Add voxels from position on radius to position + height
+						Vector3 pos(px, py, pz);
+						Vector3 step = pos / std::sqrt(len);
+						int steps = (int)(surface_height * value);
+						for (int i = 0; i <= steps; i++)
+						{
+							root->insert(pos + step * (float)i, std::make_unique<SDL_Color>(c));
+						}
                     }
                 }
             }

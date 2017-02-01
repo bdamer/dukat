@@ -27,7 +27,7 @@ namespace dukat
         std::unique_ptr<OctreeNode<SDL_Color>> build_sphere(int radius);
 #ifdef NOISE_ENABLED
         // Generates a new voxel planetoid.
-        std::unique_ptr<OctreeNode<SDL_Color>> build_planetoid(int radius);
+        std::unique_ptr<OctreeNode<SDL_Color>> build_planetoid(int radius, int surface_height);
 #endif
     };
 }

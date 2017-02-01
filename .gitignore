@@ -46,3 +46,5 @@ x86
 # CMake
 build/*
 bin/*
+/examples/octree/noiseutils.cpp
+/examples/octree/noiseutils.h

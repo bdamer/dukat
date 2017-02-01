@@ -41,6 +41,7 @@ namespace dukat
 
 		// Set up "fake" camera for raytracer
 		ray_camera = std::make_unique<FirstPersonCamera3>(window.get(), this);
+		ray_camera->set_movement_speed(10.0f);
 		ray_camera->set_clip(0.01f, 1000.0f);
 		ray_camera->set_fov(55.0f);
 		ray_camera->transform.position = Vector3(0.0f, 1.0f, -200.0f);
@@ -69,6 +70,7 @@ namespace dukat
 		ss << "Octree Test" << std::endl
 			<< "WASD: Move camera position" << std::endl
 			<< "TAB: Toggle mouse look" << std::endl
+			<< "B: Show bounding sphere" << std::endl
 			<< "1,2,3: Load different model" << std::endl;
 		info_text->set_text(ss.str());
 		layer->add(info_text.get());
@@ -85,10 +87,10 @@ namespace dukat
 		entity = std::make_unique<Entity>();
 		//OctreeBuilder builder;
 		//entity->set_octree(builder.build_sphere(64));
-		//entity->set_octree(builder.build_planetoid(64));
+		//entity->set_octree(builder.build_planetoid(48, 8));
 		//entity->set_octree(builder.build_cube(32));
 		load_model("../assets/models/earth.vox");
-		entity->set_bb(std::make_unique<BoundingSphere>(Vector3::origin, 64.0f));
+		entity->set_bb(std::make_unique<BoundingSphere>(Vector3::origin, 56.0f));
 
 #ifdef USE_MULTITHREADING
 		// Create worker threads
@@ -128,6 +130,10 @@ namespace dukat
 			break;
 		case SDLK_3:
 			load_model("../assets/models/cube.vox");
+			break;
+
+		case SDLK_b:
+			show_bounding_body = !show_bounding_body;
 			break;
 
 		case SDLK_o:
@@ -181,7 +187,7 @@ namespace dukat
 	{
 		// Rotate object about the y axis
 		Quaternion q;
-		q.set_to_rotate_y(0.5f * delta);
+		q.set_to_rotate_y(0.25f * delta);
 		entity->transform.rot *= q;
 
 		entity->update(delta);
@@ -279,9 +285,9 @@ namespace dukat
 					auto t = e->intersects(ray, near_z, best_z);
 					if (t == no_intersection)
 						continue;
-					//data = &magenta;
-					//continue;
-
+					if (show_bounding_body)
+						data = &magenta;
+	
 					auto sample = entity->sample(ray, near_z, best_z);
 					if (sample == nullptr)
 						continue;
