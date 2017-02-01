@@ -124,12 +124,15 @@ namespace dukat
 
 		case SDLK_1:
 			load_model("../assets/models/earth.vox");
+			entity->set_bb(std::make_unique<BoundingSphere>(Vector3::origin, 56.0f));
 			break;
 		case SDLK_2:
 			load_model("../assets/models/sphere.vox");
+			entity->set_bb(std::make_unique<BoundingSphere>(Vector3::origin, 64.0f));
 			break;
 		case SDLK_3:
 			load_model("../assets/models/cube.vox");
+			entity->set_bb(std::make_unique<BoundingSphere>(Vector3::origin, 32.0f));
 			break;
 
 		case SDLK_b:
