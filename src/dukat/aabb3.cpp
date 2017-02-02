@@ -186,37 +186,32 @@ namespace dukat
         return false;
     }
 
-	// from: http://www.scratchapixel.com/lessons/3d-basic-lessons/lesson-7-intersecting-simple-shapes/ray-box-intersection/
-	// there are more optimizations that we can apply.
 	float AABB3::intersect_ray(const Ray3& ray, float near, float far, Vector3* returnNormal) const 
 	{
-		float tmin = (min.x - ray.origin.x) / ray.dir.x;
-		float tmax = (max.x - ray.origin.x) / ray.dir.x;
-		if (tmin > tmax) std::swap(tmin, tmax);
-		float tymin = (min.y - ray.origin.y) / ray.dir.y;
-		float tymax = (max.y - ray.origin.y) / ray.dir.y;
-		if (tymin > tymax) std::swap(tymin, tymax);
-		if ((tmin > tymax) || (tymin > tmax))
+		auto r_inv = ray.dir.inverse();
+		auto tx1 = (min.x - ray.origin.x) * r_inv.x;
+		auto tx2 = (max.x - ray.origin.x) * r_inv.x;
+		auto tmin = std::min(tx1, tx2);
+		auto tmax = std::max(tx1, tx2);
+
+		auto ty1 = (min.y - ray.origin.y) * r_inv.y;
+		auto ty2 = (max.y - ray.origin.y) * r_inv.y;
+		tmin = std::max(tmin, std::min(ty1, ty2));
+		tmax = std::min(tmax, std::max(ty1, ty2));
+
+		auto tz1 = (min.z - ray.origin.z) * r_inv.z;
+		auto tz2 = (max.z - ray.origin.z) * r_inv.z;
+		tmin = std::max(tmin, std::min(tz1, tz2));
+		tmax = std::min(tmax, std::max(tz1, tz2));
+
+		if ((tmax < tmin) || ((tmin > far) || (tmax < near)))
+		{
 			return no_intersection;
-		if (tymin > tmin)
-			tmin = tymin;
-		if (tymax < tmax)
-			tmax = tymax;
-		float tzmin = (min.z - ray.origin.z) / ray.dir.z;
-		float tzmax = (max.z - ray.origin.z) / ray.dir.z;
-		if (tzmin > tzmax) std::swap(tzmin, tzmax);
-		if ((tmin > tzmax) || (tzmin > tmax))
-			return no_intersection;
-		if (tzmin > tmin)
-			tmin = tzmin;
-		if (tzmax < tmax)
-			tmax = tzmax;
-		if ((tmin > far) || (tmax < near)) return no_intersection;
-		// these are the min/max t values
-		//if (r.tmin < tmin) r.tmin = tmin;
-		//if (r.tmax > tmax) r.tmax = tmax;
-		//return true;
-		return tmin;
+		}
+		else
+		{
+			return tmin;
+		}
 	}
 
 	bool AABB3::intersect_aabb(const AABB3& another) const

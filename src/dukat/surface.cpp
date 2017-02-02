@@ -48,6 +48,10 @@ namespace dukat
 			format = GL_RGBA;
 			type = surface->format->Rshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
 			break;
+		case SDL_PIXELFORMAT_BGRA8888:
+			format = GL_BGRA;
+			type = surface->format->Bshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
+			break;
 		default:
 			logger << "Unsupported pixel format: " << surface->format->format << std::endl;
 			format = 0;

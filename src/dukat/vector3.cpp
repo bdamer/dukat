@@ -21,7 +21,20 @@ namespace dukat
 			z *= one_over_mag;
 		}
 		return *this;
-	}	
+	}
+
+	Vector3& Vector3::normalize_fast(void)
+	{
+		auto mag_sq = x * x + y * y + z * z;
+		if (mag_sq > 0.0f)
+		{
+			auto one_over_mag = inv_sqrt(mag_sq);
+			x *= one_over_mag;
+			y *= one_over_mag;
+			z *= one_over_mag;
+		}
+		return *this;
+	}
 
 	void Vector3::sanitize(void)
 	{

@@ -27,6 +27,8 @@ namespace dukat
 
 		void zero() { x = y = z = 0.0f; }
 		Vector3& normalize(void);
+		// Faster, less accurate normalization method.
+		Vector3& normalize_fast(void);
 		// dot product
 		float operator *(const Vector3& a) const { return x * a.x + y * a.y + z * a.z; }
 		// returns the magnitude of the vector

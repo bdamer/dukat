@@ -19,6 +19,9 @@ namespace dukat
 	const float big_number = 1e37f;
 	const float no_intersection = 1e30f;
 
+	// Fast inverse square root.
+	extern float inv_sqrt(float number);
+		
 	// "Wrap an angle in range -PI...PI by adding the correct multiple of 2 PI
 	extern float wrap_pi(float theta);
 

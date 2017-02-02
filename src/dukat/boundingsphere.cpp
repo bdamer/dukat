@@ -32,7 +32,7 @@ namespace dukat
         }
 
         // return point of intersection along ray.
-        auto t = (-b - sqrt(b * b - 4 * a * c)) / (2 * a);
+        auto t = (-b - sqrt(d)) / (2 * a);
         if (t < near || t > far) 
         {
             return no_intersection;

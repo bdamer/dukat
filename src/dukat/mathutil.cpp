@@ -24,4 +24,19 @@ namespace dukat
 		}
 		return acos(x);
 	}
+
+	float inv_sqrt(float val)
+	{
+		long i;
+		float x2, y;
+
+		x2 = val * 0.5f;
+		y = val;
+		i = *(long *)&y;
+		i = 0x5f3759df - (i >> 1);
+		y = *(float *)&i;
+		y = y * (1.5f - (x2 * y * y));
+
+		return y;
+	}
 }

@@ -51,12 +51,12 @@ namespace dukat
 		ray_camera->resize(texture_width, texture_height);
 		ray_camera->mouse_look = false;
 
-		// Initialize surface once
-		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
-
+		// Initialize surface once - ABGR8888 is closest to OpenGL native
+		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_ABGR8888);
+		
 		// Initialize texture once
 		texture = std::make_unique<Texture>(texture_width, texture_height);
-		glGenTextures(1, &texture->id);
+		texture->load_data(*surface);
 		Rect r = { 0, 0, texture_width, texture_height };
 		sprite = std::make_unique<Sprite>(texture.get(), r);
 		layer->add(sprite.get());
@@ -175,11 +175,8 @@ namespace dukat
 	{
 		GLenum format, type;
 		surface->query_pixel_format(format, type);
-
 		glBindTexture(GL_TEXTURE_2D, texture->id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->get_width(), surface->get_height(), 0,
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->get_width(), surface->get_height(),
 			format, type, surface->get_surface()->pixels);
 #ifdef _DEBUG
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -217,7 +214,7 @@ namespace dukat
 
 		// Block until all chunks have been rendered
 		std::unique_lock<std::mutex> lk(mtx);
-		cond2.wait(lk, [&] { return finished_count == chunk_count; });
+		cond2.wait(lk, [&] { return finished_count == chunk_count || is_done(); });
 #else
 		// Single-threaded rendering
 		Game2::render();
@@ -264,8 +261,8 @@ namespace dukat
 		auto yf = 0.0f;	// shift on the y for position of current ray [-1,1]
 		auto xf = 0.0f;	// shift on the x for position of current ray [-1,1]
 
-		const SDL_Color empty = { 0, 0, 0, 0 };
 		const SDL_Color magenta = { 255, 0, 255, 255 };
+		const SDL_Color empty = { 0, 0, 0, 0 };
 		const SDL_Color* data;
 		for (auto v = rect.y; v < (rect.y + rect.h); v++)
 		{
@@ -277,7 +274,8 @@ namespace dukat
 				ray.dir.x = cam->transform.dir.x + cam->transform.right.x * xf + cam->transform.up.x * yf;
 				ray.dir.y = cam->transform.dir.y + cam->transform.right.y * xf + cam->transform.up.y * yf;
 				ray.dir.z = cam->transform.dir.z + cam->transform.right.z * xf + cam->transform.up.z * yf;
-				ray.dir.normalize();
+				// Not normalizing here because vector is close enough to normal form for our purposes
+				//ray.dir.normalize_fast();
 
 				auto best_z = far_z;
 				data = &empty;

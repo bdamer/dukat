@@ -19,6 +19,7 @@ namespace dukat
 		Vector3 max;
 
         AABB3(void) { clear(); }
+		AABB3(const Vector3& min, const Vector3& max) : min(min), max(max) { };
 		AABB3(const std::vector<Vector3>& vectors);
 	
 		// Dimension queries

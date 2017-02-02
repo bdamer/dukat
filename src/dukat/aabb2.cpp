@@ -74,19 +74,22 @@ namespace dukat
 
 	float AABB2::intersect_ray(const Ray2& ray, float near, float far) const 
 	{
-		float tmin = (min.x - ray.origin.x) / ray.dir.x;
-		float tmax = (max.x - ray.origin.x) / ray.dir.x;
-		if (tmin > tmax) std::swap(tmin, tmax);
-		float tymin = (min.y - ray.origin.y) / ray.dir.y;
-		float tymax = (max.y - ray.origin.y) / ray.dir.y;
-		if (tymin > tymax) std::swap(tymin, tymax);
+		auto tmin = (min.x - ray.origin.x) / ray.dir.x;
+		auto tmax = (max.x - ray.origin.x) / ray.dir.x;
+		if (tmin > tmax) 
+			std::swap(tmin, tmax);
+		auto tymin = (min.y - ray.origin.y) / ray.dir.y;
+		auto tymax = (max.y - ray.origin.y) / ray.dir.y;
+		if (tymin > tymax) 
+			std::swap(tymin, tymax);
 		if ((tmin > tymax) || (tymin > tmax))
 			return no_intersection;
 		if (tymin > tmin)
 			tmin = tymin;
 		if (tymax < tmax)
 			tmax = tymax;
-		if ((tmin > far) || (tmax < near)) return no_intersection;
+		if ((tmin > far) || (tmax < near)) 
+			return no_intersection;
 		return tmin;
 	}
 }
