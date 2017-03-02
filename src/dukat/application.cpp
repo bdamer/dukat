@@ -106,6 +106,9 @@ namespace dukat
 				window->toggle_fullscreen();
 			}
 			break;
+		case SDLK_F12:
+			save_screenshot("screenshot.png");
+			break;
 		}
 	}
 

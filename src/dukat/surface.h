@@ -27,6 +27,7 @@ namespace dukat
 
 		// Creates a new surface for an image file.
 		static std::unique_ptr<Surface> from_file(const std::string& filename);
+		void save_to_file(const std::string& filename) const;
 
 		SDL_Surface* get_surface(void) const { return surface; }
 		void set_surface(SDL_Surface* surface) { this->surface = surface; }

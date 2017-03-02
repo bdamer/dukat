@@ -7,62 +7,6 @@
 
 namespace dukat
 {
-	Texture::Texture(const Surface& surface, TextureFilterProfile profile) : id(0)
-	{
-		w = surface.get_width();
-		h = surface.get_height();
-		load_data(surface, profile);
-	}
-
-	void Texture::load_data(const Surface& surface, TextureFilterProfile profile)
-	{
-		GLenum format = 0, type = 0;
-		surface.query_pixel_format(format, type);
-
-		if (id == 0)
-		{
-			glGenTextures(1, &id);
-		}
-		glBindTexture(GL_TEXTURE_2D, id);
-		
-		bool generate_map = false;
-		switch (profile)
-		{
-		case ProfileMipMapped:
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			generate_map = true;
-			break;
-		case ProfileAnisotropic:
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			GLfloat float_val;
-			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &float_val);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, float_val);
-			generate_map = true;
-			break;
-		case ProfileLinear:
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			break;
-		case ProfileNearest:
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			break;
-		}
-		
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, format, type, surface.get_surface()->pixels);
-
-		if (generate_map)
-		{
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-
-#ifdef _DEBUG
-		glBindTexture(GL_TEXTURE_2D, 0);
-#endif
-	}
-
 	TextureCache::TextureCache(const std::string& resource_dir, bool flip) : resource_dir(resource_dir), flip(flip)
 	{
 	}
@@ -79,17 +23,24 @@ namespace dukat
 			auto fqn = resource_dir + "/" + filename;
 			auto surface = Surface::from_file(fqn);
 			// Perform necessary conversion
-			switch (surface->get_surface()->format->format)
+ 			switch (surface->get_surface()->format->format)
 			{
+				// 8 bit
+			//case SDL_PIXELFORMAT_INDEX8:
+			//	logger << "Unexpected 8 bit pixel format, attempting to convert to RGB888." << std::endl;
+			//	surface->convert_format(SDL_PIXELFORMAT_RGB888);
+			//	break;
 				// 24 bit
 			case SDL_PIXELFORMAT_BGR24:
 			case SDL_PIXELFORMAT_BGR888:
 				logger << "Unexpected 24 bit pixel format, attempting to convert to RGB888." << std::endl;
 				surface->convert_format(SDL_PIXELFORMAT_RGB888);
+				break;
 				// 32 bit
 			case SDL_PIXELFORMAT_ARGB8888:
 				logger << "Unexpected 32 bit pixel format, attempting to convert to RGB888." << std::endl;
 				surface->convert_format(SDL_PIXELFORMAT_RGBA8888);
+				break;
 			}
 			if (flip)
 			{
@@ -103,9 +54,10 @@ namespace dukat
 
 	std::unique_ptr<Texture> TextureCache::load(const std::string& filename, TextureFilterProfile profile)
 	{
-		logger << "Loading texture [" << filename << "]: ";
+		logger << "Loading texture [" << filename << "]: " << std::endl;
 		auto surface = load_surface(filename);
-		logger << "Created " << surface->get_width() << " by " << surface->get_height() << " surface." << std::endl;
+		logger << "Created " << surface->get_width() << "x" << surface->get_height() << " " 
+			<< SDL_GetPixelFormatName(surface->get_surface()->format->format) << " surface." << std::endl;
 		return std::make_unique<Texture>(*surface, profile);
 	}
 

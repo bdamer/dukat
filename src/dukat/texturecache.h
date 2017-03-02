@@ -2,32 +2,10 @@
 
 #include <unordered_map>
 #include "surface.h"
+#include "texture.h"
 
 namespace dukat
 {
-	typedef GLuint TextureId;
-
-	enum TextureFilterProfile
-	{
-		ProfileNearest,
-		ProfileLinear,
-		ProfileMipMapped,
-		ProfileAnisotropic
-	};
-
-	struct Texture
-	{
-		TextureId id;
-		int w, h;
-
-		Texture(void) : id(0), w(0), h(0) { }
-		Texture(int w, int h) : id(0), w(w), h(h) { }
-		Texture(const Surface& surface, TextureFilterProfile profile = ProfileNearest);
-		~Texture(void) { glDeleteTextures(1, &id); }
-	
-		void load_data(const Surface& surface, TextureFilterProfile profile = ProfileNearest);
-	};
-
 	class TextureCache
 	{
 	private:

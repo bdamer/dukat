@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "surface.h"
 #include "log.h"
+#include "sysutil.h"
 
 namespace dukat
 {
@@ -53,7 +54,7 @@ namespace dukat
 			type = surface->format->Bshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
 			break;
 		default:
-			logger << "Unsupported pixel format: " << surface->format->format << std::endl;
+			logger << "Unsupported pixel format: " << SDL_GetPixelFormatName(surface->format->format) << std::endl;
 			format = 0;
 			type = 0;
 			break;
@@ -301,5 +302,11 @@ namespace dukat
 			throw std::runtime_error(ss.str());
 		}
 		return std::make_unique<Surface>(surface);
+	}
+
+	void Surface::save_to_file(const std::string& filename) const
+	{
+		auto res = IMG_SavePNG(surface, filename.c_str());
+		sdl_check_result(res, "Save surface");
 	}
 }

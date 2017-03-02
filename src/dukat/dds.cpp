@@ -326,7 +326,6 @@ namespace dukat
 
 		// Create OpenGL texture
 		auto texture = std::make_unique<Texture>(header.width, header.height);
-		glGenTextures(1, &texture->id);
 		glBindTexture(GL_TEXTURE_2D, texture->id);
 		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
 

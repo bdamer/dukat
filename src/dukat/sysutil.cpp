@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "sysutil.h"
 #include "log.h"
+#include "surface.h"
 #include <GL/glew.h>
 
 namespace dukat
@@ -88,4 +89,14 @@ namespace dukat
 		return size + sizeof(uint32_t);
 	}
 
+	void save_screenshot(const std::string& filename)
+	{
+		logger << "Saving screenshot to: " << filename << std::endl;
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		Surface surface(viewport[2], viewport[3], SDL_PIXELFORMAT_RGB24);
+		glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, surface.get_surface()->pixels);
+		surface.flip_horizontal();
+		surface.save_to_file(filename);
+	}
 }

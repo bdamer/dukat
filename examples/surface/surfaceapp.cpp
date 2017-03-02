@@ -32,7 +32,6 @@ namespace dukat
 
 		// Initialize texture once
 		texture = std::make_unique<Texture>(texture_width, texture_height);
-		glGenTextures(1, &texture->id);
 		Rect r = { 0, 0, texture_width, texture_height };
 		sprite = std::make_unique<Sprite>(texture.get(), r);
 		layer->add(sprite.get());

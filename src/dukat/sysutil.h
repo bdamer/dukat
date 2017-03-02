@@ -37,4 +37,7 @@ namespace dukat
 	std::string read_pstring(std::istream& is);
 	// writes a pascal string to a stream.
 	size_t write_pstring(std::ostream& os, const std::string& str);
+
+	// Writes the content of the current screen buffer to a file.
+	void save_screenshot(const std::string& filename);
 }
