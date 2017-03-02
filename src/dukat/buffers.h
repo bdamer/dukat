@@ -29,24 +29,30 @@ namespace dukat
 	// Wrapper around a OpenGL vertex array object.
 	struct VertexBuffer
 	{
-		const int count;
-		GLuint vao;
-		GLuint* buffers;
+		const int buffer_count;
+		GLuint vao; // Vertex Array Object
+		GLuint* buffers; // Array of buffers
+		GLint* counts; // Array of element count for each buffer
+		GLsizei* strides; // Array of size of individual elements for each buffer
 
 		// Creates VAO with a specified number of buffers.
-		VertexBuffer(int count) : count(count)
+		VertexBuffer(int buffer_count) : buffer_count(buffer_count)
 		{
 			glGenVertexArrays(1, &vao);
 			glBindVertexArray(vao);
-			buffers = new GLuint[count];
-			glGenBuffers(count, buffers);
+			buffers = new GLuint[buffer_count];
+			glGenBuffers(buffer_count, buffers);
+			counts = new GLint[buffer_count];
+			strides = new GLsizei[buffer_count];
 		}
 
 		~VertexBuffer(void)
 		{
-			glDeleteBuffers(count, buffers);
+			glDeleteBuffers(buffer_count, buffers);
 			glDeleteVertexArrays(1, &vao);
 			delete[] buffers;
+			delete[] counts;
+			delete[] strides;
 			perfc.inc(PerformanceCounter::BUFFER_FREE);
 		}
 	};
@@ -61,11 +67,15 @@ namespace dukat
 		GLuint rbo;
 		// Dimensions
 		int width, height;
+		// Stores last viewport for unbind
+		GLint last_viewport[4];
 
-		FrameBuffer(int width, int height, bool hasDepth);
+		FrameBuffer(int width, int height, bool create_draw_buffer, bool create_depth_buffer);
 		~FrameBuffer(void);
 
+		void rebuild(void);
 		void resize(int width, int height);
 		void bind(void);
+		void unbind(void);
 	};
 }

@@ -30,6 +30,22 @@ namespace dukat
 		return res;
 	}
 
+	std::unique_ptr<Mesh> MeshBuilder3::build_line(const Vector3& a, const Vector3& b)
+	{
+		std::vector<VertexAttribute> attr;
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
+		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(VertexPosCol, col)));
+
+		VertexPosCol vertices[2] = {
+			a.x, a.y, a.z, 1.0f, 1.0f, 1.0f, 1.0f,
+			b.x, b.y, b.z, 1.0f, 1.0f, 1.0f, 1.0f
+		};
+
+		auto res = std::make_unique<Mesh>(GL_LINES, 2, 0, attr);
+		res->set_vertices(reinterpret_cast<GLfloat*>(vertices));
+		return res;
+	}
+
 	std::unique_ptr<Mesh> MeshBuilder3::build_points(const std::vector<Vector3>& points, const Color& color)
 	{
 		std::vector<VertexAttribute> attr;

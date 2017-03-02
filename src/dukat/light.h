@@ -12,5 +12,7 @@ namespace dukat
 		Color color;
 		GLfloat attenuation;
 		GLfloat ambient; // coefficient
+		GLfloat reserved1;
+		GLfloat reserved2;
 	};
 }

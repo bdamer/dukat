@@ -19,6 +19,8 @@ namespace dukat
 
 		// Creates a new coordinate axis mesh.
 		std::unique_ptr<Mesh> build_axis(void);
+		// Creates a new line segment mesh.
+		std::unique_ptr<Mesh> build_line(const Vector3& a, const Vector3& b);
 		// Creates a new mesh for a set of points.
 		std::unique_ptr<Mesh> build_points(const std::vector<Vector3>& points, const Color& color);
 		// Creates a new textured cube mesh.

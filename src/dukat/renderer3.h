@@ -16,12 +16,7 @@ namespace dukat
 	class Mesh;
 	class MeshGroup;
 	class ShaderProgram;
-
-	enum RenderStage
-	{
-		SCENE,
-		OVERLAY
-	};
+	class Renderable;
 
 	class Renderer3 : public Renderer
 	{
@@ -45,15 +40,19 @@ namespace dukat
 		std::unique_ptr<Mesh> quad;
 		ShaderProgram* composite_program;
 
-		Light light;
-
+		// By convention, the 1st light is a directional light. All other lights are positional lights.
+		std::vector<Light> lights;
+		
 		void switch_fbo(void);
 
 	public:
+		// Used to restart primitives in batched call
+		static constexpr const GLushort primitive_restart = -1;
+
 		Renderer3(Window* window, ShaderCache* shaders, TextureCache* textures);
 		~Renderer3(void) { }
 
-		void render(const std::vector<MeshGroup*>& meshes);
+		void render(const std::vector<Renderable*>& meshes);
 		// Updates uniform buffers for camera and lighting.
 		void update_uniforms(void);
 
@@ -65,7 +64,7 @@ namespace dukat
 
 		void set_camera(std::unique_ptr<Camera3> camera) { this->camera = std::move(camera); }
 		Camera3* get_camera(void) const { return camera.get(); }
-        // TODO: handle multiple light sources
-        Light& get_light(int idx) { return light; }
+		// TODO: handle multiple light sources
+		Light& get_light(int idx) { return lights[idx]; }
 	};
 }

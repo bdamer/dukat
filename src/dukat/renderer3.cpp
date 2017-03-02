@@ -14,23 +14,27 @@ namespace dukat
 	const int Renderer3::fbo_size = 256;
 
 	Renderer3::Renderer3(Window* window, ShaderCache* shader_cache, TextureCache* textures)
-		: Renderer(window, shader_cache), effects_enabled(true)
+		: Renderer(window, shader_cache), effects_enabled(true), lights(8)
 	{
 		// Enable transparency
-		glEnable(GL_BLEND);
+		glEnable(GL_BLEND); 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		// Enable depth buffer
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 
-		light.position = { 0.0f, 0.0f, 100.0f };
-		light.color = { 1.0f, 1.0f, 0.66f, 1.0f };
-		light.attenuation = 0.00001f; // TODO: investigate non-linear attenuation
-		light.ambient = 0.5f;
+        // Enable primitive restart - only available in OpenGL >= 3.1 
+        glEnable(GL_PRIMITIVE_RESTART);
+        glPrimitiveRestartIndex(primitive_restart);
 
-		fb0 = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true);
-		fb1 = std::make_unique<FrameBuffer>(fbo_size, fbo_size, false);
-		fb2 = std::make_unique<FrameBuffer>(fbo_size, fbo_size, false);
+		lights[0].position = { 0.0f, 0.0f, 0.0f };
+		lights[0].color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		lights[0].attenuation = 0.00001f; // TODO: investigate non-linear attenuation
+		lights[0].ambient = 0.5f;
+
+		fb0 = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, true);
+		fb1 = std::make_unique<FrameBuffer>(fbo_size, fbo_size, true, false);
+		fb2 = std::make_unique<FrameBuffer>(fbo_size, fbo_size, true, false);
 
 		MeshBuilder2 builder;
 		quad = builder.build_textured_quad();
@@ -41,7 +45,7 @@ namespace dukat
 	void Renderer3::switch_fbo(void)
 	{
 		// set input texture
-		glActiveTextureARB(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, frame_buffer->texture);
 
 		if (frame_buffer == fb1.get())
@@ -58,7 +62,7 @@ namespace dukat
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void Renderer3::render(const std::vector<MeshGroup*>& meshes)
+	void Renderer3::render(const std::vector<Renderable*>& meshes)
 	{
 		update_uniforms();
 
@@ -81,6 +85,8 @@ namespace dukat
 
 		if (effects_enabled)
 		{
+			// TODO: review how useful this is - effects passes are currently using fixed
+			// size texture 
 			// Effects passes
 			for (auto it = effects.begin(); it != effects.end(); ++it)
 			{
@@ -150,7 +156,7 @@ namespace dukat
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[0]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform3), &camera->transform, GL_STREAM_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &light, GL_STREAM_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &lights[0], GL_STREAM_DRAW);
 	}
 
 	void Renderer3::add_effect(int index, const Effect3& effect)

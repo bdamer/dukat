@@ -45,21 +45,14 @@ namespace dukat
 		glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
 
 		// Bind texture
-		std::string id = "u_tex0"; 
 		for (auto i = 0; i < Renderer::max_texture_units; i++)
 		{
 			if (texture[i] != nullptr)
 			{
-				glActiveTexture(GL_TEXTURE0 + i);
-				glBindTexture(GL_TEXTURE_2D, texture[i]->id);
-				id[5] = static_cast<char>(48 + i);
-				glUniform1i(program->attr(id), i);
+				texture[i]->bind(i, program);
 			}
 		}
 
 		mesh->render(program);
-
-		perfc.inc(PerformanceCounter::MESHES);
-		perfc.inc(PerformanceCounter::VERTICES, mesh->vertex_count());
 	}
 }

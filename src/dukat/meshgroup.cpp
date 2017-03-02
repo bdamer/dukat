@@ -5,7 +5,7 @@
 
 namespace dukat
 {
-	MeshGroup::MeshGroup(void) : stage(RenderStage::SCENE), visible(true) 
+	MeshGroup::MeshGroup(void)
 	{ 
 		mat_model.identity();
 		bb.clear();

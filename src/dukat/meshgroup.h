@@ -4,21 +4,20 @@
 #include <map>
 
 #include "meshinstance.h"
+#include "renderable.h"
 #include "renderer3.h"
 #include "aabb3.h"
 
 namespace dukat
 {
-	class MeshGroup
+	class MeshGroup : public Renderable
 	{
 	private:
 		std::vector<std::unique_ptr<MeshInstance>> instances;
 
 	public:
-		RenderStage stage;
         AABB3 bb;
 		Matrix4 mat_model;
-		bool visible;
 
 		MeshGroup(void);
 		~MeshGroup(void) { }
