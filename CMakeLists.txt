@@ -18,6 +18,7 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(X11 REQUIRED)
 find_package(Threads REQUIRED)
+find_package(PNG REQUIRED)
 
 # The following folders will be included
 add_subdirectory(src/dukat)
@@ -25,3 +26,4 @@ add_subdirectory(examples/surface)
 add_subdirectory(examples/text)
 add_subdirectory(examples/room)
 add_subdirectory(examples/octree)
+add_subdirectory(examples/terrain)
