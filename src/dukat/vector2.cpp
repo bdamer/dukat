@@ -16,6 +16,18 @@ namespace dukat
 		return Vector2(x * cs - y * sn, x * sn + y * cs);
 	}
 
+	Vector2& Vector2::normalize_fast(void)
+	{
+		auto mag_sq = x * x + y * y;
+		if (mag_sq > 0.0f)
+		{
+			auto one_over_mag = inv_sqrt(mag_sq);
+			x *= one_over_mag;
+			y *= one_over_mag;
+		}
+		return *this;
+	}
+
 	float Vector2::angle_between(const Vector2& v) const
 	{
 		float angle = safe_acos(*this * v);

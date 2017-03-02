@@ -78,7 +78,7 @@ namespace dukat
 
 		auto camera = std::make_unique<RoomCamera>(window.get(), this);
 		camera->transform.position.y = 1.0;
-		camera->set_fov(settings.get_float("camera.fov"));
+		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
 		device_manager->active->on_press(InputDevice::VirtualButton::SecondaryAction, 
@@ -134,7 +134,7 @@ namespace dukat
 
 	void Game::render(void)
 	{
-		std::vector<MeshGroup*> meshes;
+		std::vector<Renderable*> meshes;
 		meshes.push_back(&debug_meshes);
 		meshes.push_back(&object_meshes);
 		renderer->render(meshes);

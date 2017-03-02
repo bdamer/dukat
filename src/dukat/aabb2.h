@@ -35,6 +35,11 @@ namespace dukat
 		bool contains(const Vector2& p) const;
 		bool intersect_circle(const Vector2& center, float radius) const;
 		float intersect_ray(const Ray2& ray, float near, float far) const;
+		// Classifies box as being on one side or other other of a ray. 
+		// Will return < 0 if box is completely on the left side of the ray
+		// Will return > 0 if box is completely on the right side of the ray
+		// Will return 0 if the box is intersected by the ray
+		int classify_ray(const Ray2& ray) const;
 
 		// Operators
 		AABB2 operator+(const Vector2& v) const { return AABB2(min + v, max + v); }

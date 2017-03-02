@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "aabb2.h"
 #include "mathutil.h"
+#include "matrix2.h"
 
 namespace dukat
 {
@@ -91,5 +92,55 @@ namespace dukat
 		if ((tmin > far) || (tmax < near)) 
 			return no_intersection;
 		return tmin;
+	}
+
+	int AABB2::classify_ray(const Ray2& ray) const
+	{
+		// compute ray normal by rotating the direction by 90 degrees CW
+		// this means that the "right" side of the ray is considered its 
+		// front side 
+		Vector2 n(-ray.dir.y, ray.dir.x);
+		auto d = ray.origin * n;
+		
+		// Inspect the normal and compute the minimum and 
+		// maximum D values
+		float mind, maxd;
+
+		if (n.x > 0.0f)
+		{
+			mind = n.x * min.x;
+			maxd = n.x * max.x;
+		}
+		else
+		{
+			mind = n.x * max.x;
+			maxd = n.x * min.x;
+		}
+
+		if (n.y > 0.0f)
+		{
+			mind += n.y * min.y;
+			maxd += n.y * max.y;
+		}
+		else
+		{
+			mind += n.y * max.y;
+			maxd += n.y * min.y;
+		}
+
+		// check if completely on the front side of the plane
+		if (mind >= d)
+		{
+			return 1;
+		}
+		// check if completely on the back side of plane
+		else if (maxd <= d)
+		{
+			return -1;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 }

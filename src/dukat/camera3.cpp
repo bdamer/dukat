@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "camera3.h"
+#include "plane.h"
 #include "ray3.h"
 #include "mathutil.h"
 
@@ -9,7 +10,7 @@ namespace dukat
 	const float Camera3::default_near_clip = 1.0f;
 	const float Camera3::default_far_clip = 100.0f;
 
-	Camera3::Camera3(Window* window) : window(window), field_of_view(default_fov), 
+	Camera3::Camera3(Window* window) : window(window), fov_v(default_fov), 
 		near_clip(default_near_clip), far_clip(default_far_clip)
 	{
 		window->bind(this);
@@ -20,11 +21,19 @@ namespace dukat
 		window->unbind(this);
 	}
 
+	void Camera3::compute_horizontal_fov(void)
+	{	
+		auto pixels_v = std::tan(0.5f * deg_to_rad(fov_v));
+		auto pixels_h = aspect_ratio * pixels_v;
+		fov_h = rad_to_deg(2.0f * std::atan(pixels_h));
+	}
+
 	void Camera3::resize(int width, int height)
 	{
 		aspect_ratio = (float)width / (float)height;
-		transform.mat_proj_pers.setup_perspective(field_of_view, aspect_ratio, near_clip, far_clip);
+		transform.mat_proj_pers.setup_perspective(fov_v, aspect_ratio, near_clip, far_clip);
 		transform.mat_proj_orth.setup_orthographic(-aspect_ratio, 1.0f, aspect_ratio, -1.0f, -1.0f, 1.0f);
+		compute_horizontal_fov();
 	}
 
 	void Camera3::update(float delta)
@@ -50,6 +59,8 @@ namespace dukat
 		mi[13] = -(mi[1] * m[12] + mi[5] * m[13] + mi[9] * m[14]);
 		mi[14] = -(mi[2] * m[12] + mi[6] * m[13] + mi[10] * m[14]);
 		mi[15] = 1.0f;
+
+		compute_clip_planes(transform, fov_h, left_clip_plane, right_clip_plane);
 	}
 
 	Ray3 Camera3::pick_ray_screen(float x, float y)
@@ -61,7 +72,7 @@ namespace dukat
 
 	Ray3 Camera3::pick_ray_view(float x, float y)
 	{
-		float tanfov = tanf(0.5f * deg_to_rad(field_of_view));
+		float tanfov = tanf(0.5f * deg_to_rad(fov_v));
 		// compute points at near and far plane
 		Vector3 p1(near_clip * tanfov * x, near_clip * tanfov * y, -near_clip),
 			p2(far_clip * tanfov * x, far_clip * tanfov * y, -far_clip);
@@ -70,5 +81,23 @@ namespace dukat
 		p2 *= transform.mat_view_inv;
 		Ray3 res;
 		return res.from_points(p1, p2);
+	}
+
+	void Camera3::compute_clip_planes(const CameraTransform3& transform, float fov, Plane& left_plane, Plane& right_plane)
+	{
+		auto half_frust = deg_to_rad(0.5f * fov);
+
+		Matrix4 mrot;
+		mrot.setup_rotation(transform.up, half_frust);
+		auto left_vector = transform.dir * mrot;
+		left_plane.p = transform.position;
+		left_plane.n = cross_product(left_vector, transform.up);
+		left_plane.d = (left_plane.p + left_vector) * left_plane.n;
+
+		mrot.setup_rotation(transform.up, -half_frust);
+		auto right_vector = transform.dir * mrot;
+		right_plane.p = transform.position;
+		right_plane.n = cross_product(transform.up, right_vector);
+		right_plane.d = (right_plane.p + right_vector) * right_plane.n;
 	}
 }

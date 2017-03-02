@@ -61,6 +61,12 @@ namespace dukat
 		return (int)(r > 0.0f ? (r + 0.5f) : (r - 0.5f));
 	}
 
+	// Returns the positive modulo value.
+	inline int pos_mod(int i, int n)
+    {
+        return (i % n + n) % n;
+    }
+
 	inline float randf(float min, float max)
 	{
 		return min + (max - min) * (float)(rand() % 1000) / 1000.0f;

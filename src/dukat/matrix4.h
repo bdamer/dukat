@@ -66,7 +66,7 @@ namespace dukat
 		// fov - Vertical field of view
 		// aspect - screen aspect ratio
 		// near, far - clipping planes
-		void setup_perspective(float default_fov, float aspect, float near, float far);
+		void setup_perspective(float fov_y, float aspect, float near, float far);
 		// Sets up a new frustrum projection matrix.
 		void setup_frustrum(float left, float right, float bottom, float top, float near, float far);
 

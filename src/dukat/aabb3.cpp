@@ -2,6 +2,7 @@
 #include "aabb3.h"
 #include "mathutil.h"
 #include "matrix4.h"
+#include "plane.h"
 #include "ray3.h"
 
 namespace dukat
@@ -211,6 +212,132 @@ namespace dukat
 		else
 		{
 			return tmin;
+		}
+	}
+
+	int AABB3::classify_plane(const Plane& p) const
+	{
+		// Inspect the normal and compute the minimum and 
+		// maximum D values
+		float mind, maxd;
+
+		if (p.n.x > 0.0f)
+		{
+			mind = p.n.x * min.x;
+			maxd = p.n.x * max.x;
+		}
+		else
+		{
+			mind = p.n.x * max.x;
+			maxd = p.n.x * min.x;
+		}
+
+		if (p.n.y > 0.0f)
+		{
+			mind += p.n.y * min.y;
+			maxd += p.n.y * max.y;
+		}
+		else
+		{
+			mind += p.n.y * max.y;
+			maxd += p.n.y * min.y;
+		}
+
+		if (p.n.z > 0.0f)
+		{
+			mind += p.n.z * min.z;
+			maxd += p.n.z * max.z;
+		}
+		else
+		{
+			mind += p.n.z * max.z;
+			maxd += p.n.z * min.z;
+		}
+
+		// check if completely on the front side of the plane
+		if (mind >= p.d)
+		{
+			return 1;
+		}
+		// check if completely on the back side of plane
+		else if (maxd <= p.d)
+		{
+			return -1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	float AABB3::intersect_plane(const Plane& p) const
+	{
+		// compute glancing angle. Make sure we are moving towards
+		// the front of the plane.
+		/* TODO: fixme
+		auto dot = p.n * dir;
+		if (dot >= 0.0f)
+		{
+			return no_intersection;
+		}*/
+
+		// inspect the normal and compute the minimum and maximum
+		// D values. minD is the D value of the "frontmost" corner point
+		float mind, maxd;
+		if (p.n.x > 0.0f)
+		{
+			mind = p.n.x * min.x;
+			maxd = p.n.x * max.x;
+		}
+		else
+		{
+			mind = p.n.x * max.x;
+			maxd = p.n.x * min.x;
+		}
+
+		if (p.n.y > 0.0f)
+		{
+			mind += p.n.y * min.y;
+			maxd += p.n.y * max.y;
+		}
+		else
+		{
+			mind += p.n.y * max.y;
+			maxd += p.n.y * min.y;
+		}
+
+		if (p.n.z > 0.0f)
+		{
+			mind += p.n.z * min.z;
+			maxd += p.n.z * max.z;
+		}
+		else
+		{
+			mind += p.n.z * max.z;
+			maxd += p.n.z * min.z;
+		}
+
+		// check if we're already completely on the other
+		// side of the plane
+		if (maxd <= p.d)
+		{
+			return no_intersection;
+		}
+
+		// perform standard ray trace equation using the
+		// frontmost corner point
+		auto t = (p.d - mind) / p.d;
+
+		// Were we already penetrating?
+		if (t < 0.0f)
+		{
+			return 0.0f;
+		}
+		// Return it. If > 1, then we didnt hit in time. That's the 
+		// condition that the caller should be checking for.
+		else 
+		{
+			return t;
 		}
 	}
 

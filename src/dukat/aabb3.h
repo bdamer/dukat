@@ -8,6 +8,7 @@ namespace dukat
 {
 	class AABB3;
 	class Matrix4;
+	class Plane;
 	class Ray3;
 
 	// TODO: move to Oriented Bounding Boxes at some point, so we don't have to recompute
@@ -47,8 +48,15 @@ namespace dukat
 		bool intersect_sphere(const Vector3& center, float radius) const;
         // Checks if body intersects ray. Will return the distance along intersection ray or no_intersection.
         float intersect_ray(const Ray3& ray, float near, float far, Vector3* return_normal = nullptr) const;
-		int classify_plane(const Vector3& n, float d) const;
-		float intersect_plane(const Vector3& n, float planeD, const Vector3& dir) const;
+		// Classify box as being on one side or other other of a plane. 
+		// Will return < 0 if box is completely on the back side of the plane
+		// Will return > 0 if box is completely on the right side of the plane
+		// Will return 0 if the box is intersected by the plane
+		int classify_plane(const Plane& p) const;
+		// Dynamic intersection with plane. Only intersections with the front side
+		// of the plane are detected. Returns the parametric point of intersection
+		// or no_intersection.
+		float intersect_plane(const Plane& p) const;
 		// Checks if body intersects AABB3. 
 		bool intersect_aabb(const AABB3& another) const;
 	};

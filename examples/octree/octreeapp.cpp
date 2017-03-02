@@ -43,7 +43,7 @@ namespace dukat
 		ray_camera = std::make_unique<FirstPersonCamera3>(window.get(), this);
 		ray_camera->set_movement_speed(10.0f);
 		ray_camera->set_clip(0.01f, 1000.0f);
-		ray_camera->set_fov(55.0f);
+		ray_camera->set_vertical_fov(55.0f);
 		ray_camera->transform.position = Vector3(0.0f, 1.0f, -200.0f);
 		ray_camera->transform.dir = Vector3(0.0f, 0.0f, 1.0f);
 		ray_camera->transform.up = Vector3(0.0f, 1.0f, 0.0f);
@@ -254,8 +254,8 @@ namespace dukat
 		const auto far_z = cam->get_far_clip();
 
 		// Compute tan of half-angle of field of view
-		const auto fov_x = std::tan(deg_to_rad(0.5f * cam->get_fov()));
-		const auto fov_y = std::tan(deg_to_rad(0.5f * cam->get_fov()) / aspect_ratio);
+		const auto fov_x = std::tan(deg_to_rad(0.5f * cam->get_horizontal_fov()));
+		const auto fov_y = std::tan(deg_to_rad(0.5f * cam->get_vertical_fov()));
 
 		Ray3 ray(cam->transform.position, Vector3::origin);
 		auto yf = 0.0f;	// shift on the y for position of current ray [-1,1]

@@ -31,15 +31,17 @@ namespace dukat
 		float mag2(void) const { return x * x + y * y; }
 		float mag(void) const { return sqrt(mag2()); }
 		void normalize(void) { float oneOverMag = 1 / mag(); x *= oneOverMag; y *= oneOverMag; } 
+		// Faster, less accurate normalization method.
+		Vector2& normalize_fast(void);
 
 		bool in_range(const Vector2& min, const Vector2& max) const { return (min.x <= x) && (x <= max.x) && (min.y <= y) && (y <= max.y); }
 		static Vector2 random(const Vector2& min, const Vector2& max);
 
-		// Rotation
+		// Rotation - positive angles will rotate in CW direction.
 		Vector2 rotate(float theta) const;
 		// Angle between two vectors. This vector and v must be normalized.
 		float angle_between(const Vector2& v) const;
-		// Angle of this vector.
+		// Angle of this vector (relative to [0,1]).
 		float angle(void) const;
 
 		friend std::ostream& operator<<(std::ostream& os, const Vector2& v);
