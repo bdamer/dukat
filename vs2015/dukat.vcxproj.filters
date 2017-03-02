@@ -285,6 +285,12 @@
     <ClInclude Include="..\src\dukat\octreenode.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\fixedcamera3.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\texture.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -453,6 +459,12 @@
       <Filter>Source Files\util</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\firstpersoncamera3.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\fixedcamera3.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\texture.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>

@@ -34,11 +34,9 @@ namespace dukat
 			{
 				attributes[buffer] = location;
 			}
-			// std::cout << "Uniform " << i << " = " << buffer << " @ " << mAttr[buffer] << std::endl;
 		}
 
 		// query and index attributes
-		auto x = glGetAttribLocation(id, "a_normal");
 		glGetProgramiv(id, GL_ACTIVE_ATTRIBUTES, &count);
 		for (auto i = 0; i < count; i++)
 		{
@@ -51,7 +49,6 @@ namespace dukat
 			{
 				attributes[buffer] = location;
 			}
-			// std::cout << "Attribute " << i << " = " << buffer << " @ " << mAttr[buffer] << std::endl;
 		}
 	}
 

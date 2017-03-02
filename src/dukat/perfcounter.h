@@ -20,16 +20,17 @@ namespace dukat
 		// Well-known counters
 		enum ID
 		{
-			FRAMES,
-			MESHES,
-			VERTICES,
-			PARTICLES,
-			TEXTURES,
-			SHADERS,
-			BUFFER_FREE,
-			SPRITES,
-			SAMPLES,
-			BB_CHECKS
+			FRAMES,			// No# of frames
+			MESHES,			// No# of meshes rendered
+			VERTICES,		// No# of vertices rendered
+			PARTICLES,		// No# of particles rendered
+			TEXTURES,		// No# of texture switches
+			SHADERS,		// No# of shader switches
+			BUFFER_FREE,	// No# of freed buffers
+			FRAME_BUFFERS,	// No# of frame buffer switches
+			SPRITES,		// No# of sprites rendered
+			SAMPLES,		// No# of sampling operations
+			BB_CHECKS		// No# of bounding-box checks
 		};
 
 		PerformanceCounter(void);
