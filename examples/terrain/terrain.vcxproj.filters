@@ -24,30 +24,12 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="blockbuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="clipmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="heightmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="terrainapp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="blockbuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="clipmap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="heightmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="terrainapp.cpp">

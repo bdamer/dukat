@@ -154,12 +154,14 @@
     <ClInclude Include="..\src\dukat\animation.h" />
     <ClInclude Include="..\src\dukat\animationmanager.h" />
     <ClInclude Include="..\src\dukat\application.h" />
+    <ClInclude Include="..\src\dukat\blockbuilder.h" />
     <ClInclude Include="..\src\dukat\boundingbody2.h" />
     <ClInclude Include="..\src\dukat\boundingbody3.h" />
     <ClInclude Include="..\src\dukat\boundingsphere.h" />
     <ClInclude Include="..\src\dukat\bytestream.h" />
     <ClInclude Include="..\src\dukat\camera2.h" />
     <ClInclude Include="..\src\dukat\camera3.h" />
+    <ClInclude Include="..\src\dukat\clipmap.h" />
     <ClInclude Include="..\src\dukat\color.h" />
     <ClInclude Include="..\src\dukat\component.h" />
     <ClInclude Include="..\src\dukat\dds.h" />
@@ -176,6 +178,7 @@
     <ClInclude Include="..\src\dukat\gamepaddevice.h" />
     <ClInclude Include="..\src\dukat\geometry.h" />
     <ClInclude Include="..\src\dukat\buffers.h" />
+    <ClInclude Include="..\src\dukat\heightmap.h" />
     <ClInclude Include="..\src\dukat\light.h" />
     <ClInclude Include="..\src\dukat\material.h" />
     <ClInclude Include="..\src\dukat\matrix2.h" />
@@ -234,9 +237,11 @@
     <ClCompile Include="..\src\dukat\aabb3.cpp" />
     <ClCompile Include="..\src\dukat\animationmanager.cpp" />
     <ClCompile Include="..\src\dukat\application.cpp" />
+    <ClCompile Include="..\src\dukat\blockbuilder.cpp" />
     <ClCompile Include="..\src\dukat\boundingsphere.cpp" />
     <ClCompile Include="..\src\dukat\camera2.cpp" />
     <ClCompile Include="..\src\dukat\camera3.cpp" />
+    <ClCompile Include="..\src\dukat\clipmap.cpp" />
     <ClCompile Include="..\src\dukat\dds.cpp" />
     <ClCompile Include="..\src\dukat\devicemanager.cpp" />
     <ClCompile Include="..\src\dukat\eulerangles.cpp" />
@@ -248,6 +253,7 @@
     <ClCompile Include="..\src\dukat\gamepaddevice.cpp" />
     <ClCompile Include="..\src\dukat\geometry.cpp" />
     <ClCompile Include="..\src\dukat\buffers.cpp" />
+    <ClCompile Include="..\src\dukat\heightmap.cpp" />
     <ClCompile Include="..\src\dukat\matrix2.cpp" />
     <ClCompile Include="..\src\dukat\mesh.cpp" />
     <ClCompile Include="..\src\dukat\meshbuilder2.cpp" />

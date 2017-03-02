@@ -161,17 +161,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="blockbuilder.h" />
-    <ClInclude Include="clipmap.h" />
-    <ClInclude Include="heightmap.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="terrainapp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="blockbuilder.cpp" />
-    <ClCompile Include="clipmap.cpp" />
-    <ClCompile Include="heightmap.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
