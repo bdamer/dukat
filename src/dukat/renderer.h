@@ -22,7 +22,8 @@ namespace dukat
 		ShaderProgram* active_program;
 		// Uniform buffers
 		std::unique_ptr<GenericBuffer> uniform_buffers;
-		bool use_wireframe;
+		bool show_wireframe;
+		bool backface_culling;
 
 		void enumerate_capabilities(void);
 		void test_capabilities(void);
@@ -47,7 +48,7 @@ namespace dukat
 		static constexpr const char* at_pos = "a_position";
 		static constexpr const char* at_normal = "a_normal";
 		static constexpr const char* at_color = "a_color";
-		static constexpr const char* at_texcoord = "a_texCoord";
+		static constexpr const char* at_texcoord = "a_tex_coord";
 		// Uniform variables
 		static constexpr const char* uf_color = "u_color";
 		static constexpr const char* uf_model = "u_model";
@@ -67,7 +68,9 @@ namespace dukat
 		virtual void resize(int width, int height);
 
 		// Display settings
-		void toggle_wireframe(void);
+		void toggle_wireframe(void) { set_wireframe(!show_wireframe); }
+		void set_wireframe(bool wireframe);
+		void set_backface_culling(bool backface_culling);
 
 		// Changes active program.
 		void switch_shader(ShaderProgram* program);

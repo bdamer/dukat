@@ -9,25 +9,17 @@
 namespace dukat
 {
 	Renderer::Renderer(Window* window, ShaderCache* shader_cache)
-		: window(window), shader_cache(shader_cache), active_program(0), use_wireframe(false)
+		: window(window), shader_cache(shader_cache), active_program(0), show_wireframe(false)
 	{
 		window->bind(this);
 		enumerate_capabilities();
 		test_capabilities();
 		uniform_buffers = std::make_unique<GenericBuffer>(2);
-
 		// Default settings
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
 		// Enable back-face culling
 		glFrontFace(GL_CCW);
-#ifdef _DEBUG
-		glPolygonMode(GL_BACK, GL_LINE);
-		glPolygonMode(GL_FRONT, GL_FILL);
-#else
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-#endif
+		set_backface_culling(true);
 	}
 
 	Renderer::~Renderer(void)
@@ -70,6 +62,11 @@ namespace dukat
 		logger << "GL_EXT_texture_filter_anisotropic: " << supported << std::endl;
 		assert(supported);
 
+		glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &int_val);
+		logger << "GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &int_val);
+		logger << "GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
+
 		// test capabilities as needed...
 	}
 
@@ -94,15 +91,31 @@ namespace dukat
 		}
 	}
 
-	void Renderer::toggle_wireframe(void)
+	void Renderer::set_wireframe(bool wireframe)
 	{
-		use_wireframe = !use_wireframe;
-		if (use_wireframe)
+		show_wireframe = wireframe;
+		if (show_wireframe)
 		{
-			glPolygonMode(GL_FRONT, GL_LINE);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
 		else
 		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
+
+	void Renderer::set_backface_culling(bool backface_culling)
+	{
+		this->backface_culling = backface_culling;
+		if (backface_culling)
+		{
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+			glPolygonMode(GL_BACK, GL_LINE);
 			glPolygonMode(GL_FRONT, GL_FILL);
 		}
 	}
