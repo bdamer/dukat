@@ -29,6 +29,8 @@ namespace dukat
 		level_size = settings.get_int("renderer.terrain.size");
 		max_levels = settings.get_int("renderer.terrain.levels");
 
+		build_palette();
+
 		renderer->disable_effects();
 		// Sky Blue Sky
 		glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
@@ -112,6 +114,42 @@ namespace dukat
 		switch_to_first_person_camera();
 	}
 
+	void Game::build_palette(void)
+	{
+		const auto palette_size = 256;
+		palette.resize(palette_size);
+
+		Surface surface(palette_size, 1, SDL_PIXELFORMAT_RGBA8888);
+
+		const auto blue_range = (int)std::floor(palette_size * 0.025f);
+		const auto green_range = (int)std::floor(palette_size * 0.075f) + blue_range;
+		const auto ocre_range = (int)std::floor(palette_size * 0.10f) + green_range;
+		const auto red_range = (int)std::floor(palette_size * 0.80f) + ocre_range;
+
+		int i;
+		for (i = 0; i <= blue_range; i++)
+		{
+			auto perc = (float)i / (float)blue_range;
+			palette[i] = Color{ 0.0f, perc, 1.0f - perc, 1.0f };
+		}
+		for (i = blue_range; i < green_range; i++)
+		{
+			float perc = (float)(i - blue_range) / (float)(green_range - blue_range);
+			palette[i] = Color{ perc * 0.675f, 1.0f - perc * 0.277f, 0.0f, 1.0f };
+		}
+		for (i = green_range; i < ocre_range; i++)
+		{
+			float perc = (float)(i - green_range) / (float)(ocre_range - green_range);
+			palette[i] = Color{ 0.675f + perc * 0.325f, (1.0f - perc) * 0.723f, 0.0f, 1.0f };
+		}
+		for (i = ocre_range; i < red_range; i++)
+		{
+			float perc = (float)(i - ocre_range) / (float)(red_range - ocre_range);
+			palette[i] = Color{ 1.0f, perc, perc, 1.0f };
+		}
+		palette[palette_size - 1] = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+	}
+
 	void Game::load_mtrainier(void)
 	{
 		// Mt Rainier data set is 10m horizontal resolution, 102.4m vertical for every 0.1f.
@@ -120,6 +158,7 @@ namespace dukat
 		height_map = std::make_unique<HeightMap>(max_levels, "../assets/heightmaps/mt_rainier_1k.png", 2.0f * 102.4f);
 		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
 		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
+		clip_map->set_palette(palette);
 		switch_to_first_person_camera();
 	}
 
@@ -130,6 +169,7 @@ namespace dukat
 		//height_map = std::make_unique<HeightMap>(max_levels, "../assets/heightmaps/ps_elevation_4k.png", 0.1f * 65536.0f / 40.0f);
 		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
 		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
+		clip_map->set_palette(palette);
 		switch_to_first_person_camera();
 	}
 

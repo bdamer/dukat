@@ -44,7 +44,6 @@ namespace dukat
         assert(level_size < 1024); // using 16 bit indeces
 
         build_buffers();
-        build_color_sampler();
 		build_levels();
 
         // Allocate buffer space
@@ -164,43 +163,6 @@ namespace dukat
 			levels.push_back(level);
 		}
 	}
-
-    void ClipMap::build_color_sampler(void)
-    {
-        const auto palette_size = 256;
-        Surface surface(palette_size, 1, SDL_PIXELFORMAT_RGBA8888);
-
-        const auto blue_range = (int)std::floor(palette_size * 0.025f);
-        const auto green_range = (int)std::floor(palette_size * 0.075f) + blue_range;
-        const auto ocre_range = (int)std::floor(palette_size * 0.10f) + green_range;
-        const auto red_range = (int)std::floor(palette_size * 0.80f) + ocre_range;
-
-        int i;
-        for (i = 0; i <= blue_range; i++) 
-        {
-            auto perc = (float)i / (float)blue_range;
-            surface.set_pixel(i, 0, Color { 0.0f, perc, 1.0f - perc, 1.0f });
-        }
-        for (i = blue_range; i < green_range; i++)
-        {
-            float perc = (float)(i - blue_range) / (float)(green_range - blue_range);
-            surface.set_pixel(i, 0, Color { perc * 0.675f, 1.0f - perc * 0.277f, 0.0f, 1.0f });
-        }
-        for (i = green_range; i < ocre_range; i++)
-        {
-            float perc = (float)(i - green_range) / (float)(ocre_range - green_range);
-            surface.set_pixel(i, 0, Color { 0.675f + perc * 0.325f, (1.0f - perc) * 0.723f, 0.0f, 1.0f });
-        }
-        for (i = ocre_range; i < red_range; i++)
-        {
-            float perc = (float)(i - ocre_range) / (float)(red_range - ocre_range);
-            surface.set_pixel(i, 0, Color { 1.0f, perc, perc, 1.0f });
-        }
-
-        surface.set_pixel(255, 0, 0xffffffff);
-
-        color_map = std::make_unique<Texture>(surface);
-    }
 
     void ClipMap::build_buffers(void)
     {
@@ -827,5 +789,17 @@ namespace dukat
 
 		if (wireframe)
 	        renderer->set_wireframe(false);
-    }    
+    }
+
+	void ClipMap::set_palette(const std::vector<Color>& palette)
+	{
+		color_map = std::make_unique<Texture>(palette.size(), 1);
+		color_map->target = GL_TEXTURE_1D;
+		color_map->bind(0);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA8, color_map->w, 0, GL_RGBA, GL_FLOAT, palette.data());
+	}
 }

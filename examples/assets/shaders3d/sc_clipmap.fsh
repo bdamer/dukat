@@ -30,9 +30,7 @@ uniform sampler2DArray u_tex0;
 uniform sampler2DArray u_tex1;
 
 // Color sampler
-uniform sampler2D u_tex2;
-// Color texture
-uniform sampler2D u_tex3;
+uniform sampler1D u_tex2;
 
 // Debug color - not used
 uniform vec4 u_color;
@@ -78,6 +76,6 @@ void main()
 	}
 	
     // assign terrain color based on its elevation
-    vec4 color = texture(u_tex2, vec2(v_tex_coord.z, 0.5));
+    vec4 color = texture(u_tex2, v_tex_coord.z);
 	o_color = vec4(s * color.rgb, color.a);
 }

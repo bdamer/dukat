@@ -79,7 +79,7 @@ namespace dukat
 		ShaderProgram* program; // used to render final terrain
 		std::unique_ptr<Texture> elevation_maps; // 1-channel GL_R32F texture array for elevation data
         std::unique_ptr<Texture> normal_maps; // 2-channel GL_RG16F texture array for normal data
-		std::unique_ptr<Texture> color_map; // 256x1 texture used to color terrain
+		std::unique_ptr<Texture> color_map; // 1-dimensional RGB texture used to color terrain
 
         ShaderProgram* update_program; // used to update elevation sampler 
 		std::vector<GLfloat> buffer; // Buffer used to update elevation samplers.
@@ -118,7 +118,9 @@ namespace dukat
 
 		// Sets clipmap shader.
 		void set_program(ShaderProgram* program) { this->program = program; }
-        void update(float delta, const Vector3& obs_pos);
+		// Sets the color palette used to shade the terrain.
+		void set_palette(const std::vector<Color>& palette);
+		void update(float delta, const Vector3& obs_pos);
         void render(Renderer3* renderer);
 
         // Testing

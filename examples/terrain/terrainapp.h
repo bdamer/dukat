@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include <dukat/game3.h>
 #include <dukat/meshgroup.h>
 #include <dukat/texturecache.h>
@@ -10,6 +11,7 @@ namespace dukat
 	class Player;
 	class ClipMap;
 	class HeightMap;
+	struct Color;
 
 	class Game : public Game3
 	{
@@ -31,6 +33,7 @@ namespace dukat
 		// Which level to show
 		int display_level;
 		Material debug_mat;
+		std::vector<Color> palette;
 
 		bool first_person_camera;
 		bool direct_camera_control;
@@ -44,6 +47,7 @@ namespace dukat
 		void update_debug_text(void);
 		void render(void);
 
+		void build_palette(void);
 		void load_mtrainier(void);
 		void load_pugetsound(void);
 		void switch_to_first_person_camera(void);

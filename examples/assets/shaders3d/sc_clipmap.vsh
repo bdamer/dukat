@@ -32,7 +32,7 @@ uniform sampler2DArray u_tex0;
 // Normal sampler
 uniform sampler2DArray u_tex1;
 // Color sampler
-uniform sampler2D u_tex2;
+uniform sampler1D u_tex2;
 
 // Debug flags
 // x - Blending
