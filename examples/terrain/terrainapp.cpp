@@ -3,14 +3,17 @@
 
 #include "stdafx.h"
 #include "terrainapp.h"
+#include "terraincamera.h"
 
 #include <dukat/clipmap.h>
 #include <dukat/devicemanager.h>
+#include <dukat/diamondsquaregenerator.h>
 #include <dukat/firstpersoncamera3.h>
 #include <dukat/fixedcamera3.h>
 #include <dukat/heightmap.h>
 #include <dukat/inputdevice.h>
 #include <dukat/log.h>
+#include <dukat/mathutil.h>
 #include <dukat/meshbuilder2.h>
 #include <dukat/meshbuilder3.h>
 #include <dukat/renderer3.h>
@@ -20,8 +23,6 @@
 
 namespace dukat
 {
-	const Vector3 camera_offset(0.0f, 200.0f, 0.0f);
-
 	void Game::init(void)
 	{
 		Game3::init();
@@ -63,7 +64,7 @@ namespace dukat
 		// height map always starts at 0 / 0 for lower left corner of inner level
 		observer_mesh->transform.position = { 0.5f * (float)(level_size + 2), 10.0f, 0.5f * (float)(level_size + 2) } ;
 
-		load_pugetsound();
+		generate_terrain();
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
@@ -78,7 +79,7 @@ namespace dukat
 		   << "<F4> Toggle Stitching" << std::endl
 		   << "<F5> Toggle Normals" << std::endl
 		   << "<F11> Toggle Info" << std::endl
-		   << "<1,2> Switch Terain" << std::endl
+		   << "<1-4> Switch Terain" << std::endl
 		   << "<WASD> Move Camera" << std::endl
 		   << "<QE> Change altitude" << std::endl
 			<< std::endl;
@@ -111,15 +112,13 @@ namespace dukat
 		elevation_mesh->transform.scale = { 0.3f, 0.3f, 1.0f };
 		elevation_mesh->transform.update();
 
-		switch_to_first_person_camera();
+		switch_camera_mode(Terrain);
 	}
 
 	void Game::build_palette(void)
 	{
 		const auto palette_size = 256;
 		palette.resize(palette_size);
-
-		Surface surface(palette_size, 1, SDL_PIXELFORMAT_RGBA8888);
 
 		const auto blue_range = (int)std::floor(palette_size * 0.025f);
 		const auto green_range = (int)std::floor(palette_size * 0.075f) + blue_range;
@@ -155,50 +154,125 @@ namespace dukat
 		// Mt Rainier data set is 10m horizontal resolution, 102.4m vertical for every 0.1f.
 		// Note: the data source acknowledges that the data is "squised" when the max range > 1024, so we 
 		// stretch it by a factor of 2.
-		height_map = std::make_unique<HeightMap>(max_levels, "../assets/heightmaps/mt_rainier_1k.png", 2.0f * 102.4f);
+		height_map = std::make_unique<HeightMap>(max_levels);
+		height_map->load("../assets/heightmaps/mt_rainier_1k.png", 2.0f * 102.4f);
 		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
 		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
 		clip_map->set_palette(palette);
-		switch_to_first_person_camera();
+
+		switch_camera_mode(Terrain);
 	}
 
 	void Game::load_pugetsound(void)
 	{
+		height_map = std::make_unique<HeightMap>(max_levels);
 		// Puget sound data set: 160m horizontal resolution, 0.1m vertical for every 1/65536
-		height_map = std::make_unique<HeightMap>(max_levels, "../assets/heightmaps/ps_elevation_1k.png", 0.1f * 65536.0f / 160.0f);
-		//height_map = std::make_unique<HeightMap>(max_levels, "../assets/heightmaps/ps_elevation_4k.png", 0.1f * 65536.0f / 40.0f);
+		height_map->load("../assets/heightmaps/ps_elevation_1k.png", 0.1f * 65536.0f / 160.0f);
+		//height_map->load("../assets/heightmaps/ps_elevation_4k.png", 0.1f * 65536.0f / 40.0f);
 		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
 		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
 		clip_map->set_palette(palette);
-		switch_to_first_person_camera();
+
+		switch_camera_mode(Terrain);
 	}
 
-	void Game::switch_to_first_person_camera(void)
-    {
-		observer_mesh->visible = false;
-		first_person_camera = true;
-		direct_camera_control = true;
-		auto camera = std::make_unique<FirstPersonCamera3>(window.get(), this);
-		camera->transform.position = observer_mesh->transform.position;
-		camera->set_vertical_fov(settings.get_float("camera.fov"));
-		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
-		camera->refresh();
-		camera->set_movement_speed(10.0f);
-		renderer->set_camera(std::move(camera));
-    }
+	void Game::load_blank(void)
+	{
+		height_map = std::make_unique<HeightMap>(max_levels);
+		//height_map->save("../assets/heightmaps/blank_1k.png");
+		height_map->load("../assets/heightmaps/blank_1k.png", 0.1f * 65536.0f / 160.0f);
+		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
+		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
+		clip_map->set_palette(palette);
 
-    void Game::switch_to_fixed_camera(void)
-    {
-		observer_mesh->visible = true;
-		first_person_camera = false;
-		direct_camera_control = false;
-		Vector3 target(observer_mesh->transform.position.x, 0.0f, observer_mesh->transform.position.z);
-        auto camera = std::make_unique<FixedCamera3>(window.get(), target + camera_offset, target, Vector3::unit_z);
-        camera->set_vertical_fov(settings.get_float("camera.fov"));
-        camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
-        camera->refresh();
-        renderer->set_camera(std::move(camera));
-    }
+		switch_camera_mode(Terrain);
+	}
+
+	void Game::generate_terrain(void)
+	{
+		height_map = std::make_unique<HeightMap>(max_levels);
+		DiamondSquareGenerator gen(42);
+		gen.set_roughness(250.0f);
+		height_map->generate(513, 100.0f, gen);
+		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
+		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
+		clip_map->set_palette(palette);
+
+		switch_camera_mode(Terrain);
+	}
+
+	void Game::switch_camera_mode(CameraMode mode)
+	{
+		camera_mode = mode;
+
+		if (camera_mode > Overhead)
+			camera_mode = Terrain;
+
+		switch (camera_mode)
+		{
+		case Terrain:
+		{
+			observer_mesh->visible = true;
+			direct_camera_control = false;
+			Vector3 target(observer_mesh->transform.position.x, 0.0f, observer_mesh->transform.position.z);
+			const Vector3 fixed_camera_offset(0.0f, 100.0f, -100.0f);
+			auto camera = std::make_unique<TerrainCamera>(this, target, 50.0f, 0.0f, pi_over_four);
+			camera->set_min_distance(5.0f);
+			camera->set_max_distance(100.0f);
+			camera->set_vertical_fov(settings.get_float("camera.fov"));
+			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+			camera->refresh();
+			renderer->set_camera(std::move(camera));
+		}
+		break;
+
+		case FirstPerson:
+		{
+			auto camera = std::make_unique<FirstPersonCamera3>(this);
+			camera->transform.position = observer_mesh->transform.position;
+			camera->set_vertical_fov(settings.get_float("camera.fov"));
+			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+			camera->refresh();
+			camera->set_movement_speed(10.0f);
+			renderer->set_camera(std::move(camera));
+
+			observer_mesh->visible = false;
+			direct_camera_control = true;
+		}
+		break;
+
+		case Overhead:
+		{
+			observer_mesh->visible = true;
+			direct_camera_control = false;
+			Vector3 target(observer_mesh->transform.position.x, 0.0f, observer_mesh->transform.position.z);
+			const Vector3 overhead_camera_offset(0.0f, 200.0f, 0.0f);
+			auto camera = std::make_unique<FixedCamera3>(get_window(), target + overhead_camera_offset, target, Vector3::unit_z);
+			camera->set_vertical_fov(settings.get_float("camera.fov"));
+			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+			camera->refresh();
+			renderer->set_camera(std::move(camera));
+		}
+		break;	
+		}
+	}
+
+	void Game::handle_event(const SDL_Event & e)
+	{
+		switch (e.type)
+		{
+		case SDL_MOUSEWHEEL:
+			{
+			auto camera = renderer->get_camera();
+			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
+			}
+			break;
+	
+		default:
+			Game3::handle_event(e);
+			break;
+		}
+	}
 
 	void Game::handle_keyboard(const SDL_Event& e)
 	{
@@ -229,6 +303,13 @@ namespace dukat
 		case SDLK_2:
 			load_pugetsound();
 			break;
+		case SDLK_3:
+			load_blank();
+			break;
+		case SDLK_4:
+			generate_terrain();
+			break;
+
 		case SDLK_h: // show heightmap texture
 			texture->id = clip_map->get_elevation_map()->id;
 			elevation_mesh->set_program(shader_cache->get_program("sc_ui_texture.vsh", "sc_clipmap_elevation_texture.fsh"));
@@ -262,14 +343,7 @@ namespace dukat
 			break;
 
 		case SDLK_c:
-			if (first_person_camera)
-			{
-				switch_to_fixed_camera();
-			}
-			else
-			{
-				switch_to_first_person_camera();
-			}
+			switch_camera_mode((CameraMode)(camera_mode + 1));
 			break;
 		case SDLK_v:
 			direct_camera_control = !direct_camera_control;
@@ -285,26 +359,52 @@ namespace dukat
 		Game3::update(delta);
 		object_meshes.update(delta);
 		debug_meshes.update(delta);
-		if (first_person_camera)
+
+		// Sample elevation below observer position
+		auto z = height_map->sample(0, observer_mesh->transform.position.x, observer_mesh->transform.position.z) 
+			* height_map->get_scale_factor();
+
+		switch (camera_mode)
+		{
+		case Terrain:
+		{
+			// Move observer based on camera direction
+			auto dev = device_manager->active;
+			auto cam = dynamic_cast<TerrainCamera*>(renderer->get_camera());
+			auto offset = 10.0f * delta * (dev->ly * cam->transform.dir
+				+ dev->lx * cam->transform.right);
+			observer_mesh->transform.position += offset;
+			observer_mesh->transform.position.y = z + 1.0f;
+			cam->set_look_at(observer_mesh->transform.position);
+		}
+		break;
+
+		case FirstPerson:
 		{
 			auto cam = renderer->get_camera();
 			if (direct_camera_control)
 			{
+				//cam->transform.position.y = z + 0.5f;
 				observer_mesh->transform.position = cam->transform.position;
 				observer_mesh->transform.dir = cam->transform.dir;
 			}
 		}
-		else
+		break;
+
+		case Overhead:
 		{
 			auto dev = device_manager->active;
-
-			auto speed = 10.0f * delta;
-			observer_mesh->transform.position += 
-				dev->ly * speed * observer_mesh->transform.dir - dev->lx * speed * observer_mesh->transform.left;
+			auto offset = 10.0f * delta * (dev->ly * observer_mesh->transform.dir 
+				- dev->lx * observer_mesh->transform.left);
+			observer_mesh->transform.position += offset;
+			observer_mesh->transform.position.y = z + 0.5f;
 			auto cam = dynamic_cast<FixedCamera3*>(renderer->get_camera());
-			cam->transform.position = observer_mesh->transform.position + camera_offset;
-			cam->look_at = observer_mesh->transform.position;
+			cam->set_look_at(observer_mesh->transform.position);
 		}
+		break;
+
+		}
+
 		clip_map->update(delta, observer_mesh->transform.position);
 	}
 

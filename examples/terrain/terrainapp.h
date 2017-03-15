@@ -13,6 +13,13 @@ namespace dukat
 	class HeightMap;
 	struct Color;
 
+	enum CameraMode
+	{
+		Terrain = 0,
+		FirstPerson = 1,
+		Overhead = 2
+	};
+
 	class Game : public Game3
 	{
 	private:
@@ -35,14 +42,16 @@ namespace dukat
 		Material debug_mat;
 		std::vector<Color> palette;
 
-		bool first_person_camera;
+		CameraMode camera_mode;
 		bool direct_camera_control;
 
 		std::unique_ptr<ClipMap> clip_map;
 		std::unique_ptr<HeightMap> height_map;
 
 		void init(void);
+		void handle_event(const SDL_Event& e);
 		void handle_keyboard(const SDL_Event& e);
+
 		void update(float delta);
 		void update_debug_text(void);
 		void render(void);
@@ -50,8 +59,9 @@ namespace dukat
 		void build_palette(void);
 		void load_mtrainier(void);
 		void load_pugetsound(void);
-		void switch_to_first_person_camera(void);
-		void switch_to_fixed_camera(void);
+		void load_blank(void);
+		void generate_terrain(void);
+		void switch_camera_mode(CameraMode mode);
 
 	public:
 		Game(const Settings& settings) : Game3(settings) { }

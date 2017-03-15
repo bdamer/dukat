@@ -13,7 +13,7 @@ namespace dukat
 		float accel;
 
     public:
-		RoomCamera(Window* window, GameBase* game) : FirstPersonCamera3(window, game), accel(0.0f) { }
+		RoomCamera(Window* window, GameBase* game) : FirstPersonCamera3(game), accel(0.0f) { }
 		~RoomCamera(void) { }
 
 		void jump(void);

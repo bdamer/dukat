@@ -314,7 +314,7 @@ namespace dukat
         // determine height of observer and set min_level accordingly
 		auto height = height_map->get_scale_factor() * height_map->get_elevation(0, (int)std::round(observer_pos.x), (int)std::round(observer_pos.z));
 		min_level = 0;
-		while (levels[min_level].width < 2.5f * (observer_pos.y - height))
+		while (min_level < levels.size() && levels[min_level].width < 2.5f * (observer_pos.y - height))
 		{
 			min_level++;
 		}

@@ -2,13 +2,12 @@
 
 #include <memory>
 #include "camera3.h"
+#include "gamebase.h"
 #include "quaternion.h"
 #include "vector3.h"
 
 namespace dukat
 {
-	class GameBase;
-
 	class FirstPersonCamera3 : public Camera3
 	{
 	private:
@@ -22,7 +21,7 @@ namespace dukat
 	public:
 		bool mouse_look;
 
-		FirstPersonCamera3(Window* window, GameBase* game) : Camera3(window), game(game), mouse_look(true), 
+		FirstPersonCamera3(GameBase* game) : Camera3(game->get_window()), game(game), mouse_look(true), 
 			yaw(0.0f), pitch(0.0f), yaw_speed(1.0f), pitch_speed(1.0f), movement_speed(2.0f) { }
 		~FirstPersonCamera3(void) { }
 

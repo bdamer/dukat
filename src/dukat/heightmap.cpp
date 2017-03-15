@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "heightmap.h"
+#include "heightmapgenerator.h"
 #include "log.h"
 #include "mathutil.h"
 #include "rect.h"
@@ -8,12 +9,6 @@
 
 namespace dukat
 {
-    HeightMap::HeightMap(int num_levels, const std::string& filename, float scale_factor)
-		: num_levels(num_levels), scale_factor(scale_factor)
-    {
-        load(filename);
-    }
-
     void HeightMap::generate_levels(void)
     {
         // For now, done on the CPU - investigate performance gains for doing this on the GPU
@@ -46,8 +41,10 @@ namespace dukat
         }
     }
 
-	void HeightMap::load(const std::string& filename)
+	void HeightMap::load(const std::string& filename, float scale_factor)
 	{
+		this->scale_factor = scale_factor;
+
         // reset level structure
         if (!levels.empty())
         {
@@ -93,6 +90,46 @@ namespace dukat
 
 		png_image_free(&img);
 	
+		generate_levels();
+	}
+
+	void HeightMap::save(const std::string& filename) const
+	{
+		png_image img;
+		memset(&img, 0, sizeof(img));
+		img.version = PNG_IMAGE_VERSION;
+		img.format = PNG_FORMAT_LINEAR_Y;
+		img.width = level_size;
+		img.height = level_size;
+
+		const auto num_pixels = PNG_IMAGE_SIZE(img) / sizeof(uint16_t);
+		std::vector<uint16_t> buffer(num_pixels);
+		const auto max_val = std::numeric_limits<uint16_t>::max();
+
+		for (auto i = 0u; i < num_pixels; i++)
+		{
+			buffer[i] = (uint16_t)(levels[0].data[i] * (float)max_val);
+		}
+
+		// TODO: error handling
+		png_image_write_to_file(&img, filename.c_str(), 0, buffer.data(), 0, nullptr);
+	}
+
+	void HeightMap::generate(int level_size, float scale_factor, const HeightMapGenerator& gen)
+	{
+		if (!levels.empty())
+		{
+			levels.clear();
+		}
+
+		// TODO: validate that level_size is 2^n + 1
+		this->level_size = level_size;
+		this->scale_factor = scale_factor;
+		levels.push_back({ 0, level_size });
+
+		// initialize 1st level
+		gen.generate(levels[0]);
+
 		generate_levels();
 	}
 
@@ -161,5 +198,26 @@ namespace dukat
 		{
 			return levels[level].data[y * stride + x];
 		}
+	}
+
+	float HeightMap::sample(int level, float x, float y) const
+	{
+		assert(level < num_levels);
+		const auto stride = levels[level].size;
+		// sample 4 surrounding elevations
+		auto min_x = (int)std::floor(x);
+		auto min_y = (int)std::floor(y);
+		auto max_x = min_x + 1;
+		auto max_y = min_y + 1;
+		auto z0 = get_elevation(level, min_x, min_y);
+		auto z1 = get_elevation(level, max_x, min_y);
+		auto z2 = get_elevation(level, min_x, max_y);
+		auto z3 = get_elevation(level, max_x, max_y);
+		// compute distance to each corner
+		auto dx0 = x - (float)min_x;
+		auto dy0 = y - (float)min_y;
+		auto dx1 = (float)max_x - x;
+		auto dy1 = (float)max_y - y;
+		return (z0 * dx1 * dy1) + (z1 * dx0 * dy1) + (z2 * dx1 * dy0) + (z3 * dx0 * dy0);
 	}
 }

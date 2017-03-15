@@ -1,0 +1,42 @@
+#pragma once
+
+#include <dukat/camera3.h>
+#include <dukat/mathutil.h>
+
+namespace dukat
+{
+	class GameBase;
+
+	class TerrainCamera : public Camera3 
+	{
+	private:
+		float distance; // distance from eye to target
+		float min_distance, max_distance; // distance limits
+		float longitude; // 0 to 2 pi
+		float latitude; // from 0 (equator) to pi/2
+		GameBase* game;
+		Vector3 look_at;
+
+	public:
+		TerrainCamera(GameBase* game, const Vector3& target, float distance, float longitude, float latitude);
+		~TerrainCamera(void) { }
+
+		void update(float delta);
+		// Moves the eye and look-at position of the camera.
+		void move(const Vector3& offset) { look_at += offset; }
+		// Updates the eye and look-at position of the camera to a new point.
+		void set_look_at(const Vector3& look_at) { this->look_at = look_at; }
+
+		// Changes distance from look-at position along direction vector.
+		float get_distance(void) const { return distance; }
+		void set_distance(float distance) { this->distance = distance; clamp(this->distance, min_distance, max_distance); }
+		float get_max_distance(void) const { return max_distance; }
+		void set_max_distance(float min_distance) { this->max_distance = max_distance; }
+		float get_min_distance(void) const { return max_distance; }
+		void set_min_distance(float min_distance) { this->min_distance = min_distance; }
+		float get_latitude(void) const { return latitude; }
+		void set_latitude(float latitude) { this->latitude = latitude; }
+		float get_longitude(void) const { return longitude; }
+		void set_longitude(float longitude) { this->longitude = longitude; }
+	};
+}

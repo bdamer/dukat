@@ -27,12 +27,18 @@
     <ClInclude Include="terrainapp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="terraincamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="terrainapp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="terraincamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

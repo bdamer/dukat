@@ -40,7 +40,7 @@ namespace dukat
 		renderer->set_camera(std::move(camera));
 
 		// Set up "fake" camera for raytracer
-		ray_camera = std::make_unique<FirstPersonCamera3>(window.get(), this);
+		ray_camera = std::make_unique<FirstPersonCamera3>(this);
 		ray_camera->set_movement_speed(10.0f);
 		ray_camera->set_clip(0.01f, 1000.0f);
 		ray_camera->set_vertical_fov(55.0f);

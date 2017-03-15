@@ -300,6 +300,12 @@
     <ClInclude Include="..\src\dukat\clipmap.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\diamondsquaregenerator.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\heightmapgenerator.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -484,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\clipmap.cpp">
       <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\diamondsquaregenerator.cpp">
+      <Filter>Source Files\util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
