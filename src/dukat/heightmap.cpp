@@ -5,6 +5,7 @@
 #include "mathutil.h"
 #include "rect.h"
 #include "surface.h"
+#include "ray3.h"
 #include <png.h>
 
 namespace dukat
@@ -219,5 +220,24 @@ namespace dukat
 		auto dx1 = (float)max_x - x;
 		auto dy1 = (float)max_y - y;
 		return (z0 * dx1 * dy1) + (z1 * dx0 * dy1) + (z2 * dx1 * dy0) + (z3 * dx0 * dy0);
+	}
+
+	float HeightMap::intersect_ray(const Ray3& ray, float min_t, float max_t) const
+	{
+		const auto step_size = std::sqrtf(2.0f);
+		Vector3 cur;
+		float t = min_t;
+		while (t < max_t)
+		{
+			cur = ray.origin + ray.dir * t;
+			auto elevation = scale_factor * get_elevation(0, (int)std::round(cur.x), (int)std::round(cur.z));
+			if (elevation > cur.y)
+			{
+				return t;
+			}
+			t += step_size;
+		}
+
+		return no_intersection;
 	}
 }

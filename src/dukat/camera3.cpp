@@ -63,11 +63,13 @@ namespace dukat
 		compute_clip_planes(transform, fov_h, left_clip_plane, right_clip_plane);
 	}
 
-	Ray3 Camera3::pick_ray_screen(float x, float y)
+	Ray3 Camera3::pick_ray_screen(int x, int y)
 	{
-		// TODO: implement
-		//float aspect = mGame.window()->aspectRatio();
-		return Ray3();
+		auto half_w = 0.5f * (float)window->get_width();
+		auto half_h = 0.5f * (float)window->get_height();
+		auto sx = aspect_ratio * ((float)x - half_w) / half_w;
+		auto sy = (half_h - (float)y) / half_h;
+		return pick_ray_view(sx, sy);
 	}
 
 	Ray3 Camera3::pick_ray_view(float x, float y)

@@ -73,7 +73,7 @@ namespace dukat
 		virtual void set_distance(float distance) = 0;
 
 		// Computes a pick ray for a set of coordinates in screen space.
-		Ray3 pick_ray_screen(float x, float y);
+		Ray3 pick_ray_screen(int x, int y);
 		// Computes a pick ray for a set of coordinates in view space.
 		Ray3 pick_ray_view(float x, float y);
 		// Computes left and right clip planes.

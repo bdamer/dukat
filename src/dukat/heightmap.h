@@ -7,6 +7,7 @@ namespace dukat
     struct Rect;
     class Surface;
 	class HeightMapGenerator;
+	class Ray3;
 
     struct HeightMapLevel
     {
@@ -53,5 +54,8 @@ namespace dukat
 		// Samples normalized elevation at a given set of coordinates, performing 
 		// bilinear sampling if necessary.
 		float sample(int level, float x, float y) const;
+
+		// Tests for intersection with a ray. Will return the distance of intersection or no_intersection.
+		float intersect_ray(const Ray3& ray, float min_t = 0.0f, float max_t = 1000.0f) const;
 	};
 }
