@@ -16,7 +16,7 @@ namespace dukat
 		void toggle_debug(void);
 
 	public:
-		Game2(const Settings& settings);
+		Game2(Settings& settings);
 		virtual ~Game2(void) { }
 
 		Renderer2* get_renderer(void) const { return renderer.get(); }

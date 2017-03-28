@@ -15,7 +15,7 @@ namespace dukat
 		void update_debug_text(void);
 
 	public:
-		Game(const Settings& settings) : Game2(settings) { }
+		Game(Settings& settings) : Game2(settings) { }
 		~Game(void) { }
 	};
 }

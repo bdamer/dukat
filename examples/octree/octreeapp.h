@@ -64,7 +64,7 @@ namespace dukat
 		void load_model(const std::string& model);
 
 	public:
-		Game(const Settings& settings) : Game2(settings), show_bounding_body(false) { }
+		Game(Settings& settings) : Game2(settings), show_bounding_body(false) { }
 		~Game(void) { }
 	};
 }

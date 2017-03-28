@@ -33,7 +33,7 @@ namespace dukat
 		virtual void update_debug_text(void) { }
 
 	public:
-		GameBase(const Settings& settings);
+		GameBase(Settings& settings);
 		virtual ~GameBase(void) { }
 		virtual void toggle_debug(void) { debug = !debug; }
 		std::unique_ptr<TextMeshInstance> create_text_mesh(float size = 1.0f);

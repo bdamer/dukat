@@ -10,7 +10,7 @@
 
 namespace dukat
 {
-	Application::Application(const Settings& settings)
+	Application::Application(Settings& settings)
 		: settings(settings), title(settings.get_string("window.title")), paused(false), done(false)
 	{
 		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");

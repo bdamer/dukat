@@ -16,7 +16,7 @@ namespace dukat
 		virtual void update(float delta);
 
 	public:
-		Game3(const Settings& settings);
+		Game3(Settings& settings);
 		~Game3(void) { }
 
 		Renderer3* get_renderer(void) const { return renderer.get(); }

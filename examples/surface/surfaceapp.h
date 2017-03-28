@@ -31,7 +31,7 @@ namespace dukat
 		void update_texture(void);
 
 	public:
-		Game(const Settings& settings) : Game2(settings) { }
+		Game(Settings& settings) : Game2(settings) { }
 		~Game(void) { }
 	};
 }

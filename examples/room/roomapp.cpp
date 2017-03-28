@@ -116,15 +116,6 @@ namespace dukat
 		debug_meshes.add_instance(std::move(debug_text));
 	}
 
-	void Game::handle_keyboard(const SDL_Event& e)
-	{
-		switch (e.key.keysym.sym)
-		{
-		default:
-			Game3::handle_keyboard(e);
-		}
-	}
-
 	void Game::update(float delta)
 	{
 		Game3::update(delta);

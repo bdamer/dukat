@@ -5,7 +5,7 @@
 
 namespace dukat
 {
-	Game3::Game3(const Settings& settings) : GameBase(settings)
+	Game3::Game3(Settings& settings) : GameBase(settings)
 	{
 		renderer = std::make_unique<dukat::Renderer3>(window.get(), shader_cache.get(), texture_cache.get());
 	}

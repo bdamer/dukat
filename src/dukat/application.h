@@ -18,7 +18,7 @@ namespace dukat
 		bool done;
 
 	protected:
-		const Settings& settings;
+		Settings& settings;
 		std::unique_ptr<Window> window;
 		std::unique_ptr<DeviceManager> device_manager;
 
@@ -38,7 +38,7 @@ namespace dukat
 		virtual void release(void) = 0;
 
 	public:
-		Application(const Settings& settings);
+		Application(Settings& settings);
 		virtual ~Application(void);
 
 		// Runs the main application loop
