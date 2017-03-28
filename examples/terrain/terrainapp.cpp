@@ -16,6 +16,7 @@
 #include <dukat/mathutil.h>
 #include <dukat/meshbuilder2.h>
 #include <dukat/meshbuilder3.h>
+#include <dukat/ray3.h>
 #include <dukat/renderer3.h>
 #include <dukat/settings.h>
 #include <dukat/sysutil.h>
@@ -25,6 +26,9 @@ namespace dukat
 {
 	void Game::init(void)
 	{
+		MeshBuilder2 builder2;
+		MeshBuilder3 builder3;
+
 		Game3::init();
 
 		level_size = settings.get_int("renderer.terrain.size");
@@ -45,7 +49,6 @@ namespace dukat
 		object_meshes.visible = true;
 
 		// Origin
-		dukat::MeshBuilder3 builder3;
 		mesh_cache->put("default-axis", builder3.build_axis());
 		auto mi = object_meshes.create_instance();
 		mi->set_mesh(mesh_cache->get("default-axis"));
@@ -63,6 +66,13 @@ namespace dukat
 		observer_mesh->set_material(m);
 		// height map always starts at 0 / 0 for lower left corner of inner level
 		observer_mesh->transform.position = { 0.5f * (float)(level_size + 2), 10.0f, 0.5f * (float)(level_size + 2) } ;
+
+		auto cursor_quad = mesh_cache->put("cursor", builder2.build_textured_quad({ 0.0f, 0.0f, 1.0f, 1.0f }));
+		cursor_mesh = object_meshes.create_instance();
+		cursor_mesh->set_mesh(cursor_quad);
+		cursor_mesh->set_program(shader_cache->get_program("sc_texture.vsh", "sc_texture.fsh"));
+		cursor_mesh->set_texture(texture_cache->get("blank.png"));
+		cursor_mesh->transform.rot *= Quaternion().set_to_rotate_x(-pi_over_two);
 
 		generate_terrain();
 
@@ -96,7 +106,6 @@ namespace dukat
 		debug_text->transform.update();
 		debug_meshes.add_instance(std::move(debug_text));
 
-		MeshBuilder2 builder2;
 		display_level = 0;
 		auto quad = mesh_cache->put("quad", builder2.build_textured_quad({ 0.0f, 1.0f, 1.0f, 0.0f}));
 		elevation_mesh = debug_meshes.create_instance();
@@ -257,17 +266,34 @@ namespace dukat
 		}
 	}
 
-	void Game::handle_event(const SDL_Event & e)
+	void Game::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
 		case SDL_MOUSEWHEEL:
-			{
+		{
 			auto camera = renderer->get_camera();
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
+			break;
+		}
+		
+		case SDL_MOUSEMOTION:
+		{
+			auto camera = renderer->get_camera();
+			auto ray = camera->pick_ray_screen(e.button.x, e.button.y);
+			auto t = height_map->intersect_ray(ray);
+			if (t != no_intersection)
+			{
+				auto intersection = ray.origin + ray.dir * t;
+				cursor_mesh->transform.position = intersection;
+				// Sample elevation below cursor position
+				auto z = height_map->sample(0, cursor_mesh->transform.position.x, cursor_mesh->transform.position.z)
+					* height_map->get_scale_factor();
+				cursor_mesh->transform.position.y = z + 1.0f;
 			}
 			break;
-	
+		}
+
 		default:
 			Game3::handle_event(e);
 			break;

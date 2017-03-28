@@ -32,6 +32,7 @@ namespace dukat
 		MeshInstance* observer_mesh;
 		MeshInstance* elevation_mesh;
 		MeshInstance* info_mesh;
+		MeshInstance* cursor_mesh;
 
 		// Show elevation or normal map level
 		bool show_elevation_map;
@@ -64,7 +65,7 @@ namespace dukat
 		void switch_camera_mode(CameraMode mode);
 
 	public:
-		Game(const Settings& settings) : Game3(settings) { }
+		Game(Settings& settings) : Game3(settings) { }
 		~Game(void) { }
 
 		void toggle_debug(void);
