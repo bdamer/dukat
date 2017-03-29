@@ -224,7 +224,7 @@ namespace dukat
 
 	float HeightMap::intersect_ray(const Ray3& ray, float min_t, float max_t) const
 	{
-		const auto step_size = std::sqrtf(2.0f);
+		const auto step_size = std::sqrt(2.0f);
 		Vector3 cur;
 		float t = min_t;
 		while (t < max_t)
