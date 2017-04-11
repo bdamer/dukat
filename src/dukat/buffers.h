@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
+#include "dukat.h"
 #include "perfcounter.h"
 
 // TODO: revisit number of buffers and need for centralized manager to control resource usage
@@ -26,11 +27,14 @@ namespace dukat
 		}
 	};
 
-	// Wrapper around a OpenGL vertex array object.
+	// Wrapper around a OpenGL vertex array object in OpenGL 3 and higher.
+	// In compatibility mode, will use vertex buffer object.
 	struct VertexBuffer
 	{
 		const int buffer_count;
+#if OPENGL_VERSION >= 30
 		GLuint vao; // Vertex Array Object
+#endif
 		GLuint* buffers; // Array of buffers
 		GLint* counts; // Array of element count for each buffer
 		GLsizei* strides; // Array of size of individual elements for each buffer
@@ -38,8 +42,10 @@ namespace dukat
 		// Creates VAO with a specified number of buffers.
 		VertexBuffer(int buffer_count) : buffer_count(buffer_count)
 		{
+#if OPENGL_VERSION >= 30
 			glGenVertexArrays(1, &vao);
 			glBindVertexArray(vao);
+#endif
 			buffers = new GLuint[buffer_count];
 			glGenBuffers(buffer_count, buffers);
 			counts = new GLint[buffer_count];
@@ -49,12 +55,16 @@ namespace dukat
 		~VertexBuffer(void)
 		{
 			glDeleteBuffers(buffer_count, buffers);
+#if OPENGL_VERSION >= 30
 			glDeleteVertexArrays(1, &vao);
+#endif
 			delete[] buffers;
 			delete[] counts;
 			delete[] strides;
 			perfc.inc(PerformanceCounter::BUFFER_FREE);
 		}
+
+		void load_data(int buffer_index, GLenum target, int count, GLsizei stride, const GLvoid* data, GLenum usage);
 	};
 
 	struct FrameBuffer

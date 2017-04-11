@@ -2,12 +2,13 @@
 #include "renderer3.h"
 #include "buffers.h"
 #include "log.h"
+#include "mesh.h"
 #include "meshbuilder2.h"
+#include "meshgroup.h"
 #include "perfcounter.h"
 #include "shadercache.h"
 #include "shaderprogram.h"
-#include "mesh.h"
-#include "meshgroup.h"
+#include "sysutil.h"
 
 namespace dukat
 {
@@ -23,14 +24,10 @@ namespace dukat
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 
+#if OPENGL_VERSION >= 30
         // Enable primitive restart - only available in OpenGL >= 3.1 
         glEnable(GL_PRIMITIVE_RESTART);
         glPrimitiveRestartIndex(primitive_restart);
-
-		lights[0].position = { 0.0f, 0.0f, 0.0f };
-		lights[0].color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		lights[0].attenuation = 0.00001f; // TODO: investigate non-linear attenuation
-		lights[0].ambient = 0.5f;
 
 		fb0 = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, true);
 		fb1 = std::make_unique<FrameBuffer>(fbo_size, fbo_size, true, false);
@@ -40,6 +37,14 @@ namespace dukat
 		quad = builder.build_textured_quad();
 		
 		composite_program = shader_cache->get_program("fx_default.vsh", "fx_composite.fsh");
+#endif
+
+		lights[0].position = { 0.0f, 0.0f, 0.0f };
+		lights[0].color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		lights[0].attenuation = 0.00001f; // TODO: investigate non-linear attenuation
+		lights[0].ambient = 0.5f;
+
+		gl_check_error();
 	}
 
 	void Renderer3::switch_fbo(void)
@@ -64,13 +69,16 @@ namespace dukat
 
 	void Renderer3::render(const std::vector<Renderable*>& meshes)
 	{
+#if OPENGL_VERSION >= 30
+		// Update uniform buffers once per frame.
 		update_uniforms();
 
-        if (effects_enabled)
+		if (effects_enabled)
 		{
 			fb0->bind();
 			frame_buffer = fb0.get();
 		}
+#endif
 
 		// Scene pass
 		glEnable(GL_DEPTH_TEST);
@@ -83,6 +91,7 @@ namespace dukat
 			}
 		}
 
+#if OPENGL_VERSION >= 30
 		if (effects_enabled)
 		{
 			// TODO: review how useful this is - effects passes are currently using fixed
@@ -136,6 +145,7 @@ namespace dukat
 			// reset texture units
 			glActiveTexture(GL_TEXTURE0);
 		}
+#endif
 
 		// Overlay pass
 		glDisable(GL_DEPTH_TEST);
@@ -152,11 +162,23 @@ namespace dukat
 
 	void Renderer3::update_uniforms(void)
 	{
+#if OPENGL_VERSION >= 30
 		// Update uniform buffers
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[0]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform3), &camera->transform, GL_STREAM_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &lights[0], GL_STREAM_DRAW);
+#else
+		// Update individual uniforms.
+		glUniformMatrix4fv(active_program->attr(Renderer3::u_cam_proj_pers), 1, false, camera->transform.mat_proj_pers.m);
+		glUniformMatrix4fv(active_program->attr(Renderer3::u_cam_proj_orth), 1, false, camera->transform.mat_proj_orth.m);
+		glUniformMatrix4fv(active_program->attr(Renderer3::u_cam_view), 1, false, camera->transform.mat_view.m);
+		glUniformMatrix4fv(active_program->attr(Renderer3::u_cam_view_inv), 1, false, camera->transform.mat_view.m);
+		glUniform4fv(active_program->attr(Renderer3::u_cam_position), 1, (GLfloat*)(&camera->transform.position));
+		glUniform4fv(active_program->attr(Renderer3::u_cam_dir), 1, (GLfloat*)(&camera->transform.dir));
+		glUniform4fv(active_program->attr(Renderer3::u_cam_up), 1, (GLfloat*)(&camera->transform.up));
+		glUniform4fv(active_program->attr(Renderer3::u_cam_left), 1, (GLfloat*)(&camera->transform.right));
+#endif
 	}
 
 	void Renderer3::add_effect(int index, const Effect3& effect)

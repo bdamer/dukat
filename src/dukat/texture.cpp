@@ -2,6 +2,7 @@
 #include "texture.h"
 #include "surface.h"
 #include "shaderprogram.h"
+#include "dukat.h"
 
 namespace dukat
 {
@@ -44,17 +45,25 @@ namespace dukat
 		switch (profile)
 		{
 		case ProfileMipMapped:
+#if OPENGL_VERSION < 30
+			glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
+#else
+			generate_map = true;
+#endif
 			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			generate_map = true;
 			break;
 		case ProfileAnisotropic:
+#if OPENGL_VERSION < 30
+			glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
+#else
+			generate_map = true;
+#endif
 			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			GLfloat float_val;
 			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &float_val);
 			glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, float_val);
-			generate_map = true;
 			break;
 		case ProfileLinear:
 			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -70,7 +79,9 @@ namespace dukat
 
 		if (generate_map)
 		{
+#if OPENGL_VERSION >= 30
 			glGenerateMipmap(target);
+#endif
 		}
 
 #ifdef _DEBUG

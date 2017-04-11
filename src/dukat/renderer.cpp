@@ -12,7 +12,6 @@ namespace dukat
 		: window(window), shader_cache(shader_cache), active_program(0), show_wireframe(false)
 	{
 		window->bind(this);
-		enumerate_capabilities();
 		test_capabilities();
 		uniform_buffers = std::make_unique<GenericBuffer>(2);
 		// Default settings
@@ -20,6 +19,7 @@ namespace dukat
 		// Enable back-face culling
 		glFrontFace(GL_CCW);
 		set_backface_culling(true);
+		gl_check_error();
 	}
 
 	Renderer::~Renderer(void)
@@ -27,47 +27,41 @@ namespace dukat
 		window->unbind(this);
 	}
 
-	void Renderer::enumerate_capabilities(void)
-	{
-		GLint n;
-		glGetIntegerv(GL_NUM_EXTENSIONS, &n);
-		for (auto i = 0; i < n; i++) 
-		{
-			extensions.insert((const char*)glGetStringi(GL_EXTENSIONS, i));
-		}
-		logger << "Found " << extensions.size() << " extensions." << std::endl;
-	}
-
 	void Renderer::test_capabilities(void)
 	{
 		GLint int_val;
-		logger << "Testing rendering capabilities" << std::endl;
+		logger << "Testing rendering capabilities..." << std::endl;
 
 		auto shader_version = std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 		logger << "GL_SHADING_LANGUAGE_VERSION: " << shader_version << std::endl;
-		logger << "Geometry shader support: " << (GLEW_ARB_geometry_shader4 ? "yes" : "no") << std::endl;
 
 		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &int_val);
 		logger << "GL_MAX_TEXTURE_UNITS: " << int_val << std::endl;
 		assert(int_val >= Renderer::max_texture_units);
-
-		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &int_val);
-		logger << "GL_MAX_UNIFORM_BUFFER_BINDINGS: " << int_val << std::endl;
-		assert(int_val >= UniformBuffer::_COUNT);
-
-		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &int_val);
-		logger << "GL_MAX_UNIFORM_BLOCK_SIZE: " << int_val << std::endl;
-
-		auto supported = is_ext_supported("GL_EXT_texture_filter_anisotropic");
-		logger << "GL_EXT_texture_filter_anisotropic: " << supported << std::endl;
-		assert(supported);
-
 		glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &int_val);
 		logger << "GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &int_val);
 		logger << "GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
 
-		// test capabilities as needed...
+#if OPENGL_VERSION >= 30
+		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &int_val);
+		logger << "GL_MAX_UNIFORM_BUFFER_BINDINGS: " << int_val << std::endl;
+		assert(int_val >= UniformBuffer::_COUNT);
+		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &int_val);
+		logger << "GL_MAX_UNIFORM_BLOCK_SIZE: " << int_val << std::endl;
+#endif
+
+		// Check supported extensions
+		logger << "GL_EXT_geometry_shader4: " <<
+			(glewIsExtensionSupported("GL_EXT_geometry_shader4") ? "yes" : "no") << std::endl;
+		logger << "GL_EXT_texture_filter_anisotropic: " <<
+			(glewIsExtensionSupported("GL_EXT_texture_filter_anisotropic") ? "yes" : "no") << std::endl;
+		logger << "GL_EXT_vertex_array_object: " << 
+			(glewIsExtensionSupported("GL_EXT_vertex_array_object") ? "yes" : "no") << std::endl;
+
+#ifdef _DEBUG
+		gl_check_error();
+#endif
 	}
 
 	void Renderer::resize(int width, int height)
@@ -82,12 +76,17 @@ namespace dukat
 		{
 			glUseProgram(program->id);
 			perfc.inc(PerformanceCounter::SHADERS);
+			this->active_program = program;
+#if OPENGL_VERSION >= 30
 			// re-bind uniform blocks
 			glUniformBlockBinding(program->id, glGetUniformBlockIndex(program->id, Renderer::uf_camera), UniformBuffer::CAMERA);
 			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[0]);
 			glUniformBlockBinding(program->id, glGetUniformBlockIndex(program->id, Renderer::uf_light), UniformBuffer::LIGHT);
 			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
-			this->active_program = program;
+#else
+			// update all uniforms
+			update_uniforms();
+#endif
 		}
 	}
 

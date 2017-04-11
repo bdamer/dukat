@@ -160,8 +160,10 @@ namespace dukat
 		glUniform1f(sprite_program->attr("u_parallax"), parallax);
 
 		// bind sprite vertex buffers
+#if OPENGL_VERSION >= 30
 		glBindVertexArray(sprite_buffer->vao);
 		glBindBuffer(GL_ARRAY_BUFFER, sprite_buffer->buffers[0]);
+
 		// bind vertex position
 		auto pos_id = sprite_program->attr(Renderer::at_pos);
 		glEnableVertexAttribArray(pos_id);
@@ -172,6 +174,19 @@ namespace dukat
 		glEnableVertexAttribArray(uv_id);
 		glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(TexturedVertex2),
 			reinterpret_cast<const GLvoid*>(offsetof(TexturedVertex2, u)));
+#else
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, sprite_buffer->buffers[0]);
+
+		// bind vertex position
+		glVertexPointer(2, GL_FLOAT, sizeof(TexturedVertex2),
+			reinterpret_cast<const GLvoid*>(offsetof(TexturedVertex2, x)));
+		// bind texture position
+		glTexCoordPointer(2, GL_FLOAT, sizeof(TexturedVertex2),
+			reinterpret_cast<const GLvoid*>(offsetof(TexturedVertex2, u)));
+#endif
+
 		// set texture unit 0 
 		glUniform1i(sprite_program->attr(Renderer::uf_tex0), 0);
 		
@@ -207,11 +222,17 @@ namespace dukat
 		}
 
 #ifdef _DEBUG
+	#if OPENGL_VERSION >= 30
 		// unbind buffers
 		glDisableVertexAttribArray(pos_id);
 		glDisableVertexAttribArray(uv_id);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+	#else
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	#endif
 #endif
 	}
 
@@ -254,11 +275,12 @@ namespace dukat
 		// Set parallax value for this layer
 		glUniform1f(particle_program->attr("u_parallax"), parallax);
 
+#if OPENGL_VERSION >= 30
 		// bind particle vertex buffers
 		glBindVertexArray(particle_buffer->vao);
 		glBindBuffer(GL_ARRAY_BUFFER, particle_buffer->buffers[0]);
 		// Orphan buffer to improve streaming performance
-		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(ParticleVertex2), NULL, GL_STREAM_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(ParticleVertex2), nullptr, GL_STREAM_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(ParticleVertex2), particle_data);
 		// bind vertex position
 		auto pos_id = particle_program->attr(Renderer::at_pos);
@@ -270,12 +292,33 @@ namespace dukat
 		glEnableVertexAttribArray(color_id);
 		glVertexAttribPointer(color_id, 4, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex2),
 			reinterpret_cast<const GLvoid*>(offsetof(ParticleVertex2, r)));
+#else
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_COLOR_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, particle_buffer->buffers[0]);
+
+		// Orphan buffer to improve streaming performance
+		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(ParticleVertex2), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(ParticleVertex2), particle_data);
+
+		// bind vertex position
+		glVertexPointer(2, GL_FLOAT, sizeof(ParticleVertex2),
+			reinterpret_cast<const GLvoid*>(offsetof(ParticleVertex2, x)));
+		// bind color position
+		glColorPointer(4, GL_FLOAT, sizeof(ParticleVertex2),
+			reinterpret_cast<const GLvoid*>(offsetof(ParticleVertex2, r)));
+#endif
 
 		glDrawArrays(GL_POINTS, 0, particle_count);
 
 #ifdef _DEBUG
+	#if OPENGL_VERSION >= 30
 		glDisableVertexAttribArray(pos_id);
 		glDisableVertexAttribArray(color_id);
+	#else
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_COLOR_ARRAY);
+	#endif
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 #endif

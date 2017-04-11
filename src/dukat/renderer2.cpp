@@ -5,6 +5,7 @@
 #include "shadercache.h"
 #include "sprite.h"
 #include "vertextypes2.h"
+#include "sysutil.h"
 
 namespace dukat
 {
@@ -13,55 +14,41 @@ namespace dukat
 		// Enable transparency
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		// Disable depth test - we'll have to take care of rendering order ourselves
 		glDisable(GL_DEPTH_TEST);
-
+#if OPENGL_VERSION >= 30
 		// Enable gl_PointSize instruction in shader
 		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+#endif
 
 		initialize_sprite_buffers();
 		initialize_particle_buffers();
 
 		light.position = Vector3(0.0f, 0.0f, 0.0f);
+		gl_check_error();
 	}
 
 	void Renderer2::initialize_sprite_buffers(void)
 	{
-		// Create VAO for sprite rendering
-		sprite_buffer = std::make_unique<VertexBuffer>(1);
-		glBindVertexArray(sprite_buffer->vao);
-
-		// Allocate memory for vertex buffer
-		glBindBuffer(GL_ARRAY_BUFFER, sprite_buffer->buffers[0]);
-
 		// Vertex order:
-		//	0 2	  3
-		//	1	4 5
+		//	0 2 / 3
+		//	1 /	4 5
 		TexturedVertex2 vertices[] = {
 			{ -0.5f, -0.5f, 0.0f, 0.0f },
 			{ -0.5f,  0.5f, 0.0f, 1.0f },
-			{  0.5f, -0.5f, 1.0f, 0.0f },
-			{  0.5f,  0.5f, 1.0f, 1.0f }
+			{ 0.5f, -0.5f, 1.0f, 0.0f },
+			{ 0.5f,  0.5f, 1.0f, 1.0f }
 		};
-
-		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(TexturedVertex2), vertices, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		// Create buffer for sprite rendering
+		sprite_buffer = std::make_unique<VertexBuffer>(1);
+		sprite_buffer->load_data(0, GL_ARRAY_BUFFER, 4, sizeof(TexturedVertex2), vertices, GL_STATIC_DRAW);
 	}
 
 	void Renderer2::initialize_particle_buffers(void)
 	{
-		// Create buffers for particle rendering
+		// Create buffer for particle rendering
 		particle_buffer = std::make_unique<VertexBuffer>(1);
-		glBindVertexArray(particle_buffer->vao);
-
-		glBindBuffer(GL_ARRAY_BUFFER, particle_buffer->buffers[0]);
-		glBufferData(GL_ARRAY_BUFFER, max_particles * sizeof(ParticleVertex2), NULL, GL_STREAM_DRAW);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		particle_buffer->load_data(0, GL_ARRAY_BUFFER, max_particles, sizeof(ParticleVertex2), nullptr, GL_STREAM_DRAW);
 	}
 
 	RenderLayer2* Renderer2::create_layer(const std::string& id, float priority, float parallax)
@@ -125,8 +112,11 @@ namespace dukat
 	{
 		window->clear();
 
-		// This will pick up the change we made to camera->transform
+#if OPENGL_VERSION >= 30
+		// This will pick up the change we made to camera transform. Since we're 
+		// using uniform buffers, this will only be done once each frame.
 		update_uniforms();
+#endif
 
 		for (auto& layer : layers)
 		{
@@ -141,10 +131,18 @@ namespace dukat
 
 	void Renderer2::update_uniforms(void)
 	{
+#if OPENGL_VERSION >= 30
 		// Update uniform buffers
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[0]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform2), &camera->transform, GL_STREAM_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &light, GL_STREAM_DRAW);
+#else
+		// Update uniform variables
+		glUniformMatrix4fv(active_program->attr(Renderer2::u_cam_proj_orth), 1, false, camera->transform.mat_proj_orth.m);
+		glUniformMatrix4fv(active_program->attr(Renderer2::u_cam_view), 1, false, camera->transform.mat_view.m);
+		glUniform2fv(active_program->attr(Renderer2::u_cam_position), 1, (GLfloat*)(&camera->transform.position));
+		glUniform2fv(active_program->attr(Renderer2::u_cam_dimension), 1, (GLfloat*)(&camera->transform.dimension));
+#endif
 	}
 }

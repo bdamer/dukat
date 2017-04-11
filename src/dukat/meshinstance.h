@@ -17,7 +17,9 @@ namespace dukat
 	{
 	private:
 		Mesh* mesh;
+#if OPENGL_VERSION >= 30
 		std::unique_ptr<GenericBuffer> uniform_buffers;
+#endif
 		ShaderProgram* program;
 		Texture* texture[Renderer::max_texture_units];
 		Material material;

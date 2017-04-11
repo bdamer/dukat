@@ -1,7 +1,7 @@
 #pragma once
 
+#include "dukat.h"
 #include "window.h"
-#include <set>
 #include <string>
 
 namespace dukat
@@ -16,8 +16,6 @@ namespace dukat
 	protected:		
 		Window* window;
 		ShaderCache* shader_cache;
-		// set of supported extensions
-		std::set<std::string> extensions;
 		// The currently active shader program
 		ShaderProgram* active_program;
 		// Uniform buffers
@@ -25,7 +23,6 @@ namespace dukat
 		bool show_wireframe;
 		bool backface_culling;
 
-		void enumerate_capabilities(void);
 		void test_capabilities(void);
 
 	public:
@@ -33,9 +30,6 @@ namespace dukat
 		{
 			CAMERA,
 			LIGHT,
-			RESERVED1,
-			RESERVED2,
-			RESERVED3,
 			MODEL,
 			MATERIAL,
 			_COUNT
@@ -56,10 +50,19 @@ namespace dukat
 		static constexpr const char* uf_tex1 = "u_tex1";
 		static constexpr const char* uf_tex2 = "u_tex2";
 		static constexpr const char* uf_tex3 = "u_tex3";
+#if OPENGL_VERSION >= 30
 		// Uniform blocks
 		static constexpr const char* uf_camera = "Camera";
 		static constexpr const char* uf_light = "Light";
 		static constexpr const char* uf_material = "Material";
+#else
+		// Uniforms to use instead of blocks for OpenGL 2
+		static constexpr const char* u_cam_proj_pers = "u_cam_proj_pers";
+		static constexpr const char* u_cam_proj_orth = "u_cam_proj_orth";
+		static constexpr const char* u_cam_view = "u_cam_view";
+		static constexpr const char* u_cam_view_inv = "u_cam_view_inv";
+		static constexpr const char* u_cam_position = "u_cam_position";
+#endif
 
 		Renderer(Window* window, ShaderCache* shaders);
 		virtual ~Renderer(void);
@@ -79,6 +82,6 @@ namespace dukat
 		// Updates uniform buffers for camera and lighting.
 		virtual void update_uniforms(void) = 0;
 		// Checks if a given extension is supported.
-		inline bool is_ext_supported(const std::string& extension) const { return extensions.count(extension) > 0; }
+		inline bool is_ext_supported(const std::string& extension) const { return glewIsExtensionSupported(extension.c_str()) == GL_TRUE; }
 	};
 }

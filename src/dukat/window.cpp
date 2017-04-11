@@ -2,6 +2,7 @@
 #include "log.h"
 #include "sysutil.h"
 #include "window.h"
+#include "dukat.h"
 
 namespace dukat
 {
@@ -33,8 +34,13 @@ namespace dukat
 		set_vsync(true);
 
 		// Create OpenGL context with desired profile version
+#if OPENGL_VERSION >= 30
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#else
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#endif
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 		context = SDL_GL_CreateContext(window);
 		if (context == nullptr)
@@ -64,6 +70,8 @@ namespace dukat
 		// http://www.opengl.org/wiki/OpenGL_Loading_Library	
 		auto error = glGetError();
 		assert(error == GL_NO_ERROR || error == GL_INVALID_ENUM);
+
+		gl_check_error();
 	}
 
 	Window::~Window()

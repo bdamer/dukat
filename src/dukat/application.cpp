@@ -20,6 +20,7 @@ namespace dukat
 		device_manager = std::make_unique<DeviceManager>();
 		device_manager->add_keyboard(window.get());
 		device_manager->joystick_support = settings.get_bool("input.joystick.support", true);
+		gl_check_error();
 	}
 
 	Application::~Application(void)

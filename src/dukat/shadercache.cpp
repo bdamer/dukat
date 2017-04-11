@@ -2,6 +2,7 @@
 #include "shadercache.h"
 #include "shaderprogram.h"
 #include "log.h"
+#include "dukat.h"
 
 namespace dukat
 {
@@ -10,7 +11,11 @@ namespace dukat
 		if (sources.count(filename) == 0)
 		{
 			// Load shader from file
-			auto fqn = resource_dir + "/" + filename;
+#if OPENGL_VERSION >= 30
+			auto fqn = resource_dir + "/150/" + filename;
+#else
+			auto fqn = resource_dir + "/120/" + filename;
+#endif
 			std::ifstream in(fqn);
 			if (!in)
 			{
@@ -89,6 +94,7 @@ namespace dukat
 		GLuint vertexShader = build_shader(GL_VERTEX_SHADER, vertexFile);
 		glAttachShader(set_program, vertexShader);
 
+#if OPENGL_VERSION >= 30
 		// Geometry shader is optional
 		GLuint geometryShader = -1;
 		if (geometryFile != "")
@@ -96,13 +102,16 @@ namespace dukat
 			geometryShader = build_shader(GL_GEOMETRY_SHADER, geometryFile);
 			glAttachShader(set_program, geometryShader);
 		}
+#endif
 
 		GLuint fragmentShader = build_shader(GL_FRAGMENT_SHADER, fragmentFile);
 		glAttachShader(set_program, fragmentShader);
-	
+
+#if OPENGL_VERSION >= 30
 		// tell opengl the name of the output variable of the fragment shader
 		// 0 means buffer 0, see http://www.opengl.org/wiki/GLAPI/glDrawBuffers
 		glBindFragDataLocation(set_program, 0, "outColor");
+#endif
 		glLinkProgram(set_program);
 
 		if (vertexShader >= 0)
@@ -115,11 +124,13 @@ namespace dukat
 			glDetachShader(set_program, fragmentShader);
 			glDeleteShader(fragmentShader);
 		}
+#if OPENGL_VERSION >= 30
 		if (geometryShader >= 0)
 		{
 			glDetachShader(set_program, geometryShader);
 			glDeleteShader(geometryShader);
 		}
+#endif
 
 		return set_program;
 	}

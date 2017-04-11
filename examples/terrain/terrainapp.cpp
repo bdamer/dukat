@@ -478,6 +478,10 @@ namespace dukat
 
 int main(int argc, char** argv)
 {
+#if OPENGL_VERSION < 30
+	dukat::logger << "Unsupported OpenGL version - requires at least 3.0" << std::endl;
+	return -2;
+#endif
 	try
 	{
 		std::string config = "../assets/terrain.ini";

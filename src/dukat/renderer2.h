@@ -36,6 +36,10 @@ namespace dukat
 	public:
 		static const int max_particles = 2048;
 
+#if OPENGL_VERSION <= 30
+		static constexpr const char* u_cam_dimension = "u_cam_dimension";
+#endif
+
 		Renderer2(Window* window, ShaderCache* shader_cache);
 		~Renderer2(void) { };
 

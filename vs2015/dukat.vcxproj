@@ -167,6 +167,7 @@
     <ClInclude Include="..\src\dukat\dds.h" />
     <ClInclude Include="..\src\dukat\devicemanager.h" />
     <ClInclude Include="..\src\dukat\diamondsquaregenerator.h" />
+    <ClInclude Include="..\src\dukat\dukat.h" />
     <ClInclude Include="..\src\dukat\effect2.h" />
     <ClInclude Include="..\src\dukat\effect3.h" />
     <ClInclude Include="..\src\dukat\eulerangles.h" />

@@ -5,6 +5,15 @@
 
 namespace dukat
 {
+	void VertexBuffer::load_data(int index, GLenum target, int count, GLsizei stride, const GLvoid* data, GLenum usage)
+	{
+		counts[index] = data == nullptr ? 0 : count;
+		strides[index] = stride;
+		glBindBuffer(target, buffers[index]);
+		glBufferData(target, count * stride, data, usage);
+		glBindBuffer(target, 0);
+	}
+
 	FrameBuffer::FrameBuffer(int width, int height, bool create_color_buffer, bool create_depth_buffer) 
 		: width(width), height(height), fbo(0), texture(0), rbo(0)
 	{

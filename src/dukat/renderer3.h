@@ -49,6 +49,12 @@ namespace dukat
 		// Used to restart primitives in batched call
 		static constexpr const GLushort primitive_restart = -1;
 
+#if OPENGL_VERSION <= 30
+		static constexpr const char* u_cam_dir = "u_cam_dir";
+		static constexpr const char* u_cam_up = "u_cam_up";
+		static constexpr const char* u_cam_left = "u_cam_left";
+#endif
+
 		Renderer3(Window* window, ShaderCache* shaders, TextureCache* textures);
 		~Renderer3(void) { }
 
