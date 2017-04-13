@@ -302,7 +302,7 @@ namespace dukat
 		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(ParticleVertex2), particle_data);
 
 		// bind vertex position
-		glVertexPointer(2, GL_FLOAT, sizeof(ParticleVertex2),
+		glVertexPointer(4, GL_FLOAT, sizeof(ParticleVertex2),
 			reinterpret_cast<const GLvoid*>(offsetof(ParticleVertex2, x)));
 		// bind color position
 		glColorPointer(4, GL_FLOAT, sizeof(ParticleVertex2),
@@ -315,12 +315,12 @@ namespace dukat
 	#if OPENGL_VERSION >= 30
 		glDisableVertexAttribArray(pos_id);
 		glDisableVertexAttribArray(color_id);
+		glBindVertexArray(0);
 	#else
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);
 	#endif
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
 #endif
 	}
 
