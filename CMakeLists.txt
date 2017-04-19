@@ -22,8 +22,10 @@ find_package(PNG REQUIRED)
 
 # The following folders will be included
 add_subdirectory(src/dukat)
-add_subdirectory(examples/surface)
-add_subdirectory(examples/text)
-add_subdirectory(examples/room)
+add_subdirectory(examples/mapgen)
 add_subdirectory(examples/octree)
+add_subdirectory(examples/room)
+add_subdirectory(examples/sprites)
+add_subdirectory(examples/surface)
 add_subdirectory(examples/terrain)
+add_subdirectory(examples/text)

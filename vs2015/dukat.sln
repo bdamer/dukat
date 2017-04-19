@@ -35,6 +35,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sprites", "..\examples\spri
 		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mapgen", "..\examples\mapgen\mapgen.vcxproj", "{CDEA8FD1-5487-491C-828F-5D18B490C66A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -99,6 +104,14 @@ Global
 		{FD9EAD84-427F-4DBF-B6F4-BF1BE1D3B5BA}.Release|x64.Build.0 = Release|x64
 		{FD9EAD84-427F-4DBF-B6F4-BF1BE1D3B5BA}.Release|x86.ActiveCfg = Release|Win32
 		{FD9EAD84-427F-4DBF-B6F4-BF1BE1D3B5BA}.Release|x86.Build.0 = Release|Win32
+		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Debug|x64.ActiveCfg = Debug|x64
+		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Debug|x64.Build.0 = Debug|x64
+		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Debug|x86.ActiveCfg = Debug|Win32
+		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Debug|x86.Build.0 = Debug|Win32
+		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Release|x64.ActiveCfg = Release|x64
+		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Release|x64.Build.0 = Release|x64
+		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Release|x86.ActiveCfg = Release|Win32
+		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
