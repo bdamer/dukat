@@ -3,6 +3,7 @@
 #include "shaderprogram.h"
 #include "log.h"
 #include "dukat.h"
+#include "sysutil.h"
 
 namespace dukat
 {
@@ -96,7 +97,7 @@ namespace dukat
 
 #if OPENGL_VERSION >= 30
 		// Geometry shader is optional
-		GLuint geometryShader = -1;
+		GLuint geometryShader = 0;
 		if (geometryFile != "")
 		{
 			geometryShader = build_shader(GL_GEOMETRY_SHADER, geometryFile);
@@ -114,24 +115,25 @@ namespace dukat
 #endif
 		glLinkProgram(set_program);
 
-		if (vertexShader >= 0)
+		if (vertexShader > 0)
 		{
 			glDetachShader(set_program, vertexShader);
 			glDeleteShader(vertexShader);
 		}
-		if (fragmentShader >= 0)
+		if (fragmentShader > 0)
 		{
 			glDetachShader(set_program, fragmentShader);
 			glDeleteShader(fragmentShader);
 		}
 #if OPENGL_VERSION >= 30
-		if (geometryShader >= 0)
+		if (geometryShader > 0)
 		{
 			glDetachShader(set_program, geometryShader);
 			glDeleteShader(geometryShader);
 		}
 #endif
 
+		gl_check_error();
 		return set_program;
 	}
 

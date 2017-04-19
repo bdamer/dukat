@@ -48,3 +48,6 @@ build/*
 bin/*
 /examples/octree/noiseutils.cpp
 /examples/octree/noiseutils.h
+GPATH
+GRTAGS
+GTAGS
