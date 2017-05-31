@@ -10,6 +10,8 @@ namespace dukat
 	Mesh::Mesh(GLenum mode, int max_vertices, int max_indices, const std::vector<VertexAttribute>& attributes, bool static_mesh)
 		: mode(mode), max_vertices(max_vertices), max_indices(max_indices), attributes(attributes), static_mesh(static_mesh)
 	{
+		// Revisit this if we want to support meshes with more than 64k vertices
+		assert((max_vertices - 1) <= std::numeric_limits<unsigned short>::max());
 		logger << "Creating mesh: [vertices=" << max_vertices << ",indices=" << max_indices << ",static=" << static_mesh;
 		// compute stride and offset
 		GLsizei stride = 0;
