@@ -89,7 +89,7 @@ namespace dukat
 #endif
 	}
 
-	void Texture::bind(GLenum texture, ShaderProgram* program)
+	void Texture::bind(GLenum texture, ShaderProgram* program) const
 	{
 		static std::string program_id = "u_tex0";
 		glActiveTexture(GL_TEXTURE0 + texture);
@@ -101,8 +101,17 @@ namespace dukat
 		}
 	}
 
-	void Texture::unbind(void)
+	void Texture::unbind(void) const
 	{
 		glBindTexture(target, 0);
+	}
+
+	GLint Texture::get_internal_format(void) const
+	{
+		bind(0);
+		GLint format;
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
+		unbind();
+		return format;
 	}
 }
