@@ -312,7 +312,7 @@ namespace dukat
         observer_pos = obs_pos;
 
         // determine height of observer and set min_level accordingly
-		auto height = height_map->get_scale_factor() * height_map->get_elevation(0, (int)std::round(observer_pos.x), (int)std::round(observer_pos.z));
+		auto height = height_map->get_scale_factor() * height_map->get_elevation((int)std::round(observer_pos.x), (int)std::round(observer_pos.z), 0);
 		min_level = 0;
 		while (min_level < (int)levels.size() && levels[min_level].width < 2.5f * (observer_pos.y - height))
 		{
@@ -612,6 +612,7 @@ namespace dukat
 
         // Inputs are elevation maps (GL_TEXTURE0) and normal maps (GL_TEXTURE1)
         elevation_maps->bind(0, normal_program);
+        // TODO: review - doesn't appear to be used in the shader
         normal_maps->bind(1, normal_program);
 
         // size of normal map

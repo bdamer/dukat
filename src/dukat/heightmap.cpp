@@ -42,10 +42,8 @@ namespace dukat
         }
     }
 
-	void HeightMap::load(const std::string& filename, float scale_factor)
+	void HeightMap::load(const std::string& filename)
 	{
-		this->scale_factor = scale_factor;
-
         // reset level structure
         if (!levels.empty())
         {
@@ -99,7 +97,7 @@ namespace dukat
 		png_image img;
 		memset(&img, 0, sizeof(img));
 		img.version = PNG_IMAGE_VERSION;
-		img.format = PNG_FORMAT_LINEAR_Y;
+		img.format = PNG_FORMAT_LINEAR_Y; // 16-bit grayscale
 		img.width = level_size;
 		img.height = level_size;
 
@@ -116,16 +114,27 @@ namespace dukat
 		png_image_write_to_file(&img, filename.c_str(), 0, buffer.data(), 0, nullptr);
 	}
 
-	void HeightMap::generate(int level_size, float scale_factor, const HeightMapGenerator& gen)
+	void HeightMap::allocate(int level_size)
 	{
 		if (!levels.empty())
 		{
 			levels.clear();
 		}
 
-		// TODO: validate that level_size is 2^n + 1
 		this->level_size = level_size;
-		this->scale_factor = scale_factor;
+		levels.push_back({ 0, level_size });
+
+		generate_levels();
+	}
+
+	void HeightMap::generate(int level_size, const HeightMapGenerator& gen)
+	{
+		if (!levels.empty())
+		{
+			levels.clear();
+		}
+
+		this->level_size = level_size;
 		levels.push_back({ 0, level_size });
 
 		// initialize 1st level
@@ -187,7 +196,7 @@ namespace dukat
 		}
     }
 
-	float HeightMap::get_elevation(int level, int x, int y) const
+	float HeightMap::get_elevation(int x, int y, int level) const
 	{
 		assert(level < num_levels);
 		const auto stride = levels[level].size;
@@ -210,10 +219,10 @@ namespace dukat
 		auto min_y = (int)std::floor(y);
 		auto max_x = min_x + 1;
 		auto max_y = min_y + 1;
-		auto z0 = get_elevation(level, min_x, min_y);
-		auto z1 = get_elevation(level, max_x, min_y);
-		auto z2 = get_elevation(level, min_x, max_y);
-		auto z3 = get_elevation(level, max_x, max_y);
+		auto z0 = get_elevation(min_x, min_y, level);
+		auto z1 = get_elevation(max_x, min_y, level);
+		auto z2 = get_elevation(min_x, max_y, level);
+		auto z3 = get_elevation(max_x, max_y, level);
 		// compute distance to each corner
 		auto dx0 = x - (float)min_x;
 		auto dy0 = y - (float)min_y;
@@ -230,7 +239,7 @@ namespace dukat
 		while (t < max_t)
 		{
 			cur = ray.origin + ray.dir * t;
-			auto elevation = scale_factor * get_elevation(0, (int)std::round(cur.x), (int)std::round(cur.z));
+			auto elevation = scale_factor * get_elevation((int)std::round(cur.x), (int)std::round(cur.z), 0);
 			if (elevation > cur.y)
 			{
 				return t;

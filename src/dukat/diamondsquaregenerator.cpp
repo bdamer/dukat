@@ -4,7 +4,7 @@
 
 namespace dukat
 {
-	void set(HeightMapLevel& level, int x, int y, float val)
+	void set(HeightMap::Level& level, int x, int y, float val)
 	{
 		if (x < 0)
 		{
@@ -22,10 +22,10 @@ namespace dukat
 		{
 			y -= level.size;
 		}
-		level.data[y * level.size + x] = val;
+		level[y * level.size + x] = val;
 	}
 
-	float get(HeightMapLevel& level, int x, int y)
+	float get(HeightMap::Level& level, int x, int y)
 	{
 		if (x < 0)
 		{
@@ -43,10 +43,10 @@ namespace dukat
 		{
 			y -= level.size;
 		}
-		return level.data[y * level.size + x];
+		return level[y * level.size + x];
 	}
 	
-	void DiamondSquareGenerator::generate(HeightMapLevel& level) const
+	void DiamondSquareGenerator::generate(HeightMap::Level& level) const
 	{
 		srand(seed);
 
@@ -57,28 +57,24 @@ namespace dukat
 		set(level, level.size - 1, level.size - 1, 0.0f);
 		divide(level, level.size);
 
-		// Normalize data in [0..1] range
-		float min_z = big_number;
-		float max_z = -big_number;
-		for (auto it = level.data.begin(); it != level.data.end(); ++it)
-		{
-			min_z = std::min(min_z, *it);
-			max_z = std::max(max_z, *it);
-		}
+		// Normalize data in [min_val..max_val] range
+		auto min_z = level.min();
+		auto max_z = level.max();
 		const auto factor = 1.0f / (max_z - min_z);
 		const auto half_size = 0.5f * (float)level.size;
 		for (int y = 0; y < level.size; y++)
 		{
 			for (int x = 0; x < level.size; x++)
 			{
-				auto val = level.data[y * level.size + x];
+				auto val = level[y * level.size + x];
 				auto falloff = 1.0f;
-				level.data[y * level.size + x] = (val - min_z) * factor * falloff;
+				auto normalized = (val - min_z) * factor * falloff;
+				level[y * level.size + x] = normalized * (max_val - min_val) + min_val;
 			}
 		}
 	}
 
-	void DiamondSquareGenerator::divide(HeightMapLevel& level, int size) const
+	void DiamondSquareGenerator::divide(HeightMap::Level& level, int size) const
 	{
 		auto half_size = size / 2;
 		if (half_size < 1)
@@ -106,14 +102,14 @@ namespace dukat
 		divide(level, half_size);
 	}
 
-	void DiamondSquareGenerator::square(HeightMapLevel& level, int x, int y, int size, float offset) const
+	void DiamondSquareGenerator::square(HeightMap::Level& level, int x, int y, int size, float offset) const
 	{
 		auto avg = 0.25f * (get(level, x - size, y - size) + get(level, x + size, y - size) +
 			get(level, x + size, y + size) + get(level, x - size, y + size));
 		set(level, x, y, avg + offset);
 	}
 
-	void DiamondSquareGenerator::diamond(HeightMapLevel& level, int x, int y, int size, float offset) const
+	void DiamondSquareGenerator::diamond(HeightMap::Level& level, int x, int y, int size, float offset) const
 	{
 		auto avg = 0.25f * (get(level, x, y - size) + get(level, x + size, y) +
 			get(level, x, y + size) + get(level, x - size, y));

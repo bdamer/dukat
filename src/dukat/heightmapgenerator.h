@@ -11,6 +11,6 @@ namespace dukat
 		HeightMapGenerator(void) { }
 		virtual ~HeightMapGenerator(void) { }
 
-		virtual void generate(HeightMapLevel& level) const = 0;
+		virtual void generate(HeightMap::Level& level) const = 0;
 	};
 }
