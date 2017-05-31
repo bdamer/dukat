@@ -1,13 +1,14 @@
 #pragma once
 
-#include <dukat/camera3.h>
-#include <dukat/mathutil.h>
+#include "camera3.h"
+#include "mathutil.h"
 
 namespace dukat
 {
 	class GameBase;
 
-	class TerrainCamera : public Camera3 
+	// 3D camera which orbits around look-at point at a fixed distance.
+	class OrbitCamera3 : public Camera3 
 	{
 	private:
 		float distance; // distance from eye to target
@@ -18,8 +19,8 @@ namespace dukat
 		Vector3 look_at;
 
 	public:
-		TerrainCamera(GameBase* game, const Vector3& target, float distance, float longitude, float latitude);
-		~TerrainCamera(void) { }
+		OrbitCamera3(GameBase* game, const Vector3& target, float distance, float longitude, float latitude);
+		~OrbitCamera3(void) { }
 
 		void update(float delta);
 		// Moves the eye and look-at position of the camera.
