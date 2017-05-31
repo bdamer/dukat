@@ -53,7 +53,7 @@ namespace dukat
 #if OPENGL_VERSION >= 30
 		// Uniform blocks
 		static constexpr const char* uf_camera = "Camera";
-		static constexpr const char* uf_light = "Light";
+		static constexpr const char* uf_light = "Lights";
 		static constexpr const char* uf_material = "Material";
 #else
 		// Uniforms to use instead of blocks for OpenGL 2

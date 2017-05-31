@@ -12,10 +12,11 @@
 
 namespace dukat
 {
-	const int Renderer3::fbo_size = 256;
+	// Required definitions
+	constexpr int Renderer3::fbo_size;
 
 	Renderer3::Renderer3(Window* window, ShaderCache* shader_cache, TextureCache* textures)
-		: Renderer(window, shader_cache), effects_enabled(true), lights(8)
+		: Renderer(window, shader_cache), effects_enabled(true)
 	{
 		// Enable transparency
 		glEnable(GL_BLEND); 
@@ -38,13 +39,23 @@ namespace dukat
 		
 		composite_program = shader_cache->get_program("fx_default.vsh", "fx_composite.fsh");
 #endif
-
-		lights[0].position = { 0.0f, 0.0f, 0.0f };
-		lights[0].color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		lights[0].attenuation = 0.00001f; // TODO: investigate non-linear attenuation
-		lights[0].ambient = 0.5f;
-
 		gl_check_error();
+	
+		init_lights();
+	}
+
+	void Renderer3::init_lights(void)
+	{
+		for (int i = 0; i < num_lights; i++)
+		{
+			lights[i].position = Vector3{ 0.0f, 0.0f, 0.0f };
+			lights[i].ambient = Color{ 0.0f, 0.0f, 0.0f, 0.0f };
+			lights[i].diffuse = Color{ 0.0f, 0.0f, 0.0f, 0.0f };
+			lights[i].specular = Color{ 0.0f, 0.0f, 0.0f, 0.0f };
+			lights[i].k0 = 1.0f;
+			lights[i].k1 = 0.0f;
+			lights[i].k2 = 0.0f;
+		}
 	}
 
 	void Renderer3::switch_fbo(void)
@@ -167,7 +178,7 @@ namespace dukat
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[0]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform3), &camera->transform, GL_STREAM_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &lights[0], GL_STREAM_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, num_lights * sizeof(Light), &lights, GL_STREAM_DRAW);
 #else
 		// Update individual uniforms.
 		glUniformMatrix4fv(active_program->attr(Renderer3::u_cam_proj_pers), 1, false, camera->transform.mat_proj_pers.m);
@@ -178,6 +189,7 @@ namespace dukat
 		glUniform4fv(active_program->attr(Renderer3::u_cam_dir), 1, (GLfloat*)(&camera->transform.dir));
 		glUniform4fv(active_program->attr(Renderer3::u_cam_up), 1, (GLfloat*)(&camera->transform.up));
 		glUniform4fv(active_program->attr(Renderer3::u_cam_left), 1, (GLfloat*)(&camera->transform.right));
+		// TODO: bind lights
 #endif
 	}
 

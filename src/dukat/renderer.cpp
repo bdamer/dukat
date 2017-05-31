@@ -43,6 +43,18 @@ namespace dukat
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &int_val);
 		logger << "GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
 
+#if OPENGL_VERSION >= 42
+		// TODO: validate with ctx 4.x
+		glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_INTERNALFORMAT_PREFERRED, 1, &int_val);
+		logger << "Preferred format for GL_RGBA8: " << int_val << std::endl;
+		glGetInternalformativ(GL_TEXTURE_2D, GL_RGB8, GL_INTERNALFORMAT_PREFERRED, 1, &int_val);
+		logger << "Preferred format for GL_RGB8: " << int_val << std::endl;
+		glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA16, GL_INTERNALFORMAT_PREFERRED, 1, &int_val);
+		logger << "Preferred format for GL_RGBA16: " << int_val << std::endl;
+		glGetInternalformativ(GL_TEXTURE_2D, GL_RGB16, GL_INTERNALFORMAT_PREFERRED, 1, &int_val);
+		logger << "Preferred format for GL_RGB16: " << int_val << std::endl;
+#endif
+
 #if OPENGL_VERSION >= 30
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &int_val);
 		logger << "GL_MAX_UNIFORM_BUFFER_BINDINGS: " << int_val << std::endl;
@@ -79,9 +91,11 @@ namespace dukat
 			this->active_program = program;
 #if OPENGL_VERSION >= 30
 			// re-bind uniform blocks
-			glUniformBlockBinding(program->id, glGetUniformBlockIndex(program->id, Renderer::uf_camera), UniformBuffer::CAMERA);
+			auto cidx = glGetUniformBlockIndex(program->id, Renderer::uf_camera);
+			glUniformBlockBinding(program->id, cidx, UniformBuffer::CAMERA);
 			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[0]);
-			glUniformBlockBinding(program->id, glGetUniformBlockIndex(program->id, Renderer::uf_light), UniformBuffer::LIGHT);
+			auto lidx = glGetUniformBlockIndex(program->id, Renderer::uf_light);
+			glUniformBlockBinding(program->id, lidx, UniformBuffer::LIGHT);
 			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
 #else
 			// update all uniforms

@@ -2,6 +2,7 @@
 
 #include <list>
 #include <memory>
+#include <array>
 #include "camera3.h"
 #include "effect3.h"
 #include "light.h"
@@ -20,14 +21,30 @@ namespace dukat
 
 	class Renderer3 : public Renderer
 	{
-	private:
+	public:
+		// Used to restart primitives in batched call
+		static constexpr const GLushort primitive_restart = -1;
 		// Size of FBO used for effects
-		static const int fbo_size;
+		static constexpr const int fbo_size = 256;
+		// Lighting constants
+		static constexpr const int dir_light_idx = 0;
+		static constexpr const int point_light_idx = 1;
+		static constexpr const int max_point_lights = 4;
+		static constexpr const int num_lights = max_point_lights + 1;
 
+#if OPENGL_VERSION <= 30
+		static constexpr const char* u_cam_dir = "u_cam_dir";
+		static constexpr const char* u_cam_up = "u_cam_up";
+		static constexpr const char* u_cam_left = "u_cam_left";
+#endif
+
+	private:
 		std::unique_ptr<Camera3> camera;
+		// By convention, the 1st light is a directional light. All other lights are positional lights.
+		std::array<Light, num_lights> lights;
 
-		bool effects_enabled;
 		// Framebuffer effects
+		bool effects_enabled;
 		std::list<Effect3> effects;
 		// fullscreen framebuffer
 		std::unique_ptr<FrameBuffer> fb0;
@@ -39,22 +56,11 @@ namespace dukat
 		// Quad to composite final image onto
 		std::unique_ptr<Mesh> quad;
 		ShaderProgram* composite_program;
-
-		// By convention, the 1st light is a directional light. All other lights are positional lights.
-		std::vector<Light> lights;
 		
+		void init_lights(void);
 		void switch_fbo(void);
 
 	public:
-		// Used to restart primitives in batched call
-		static constexpr const GLushort primitive_restart = -1;
-
-#if OPENGL_VERSION <= 30
-		static constexpr const char* u_cam_dir = "u_cam_dir";
-		static constexpr const char* u_cam_up = "u_cam_up";
-		static constexpr const char* u_cam_left = "u_cam_left";
-#endif
-
 		Renderer3(Window* window, ShaderCache* shaders, TextureCache* textures);
 		~Renderer3(void) { }
 
@@ -70,7 +76,6 @@ namespace dukat
 
 		void set_camera(std::unique_ptr<Camera3> camera) { this->camera = std::move(camera); }
 		Camera3* get_camera(void) const { return camera.get(); }
-		// TODO: handle multiple light sources
-		Light& get_light(int idx) { return lights[idx]; }
+		Light* get_light(int idx) { assert((idx >= 0) && (idx < num_lights)); return &lights[idx]; }
 	};
 }
