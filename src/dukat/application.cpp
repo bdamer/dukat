@@ -45,7 +45,7 @@ namespace dukat
 			{
 				update(((float)(ticks - last_update)) / 1000.0f);
 			}
-			last_update = SDL_GetTicks();
+			last_update = ticks;
 
 			// update FPS counter
 			if (ticks - last_frame >= 1000)
@@ -106,6 +106,9 @@ namespace dukat
 			{
 				window->toggle_fullscreen();
 			}
+			break;
+		case SDLK_PAUSE:
+			toggle_pause();
 			break;
 		case SDLK_F12:
 			save_screenshot("screenshot.png");
