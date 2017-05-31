@@ -487,7 +487,7 @@ namespace dukat
         for (auto& q : corners)
         {
             // Determine map shape
-            q->water = !shape.inside(q->pos);
+            q->water = !shape.contains(q->pos);
             if (q->border)
             {
                 q->elevation = 0.0f;

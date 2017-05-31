@@ -8,5 +8,3 @@
 //	   30 - OpenGL 3.0
 #define OPENGL_VERSION 31
 #endif
-
-

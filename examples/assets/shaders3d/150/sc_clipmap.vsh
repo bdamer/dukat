@@ -71,7 +71,6 @@ void main()
 	float z = mix(zf, zc, v_alpha);
 
 	v_tex_coord = vec3(texcoordf, z);
-    z = z * u_model[3].y;
 
-    gl_Position = u_cam.proj_pers * u_cam.view * vec4(world_pos.x, z, world_pos.y, 1.0);
+    gl_Position = u_cam.proj_pers * u_cam.view * vec4(world_pos.x, z * u_model[3].y, world_pos.y, 1.0);
 }

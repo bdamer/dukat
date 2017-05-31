@@ -91,9 +91,9 @@ namespace dukat
 	GLuint ShaderCache::build_program(const std::string& vertexFile, const std::string& fragmentFile,
 			const std::string& geometryFile)
 	{
-		GLuint set_program = glCreateProgram();
+		GLuint program = glCreateProgram();
 		GLuint vertexShader = build_shader(GL_VERTEX_SHADER, vertexFile);
-		glAttachShader(set_program, vertexShader);
+		glAttachShader(program, vertexShader);
 
 #if OPENGL_VERSION >= 30
 		// Geometry shader is optional
@@ -101,40 +101,40 @@ namespace dukat
 		if (geometryFile != "")
 		{
 			geometryShader = build_shader(GL_GEOMETRY_SHADER, geometryFile);
-			glAttachShader(set_program, geometryShader);
+			glAttachShader(program, geometryShader);
 		}
 #endif
 
 		GLuint fragmentShader = build_shader(GL_FRAGMENT_SHADER, fragmentFile);
-		glAttachShader(set_program, fragmentShader);
+		glAttachShader(program, fragmentShader);
 
 #if OPENGL_VERSION >= 30
 		// tell opengl the name of the output variable of the fragment shader
 		// 0 means buffer 0, see http://www.opengl.org/wiki/GLAPI/glDrawBuffers
-		glBindFragDataLocation(set_program, 0, "outColor");
+		glBindFragDataLocation(program, 0, "outColor");
 #endif
-		glLinkProgram(set_program);
+		glLinkProgram(program);
 
 		if (vertexShader > 0)
 		{
-			glDetachShader(set_program, vertexShader);
+			glDetachShader(program, vertexShader);
 			glDeleteShader(vertexShader);
 		}
 		if (fragmentShader > 0)
 		{
-			glDetachShader(set_program, fragmentShader);
+			glDetachShader(program, fragmentShader);
 			glDeleteShader(fragmentShader);
 		}
 #if OPENGL_VERSION >= 30
 		if (geometryShader > 0)
 		{
-			glDetachShader(set_program, geometryShader);
+			glDetachShader(program, geometryShader);
 			glDeleteShader(geometryShader);
 		}
 #endif
 
 		gl_check_error();
-		return set_program;
+		return program;
 	}
 
 	ShaderProgram* ShaderCache::get_program(const std::string& vertexFile, const std::string& fragmentFile,
@@ -143,8 +143,8 @@ namespace dukat
 		std::string key = vertexFile + "|" + fragmentFile + "|" + geometryFile;
 		if (programs.count(key) == 0)
 		{
-			GLuint set_program = build_program(vertexFile, fragmentFile, geometryFile);
-			programs[key] = std::make_unique<ShaderProgram>(set_program);
+			GLuint program = build_program(vertexFile, fragmentFile, geometryFile);
+			programs[key] = std::make_unique<ShaderProgram>(program);
 		}
 		return programs[key].get();
 	}

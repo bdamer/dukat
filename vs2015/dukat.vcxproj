@@ -194,6 +194,8 @@
     <ClInclude Include="..\src\dukat\messenger.h" />
     <ClInclude Include="..\src\dukat\obb2.h" />
     <ClInclude Include="..\src\dukat\octreenode.h" />
+    <ClInclude Include="..\src\dukat\orbitallight.h" />
+    <ClInclude Include="..\src\dukat\orbitcamera3.h" />
     <ClInclude Include="..\src\dukat\particle.h" />
     <ClInclude Include="..\src\dukat\particlemanager.h" />
     <ClInclude Include="..\src\dukat\ray2.h" />
@@ -267,6 +269,7 @@
     <ClCompile Include="..\src\dukat\meshinstance.cpp" />
     <ClCompile Include="..\src\dukat\messenger.cpp" />
     <ClCompile Include="..\src\dukat\obb2.cpp" />
+    <ClCompile Include="..\src\dukat\orbitcamera3.cpp" />
     <ClCompile Include="..\src\dukat\particlemanager.cpp" />
     <ClCompile Include="..\src\dukat\renderer.cpp" />
     <ClCompile Include="..\src\dukat\renderer2.cpp" />

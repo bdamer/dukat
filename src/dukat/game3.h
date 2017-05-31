@@ -17,7 +17,7 @@ namespace dukat
 
 	public:
 		Game3(Settings& settings);
-		~Game3(void) { }
+		virtual ~Game3(void) { }
 
 		Renderer3* get_renderer(void) const { return renderer.get(); }
 	};

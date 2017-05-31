@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "terrainapp.h"
-#include "terraincamera.h"
 
 #include <dukat/clipmap.h>
 #include <dukat/devicemanager.h>
@@ -16,6 +15,7 @@
 #include <dukat/mathutil.h>
 #include <dukat/meshbuilder2.h>
 #include <dukat/meshbuilder3.h>
+#include <dukat/orbitcamera3.h>
 #include <dukat/ray3.h>
 #include <dukat/renderer3.h>
 #include <dukat/settings.h>
@@ -39,10 +39,12 @@ namespace dukat
 		renderer->disable_effects();
 		// Sky Blue Sky
 		glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
-		// Directional Light (light direction stored as position)
-		auto& dir_light = renderer->get_light(0);
-		dir_light.position = { 0.0f, -0.5f, 0.5f }; 
-		dir_light.position.normalize();
+		// White Directional Light
+		auto light0 = renderer->get_light(Renderer3::dir_light_idx);
+		light0->position = { 0.0f, -0.5f, 0.5f }; // light direction stored as position
+		light0->ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
+		light0->diffuse = { 0.4f, 0.4f, 0.4f, 1.0f };
+		light0->specular = { 0.4f, 0.4f, 0.4f, 1.0f };
 
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.mat_model.identity();
@@ -163,8 +165,8 @@ namespace dukat
 		// Mt Rainier data set is 10m horizontal resolution, 102.4m vertical for every 0.1f.
 		// Note: the data source acknowledges that the data is "squised" when the max range > 1024, so we 
 		// stretch it by a factor of 2.
-		height_map = std::make_unique<HeightMap>(max_levels);
-		height_map->load("../assets/heightmaps/mt_rainier_1k.png", 2.0f * 102.4f);
+		height_map = std::make_unique<HeightMap>(max_levels, 2.0f * 102.4f);
+		height_map->load("../assets/heightmaps/mt_rainier_1k.png");
 		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
 		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
 		clip_map->set_palette(palette);
@@ -174,9 +176,9 @@ namespace dukat
 
 	void Game::load_pugetsound(void)
 	{
-		height_map = std::make_unique<HeightMap>(max_levels);
 		// Puget sound data set: 160m horizontal resolution, 0.1m vertical for every 1/65536
-		height_map->load("../assets/heightmaps/ps_elevation_1k.png", 0.1f * 65536.0f / 160.0f);
+		height_map = std::make_unique<HeightMap>(max_levels, 0.1f * 65536.0f / 160.0f);
+		height_map->load("../assets/heightmaps/ps_elevation_1k.png");
 		//height_map->load("../assets/heightmaps/ps_elevation_4k.png", 0.1f * 65536.0f / 40.0f);
 		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
 		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
@@ -187,9 +189,8 @@ namespace dukat
 
 	void Game::load_blank(void)
 	{
-		height_map = std::make_unique<HeightMap>(max_levels);
-		//height_map->save("../assets/heightmaps/blank_1k.png");
-		height_map->load("../assets/heightmaps/blank_1k.png", 0.1f * 65536.0f / 160.0f);
+		height_map = std::make_unique<HeightMap>(max_levels, 0.1f * 65536.0f / 160.0f);
+		height_map->load("../assets/heightmaps/blank_1k.png");
 		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
 		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
 		clip_map->set_palette(palette);
@@ -199,10 +200,10 @@ namespace dukat
 
 	void Game::generate_terrain(void)
 	{
-		height_map = std::make_unique<HeightMap>(max_levels);
+		height_map = std::make_unique<HeightMap>(max_levels, 100.0f);
 		DiamondSquareGenerator gen(42);
 		gen.set_roughness(250.0f);
-		height_map->generate(513, 100.0f, gen);
+		height_map->generate(513, gen);
 		clip_map = std::make_unique<ClipMap>(this, max_levels, level_size, height_map.get());
 		clip_map->set_program(shader_cache->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
 		clip_map->set_palette(palette);
@@ -225,7 +226,7 @@ namespace dukat
 			direct_camera_control = false;
 			Vector3 target(observer_mesh->transform.position.x, 0.0f, observer_mesh->transform.position.z);
 			const Vector3 fixed_camera_offset(0.0f, 100.0f, -100.0f);
-			auto camera = std::make_unique<TerrainCamera>(this, target, 50.0f, 0.0f, pi_over_four);
+			auto camera = std::make_unique<OrbitCamera3>(this, target, 50.0f, 0.0f, pi_over_four);
 			camera->set_min_distance(5.0f);
 			camera->set_max_distance(100.0f);
 			camera->set_vertical_fov(settings.get_float("camera.fov"));
@@ -396,7 +397,7 @@ namespace dukat
 		{
 			// Move observer based on camera direction
 			auto dev = device_manager->active;
-			auto cam = dynamic_cast<TerrainCamera*>(renderer->get_camera());
+			auto cam = dynamic_cast<OrbitCamera3*>(renderer->get_camera());
 			auto offset = 10.0f * delta * (dev->ly * cam->transform.dir
 				+ dev->lx * cam->transform.right);
 			observer_mesh->transform.position += offset;

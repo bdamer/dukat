@@ -309,6 +309,12 @@
     <ClInclude Include="..\src\dukat\dukat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\orbitcamera3.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\orbitallight.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -496,6 +502,9 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\diamondsquaregenerator.cpp">
       <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\orbitcamera3.cpp">
+      <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -7,11 +7,17 @@ in vec3 v_tex_coord;
 // alpha (blend)
 in float v_alpha;
 
-layout(std140) uniform Light {
+struct Light {
 	vec4 position;
-	vec4 color;
+	vec4 ambient;
+	vec4 diffuse;
+	vec4 specular;
     vec4 params;
-} u_light;
+};
+
+layout(std140) uniform Lights {
+	Light l[5];
+} u_lights;
 
 // Modelview matrix is used to pass in grid parameters:
 // u_model[0].xy - Grid scale at current level [1..n]
@@ -50,7 +56,7 @@ out vec4 o_color;
 void main()
 {
     // 1st light is directional
-    vec3 light_dir = -u_light.position.xyz;
+    vec3 light_dir = -u_lights.l[0].position.xyz;
     
     // sample normal texture at current, fine level
     vec2 normal_f = texture(u_tex1, vec3(v_tex_coord.xy , u_model[3].z)).xy;
@@ -60,7 +66,7 @@ void main()
     // blend normals using alpha computed in vertex shader
     vec2 normal_mixed = mix(normal_f.xy, normal_c.xy, v_alpha);
 	
-    // Set normal y-component to 1.0 to stay conssiten with how the clipmap is rendered, 
+    // Set normal y-component to 1.0 to stay consistent with how the clipmap is rendered, 
     // i.e., y for elevation.
     vec3 normal = vec3(normal_mixed.x, 1.0, normal_mixed.y);
     

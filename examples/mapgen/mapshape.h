@@ -1,27 +1,24 @@
 #pragma once
 
 #include <dukat/mathutil.h>
-#include <dukat/vector2.h>
+#include <dukat/shape.h>
 
 namespace dukat
 {
-    struct Shape
+    class IslandShape : public Shape
     {
-        virtual bool inside(const Vector2& q) = 0;
-    };
-
-    struct IslandShape
-    {
+    private:
         const float island_factor; // 1.0 means no small islands; 2.0 leads to a lot
         const int bumps;
         const float start_angle;
         const float dip_angle;
         const float dip_width;
 
+    public:
         IslandShape(void) : island_factor(1.07f), bumps(1 + (std::rand() % 6)),
           start_angle(randf(0.0f, two_pi)), dip_angle(randf(0.0f, two_pi)), dip_width(randf(0.2f, 0.7f)) { }
 
-        bool inside(const Vector2& q) const
+        bool contains(const Vector2& q) const
         {
             auto angle = (float)std::atan2(q.x, q.y);
             auto length = 0.5f * (std::max(std::abs(q.x), std::abs(q.y)) + q.mag());

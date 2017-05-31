@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.12
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dukat", "dukat.vcxproj", "{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}"
 EndProject
@@ -36,6 +36,21 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sprites", "..\examples\spri
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mapgen", "..\examples\mapgen\mapgen.vcxproj", "{CDEA8FD1-5487-491C-828F-5D18B490C66A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "heatmap", "..\examples\heatmap\heatmap.vcxproj", "{CB154FCE-824E-4CBC-A1D2-A51663701DCB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "grid", "..\examples\grid\grid.vcxproj", "{E393C321-32FD-4B83-893F-A6347B21C620}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lighting", "..\examples\lighting\lighting.vcxproj", "{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
 	EndProjectSection
@@ -112,6 +127,30 @@ Global
 		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Release|x64.Build.0 = Release|x64
 		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Release|x86.ActiveCfg = Release|Win32
 		{CDEA8FD1-5487-491C-828F-5D18B490C66A}.Release|x86.Build.0 = Release|Win32
+		{CB154FCE-824E-4CBC-A1D2-A51663701DCB}.Debug|x64.ActiveCfg = Debug|x64
+		{CB154FCE-824E-4CBC-A1D2-A51663701DCB}.Debug|x64.Build.0 = Debug|x64
+		{CB154FCE-824E-4CBC-A1D2-A51663701DCB}.Debug|x86.ActiveCfg = Debug|Win32
+		{CB154FCE-824E-4CBC-A1D2-A51663701DCB}.Debug|x86.Build.0 = Debug|Win32
+		{CB154FCE-824E-4CBC-A1D2-A51663701DCB}.Release|x64.ActiveCfg = Release|x64
+		{CB154FCE-824E-4CBC-A1D2-A51663701DCB}.Release|x64.Build.0 = Release|x64
+		{CB154FCE-824E-4CBC-A1D2-A51663701DCB}.Release|x86.ActiveCfg = Release|Win32
+		{CB154FCE-824E-4CBC-A1D2-A51663701DCB}.Release|x86.Build.0 = Release|Win32
+		{E393C321-32FD-4B83-893F-A6347B21C620}.Debug|x64.ActiveCfg = Debug|x64
+		{E393C321-32FD-4B83-893F-A6347B21C620}.Debug|x64.Build.0 = Debug|x64
+		{E393C321-32FD-4B83-893F-A6347B21C620}.Debug|x86.ActiveCfg = Debug|Win32
+		{E393C321-32FD-4B83-893F-A6347B21C620}.Debug|x86.Build.0 = Debug|Win32
+		{E393C321-32FD-4B83-893F-A6347B21C620}.Release|x64.ActiveCfg = Release|x64
+		{E393C321-32FD-4B83-893F-A6347B21C620}.Release|x64.Build.0 = Release|x64
+		{E393C321-32FD-4B83-893F-A6347B21C620}.Release|x86.ActiveCfg = Release|Win32
+		{E393C321-32FD-4B83-893F-A6347B21C620}.Release|x86.Build.0 = Release|Win32
+		{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}.Debug|x64.ActiveCfg = Debug|x64
+		{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}.Debug|x64.Build.0 = Debug|x64
+		{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}.Debug|x86.ActiveCfg = Debug|Win32
+		{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}.Debug|x86.Build.0 = Debug|Win32
+		{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}.Release|x64.ActiveCfg = Release|x64
+		{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}.Release|x64.Build.0 = Release|x64
+		{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}.Release|x86.ActiveCfg = Release|Win32
+		{FC0AD009-FFB5-44ED-A5DD-59113CC0CB74}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
