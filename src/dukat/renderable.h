@@ -6,8 +6,8 @@ namespace dukat
 
 	enum RenderStage
 	{
-		SCENE,
-		OVERLAY
+        SCENE,      // scene geometry
+		OVERLAY     // no depth-buffer, used for UI
 	};
 
     // Abstract base class for objects that can be rendered.

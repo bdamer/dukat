@@ -124,20 +124,20 @@ namespace dukat
 	{
 		auto vertices = generate_sphere(1.0f, slices, stacks, invert);
 		
-		int numVertices = static_cast<int>(vertices.size()) / 6;
-		int numIndices = (slices + 1) * 2 * stacks;
+		int num_vertices = static_cast<int>(vertices.size()) / 6;
+		int num_indices = (slices + 1) * 2 * stacks;
 
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3));
 		attr.push_back(VertexAttribute(Renderer::at_normal, 3));
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, numVertices, numIndices, attr);
-		res->set_vertices(vertices, numVertices);
+		auto res = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, num_vertices, num_indices, attr);
+		res->set_vertices(vertices, num_vertices);
 
 		// First, generate vertex index arrays for drawing with glDrawElements
 		// All stacks, including top and bottom are covered with a triangle
 		// strip.
-		std::vector<GLushort> indices(numIndices);
+		std::vector<GLushort> indices(num_indices);
 
 		// top stack
 		int idx = 0;
@@ -165,11 +165,83 @@ namespace dukat
 		offset = 1 + (stacks - 2) * slices;  // triangle_strip indices start at 1 (0 is top vertex), and we advance one stack down as we go along
 		for (int j = 0; j < slices; j++)
 		{
-			indices[idx++] = (GLushort)(numVertices - 1); // zero based index, last element in array (bottom vertex)...
+			indices[idx++] = (GLushort)(num_vertices - 1); // zero based index, last element in array (bottom vertex)...
 			indices[idx++] = (GLushort)(offset + j);
 		}
-		indices[idx++] = (GLushort)(numVertices - 1);   // repeat first slice's idx for closing off shape
+		indices[idx++] = (GLushort)(num_vertices - 1);   // repeat first slice's idx for closing off shape
 		indices[idx++] = (GLushort)offset;
+
+		res->set_indices(indices);
+
+		return res;
+	}
+
+	std::unique_ptr<Mesh> MeshBuilder3::build_dome(int slices, int stacks, bool invert)
+	{
+		auto vertices = generate_dome(1.0f, slices, stacks, invert);
+		
+		int num_vertices = static_cast<int>(vertices.size()) / 6;
+		int num_indices = (stacks - 1) * (2 * (slices + 1) + 1);
+
+		std::vector<VertexAttribute> attr;
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3));
+		attr.push_back(VertexAttribute(Renderer::at_normal, 3));
+
+		auto res = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, num_vertices, num_indices, attr);
+		res->set_vertices(vertices, num_vertices);
+
+		// First, generate vertex index arrays for drawing with glDrawElements
+		// All stacks, including top and bottom are covered with a triangle
+		// strip.
+		std::vector<GLushort> indices(num_indices);
+
+		// top stack
+		int idx = 0;
+		if (!invert) 
+		{
+			for (int j = 0; j < slices; j++) {
+				indices[idx++] = (GLushort)(j + 1); // 0 is top vertex, 1 is first for first stack
+				indices[idx++] = 0;
+			}
+			indices[idx++] = (GLushort)1; // repeat first slice's idx for closing off shape
+			indices[idx++] = 0;
+		}
+		else
+		{
+			for (int j = slices; j > 0; j--) {
+				indices[idx++] = (GLushort)(j); // 0 is top vertex, j is last for first stack
+				indices[idx++] = 0;
+			}
+			indices[idx++] = (GLushort)slices; // repeat last slice's idx for closing off shape
+			indices[idx++] = 0;
+		}
+		indices[idx++] = Renderer::primitive_restart; 
+
+		// middle stacks:
+		// Strip indices are relative to first index belonging to strip, NOT relative to first vertex/normal pair in array
+		int offset;
+		for (int i = 0; i < (stacks - 2); i++) {
+			offset = 1 + i * slices;		// triangle_strip indices start at 1 (0 is top vertex), and we advance one stack down as we go along
+			if (!invert) 
+			{
+				for (int j = 0; j < slices; j++) {
+					indices[idx++] = (GLushort)(offset + j + slices);
+					indices[idx++] = (GLushort)(offset + j);
+				}
+				indices[idx++] = (GLushort)(offset + slices);      // repeat first slice's idx for closing off shape
+				indices[idx++] = (GLushort)offset;
+			}
+			else
+			{
+				for (int j = slices - 1; j >= 0; j--) {
+					indices[idx++] = (GLushort)(offset + j + slices);
+					indices[idx++] = (GLushort)(offset + j);
+				}
+				indices[idx++] = (GLushort)(offset + 2 * slices - 1);      // repeat first slice's idx for closing off shape
+				indices[idx++] = (GLushort)offset + slices - 1;
+			}
+			indices[idx++] = Renderer::primitive_restart; 
+		}
 
 		res->set_indices(indices);
 

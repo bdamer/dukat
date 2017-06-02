@@ -91,9 +91,10 @@ namespace dukat
 		}
 #endif
 
+		window->clear();
+
 		// Scene pass
 		glEnable(GL_DEPTH_TEST);
-		window->clear();
 		for (auto& it : meshes)
 		{
 			if (it->visible && it->stage == RenderStage::SCENE)
@@ -101,6 +102,9 @@ namespace dukat
 				it->render(this);
 			}
 		}
+
+		// Effects pass		
+		glDisable(GL_DEPTH_TEST);
 
 #if OPENGL_VERSION >= 30
 		if (effects_enabled)
@@ -139,8 +143,6 @@ namespace dukat
 			glViewport(0, 0, window->get_width(), window->get_height());
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			glDisable(GL_DEPTH_TEST);
-
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, fb0->texture);
 			glActiveTexture(GL_TEXTURE1);
@@ -159,7 +161,6 @@ namespace dukat
 #endif
 
 		// Overlay pass
-		glDisable(GL_DEPTH_TEST);
 		for (auto& it : meshes)
 		{
 			if (it->visible && it->stage == RenderStage::OVERLAY)

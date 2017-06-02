@@ -12,7 +12,9 @@ namespace dukat
 	class Game : public Game3
 	{
 	private:
-		const int grid_size = 64;
+		static const int grid_size;
+		static const float scale_factor; // terrain z-scale factor
+
 		MeshGroup debug_meshes;
 		MeshGroup object_meshes;
 		MeshGroup overlay_meshes;
@@ -27,7 +29,7 @@ namespace dukat
 		Vector3 camera_target;
 
 		bool wireframe; // flag to render wireframe mesh
-		int tile_spacing = 1;
+		int tile_spacing; // size of grid tiles
 
 		void init(void);
 		void update(float delta);
@@ -37,7 +39,7 @@ namespace dukat
 		void handle_keyboard(const SDL_Event& e);
 
 	public:
-		Game(Settings& settings) : Game3(settings), wireframe(false) { }
+		Game(Settings& settings) : Game3(settings), wireframe(false), tile_spacing(2) { }
 		~Game(void) { }
 
 		void toggle_debug(void);

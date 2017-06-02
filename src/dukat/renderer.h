@@ -35,6 +35,9 @@ namespace dukat
 			_COUNT
 		};
 
+		// Used to restart primitives in batched call
+		static constexpr const GLushort primitive_restart = (GLushort)-1;
+
 		// Limits
 		static constexpr const int max_texture_units = 4;
 

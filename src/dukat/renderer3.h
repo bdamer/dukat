@@ -22,8 +22,6 @@ namespace dukat
 	class Renderer3 : public Renderer
 	{
 	public:
-		// Used to restart primitives in batched call
-		static constexpr const GLushort primitive_restart = -1;
 		// Size of FBO used for effects
 		static constexpr const int fbo_size = 256;
 		// Lighting constants

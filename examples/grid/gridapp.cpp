@@ -20,9 +20,14 @@
 
 namespace dukat
 {
+	const int Game::grid_size = 64;
+	const float Game::scale_factor = 25.0f;
+
 	void Game::init(void)
 	{
 		Game3::init();
+
+		renderer->disable_effects();
 
 		// White Directional Light
 		// TODO: currently not used
@@ -32,7 +37,7 @@ namespace dukat
 		light0->diffuse = { 0.4f, 0.4f, 0.4f, 1.0f };
 		light0->specular = { 0.4f, 0.4f, 0.4f, 1.0f };
 		
-		camera_target.x = camera_target.z = 0.5f * (float)(grid_size);
+		camera_target.x = camera_target.z = 0.5f * (float)(grid_size * tile_spacing);
 
 		auto camera = std::make_unique<OrbitCamera3>(this, camera_target, 50.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(5.0f);
@@ -48,7 +53,7 @@ namespace dukat
 
 		// Generate heightmap
 		heightmap = std::make_unique<HeightMap>(1);
-		heightmap->set_scale_factor(25.0f);
+		heightmap->set_scale_factor(scale_factor);
 		DiamondSquareGenerator gen(123);
 		gen.set_range(0.0f, 1.0f);
 		gen.set_roughness(120.0f);
@@ -127,6 +132,16 @@ namespace dukat
 #endif
 
 		grid_mesh->set_texture(terrain_texture.get(), 1);
+
+		// Add skydome mesh as last object mesh
+		MeshBuilder3 mb3;
+		auto skydome_mesh = object_meshes.create_instance();
+		skydome_mesh->set_mesh(mesh_cache->put("skydome", mb3.build_dome(6, 6, true)));
+		skydome_mesh->set_program(shader_cache->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
+		Material mat;
+		mat.ambient = Color{0.66f,0.78f,0.79f,1.0f};
+		mat.diffuse = Color{0.22f,0.41f,0.75f,1.0f};
+		skydome_mesh->set_material(mat);
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
@@ -208,7 +223,7 @@ namespace dukat
 		auto cam = dynamic_cast<OrbitCamera3*>(renderer->get_camera());
 		camera_target += 10.0f * delta * (dev->ly * cam->transform.dir
 				+ dev->lx * cam->transform.right);
-		camera_target.y = 0.0;
+		camera_target.y = 0.5f * scale_factor * (float)tile_spacing;
 		cam->set_look_at(camera_target);
 
 		object_meshes.update(delta);

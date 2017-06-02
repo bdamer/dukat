@@ -25,9 +25,6 @@ namespace dukat
 	{
 		Game3::init();
 
-		// Sky Blue Sky
-		glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
-
 		// Yellow Directional Light
 		auto light0 = renderer->get_light(Renderer3::dir_light_idx);
 		light0->position = { 0.0f, -0.5f, 0.5f }; // light direction stored as position
@@ -72,6 +69,16 @@ namespace dukat
 		std::srand(28);
 		heatmap->add_emitters(24, 36);
 //		heatmap->add_emitters(12, 64);
+
+		// Add skydome mesh as last object mesh
+		MeshBuilder3 mb3;
+		auto skydome_mesh = object_meshes.create_instance();
+		skydome_mesh->set_mesh(mesh_cache->put("skydome", mb3.build_dome(12, 12, true)));
+		skydome_mesh->set_program(shader_cache->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
+		Material mat;
+		mat.ambient = Color{0.66f,0.78f,0.79f,1.0f};
+		mat.diffuse = Color{0.22f,0.41f,0.75f,1.0f};
+		skydome_mesh->set_material(mat);
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
