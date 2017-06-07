@@ -25,7 +25,8 @@ void main()
 {
     v_tex_coord = a_position.xyz;
     // Move horizon down a little bit to provide better coverage and adjust for camera position
-    vec4 pos = u_cam.proj_pers * u_cam.view * (u_model * (a_position - vec4(0, 0.2, 0, 0)) + u_cam.position);
+    vec4 offset = vec4(0, -0.025, 0, 0);
+    vec4 pos = u_cam.proj_pers * u_cam.view * (u_model * (a_position + offset) + u_cam.position);
     // Z=W to trick depth buffer into rendering skydome at far-z
     gl_Position = pos.xyww;
 }

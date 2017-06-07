@@ -28,7 +28,7 @@ namespace dukat
 		// Puts texture entry into cache.
 		void put(const std::string& name, std::unique_ptr<Texture> texture) { textures.insert( std::make_pair(name, std::move(texture))); }
 		// Helper method to load a surface from a file.
-		Surface* load_surface(const std::string& filename);
+		Surface* load_surface(const std::string& filename, bool hflip = false, bool vflip = false);
 
 		// Frees all cached textures.
 		void free_all(void);

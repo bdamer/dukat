@@ -16,7 +16,7 @@ namespace dukat
 		free_all();
 	}
 
-	Surface* TextureCache::load_surface(const std::string& filename)
+	Surface* TextureCache::load_surface(const std::string& filename, bool hflip, bool vflip)
 	{
 		if (surfaces.count(filename) == 0)
 		{
@@ -42,10 +42,14 @@ namespace dukat
 				surface->convert_format(SDL_PIXELFORMAT_RGBA8888);
 				break;
 			}
-			if (flip)
+			if (hflip)
 			{
 				// Flip image from SDL to OpenGL orientation
 				surface->flip_horizontal();
+			}
+			if (vflip)
+			{
+				surface->flip_vertical();
 			}
 			surfaces[filename] = std::move(surface);
 		}
@@ -55,7 +59,7 @@ namespace dukat
 	std::unique_ptr<Texture> TextureCache::load(const std::string& filename, TextureFilterProfile profile)
 	{
 		logger << "Loading texture [" << filename << "]: " << std::endl;
-		auto surface = load_surface(filename);
+		auto surface = load_surface(filename, flip);
 		logger << "Created " << surface->get_width() << "x" << surface->get_height() << " " 
 			<< SDL_GetPixelFormatName(surface->get_surface()->format->format) << " surface." << std::endl;
 		return std::make_unique<Texture>(*surface, profile);

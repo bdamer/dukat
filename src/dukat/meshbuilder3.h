@@ -25,6 +25,8 @@ namespace dukat
 		std::unique_ptr<Mesh> build_points(const std::vector<Vector3>& points, const Color& color);
 		// Creates a new textured cube mesh.
 		std::unique_ptr<Mesh> build_cube(void);
+		// Creates a new textured cube mesh using a single set of texture coordinates.		
+		std::unique_ptr<Mesh> build_cube_single_face(void);
 		// Creates a new sphere mesh.
 		std::unique_ptr<Mesh> build_sphere(int slices, int stacks, bool invert = false);
 		// Creates a new dome mesh.

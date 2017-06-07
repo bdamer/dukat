@@ -87,14 +87,18 @@ namespace dukat
 		auto info_text = create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		std::stringstream ss;
-		ss << "<#magenta>"
-			<< "<F1> Toggle light animation" << std::endl
+		ss << "<#white>"
+			<< "<,.> Change Sim Speed" << std::endl
+			<< "<e> Toggle Emitters" << std::endl
+			<< "<F1> Toggle Wirframe" << std::endl
+			<< "<F2> Toggle Light Animation" << std::endl
+			<< "<F5> Save Heatmap" << std::endl
+			<< "<F6> Load Heatmap" << std::endl
 			<< "<F11> Toggle Info" << std::endl
 			<< std::endl;
 		info_text->set_text(ss.str());
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
-		info_mesh->visible = false;
 
 		auto multiplier_text = create_text_mesh(1.0f / 20.0f);
 		multiplier_text->transform.position = { -1.6f, 0.85f, 0.0f };
@@ -157,6 +161,9 @@ namespace dukat
 			break;
 
 		case SDLK_F1:
+			renderer->toggle_wireframe();
+			break;
+		case SDLK_F2:
 			animate_light = !animate_light;
 			break;
 		case SDLK_F5:

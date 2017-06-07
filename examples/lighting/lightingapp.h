@@ -19,6 +19,7 @@ namespace dukat
 		MeshInstance* info_mesh;
 
 		OrbitalLight light;
+		bool animate_light;
 
 		void init(void);
 		void update(float delta);
@@ -28,7 +29,7 @@ namespace dukat
 		void handle_keyboard(const SDL_Event& e);
 
 	public:
-		Game(Settings& settings) : Game3(settings), light(10.0f) { }
+		Game(Settings& settings) : Game3(settings), light(10.0f), animate_light(true) { }
 		~Game(void) { }
 
 		void toggle_debug(void);

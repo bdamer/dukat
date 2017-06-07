@@ -19,6 +19,8 @@ namespace dukat
 	{
 		Game3::init();
 
+		renderer->disable_effects();
+
 		// White Directional Light
 		auto light0 = renderer->get_light(Renderer3::dir_light_idx);
 		light0->position = { 1.0f, 1.0f, 1.0f }; // light direction stored as position
@@ -83,16 +85,16 @@ namespace dukat
 		overlay_meshes.mat_model.identity();
 
 		auto info_text = create_text_mesh(1.0f / 20.0f);
-		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
+		info_text->transform.position = { -1.0f, -0.8f, 0.0f };
 		std::stringstream ss;
-		ss << "<#magenta>"
+		ss << "<#white>"
 			<< "<F1> Toggle Wirframe" << std::endl
+			<< "<F2> Toggle light animation" << std::endl
 			<< "<F11> Toggle Info" << std::endl
 			<< std::endl;
 		info_text->set_text(ss.str());
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
-		info_mesh->visible = false;
 		
 		debug_meshes.stage = RenderStage::OVERLAY;
 		debug_meshes.visible = debug;
@@ -129,6 +131,9 @@ namespace dukat
 		case SDLK_F1:
 			renderer->toggle_wireframe();
 			break;
+		case SDLK_F2:
+			animate_light = !animate_light;
+			break;
 		case SDLK_F11:
 			info_mesh->visible = !info_mesh->visible;
 			break;
@@ -144,7 +149,8 @@ namespace dukat
 		overlay_meshes.update(delta);
 		debug_meshes.update(delta);
 
-		light.update(delta, *renderer->get_light(Renderer3::dir_light_idx));
+		if (animate_light)
+			light.update(delta, *renderer->get_light(Renderer3::dir_light_idx));
 	}
 
 	void Game::render(void)

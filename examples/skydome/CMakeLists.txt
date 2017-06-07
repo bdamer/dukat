@@ -1,0 +1,5 @@
+include_directories(../../src)
+
+add_executable(skydome stdafx.cpp skydomeapp.cpp)
+target_link_libraries(skydome dukat ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} 
+    ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${X11_Xext_LIB})
