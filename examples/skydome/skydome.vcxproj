@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{84194A2F-9755-4489-BC1D-97AFF1DD4FE2}</ProjectGuid>
+    <ProjectGuid>{4CB59389-4EE7-46D9-9B1D-AA62BC28E78C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>skydome</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>

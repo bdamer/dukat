@@ -19,7 +19,7 @@ namespace dukat
             // transition to next phase
             cur_duration -= phase.duration;
             cur_phase++;
-            if (cur_phase >= phases.size())
+            if (cur_phase >= (int)phases.size())
             {
                 cur_phase = 0;
             }
@@ -27,7 +27,7 @@ namespace dukat
         }
 
         const auto& p0 = phases[cur_phase];
-        const auto& p1 = (cur_phase < (phases.size() - 1)) ? phases[cur_phase + 1] : phases[0];
+        const auto& p1 = (cur_phase < ((int)phases.size() - 1)) ? phases[cur_phase + 1] : phases[0];
 
         Material mat;
         p0.color_trans(cur_duration, p0.duration, p0.mat.ambient, p1.mat.ambient, mat.ambient);

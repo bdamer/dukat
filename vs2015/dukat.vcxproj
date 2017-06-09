@@ -170,6 +170,7 @@
     <ClInclude Include="..\src\dukat\dukat.h" />
     <ClInclude Include="..\src\dukat\effect2.h" />
     <ClInclude Include="..\src\dukat\effect3.h" />
+    <ClInclude Include="..\src\dukat\environment.h" />
     <ClInclude Include="..\src\dukat\eulerangles.h" />
     <ClInclude Include="..\src\dukat\event.h" />
     <ClInclude Include="..\src\dukat\firstpersoncamera3.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="..\src\dukat\timermanager.h" />
     <ClInclude Include="..\src\dukat\transform2.h" />
     <ClInclude Include="..\src\dukat\transform3.h" />
+    <ClInclude Include="..\src\dukat\transition.h" />
     <ClInclude Include="..\src\dukat\vector2.h" />
     <ClInclude Include="..\src\dukat\vector3.h" />
     <ClInclude Include="..\src\dukat\vertextypes2.h" />
@@ -250,6 +252,7 @@
     <ClCompile Include="..\src\dukat\dds.cpp" />
     <ClCompile Include="..\src\dukat\devicemanager.cpp" />
     <ClCompile Include="..\src\dukat\diamondsquaregenerator.cpp" />
+    <ClCompile Include="..\src\dukat\environment.cpp" />
     <ClCompile Include="..\src\dukat\eulerangles.cpp" />
     <ClCompile Include="..\src\dukat\firstpersoncamera3.cpp" />
     <ClCompile Include="..\src\dukat\fixedcamera3.cpp" />
