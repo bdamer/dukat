@@ -31,9 +31,10 @@ namespace dukat
 		void render(void);
 
         int multiplier; // Simulation multiplier
+		float total_time;
 
 	public:
-		Game(Settings& settings) : Game3(settings), multiplier(1) { }
+		Game(Settings& settings) : Game3(settings), multiplier(1), total_time(0.0f) { }
 		~Game(void) { }
 
 		void toggle_debug(void);

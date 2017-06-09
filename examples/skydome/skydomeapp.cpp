@@ -17,6 +17,9 @@
 
 namespace dukat
 {
+	// Factor that determines how long an in-game second is. (1 in-game hour = 60 real-world seconds)
+	const float time_factor = 60.0f;
+
 	std::unique_ptr<Mesh> build_plane(float max_u, float max_t)
 	{
 		std::vector<VertexAttribute> attr;
@@ -112,7 +115,8 @@ namespace dukat
 		auto multiplier_text = create_text_mesh(1.0f / 20.0f);
 		multiplier_text->transform.position = { -1.3f, 0.85f, 0.0f };
 		std::stringstream ss;
-		ss << "<#magenta>Speed " << multiplier << "x</>";
+		ss << "<#white>" << multiplier << "x" << std::endl
+			<< "00:00</>";
 		multiplier_text->set_text(ss.str());
 		multiplier_text->transform.update();
 		mult_mesh = static_cast<TextMeshInstance*>(overlay_meshes.add_instance(std::move(multiplier_text)));
@@ -155,9 +159,6 @@ namespace dukat
 	void Game::init_environment(void)
 	{
 		env = std::make_unique<Environment>(this, skydome_mesh);
-
-		// Factor that determines how long an in-game second is. (1 in-game hour = 60 real-world seconds)
-        const float time_factor = 60.0f;
 
         // Phase 0: Dawn (06:00-10:00)
         Environment::Phase dawn_phase;
@@ -240,20 +241,10 @@ namespace dukat
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_COMMA:
-			{
-				multiplier = std::max(1, multiplier / 2);
-				std::stringstream ss;
-				ss << "<#magenta>Speed " << multiplier << "x</>";
-				mult_mesh->set_text(ss.str());
-			}
+			multiplier = std::max(1, multiplier / 2);
 			break;
 		case SDLK_PERIOD:
-			{
-				multiplier = std::min(64, multiplier * 2);
-				std::stringstream ss;
-				ss << "<#magenta>Speed " << multiplier << "x</>";
-				mult_mesh->set_text(ss.str());
-			}
+			multiplier = std::min(64, multiplier * 2);
 			break;
 		case SDLK_F1:
 			renderer->toggle_wireframe();
@@ -273,6 +264,7 @@ namespace dukat
 	{
 		Game3::update(delta);
 		env->update(delta * (float)multiplier);
+		total_time += delta * (float)multiplier;
 
 		// Update sun mesh position
 		auto l0 = renderer->get_light(Renderer3::dir_light_idx);
@@ -307,6 +299,16 @@ namespace dukat
 			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
 		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
 		debug_text->set_text(ss.str());
+
+		// Compute wallclock time from absolute counter
+		ss.str("");
+		float wallclock_time = (total_time * time_factor) + 6.0f * 60.0f * 60.0f;
+		int hours = (int)(wallclock_time / 3600.0f) % 24;
+		wallclock_time -= (float)(hours * 3600);
+		int minutes = (int)(wallclock_time / 60.0f) % 60;
+		ss << "<#white>" << multiplier << "x" << std::endl
+			<< std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2) << minutes << "</>";
+		mult_mesh->set_text(ss.str());
 	}
 }
 

@@ -41,8 +41,9 @@ void main()
 	vec4 t2 = texture(u_tex0, v_tex_coord);
 	color = mix(color, t2, u_material.custom.g);
 
-	// Include corona color based on light position
-	float s = clamp(dot(v_tex_coord, light_pos), 0.0, 1.0);
+	// Include corona color based on light position; dot-value is multiplied by small
+	// constant to achieve disc effect at the center of the corona
+	float s = clamp(1.015 * dot(v_tex_coord, light_pos), 0.0, 1.0);
 	color = mix(color, u_material.specular, pow(s, u_material.custom.r));
 
 	// TODO: dither color to avoid banding
