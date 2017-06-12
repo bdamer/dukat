@@ -1,4 +1,4 @@
-#version 140
+#version 150
 ///
 // Fullscreen fx pass vertex shader.
 ///

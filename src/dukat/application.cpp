@@ -11,7 +11,7 @@
 namespace dukat
 {
 	Application::Application(Settings& settings)
-		: settings(settings), title(settings.get_string("window.title")), paused(false), done(false)
+		: settings(settings), title(settings.get_string("window.title")), paused(false), done(false), runtime(0.0f)
 	{
 		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");
 		window = std::make_unique<Window>(settings.get_int("window.width", 640), settings.get_int("window.height", 480), 
@@ -43,7 +43,9 @@ namespace dukat
 			device_manager->update();
 			if (!paused)
 			{
-				update(((float)(ticks - last_update)) / 1000.0f);
+				auto delta = ((float)(ticks - last_update)) / 1000.0f;
+				runtime += delta;
+				update(delta);
 			}
 			last_update = ticks;
 

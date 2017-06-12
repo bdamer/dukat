@@ -14,6 +14,7 @@ namespace dukat
 	private:
 		const std::string title;
 		int last_fps;
+		float runtime; // time since program start in seconds
 		bool paused;
 		bool done;
 
@@ -48,6 +49,7 @@ namespace dukat
 		bool is_done(void) const { return done; }
 		void set_done(bool done) { this->done = done; }
 		int get_fps(void) const { return last_fps; }
+		float get_time(void) const { return runtime; }
 
 		Window* get_window(void) const { return window.get(); }
 		DeviceManager* get_devices(void) const { return device_manager.get(); }
