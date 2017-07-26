@@ -125,6 +125,12 @@ namespace dukat
 		}
 
 		window->present();
+
+#if OPENGL_VERSION < 30
+		// invalidate active program to force uniforms rebind during
+		// next frame
+		active_program = 0;
+#endif
 	}
 
 	void Renderer2::update_uniforms(void)

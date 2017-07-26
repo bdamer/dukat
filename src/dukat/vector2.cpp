@@ -11,8 +11,8 @@ namespace dukat
 
 	Vector2 Vector2::rotate(float theta) const
 	{
-		float cs = cos(theta);
-		float sn = sin(theta);
+		float cs = std::cos(theta);
+		float sn = std::sin(theta);
 		return Vector2(x * cs - y * sn, x * sn + y * cs);
 	}
 

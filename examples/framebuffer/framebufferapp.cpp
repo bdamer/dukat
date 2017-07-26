@@ -1,6 +1,5 @@
 // framebufferapp.cpp : Defines the entry point for the console application.
 //
-
 #include "stdafx.h"
 #include "framebufferapp.h"
 
@@ -24,7 +23,8 @@ namespace dukat
 		Game3::init();
 
 		// Top-down camera
-		auto camera = std::make_unique<FixedCamera3>(get_window(), Vector3{ 0.0f, 2.5f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3::unit_z);
+		auto camera = std::make_unique<FixedCamera3>(get_window(), 
+			Vector3{ 0.0f, 2.5f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3::unit_z);
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
@@ -34,12 +34,9 @@ namespace dukat
 		mesh_cache->put("quad", mb2.build_textured_quad());
 
 		// Generate framebuffer and texture
-		fbo = std::make_unique<FrameBuffer>(texture_size, texture_size, false, false);
-        fb_texture = std::make_unique<Texture>(texture_size, texture_size, ProfileLinear);
-        glBindTexture(GL_TEXTURE_2D, fb_texture->id);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, texture_size, texture_size, 0, GL_RGB, GL_FLOAT, nullptr);
+		fbo = std::make_unique<FrameBuffer>(texture_size, texture_size, true, false);
+		fb_texture = std::make_unique<Texture>(texture_size, texture_size, ProfileLinear);
+		fb_texture->id = fbo->texture;
 
 		fb_program = shader_cache->get_program("fx_animation.vsh", "fx_animation.fsh");
 
@@ -48,13 +45,13 @@ namespace dukat
 		overlay_meshes.mat_model.identity();
 
 		quad_mesh = overlay_meshes.create_instance();
+		quad_mesh->transform.position.z = 0.5f;
 		quad_mesh->set_mesh(mesh_cache->get("quad"));
 		quad_mesh->set_texture(fb_texture.get());
-		//quad_mesh->set_texture(texture_cache->get("dukat.png"));
 		quad_mesh->set_program(shader_cache->get_program("sc_ui_texture.vsh", "sc_texture.fsh"));
 
 		auto info_text = create_text_mesh(1.0f / 20.0f);
-		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
+		info_text->transform.position = { -1.5f, -0.5f, 0.5f };
 		std::stringstream ss;
 		ss << "<#magenta><F1> Nothing" << std::endl
 			<< "<F11> Toggle Info" << std::endl
@@ -68,8 +65,7 @@ namespace dukat
 		debug_meshes.mat_model.identity();
 
 		auto debug_text = create_text_mesh(1.0f / 20.0f);
-		debug_text->transform.position.x = -1.0f;
-		debug_text->transform.position.y = 1.0f;
+		debug_text->transform.position = { -1.5f, 0.8f, 0.0f };
 		debug_text->transform.update();
 		debug_meshes.add_instance(std::move(debug_text));
 	}
@@ -103,9 +99,6 @@ namespace dukat
 
         renderer->switch_shader(fb_program);
 		fb_program->set("u_time", get_time());
-
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb_texture->id, 0);
-
         mesh_cache->get("quad")->render(fb_program);
 
         fbo->unbind();
@@ -137,6 +130,13 @@ namespace dukat
 			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
 		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
 		debug_text->set_text(ss.str());
+	}
+
+	void Game::release(void)
+	{
+		// texture is owned by FBO - set to 0 to prevent attempt to free
+		fb_texture->id = 0;
+		Game3::release();
 	}
 }
 

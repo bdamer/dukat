@@ -12,6 +12,9 @@ namespace dukat
 		RenderLayer2* layer;
 
 	public:
+		Effect2(void) { }
+		virtual ~Effect2(void) { }
+
 		// Called to render this effect on the current layer.
 		virtual void render(Renderer2* renderer, const AABB2& camera_bb) = 0;
 		void set_layer(RenderLayer2* layer) { this->layer = layer; }

@@ -77,7 +77,7 @@ namespace dukat
 		return min + rand() % (max - min);
 	}
 
-	// normalizes the value of an angle between 0 and 2PI
+	// normalizes the value of an angle between 0 and 2 pi
 	inline void normalize_angle(float& angle)
 	{
 		if (angle < 0)

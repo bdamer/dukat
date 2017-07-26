@@ -70,6 +70,8 @@ namespace dukat
 			(glewIsExtensionSupported("GL_EXT_texture_filter_anisotropic") ? "yes" : "no") << std::endl;
 		logger << "GL_EXT_vertex_array_object: " << 
 			(glewIsExtensionSupported("GL_EXT_vertex_array_object") ? "yes" : "no") << std::endl;
+		logger << "GL_EXT_framebuffer_object: " <<
+			(glewIsExtensionSupported("GL_EXT_framebuffer_object") ? "yes" : "no") << std::endl;
 
 #ifdef _DEBUG
 		gl_check_error();

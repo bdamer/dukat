@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CDEA8FD1-5487-491C-828F-5D18B490C66A}</ProjectGuid>
+    <ProjectGuid>{BC48F329-BCD6-45DF-B609-6D8F8F1C7BC2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>framebuffer</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>

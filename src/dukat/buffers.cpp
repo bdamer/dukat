@@ -3,6 +3,33 @@
 #include "log.h"
 #include "perfcounter.h"
 
+// Rebind EXT_framebuffer_object methods
+#if OPENGL_VERSION < 30
+
+#undef glGenFramebuffers
+#undef glGenRenderbuffers
+#undef glBindFramebuffer
+#undef glBindRenderbuffer
+#undef glFramebufferTexture2D
+#undef glRenderbufferStorage
+#undef glFramebufferRenderbuffer
+#undef glCheckFramebufferStatus
+#undef glDeleteFramebuffers
+#undef glDeleteRenderbuffers
+
+#define glGenFramebuffers glGenFramebuffersEXT
+#define glGenRenderbuffers glGenRenderbuffersEXT
+#define glBindFramebuffer glBindFramebufferEXT
+#define glBindRenderbuffer glBindRenderbufferEXT
+#define glFramebufferTexture2D glFramebufferTexture2DEXT
+#define glRenderbufferStorage glRenderbufferStorageEXT
+#define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+#define glCheckFramebufferStatus glCheckFramebufferStatusEXT
+#define glDeleteFramebuffers glDeleteFramebuffersEXT
+#define glDeleteRenderbuffers glDeleteRenderbuffersEXT
+
+#endif
+
 namespace dukat
 {
 	void VertexBuffer::load_data(int index, GLenum target, int count, GLsizei stride, const GLvoid* data, GLenum usage)

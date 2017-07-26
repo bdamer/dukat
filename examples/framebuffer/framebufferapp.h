@@ -27,6 +27,7 @@ namespace dukat
 		void update_framebuffer(float delta);
 		void render(void);
 		void handle_keyboard(const SDL_Event& e);
+		void release(void);
 
 	public:
 		Game(Settings& settings) : Game3(settings) { }
