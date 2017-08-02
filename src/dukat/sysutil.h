@@ -40,4 +40,7 @@ namespace dukat
 
 	// Writes the content of the current screen buffer to a file.
 	void save_screenshot(const std::string& filename);
+
+	// Computes hash value of provided string.
+	uint32_t compute_hash(const std::string&);
 }
