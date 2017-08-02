@@ -28,7 +28,6 @@ namespace dukat
 
 		Vector3 camera_target;
 
-		bool wireframe; // flag to render wireframe mesh
 		int tile_spacing; // size of grid tiles
 
 		void init(void);
@@ -39,7 +38,7 @@ namespace dukat
 		void handle_keyboard(const SDL_Event& e);
 
 	public:
-		Game(Settings& settings) : Game3(settings), wireframe(false), tile_spacing(2) { }
+		Game(Settings& settings) : Game3(settings), tile_spacing(2) { }
 		~Game(void) { }
 
 		void toggle_debug(void);

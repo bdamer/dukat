@@ -16,6 +16,7 @@ namespace dukat
 	class MeshInstance
 	{
 	private:
+		std::string name;
 		Mesh* mesh;
 #if OPENGL_VERSION >= 30
 		std::unique_ptr<GenericBuffer> uniform_buffers;
@@ -31,6 +32,8 @@ namespace dukat
 		MeshInstance(void);
 		virtual ~MeshInstance(void) { }
 
+		void set_name(const std::string& name) { this->name = name; }
+		const std::string& get_name(void) const { return name; }
 		void set_mesh(Mesh* mesh) { this->mesh = mesh; }
 		Mesh* get_mesh(void) const { return mesh; }
 		void set_material(const Material& material);
