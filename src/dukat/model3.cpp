@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "model3.h"
-#include <dukat/log.h>
-#include <dukat/sysutil.h>
-#include <dukat/vertextypes3.h>
+#include "log.h"
+#include "sysutil.h"
+#include "vertextypes3.h"
 
 namespace dukat
 {

@@ -3,10 +3,10 @@
 
 #include "stdafx.h"
 #include "modelviewer.h"
-#include "model3.h"
-#include "ms3dmodel.h"
 
 #include <dukat/log.h>
+#include <dukat/model3.h>
+#include <dukat/ms3dmodel.h>
 #include <dukat/orbitcamera3.h>
 #include <dukat/renderer3.h>
 #include <dukat/settings.h>

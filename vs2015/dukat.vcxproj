@@ -193,6 +193,9 @@
     <ClInclude Include="..\src\dukat\meshgroup.h" />
     <ClInclude Include="..\src\dukat\meshinstance.h" />
     <ClInclude Include="..\src\dukat\messenger.h" />
+    <ClInclude Include="..\src\dukat\model3.h" />
+    <ClInclude Include="..\src\dukat\modelconverter.h" />
+    <ClInclude Include="..\src\dukat\ms3dmodel.h" />
     <ClInclude Include="..\src\dukat\obb2.h" />
     <ClInclude Include="..\src\dukat\octreenode.h" />
     <ClInclude Include="..\src\dukat\orbitallight.h" />
@@ -271,6 +274,8 @@
     <ClCompile Include="..\src\dukat\meshgroup.cpp" />
     <ClCompile Include="..\src\dukat\meshinstance.cpp" />
     <ClCompile Include="..\src\dukat\messenger.cpp" />
+    <ClCompile Include="..\src\dukat\model3.cpp" />
+    <ClCompile Include="..\src\dukat\ms3dmodel.cpp" />
     <ClCompile Include="..\src\dukat\obb2.cpp" />
     <ClCompile Include="..\src\dukat\orbitcamera3.cpp" />
     <ClCompile Include="..\src\dukat\particlemanager.cpp" />

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <dukat/aabb3.h>
-#include <dukat/material.h>
-#include <dukat/transform3.h>
+#include "aabb3.h"
+#include "material.h"
+#include "transform3.h"
 
 namespace dukat
 {
