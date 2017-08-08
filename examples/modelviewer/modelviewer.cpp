@@ -14,63 +14,6 @@
 
 namespace dukat
 {
-	std::unique_ptr<MeshGroup> build_mesh_group(Game* game, const Model3& model)
-	{
-		auto res = std::make_unique<MeshGroup>();
-
-		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(dukat::Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
-		attr.push_back(VertexAttribute(dukat::Renderer::at_normal, 3, offsetof(VertexPosNorTex, nor)));
-		attr.push_back(VertexAttribute(dukat::Renderer::at_texcoord, 2, offsetof(VertexPosNorTex, u)));
-
-		auto mesh_cache = game->get_meshes();
-
-		// Create instance for each mesh
-		const auto& indices = model.get_indices();
-		const auto& vertices = model.get_vertices();
-		for (const auto& m : model.get_meshes())
-		{
-			Mesh* mesh;
-			std::string mesh_id = model.get_name() + "|" + m.name;
-			if (mesh_cache->contains(mesh_id))
-			{
-				mesh = mesh_cache->get(mesh_id);
-			}
-			else
-			{
-				auto src_mesh = std::make_unique<Mesh>(GL_TRIANGLES, m.vertex_count, m.index_count, attr);
-				src_mesh->set_vertices(reinterpret_cast<const GLfloat*>(vertices.data() + m.vertex_offset), m.vertex_count);
-				if (m.index_count > 0)
-				{
-					src_mesh->set_indices(reinterpret_cast<const GLushort*>(indices.data() + m.index_offset), m.index_count);
-				}
-				mesh = src_mesh.get();
-				// Store mesh in cache
-				mesh_cache->put(mesh_id, std::move(src_mesh));
-			}
-
-			// Create mesh instance
-			auto instance = res->create_instance();
-			instance->set_name(m.name);
-			instance->set_mesh(mesh);
-			std::string texture(m.texture);
-			if (texture.length() > 0)
-			{
-				instance->set_texture(game->get_textures()->get(texture, TextureFilterProfile::ProfileMipMapped));
-			}
-			else
-			{
-				instance->set_texture(game->get_textures()->get("blank.png", TextureFilterProfile::ProfileNearest));
-			}
-			instance->set_material(m.material);
-			instance->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
-			instance->transform = m.transform;
-		}
-
-		res->bb = model.create_aabb();
-		return std::move(res);
-	}
-
 	void Game::init(void)
 	{
 		Game3::init();

@@ -2,15 +2,21 @@
 
 #include "aabb3.h"
 #include "material.h"
+#include "sysutil.h"
 #include "transform3.h"
+
+#include <memory>
 
 namespace dukat
 {
+    class GameBase;
+    class MeshGroup;
+
     class Model3
     {
     public:
         static constexpr size_t string_length = 256;
-        static constexpr uint32_t model_id = static_cast<uint32_t>('domd');
+        static constexpr uint32_t model_id = mc_const('d','o','m','d');
         static constexpr uint32_t model_version = 1;
 
         enum VertexFormat
@@ -92,4 +98,7 @@ namespace dukat
         friend std::ostream& operator<<(std::ostream& os, const Model3& v);
         friend std::istream& operator>>(std::istream& is, Model3& v);
     };
+
+	// Utility method to generate mesh group from model
+    extern std::unique_ptr<MeshGroup> build_mesh_group(GameBase* game, const Model3& model);
 }
