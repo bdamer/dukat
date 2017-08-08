@@ -5,5 +5,5 @@ add_library(dukat STATIC aabb2.cpp aabb3.cpp animationmanager.cpp application.cp
     meshcache.cpp meshgroup.cpp meshinstance.cpp messenger.cpp model3.cpp ms3dmodel.cpp obb2.cpp orbitcamera3.cpp 
 	particlemanager.cpp perfcounter.cpp quaternion.cpp 
     ray3.cpp renderer.cpp renderer2.cpp renderer3.cpp renderlayer2.cpp settings.cpp shadercache.cpp shaderprogram.cpp sprite.cpp
-    stdafx.cpp surface.cpp sysutil.cpp textmeshbuilder.cpp textmeshinstance.cpp texturecache.cpp texture.cpp
-    timermanager.cpp transform3.cpp vector2.cpp vector3.cpp voxmodel.cpp window.cpp xboxdevice.cpp)
+    stdafx.cpp surface.cpp sysutil.cpp textmeshbuilder.cpp textmeshinstance.cpp texturecache.cpp texture.cpp textureutil.cpp
+    timermanager.cpp transform3.cpp wavemesh.cpp vector2.cpp vector3.cpp voxmodel.cpp window.cpp xboxdevice.cpp)

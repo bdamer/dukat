@@ -149,6 +149,7 @@
     <Text Include="..\src\dukat\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\dukat\wavemesh.h" />
     <ClInclude Include="..\src\dukat\aabb2.h" />
     <ClInclude Include="..\src\dukat\aabb3.h" />
     <ClInclude Include="..\src\dukat\animation.h" />
@@ -230,6 +231,7 @@
     <ClInclude Include="..\src\dukat\textmeshbuilder.h" />
     <ClInclude Include="..\src\dukat\texture.h" />
     <ClInclude Include="..\src\dukat\texturecache.h" />
+    <ClInclude Include="..\src\dukat\textureutil.h" />
     <ClInclude Include="..\src\dukat\timermanager.h" />
     <ClInclude Include="..\src\dukat\transform2.h" />
     <ClInclude Include="..\src\dukat\transform3.h" />
@@ -243,6 +245,7 @@
     <ClInclude Include="..\src\dukat\xboxdevice.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\dukat\wavemesh.cpp" />
     <ClCompile Include="..\src\dukat\aabb2.cpp" />
     <ClCompile Include="..\src\dukat\aabb3.cpp" />
     <ClCompile Include="..\src\dukat\animationmanager.cpp" />
@@ -307,6 +310,7 @@
     <ClCompile Include="..\src\dukat\textmeshinstance.cpp" />
     <ClCompile Include="..\src\dukat\texture.cpp" />
     <ClCompile Include="..\src\dukat\texturecache.cpp" />
+    <ClCompile Include="..\src\dukat\textureutil.cpp" />
     <ClCompile Include="..\src\dukat\timermanager.cpp" />
     <ClCompile Include="..\src\dukat\transform3.cpp" />
     <ClCompile Include="..\src\dukat\vector2.cpp" />
