@@ -28,15 +28,7 @@ namespace dukat
 		Game3::init();
 
 		renderer->disable_effects();
-
-		// White Directional Light
-		// TODO: currently not used
-		auto light0 = renderer->get_light(Renderer3::dir_light_idx);
-		light0->position = { 1.0f, 0.5f, 0.5f }; // light direction stored as position
-		light0->ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
-		light0->diffuse = { 0.4f, 0.4f, 0.4f, 1.0f };
-		light0->specular = { 0.4f, 0.4f, 0.4f, 1.0f };
-		
+	
 		camera_target.x = camera_target.z = 0.5f * (float)(grid_size * tile_spacing);
 
 		auto camera = std::make_unique<OrbitCamera3>(this, camera_target, 50.0f, 0.0f, pi_over_four);
@@ -190,7 +182,6 @@ namespace dukat
 
 	void Game::handle_keyboard(const SDL_Event & e)
 	{
-		Material mat;
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_F1:

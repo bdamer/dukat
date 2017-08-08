@@ -21,7 +21,6 @@ namespace dukat
 		MeshInstance* info_mesh;
 		TextMeshInstance* mult_mesh;
 		std::unique_ptr<Environment> env;
-		std::unique_ptr<Texture> cubemap;
 
 		void init(void);
 		void init_environment(void);

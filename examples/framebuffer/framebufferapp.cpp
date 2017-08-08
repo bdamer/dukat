@@ -16,7 +16,7 @@
 
 namespace dukat
 {
-	constexpr float Game::texture_size;
+	constexpr int Game::texture_size;
 
 	void Game::init(void)
 	{

@@ -27,7 +27,8 @@ layout(std140) uniform Material
 	vec3 custom;
 } u_material;
 
-struct Light {
+struct Light 
+{
 	vec4 position;
 	vec4 ambient;
 	vec4 diffuse;
@@ -35,7 +36,8 @@ struct Light {
     vec4 params;
 };
 
-layout(std140) uniform Lights {
+layout(std140) uniform Lights 
+{
 	Light l[5];
 } u_lights;
 

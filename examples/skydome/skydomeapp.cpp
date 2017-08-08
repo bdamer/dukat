@@ -83,28 +83,7 @@ namespace dukat
 		skydome_mesh->set_program(shader_cache->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
 
 		// Create cubemap
-		const auto cubemap_size = 1024;
-		cubemap = std::make_unique<Texture>();
-		cubemap->target = GL_TEXTURE_CUBE_MAP;
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->id);
-		auto surface = texture_cache->load_surface("skybox01_right1.png", false, true);
-	    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, cubemap_size, cubemap_size, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->get_surface()->pixels);
-		surface = texture_cache->load_surface("skybox01_left2.png", false, true);
-	    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, cubemap_size, cubemap_size, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->get_surface()->pixels);
-		surface = texture_cache->load_surface("skybox01_top3.png", true, false);
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, cubemap_size, cubemap_size, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->get_surface()->pixels);
-		surface = texture_cache->load_surface("skybox01_bottom4.png", false, true);
-	    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, cubemap_size, cubemap_size, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->get_surface()->pixels);
-		surface = texture_cache->load_surface("skybox01_back6.png", false, true);
-	    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, cubemap_size, cubemap_size, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->get_surface()->pixels);
-		surface = texture_cache->load_surface("skybox01_front5.png", false, true);
-	    glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, cubemap_size, cubemap_size, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->get_surface()->pixels);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		skydome_mesh->set_texture(cubemap.get(), 0);
+		skydome_mesh->set_texture(texture_cache->get("skybox01.dds"), 0);
 
 		init_environment();		
 

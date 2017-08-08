@@ -9,7 +9,7 @@ namespace dukat
 	class Game : public Game3
 	{
 	private:
-		static constexpr float texture_size = 256.0f;
+		static constexpr int texture_size = 256;
 
 		MeshGroup debug_meshes;
 		MeshGroup overlay_meshes;
