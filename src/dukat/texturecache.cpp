@@ -3,11 +3,10 @@
 #include "surface.h"
 #include "texturecache.h"
 #include "dds.h"
-#include "sysutil.h"
 
 namespace dukat
 {
-	TextureCache::TextureCache(const std::string& resource_dir, bool flip) : resource_dir(resource_dir), flip(flip)
+	TextureCache::TextureCache(const std::string& resource_dir, bool flip) : resource_dir(resource_dir), flip(flip), last_id(0)
 	{
 	}
 
@@ -67,22 +66,36 @@ namespace dukat
 
 	Texture* TextureCache::get(const std::string& filename, TextureFilterProfile profile)
 	{
-		if (textures.count(filename) == 0)
+		const auto id = compute_hash(filename);
+		if (textures.count(id) == 0)
 		{
 			auto ext = get_extension(filename);
 			// TODO: base this on file header not extension (use streams if possible)
 			if (ext == "dds" || ext == "tga" || ext == "TGA")
 			{
-				textures[filename] = load_dds(resource_dir + "/" + filename);
+				textures[id] = load_dds(resource_dir + "/" + filename);
 			}
 			else
 			{
-				textures[filename] = load(filename, profile);
+				textures[id] = load(filename, profile);
 			}
 		}
-		return textures[filename].get();
+		return textures[id].get();
 	}
 
+	Texture* TextureCache::get(uint32_t id)
+	{
+		if (textures.count(id) == 0)
+		{
+			return nullptr;
+		}
+		else
+		{
+			return textures[id].get();
+		}
+	}
+
+	/*
 	Texture* TextureCache::get(const TextureId tid) const
 	{
 		for (auto& t : textures)
@@ -94,12 +107,13 @@ namespace dukat
 		}
 		throw std::runtime_error("Could not find texture by id!");
 	}
+	*/
 
-	void TextureCache::free(const std::string& filename)
+	void TextureCache::free(uint32_t id)
 	{
-		if (textures.count(filename) != 0)
+		if (textures.count(id) != 0)
 		{
-			textures.erase(filename);
+			textures.erase(id);
 		}
 	}
 

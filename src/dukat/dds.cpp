@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "dds.h"
 #include "log.h"
+#include "sysutil.h"
 #include "texturecache.h"
 
 // Formats
@@ -39,12 +40,12 @@
 #define DDSCAPS2_CUBEMAP_NEGATIVEZ  0x00008000 
 #define DDSCAPS2_VOLUME             0x00200000 
 
-#define D3DFMT_DXT1     '1TXD'    //  DXT1 compression texture format 
-#define D3DFMT_DXT2     '2TXD'    //  DXT2 compression texture format 
-#define D3DFMT_DXT3     '3TXD'    //  DXT3 compression texture format 
-#define D3DFMT_DXT4     '4TXD'    //  DXT4 compression texture format 
-#define D3DFMT_DXT5     '5TXD'    //  DXT5 compression texture format 
-#define D3DFMT_DX10		'DX10'    //  Extended DX10 header
+constexpr uint32_t D3DFMT_DXT1 = dukat::mc_const('1', 'T', 'X', 'D');	//  DXT1 compression texture format 
+constexpr uint32_t D3DFMT_DXT2 = dukat::mc_const('2', 'T', 'X', 'D');	//  DXT2 compression texture format 
+constexpr uint32_t D3DFMT_DXT3 = dukat::mc_const('3', 'T', 'X', 'D');	//  DXT3 compression texture format 
+constexpr uint32_t D3DFMT_DXT4 = dukat::mc_const('4', 'T', 'X', 'D');	//  DXT4 compression texture format 
+constexpr uint32_t D3DFMT_DXT5 = dukat::mc_const('5', 'T', 'X', 'D');	//  DXT5 compression texture format
+constexpr uint32_t D3DFMT_DX10 = dukat::mc_const('D', 'X', '1', '0');	//  Extended DX10 header
 
 #define D3D
 
@@ -186,7 +187,7 @@ namespace dukat
 		is.read(reinterpret_cast<char*>(&header.reserved2), sizeof(uint32_t));
 
 		// Check for DX10
-		if (header.ddspf.flags == DDPF_FOURCC && header.ddspf.four_cc == 'DX10')
+		if (header.ddspf.flags == DDPF_FOURCC && header.ddspf.four_cc == D3DFMT_DX10)
 		{
 			logger << "Failed to load texture - unsupported version." << std::endl;
 			return false;
@@ -195,7 +196,7 @@ namespace dukat
 		return true;
 	}
 
-	void load_compressed_dds(std::istream& is, const DDSHeader& header, const DDSLoadInfo* li)
+	void load_compressed_dds(std::istream& is, const DDSHeader& header, const DDSLoadInfo* li, const GLenum target)
 	{
 		uint32_t x = header.width;
 		uint32_t y = header.height;
@@ -205,16 +206,16 @@ namespace dukat
 		for (unsigned int ix = 0; ix < mip_map_count; ++ix)
 		{
 			is.read(reinterpret_cast<char*>(data), size);
-			glCompressedTexImage2D(GL_TEXTURE_2D, ix, li->internal_format, x, y, 0, (int)size, data);
+			glCompressedTexImage2D(target, ix, li->internal_format, x, y, 0, (int)size, data);
 			x = (x + 1) >> 1;
 			y = (y + 1) >> 1;
 			size = std::max(li->div_size, x) / li->div_size * std::max(li->div_size, y) / li->div_size * li->block_bytes;
 		}
 		free(data);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
+		glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
 	}
 
-	void load_indexed_dds(std::istream& is, const DDSHeader& header, const DDSLoadInfo* li)
+	void load_indexed_dds(std::istream& is, const DDSHeader& header, const DDSLoadInfo* li, const GLenum target)
 	{
 		uint32_t x = header.width;
 		uint32_t y = header.height;
@@ -232,17 +233,17 @@ namespace dukat
 				unpacked[zz] = palette[data[zz]];
 			}
 			glPixelStorei(GL_UNPACK_ROW_LENGTH, y);
-			glTexImage2D(GL_TEXTURE_2D, ix, li->internal_format, x, y, 0, li->external_format, li->type, unpacked);
+			glTexImage2D(target, ix, li->internal_format, x, y, 0, li->external_format, li->type, unpacked);
 			x = (x + 1) >> 1;
 			y = (y + 1) >> 1;
 			size = x * y * li->block_bytes;
 		}
 		free(data);
 		free(unpacked);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
+		glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
 	}
 
-	void load_default_dds(std::istream& is, const DDSHeader& header, const DDSLoadInfo* li)
+	void load_default_dds(std::istream& is, const DDSHeader& header, const DDSLoadInfo* li, const GLenum target)
 	{
 		uint32_t x = header.width;
 		uint32_t y = header.height;
@@ -257,14 +258,14 @@ namespace dukat
 		{
 			is.read(reinterpret_cast<char*>(data), size);
 			glPixelStorei(GL_UNPACK_ROW_LENGTH, y);
-			glTexImage2D(GL_TEXTURE_2D, ix, li->internal_format, x, y, 0, li->external_format, li->type, data);
+			glTexImage2D(target, ix, li->internal_format, x, y, 0, li->external_format, li->type, data);
 			x = (x + 1) >> 1;
 			y = (y + 1) >> 1;
 			size = x * y * li->block_bytes;
 		}
 		free(data);
 		glPixelStorei(GL_UNPACK_SWAP_BYTES, GL_FALSE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
+		glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
 	}
 
 	std::unique_ptr<Texture> load_dds(const std::string& filename)
@@ -324,26 +325,75 @@ namespace dukat
 			return nullptr;
 		}
 
-		// Create OpenGL texture
-		auto texture = std::make_unique<Texture>(header.width, header.height);
-		glBindTexture(GL_TEXTURE_2D, texture->id);
-		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
-
+		void (*loader)(std::istream&, const DDSHeader&, const DDSLoadInfo*, const GLenum);
 		if (li->compressed)
 		{
-			load_compressed_dds(is, header, li);
+			loader = &load_compressed_dds;
 		}
 		else if (li->palette)
 		{
-			load_indexed_dds(is, header, li);
+			loader = &load_indexed_dds;
 		}
 		else
 		{
-			load_default_dds(is, header, li);
+			loader = &load_default_dds;
 		}
 
-		// cleanup
-		glBindTexture(GL_TEXTURE_2D, 0);
+		// Create OpenGL texture
+		auto texture = std::make_unique<Texture>(header.width, header.height);
+
+		if ((header.caps & DDSCAPS_COMPLEX) == DDSCAPS_COMPLEX)
+		{
+			if ((header.caps2 & DDSCAPS2_CUBEMAP) == DDSCAPS2_CUBEMAP)
+			{
+				texture->target = GL_TEXTURE_CUBE_MAP;
+				glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
+
+				if (header.mip_map_count > 0)
+				{
+					glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_FALSE);
+					glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				}
+				else
+				{
+					glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_TRUE);
+					glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					
+				}
+
+				loader(is, header, li, GL_TEXTURE_CUBE_MAP_POSITIVE_X);
+				loader(is, header, li, GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
+				loader(is, header, li, GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
+				loader(is, header, li, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
+				loader(is, header, li, GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
+				loader(is, header, li, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
+
+				// Set texture parameters
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				
+				glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+			}
+			else
+			{
+				throw std::runtime_error("Unable to load DDS.");
+			}
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, texture->id);
+			glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+			loader(is, header, li, GL_TEXTURE_2D);
+
+			// Set texture parameters
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 
 		return std::move(texture);
 	}

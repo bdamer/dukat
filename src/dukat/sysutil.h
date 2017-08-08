@@ -12,6 +12,11 @@ namespace dukat
 
 	uint16_t swape16(uint16_t value);
 
+	inline constexpr uint32_t mc_const(char a, char b, char c, char d) 
+	{
+		return static_cast<uint32_t>((a << 24) | (b << 16) | (c << 8) | d);
+	}
+
 	inline std::string get_extension(const std::string& filename)
 	{
 		return filename.substr(filename.rfind('.') + 1);
