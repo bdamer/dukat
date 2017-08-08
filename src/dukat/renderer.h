@@ -30,8 +30,8 @@ namespace dukat
 		{
 			CAMERA,
 			LIGHT,
-			MODEL,
 			MATERIAL,
+			USER,
 			_COUNT
 		};
 
@@ -84,6 +84,9 @@ namespace dukat
 		ShaderProgram* get_active_program(void) const { return active_program; }
 		// Updates uniform buffers for camera and lighting.
 		virtual void update_uniforms(void) = 0;
+		// Binds data to a uniform buffer.
+		void bind_uniform(UniformBuffer buffer, GLsizeiptr size, const GLvoid * data);
+
 		// Checks if a given extension is supported.
 		inline bool is_ext_supported(const std::string& extension) const { return glewIsExtensionSupported(extension.c_str()) == GL_TRUE; }
 	};

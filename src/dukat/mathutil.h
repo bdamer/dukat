@@ -69,7 +69,7 @@ namespace dukat
 
 	inline float randf(float min, float max)
 	{
-		return min + (max - min) * (float)(rand() % 1000) / 1000.0f;
+		return min + (max - min) * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
 	}
 
 	inline int randi(int min, int max)

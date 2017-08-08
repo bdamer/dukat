@@ -13,7 +13,7 @@ namespace dukat
 	{
 		window->bind(this);
 		test_capabilities();
-		uniform_buffers = std::make_unique<GenericBuffer>(2);
+		uniform_buffers = std::make_unique<GenericBuffer>(UniformBuffer::_COUNT);
 		// Default settings
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		// Enable back-face culling
@@ -95,15 +95,21 @@ namespace dukat
 			// re-bind uniform blocks
 			auto cidx = glGetUniformBlockIndex(program->id, Renderer::uf_camera);
 			glUniformBlockBinding(program->id, cidx, UniformBuffer::CAMERA);
-			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[0]);
+			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[UniformBuffer::CAMERA]);
 			auto lidx = glGetUniformBlockIndex(program->id, Renderer::uf_light);
 			glUniformBlockBinding(program->id, lidx, UniformBuffer::LIGHT);
-			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[1]);
+			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[UniformBuffer::LIGHT]);
 #else
 			// update all uniforms
 			update_uniforms();
 #endif
 		}
+	}
+
+	void Renderer::bind_uniform(UniformBuffer buffer, GLsizeiptr size, const GLvoid* data)
+	{
+		glBindBufferBase(GL_UNIFORM_BUFFER, buffer, uniform_buffers->buffers[buffer]);
+		glBufferData(GL_UNIFORM_BUFFER, size, data, GL_STREAM_DRAW);
 	}
 
 	void Renderer::set_wireframe(bool wireframe)
