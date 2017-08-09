@@ -7,6 +7,7 @@
 #include "devicemanager.h"
 #include "keyboarddevice.h"
 #include "settings.h"
+#include <ctime>
 
 namespace dukat
 {
@@ -113,7 +114,11 @@ namespace dukat
 			toggle_pause();
 			break;
 		case SDLK_F12:
-			save_screenshot("screenshot.png");
+			{
+			std::stringstream ss;
+			ss << "screenshot_" << std::time(nullptr) << ".png";
+			save_screenshot(ss.str());
+			}
 			break;
 		}
 	}
