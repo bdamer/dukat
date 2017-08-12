@@ -196,7 +196,19 @@ namespace dukat
 		glUniform4fv(active_program->attr(Renderer3::u_cam_dir), 1, (GLfloat*)(&camera->transform.dir));
 		glUniform4fv(active_program->attr(Renderer3::u_cam_up), 1, (GLfloat*)(&camera->transform.up));
 		glUniform4fv(active_program->attr(Renderer3::u_cam_left), 1, (GLfloat*)(&camera->transform.right));
-		// TODO: bind lights
+		// Bind light information
+		for (auto i = 0; i < num_lights; i++)
+		{
+			const auto& light = lights[i];
+			const auto light_index = GL_LIGHT0 + i;
+			glLightfv(light_index, GL_POSITION, (GLfloat*)(&light.position));
+			glLightfv(light_index, GL_AMBIENT, (GLfloat*)(&light.ambient));
+			glLightfv(light_index, GL_DIFFUSE, (GLfloat*)(&light.diffuse));
+			glLightfv(light_index, GL_SPECULAR, (GLfloat*)(&light.specular));
+			glLightf(light_index, GL_CONSTANT_ATTENUATION, light.k0);
+			glLightf(light_index, GL_LINEAR_ATTENUATION, light.k1);
+			glLightf(light_index, GL_QUADRATIC_ATTENUATION, light.k2);
+		}
 #endif
 	}
 

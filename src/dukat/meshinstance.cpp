@@ -49,11 +49,13 @@ namespace dukat
 		glUniformBlockBinding(program->id, glGetUniformBlockIndex(program->id, Renderer::uf_material), Renderer::UniformBuffer::MATERIAL);
 		glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
 #else
-		// manually bind material buffer
-		glUniform4fv(program->attr("u_material_ambient"), 1, (GLfloat*)(&material.ambient));
-		glUniform4fv(program->attr("u_material_diffuse"), 1, (GLfloat*)(&material.diffuse));
-		glUniform4fv(program->attr("u_material_specular"), 1, (GLfloat*)(&material.specular));
-		glUniform4fv(program->attr("u_material_custom"), 1, (GLfloat*)(&material.custom));
+		// manually bind material (sending custom.r twice since there is no dedicated
+		// shininess in later versions)
+		glMaterialfv(GL_FRONT, GL_AMBIENT, (GLfloat*)(&material.ambient));
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat*)(&material.diffuse));
+		glMaterialfv(GL_FRONT, GL_SPECULAR, (GLfloat*)(&material.specular));
+		glMaterialfv(GL_FRONT, GL_EMISSION, (GLfloat*)(&material.custom));
+		glMaterialf(GL_FRONT, GL_SHININESS, material.custom.r);
 #endif
 
 		// Bind texture
