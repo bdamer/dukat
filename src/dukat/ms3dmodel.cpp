@@ -12,17 +12,18 @@ namespace dukat
 {
 	std::unique_ptr<Model3> MS3DModel::convert(void)
 	{
-		// align default orientation with Z axis
-		Transform3 t;
-		t.dir = -Vector3::unit_z;
-		t.left = -Vector3::unit_x;
+		// Convert from left-handed to right-handed coordinate system.
+		// align default orientation with Z axis. Since we're only rotating,
+		// x axis coordinates will be flipped.
+		Matrix4 m;
+		m.setup_rotation(Vector3::unit_y, -pi_over_two);
 
 		auto res = std::make_unique<Model3>();
-		for (auto& m : meshes)
+		for (auto& mesh : meshes)
 		{
-			std::string name(m.name);
+			std::string name(mesh.name);
 
-			auto& mat = materials[m.material];
+			auto& mat = materials[mesh.material];
 			dukat::Material material;
 			memcpy(&material.ambient, mat.ambient, sizeof(GLfloat) * 4);
 			memcpy(&material.diffuse, mat.diffuse, sizeof(GLfloat) * 4);
@@ -32,22 +33,23 @@ namespace dukat
 			// build up vertex buffer
 			std::vector<GLushort> index_data;
 			std::vector<Model3::Vertex> vertex_data;
-			for (auto idx : m.indices)
+			for (auto idx : mesh.indices)
 			{
 				auto& t = triangles[idx];
-				for (size_t i = 0; i < 3; i++)
+				for (auto i = 0; i < 3; i++)
 				{
 					assert(t.indicies[i] < vertices.size());
-					auto& v = vertices[t.indicies[i]];
+					auto vtmp = Vector3{vertices[t.indicies[i]].v[0], vertices[t.indicies[i]].v[1], vertices[t.indicies[i]].v[2]} * m;
+					auto ntmp = Vector3{t.normals[i * 3], t.normals[i * 3 + 1], t.normals[i * 3 + 2]} * m;
 					vertex_data.push_back({
-						v.v[0], v.v[1], v.v[2], // POS
-						t.normals[i * 3], t.normals[i * 3 + 1], t.normals[i * 3 + 2], // NOR						
+						vtmp.x, vtmp.y, vtmp.z,	// POS
+						ntmp.x, ntmp.y, ntmp.z, // NOR
 						t.s[i], t.t[i] // TEX
 					});
 				}
 			}
 
-			res->add_mesh(name, material, mat.texture, t, index_data, vertex_data);		
+			res->add_mesh(name, material, mat.texture, Transform3{}, index_data, vertex_data);		
 		}
 
 		return std::move(res);
@@ -56,8 +58,8 @@ namespace dukat
 	std::istream& operator>>(std::istream& is, MS3DModel& m)
 	{
 		// Load header
-		is.read(reinterpret_cast<char*>(&m.header.id), sizeof(uint8_t) * 5);
-		is.seekg(5, std::ios_base::cur);
+		is.read(reinterpret_cast<char*>(&m.header.id), sizeof(uint8_t) * 4);
+		is.seekg(6, std::ios_base::cur);
 		auto res = strcmp(m.header.id, MS3DModel::ms3d_id);
 		if (res != 0)
 		{

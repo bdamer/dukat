@@ -14,7 +14,7 @@ namespace dukat
 	class MS3DModel : public ModelConverter
 	{
 	private:
-		static constexpr const char* ms3d_id = "MS3D0";
+		static constexpr const char* ms3d_id = "MS3D";
 		static constexpr const int32_t ms3d_version = 4;
 
 		struct Header
@@ -25,6 +25,8 @@ namespace dukat
 			int16_t polygons;
 			int16_t meshes;
 			int16_t materials;
+
+			Header(void) { memset(id, 0, 5); }
 		};
 
 		struct Vertex
