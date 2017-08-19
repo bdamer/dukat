@@ -12,7 +12,7 @@ namespace dukat
 	class Game : public Game3
 	{
 	private:
-		static constexpr int grid_size = 128;
+		static constexpr int grid_size = 64;
 		
 		MeshGroup debug_meshes;
 		MeshGroup object_meshes;

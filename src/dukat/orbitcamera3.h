@@ -27,7 +27,8 @@ namespace dukat
 		void move(const Vector3& offset) { look_at += offset; }
 		// Updates the eye and look-at position of the camera to a new point.
 		void set_look_at(const Vector3& look_at) { this->look_at = look_at; }
-
+		const Vector3& get_look_at(void) const { return look_at; }
+		
 		// Changes distance from look-at position along direction vector.
 		float get_distance(void) const { return distance; }
 		void set_distance(float distance) { this->distance = distance; clamp(this->distance, min_distance, max_distance); }

@@ -75,7 +75,6 @@ namespace dukat
 		geo_state.min_length = 15.f;
 		geo_state.max_length = 25.f;
 		geo_state.amp_over_len = 0.1f;
-		geo_state.env_height = -50.f;
 		geo_state.env_radius = 200.f;
 		geo_state.water_level = 2.0f;
 		geo_state.trans_idx = 0;
@@ -321,16 +320,33 @@ namespace dukat
 
 		grid_program->set("u_debug", game->is_debug() ? 1.0f : 0.0f);
 
+		// determine intersection of camera eye ray and mesh
+		auto cam = renderer->get_camera();
+		Vector3 cam_target;
+		if (cam->transform.dir.y != 0.0f)
+		{
+			auto n = (geo_state.water_level - cam->transform.position.y) / cam->transform.dir.y;
+			cam_target = cam->transform.position + n * cam->transform.dir;
+		}
+		else 
+		{
+			// eye ray is parallel to mesh plan, just use camera pos
+			cam_target = cam->transform.position;
+		}
+
+		// use camera position to determine wave mesh offset
+		auto x = std::floor(cam_target.x / grid_scale);
+		auto z = std::floor(cam_target.z / grid_scale);
+
 		// We're repurposing the model matrix to pass in information about the location and scale of the grid.
 		Matrix4 model;
-		model.identity();
-
 		// grid scale at current level
 		model.m[0] = model.m[1] = grid_scale;
-		// origin of current block in world-space
-		model.m[2] = model.m[3] = -0.5f * grid_scale * (float)grid_size;
+		// origin of mesh in world-space
+		model.m[2] = (-0.5f * static_cast<float>(grid_size) + x) * grid_scale;
+		model.m[3] = (-0.5f * static_cast<float>(grid_size) + z) * grid_scale;
 		// 1 / texture width,height
-		model.m[4] = model.m[5] = 1.0f / (float)grid_size;
+		model.m[4] = model.m[5] = 1.0f / static_cast<float>(grid_size);
 		// ZScale of height map 
 		model.m[13] = 1.0f;
 		grid_program->set_matrix4(Renderer::uf_model, model);
@@ -342,14 +358,12 @@ namespace dukat
 			geo_state.water_level, geo_state.water_level);
 		grid_program->set("u_ws.fog_params", -200.0f, 1.0f / -100.0f, 0.0f, 1.0f);
 		// Specular attenuation
-		float norm_scale = geo_state.spec_atten * tex_state.amp_over_len * two_pi;
-		norm_scale *= ((float)num_bump_passes + tex_state.noise) * (tex_state.chop + 1.0f);
+		auto norm_scale = geo_state.spec_atten * tex_state.amp_over_len * two_pi;
+		norm_scale *= (static_cast<float>(num_bump_passes) + tex_state.noise) * (tex_state.chop + 1.0f);
 		grid_program->set("u_ws.spec_atten", geo_state.spec_end, 
 			1.0f / geo_state.spec_trans, norm_scale, 1.0f / tex_state.ripple_scale);
 		// Env adjust
-		auto cam = renderer->get_camera();
-		Vector3 env_center{ 0.0f, 0.0f, geo_state.env_height };
-		auto cam_to_center = env_center - cam->transform.position;
+		auto cam_to_center = cam->transform.position - cam_target;
 		auto g = cam_to_center.mag2() - geo_state.env_radius * geo_state.env_radius;
 		grid_program->set("u_ws.env_adjust", cam_to_center.x, cam_to_center.y, cam_to_center.z, g);
 
@@ -379,5 +393,40 @@ namespace dukat
 	{
 		update_framebuffer(renderer);
 		render_water_mesh(renderer);
+	}
+
+	// Samples wave mesh position; this code matches the code in the 
+	// wave mesh vertex shader.
+	float WaveMesh::sample(float x, float y) const
+	{
+		auto z = geo_state.water_level;
+		auto scale = 0.5f * (geo_state.water_level);
+		clamp(scale, 0.0f, 1.0f);
+
+		// Sum effect of geo waves
+		for (auto& wave : geo_waves) 
+		{
+			// Dot x and y with direction vectors
+			auto dist = wave.dirx * x + wave.diry * y;
+			// Scale in our frequency and add in our phase
+			dist = dist * wave.freq + wave.phase;
+			// Mod into range [-Pi..Pi]
+			auto tmp = (dist + pi) * one_over_two_pi;
+			dist = (tmp - std::floor(tmp)) * two_pi - pi;
+			// Compute powers
+			auto dist2 = dist * dist;
+			auto dist3 = dist2 * dist;
+			auto dist4 = dist2 * dist2;
+			auto dist5 = dist3 * dist2;
+			auto dist6 = dist3 * dist3;
+			auto dist7 = dist4 * dist3;
+			auto sine = dist - dist3 / 6.0f + dist5 / 120.0f - dist7 / 5040.0f;
+			auto amp = wave.len / grid_scale;
+			clamp(amp, 0.0f, 1.0f);
+			auto filtered_amp = amp * scale * wave.amp;
+			z += sine * filtered_amp;
+		}
+
+		return z;
 	}
 }

@@ -54,7 +54,6 @@ namespace dukat
 			float spec_atten;
 			float spec_end;
 			float spec_trans;
-			float env_height;
 			float env_radius;
 			float water_level;
 			int trans_idx;
@@ -141,9 +140,6 @@ namespace dukat
 		// Geo env radius
 		void set_geo_env_radius(float value) { geo_state.env_radius = value; clamp(geo_state.env_radius, 100.0f, 10000.0f); }
 		float get_geo_env_radius(void) const { return geo_state.env_radius; }
-		// Geo env height
-		void set_geo_env_height(float value) { geo_state.env_height = value; clamp(geo_state.env_height, -100.0f, 100.0f); }
-		float get_geo_env_height(void) const { return geo_state.env_height; }
 		// Texture wave height
 		void set_tex_wave_height(float value) { tex_state.amp_over_len = value; clamp(tex_state.amp_over_len, 0.0f, 0.5f); }
 		float get_tex_wave_height(void) const { return tex_state.amp_over_len; }
@@ -160,5 +156,8 @@ namespace dukat
 		// Texture access
 		Texture* get_wave_texture(void) const { return fb_texture.get(); }
 		void set_env_map(Texture* env_map) { this->env_map = env_map; }
+
+		// Samples normalized elevation at a given set of coordinates.
+		float sample(float x, float y) const;
 	};
 }

@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "wavesapp.h"
-#include "wavemesh.h"
 
 #include <dukat/devicemanager.h>
 #include <dukat/inputdevice.h>
@@ -13,6 +12,7 @@
 #include <dukat/model3.h>
 #include <dukat/orbitcamera3.h>
 #include <dukat/settings.h>
+#include <dukat/wavemesh.h>
 
 #include <dukat/environment.h>
 #include <dukat/transition.h>
@@ -23,6 +23,8 @@ namespace dukat
 
 	void Game::init(void)
 	{
+		MeshBuilder3 mb3;
+
 		Game3::init();
 
 		renderer->disable_effects();
@@ -51,7 +53,6 @@ namespace dukat
 		wave_mesh->set_env_map(env_map);
 
 		// Skydome
-		MeshBuilder3 mb3;
 		skydome_mesh = object_meshes.create_instance();
 		skydome_mesh->set_mesh(mesh_cache->put("skydome", mb3.build_dome(32, 24, true)));
 		skydome_mesh->set_program(shader_cache->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
@@ -95,7 +96,6 @@ namespace dukat
 			<< "<O> Geo Wave Angle Deviation" << std::endl			
 			<< "<P> Texture Wave Angle Deviation" << std::endl			
 			<< "<G> Env map radius" << std::endl			
-			<< "<F> Env map height" << std::endl			
 			<< std::endl;
 		info_text->set_text(ss.str());
 		info_text->transform.update();
@@ -198,9 +198,6 @@ namespace dukat
 		case SDLK_g: // environment map radius
 			wave_mesh->set_geo_env_radius(wave_mesh->get_geo_env_radius() * (1.0f + factor * 0.5f));
 			break;
-		case SDLK_f: // environment map height
-			wave_mesh->set_geo_env_height(wave_mesh->get_geo_env_height() + factor * 10.0f);
-			break;
 		default:
 			Game3::handle_keyboard(e);
 		}
@@ -211,6 +208,7 @@ namespace dukat
 		Game3::update(delta);
 		env->update(delta);
 
+		// Camera controls
 		auto dev = device_manager->active;
 		auto cam = dynamic_cast<OrbitCamera3*>(renderer->get_camera());
 		camera_target += 10.0f * delta * (dev->ly * cam->transform.dir

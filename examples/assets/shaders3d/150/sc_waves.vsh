@@ -244,8 +244,8 @@ void main()
 	// r - make surface transparent as it goes to 0
 	// g - modulates reflection strength / matte as g goes to 0
 	// b - opacity attenuation
-	// a - distance between vertices? seems like that is captured as a uniform
-	vec4 a_color = vec4(1, 1, 1, 1);
+	// a - distance between vertices
+	vec4 a_color = vec4(1, 1, 1, 1.0 / u_model[0].x);
 
 	// Compute world position
 	vec4 world_pos = vec4(a_position * u_model[0].xy + u_model[0].zw, 0.0, 1.0);
