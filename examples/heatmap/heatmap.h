@@ -5,8 +5,8 @@
 
 #include <dukat/buffers.h>
 #include <dukat/game3.h>
+#include <dukat/meshdata.h>
 #include <dukat/mesh.h>
-#include <dukat/renderable.h>
 #include <dukat/heightmapgenerator.h>
 #include <dukat/heightmap.h>
 #include <dukat/texturecache.h>
@@ -15,7 +15,7 @@ namespace dukat
 {
 	class ShaderProgram;
 
-    class HeatMap : public Renderable
+    class HeatMap : public Mesh
     {
     public:
         struct Cell
@@ -71,14 +71,14 @@ namespace dukat
         std::unique_ptr<HeightMap> heightmap; // elevation data
 
 		ShaderProgram* program; // used to render elevation mesh
-        std::unique_ptr<Mesh> grid_mesh; // elevation mesh
+        std::unique_ptr<MeshData> grid_mesh; // elevation mesh
         std::unique_ptr<Texture> heightmap_texture; // 1-channel GL_R32F texture used for elevation data
 		std::unique_ptr<Texture> heatmap_texture; // 3-channel GL_RGB8 texture used to update the heat map
 		std::unique_ptr<Texture> terrain_texture; // RGB texture array for texture splatting.
 
         ShaderProgram* normal_program; // used to generate normal sampler
         std::unique_ptr<FrameBuffer> fb_normal; // frame buffer to update heat sampler 
-        std::unique_ptr<Mesh> quad_normal; // quad mesh used to update normal sampler
+        std::unique_ptr<MeshData> quad_normal; // quad mesh used to update normal sampler
         
         void emitter_phase(float delta);
         void compute_phase(float delta);
@@ -106,7 +106,7 @@ namespace dukat
         // Updates the state of the heat map.
         void update(float delta);
         // Renders this heat map.
-        void render(Renderer3* renderer);
+        void render(Renderer* renderer);
 
         void set_scale_factor(float scale_factor) { heightmap->set_scale_factor(scale_factor); }
         float get_scale_factor(void) const { return heightmap->get_scale_factor(); }

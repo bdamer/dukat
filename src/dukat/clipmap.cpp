@@ -4,11 +4,11 @@
 #include "heightmap.h"
 #include "log.h"
 #include "mathutil.h"
-#include "mesh.h"
+#include "meshdata.h"
 #include "meshbuilder2.h"
 #include "perfcounter.h"
 #include "plane.h"
-#include "renderer3.h"
+#include "renderer.h"
 #include "shadercache.h"
 #include "vertextypes3.h"
 
@@ -98,7 +98,7 @@ namespace dukat
 			1.0f,  1.0f, 0.0f, 1.0f, 1.0f, // top-right
 			1.0f,  0.0f, 0.0f, 1.0f, 0.0f  // bottom-right
 		};
-		quad_update = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, 4, 0, attr);
+		quad_update = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, 4, 0, attr);
 		quad_update->set_vertices(reinterpret_cast<GLfloat*>(verts));
 
         // build initial height and normal maps 
@@ -302,15 +302,13 @@ namespace dukat
 
         std::vector<VertexAttribute> attributes;
 		attributes.push_back(VertexAttribute(Renderer::at_pos, 2, 0, GL_SHORT));
-        perimeter_mesh = std::make_unique<Mesh>(GL_TRIANGLES, vc, index_data.size(), attributes);
+        perimeter_mesh = std::make_unique<MeshData>(GL_TRIANGLES, vc, index_data.size(), attributes);
         perimeter_mesh->set_vertices(vertex_data);
         perimeter_mesh->set_indices(index_data);
     }
 
-    void ClipMap::update(float delta, const Vector3& obs_pos)
+    void ClipMap::update(float delta)
     {
-        observer_pos = obs_pos;
-
         // determine height of observer and set min_level accordingly
 		auto height = height_map->get_scale_factor() * height_map->get_elevation((int)std::round(observer_pos.x), (int)std::round(observer_pos.z), 0);
 		min_level = 0;
@@ -762,9 +760,9 @@ namespace dukat
         }
     }
 
-    void ClipMap::render(Renderer3* renderer) 
+    void ClipMap::render(Renderer* renderer) 
     {
-		auto cam = renderer->get_camera();
+		auto cam = dynamic_cast<Renderer3*>(renderer)->get_camera();
 
 		if (wireframe)
 	        renderer->set_wireframe(true);

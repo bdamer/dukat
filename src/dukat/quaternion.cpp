@@ -12,10 +12,10 @@ namespace dukat
 	Quaternion& Quaternion::set_to_rotate_x(float theta)
 	{
 		// compute the half angle
-		float theta_over_2 = theta * 0.5f;
+		const auto theta_over_2 = theta * 0.5f;
 		// set the values
-		w = cos(theta_over_2);
-		x = sin(theta_over_2);
+		w = std::cos(theta_over_2);
+		x = std::sin(theta_over_2);
 		y = 0.0f;
 		z = 0.0f;
 		return *this;
@@ -24,11 +24,11 @@ namespace dukat
 	Quaternion& Quaternion::set_to_rotate_y(float theta)
 	{
 		// compute the half angle
-		float theta_over_2 = theta * 0.5f;
+		const auto theta_over_2 = theta * 0.5f;
 		// set the values
-		w = cos(theta_over_2);
+		w = std::cos(theta_over_2);
 		x = 0.0f;
-		y = sin(theta_over_2);
+		y = std::sin(theta_over_2);
 		z = 0.0f;
 		return *this;
 	}
@@ -36,34 +36,34 @@ namespace dukat
 	Quaternion& Quaternion::set_to_rotate_z(float theta)
 	{
 		// compute the half angle
-		float theta_over_2 = theta * 0.5f;
+		const auto theta_over_2 = theta * 0.5f;
 		// set the values
-		w = cos(theta_over_2);
+		w = std::cos(theta_over_2);
 		x = 0.0f;
 		y = 0.0f;
-		z = sin(theta_over_2);
+		z = std::sin(theta_over_2);
 		return *this;
 	}
 
 	Quaternion& Quaternion::set_to_rotate_axis(const Vector3& axis, float theta)
 	{
 		// the axis of rotation must be normalized
-		assert(fabs(axis.mag() - 1.0f) < 0.01f);
+		assert(std::abs(axis.mag() - 1.0f) < 0.01f);
 		// compute the half angle and its sin
-		float theta_over_2 = theta * 0.5f;
-		float sin_theta_over_2 = sin(theta_over_2);
+		const auto theta_over_2 = theta * 0.5f;
+		const auto sin_theta_over_2 = std::sin(theta_over_2);
 		// set the values
-		w = cos(theta_over_2);
+		w = std::cos(theta_over_2);
 		x = axis.x * sin_theta_over_2;
 		y = axis.y * sin_theta_over_2;
 		z = axis.z * sin_theta_over_2;
 		return *this;
 	}
 
-	Quaternion& Quaternion::from_vectors(const Vector3 & a, const Vector3 & b)
+	Quaternion& Quaternion::from_vectors(const Vector3& a, const Vector3& b)
 	{
-		float m = sqrt(2.0f + 2.0f * (a * b));
-		auto v = (1.0f / m) * cross_product(a, b);
+		const auto m = std::sqrt(2.0f + 2.0f * (a * b));
+		const auto v = (1.0f / m) * cross_product(a, b);
 		w = 0.5f * m;
 		x = v.x;
 		y = v.y;

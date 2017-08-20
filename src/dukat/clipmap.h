@@ -8,7 +8,7 @@
 #include "color.h"
 #include "game3.h"
 #include "plane.h"
-#include "renderable.h"
+#include "mesh.h"
 #include "texturecache.h"
 #include "vector2.h"
 
@@ -55,7 +55,7 @@ namespace dukat
 		inline bool is_bottom(void) const { return (orientation & 0x1) == 0x0; }
     };
 
-    class ClipMap : public Renderable
+    class ClipMap : public Mesh
     {
     private:
 		const int num_levels;
@@ -65,14 +65,13 @@ namespace dukat
 		HeightMap* height_map; // Height map data
 		std::vector<ClipMapLevel> levels;
 		int min_level; // min level to render - based on height of observer
-		Vector3 observer_pos; // Observer (i.e., camera) position in world space
 
 		// Clipmap meshes
-        std::unique_ptr<Mesh> inner_mesh;
-        std::unique_ptr<Mesh> block_mesh;
-        std::unique_ptr<Mesh> ring_mesh;
-        std::array<std::unique_ptr<Mesh>, 4> fill_mesh;
-        std::unique_ptr<Mesh> perimeter_mesh;
+        std::unique_ptr<MeshData> inner_mesh;
+        std::unique_ptr<MeshData> block_mesh;
+        std::unique_ptr<MeshData> ring_mesh;
+        std::array<std::unique_ptr<MeshData>, 4> fill_mesh;
+        std::unique_ptr<MeshData> perimeter_mesh;
 		std::array<Vector2, 4> inner_offsets; // Offsets for <I> blocks
 		std::array<Vector2, 12> block_offsets; // Offsets for <B> blocks
 
@@ -84,12 +83,12 @@ namespace dukat
         ShaderProgram* update_program; // used to update elevation sampler 
 		std::vector<GLfloat> buffer; // Buffer used to update elevation samplers.
         std::unique_ptr<FrameBuffer> fb_update; // frame buffer to update elevation sampler 
-        std::unique_ptr<Mesh> quad_update; // quad mesh used to update elevation sampler
+        std::unique_ptr<MeshData> quad_update; // quad mesh used to update elevation sampler
 		std::unique_ptr<Texture> update_texture; // 1-channel GL_R32F texture used to update elevation maps.
 
 		ShaderProgram* normal_program; // used to generate normal maps
 		std::unique_ptr<FrameBuffer> fb_normal; // frame buffer to generate normal textures
-		std::unique_ptr<Mesh> quad_normal; // quad mesh used to update normal shader
+		std::unique_ptr<MeshData> quad_normal; // quad mesh used to update normal shader
 
 		void build_levels(void);
         void build_color_sampler(void);
@@ -110,8 +109,10 @@ namespace dukat
         bool culling;
         bool stitching;
 		bool blending;
-		bool lighting;
-
+        bool lighting;
+        // Observer (i.e., camera) position in world space
+		Vector3 observer_pos;
+        
         // Creates a new clipmap.
         ClipMap(Game3* game, int num_levels, int level_size, HeightMap* height_map);
         ~ClipMap(void) { }
@@ -119,10 +120,10 @@ namespace dukat
 		// Sets clipmap shader.
 		void set_program(ShaderProgram* program) { this->program = program; }
 		// Sets the color palette used to shade the terrain.
-		void set_palette(const std::vector<Color>& palette);
-		void update(float delta, const Vector3& obs_pos);
-        void render(Renderer3* renderer);
-
+        void set_palette(const std::vector<Color>& palette);
+		void update(float delta);
+        void render(Renderer* renderer);
+        
         // Testing
         Texture* get_elevation_map(void) { return elevation_maps.get(); }
         Texture* get_normal_map(void) { return normal_maps.get(); }

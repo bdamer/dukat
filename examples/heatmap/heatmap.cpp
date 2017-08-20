@@ -5,7 +5,7 @@
 #include <dukat/log.h>
 #include <dukat/mathutil.h>
 #include <dukat/meshbuilder2.h>
-#include <dukat/renderer3.h>
+#include <dukat/renderer.h>
 #include <dukat/shape.h>
 #include <dukat/sysutil.h>
 #include <dukat/vertextypes3.h>
@@ -309,7 +309,7 @@ namespace dukat
         perfc.inc(PerformanceCounter::FRAME_BUFFERS);
     }
 
-    void HeatMap::render(Renderer3* renderer)
+    void HeatMap::render(Renderer* renderer)
     {
         renderer->switch_shader(program);
         

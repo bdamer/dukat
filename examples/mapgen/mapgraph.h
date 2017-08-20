@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <dukat/mesh.h>
+#include <dukat/meshdata.h>
 #include <dukat/vector2.h>
 
 namespace dukat
@@ -168,16 +168,16 @@ namespace dukat
         void generate(void);
 
         // Generates water / land mesh.
-        void create_water_land_mesh(Mesh* mesh, float z_scale = 1.0f);
+        void create_water_land_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh indicating elevation of each map cell. 
-        void create_elevation_mesh(Mesh* mesh, float z_scale = 1.0f);
+        void create_elevation_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh indicating moisture of each map cell.
-        void create_moisture_mesh(Mesh* mesh, float z_scale = 1.0f);
+        void create_moisture_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh to showcase biome of each map cell.
-        void create_biomes_mesh(Mesh* mesh, float z_scale = 1.0f);
+        void create_biomes_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh of polygon outlines
-        void create_edge_mesh(Mesh* mesh, float z_scale = 1.0f);
+        void create_edge_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh of rivers
-        void create_river_mesh(Mesh* mesh, float z_scale = 1.0f);
+        void create_river_mesh(MeshData* mesh, float z_scale = 1.0f);
     };
 }

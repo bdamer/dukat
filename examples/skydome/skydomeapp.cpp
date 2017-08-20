@@ -20,7 +20,7 @@ namespace dukat
 	// Factor that determines how long an in-game second is. (1 in-game hour = 60 real-world seconds)
 	const float time_factor = 60.0f;
 
-	std::unique_ptr<Mesh> build_plane(float max_u, float max_t)
+	std::unique_ptr<MeshData> build_plane(float max_u, float max_t)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
@@ -36,7 +36,7 @@ namespace dukat
 			-1.0f,  -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
 		};
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLES, 6, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLES, 6, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(verts));
 		return res;
 	}
@@ -55,7 +55,6 @@ namespace dukat
 		renderer->set_camera(std::move(camera));
 
 		object_meshes.stage = RenderStage::SCENE;
-		object_meshes.mat_model.identity();
 		object_meshes.visible = true;
 
 		MeshBuilder3 mb3;
@@ -89,7 +88,6 @@ namespace dukat
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
-		overlay_meshes.mat_model.identity();
 
 		auto multiplier_text = create_text_mesh(1.0f / 20.0f);
 		multiplier_text->transform.position = { -1.3f, 0.85f, 0.0f };
@@ -116,7 +114,6 @@ namespace dukat
 
 		debug_meshes.stage = RenderStage::OVERLAY;
 		debug_meshes.visible = debug;
-		debug_meshes.mat_model.identity();
 
 		std::unique_ptr<TextMeshInstance> debug_text;
 		debug_text = create_text_mesh(1.0f / 20.0f);
@@ -256,7 +253,7 @@ namespace dukat
 
 	void Game::render(void)
 	{
-		std::vector<Renderable*> meshes;
+		std::vector<Mesh*> meshes;
 		meshes.push_back(&debug_meshes);
 		meshes.push_back(&object_meshes);
 		meshes.push_back(&overlay_meshes);

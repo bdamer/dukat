@@ -225,7 +225,7 @@ namespace dukat
 		}
 	}
 
-    void WaveMesh::update_framebuffer(Renderer3* renderer)
+    void WaveMesh::update_framebuffer(Renderer* renderer)
 	{
         glDisable(GL_BLEND);
 
@@ -243,48 +243,48 @@ namespace dukat
 		fb_texture->bind(2, fb_program); // output buffer
 		
 		// wave passes
-		GLfloat mat[16];
+		Matrix4 mat_model;
 		for (int i = 0; i < 4; i++) 
 		{
 			fb_program->set("u_pass", static_cast<float>(i));
 
 			// Set cUTransX
-			mat[0] = tex_waves[i * 4 + 0].rot_scale.x;
-			mat[1] = tex_waves[i * 4 + 0].rot_scale.y;
-			mat[2] = 0.0f;
-			mat[3] = tex_waves[i * 4 + 0].phase;
-			mat[4] = tex_waves[i * 4 + 1].rot_scale.x;
-			mat[5] = tex_waves[i * 4 + 1].rot_scale.y;
-			mat[6] = 0.0f;
-			mat[7] = tex_waves[i * 4 + 1].phase;
-			mat[8] = tex_waves[i * 4 + 2].rot_scale.x;
-			mat[9] = tex_waves[i * 4 + 2].rot_scale.y;
-			mat[10] = 0.0f;
-			mat[11] = tex_waves[i * 4 + 2].phase;
-			mat[12] = tex_waves[i * 4 + 3].rot_scale.x;
-			mat[13] = tex_waves[i * 4 + 3].rot_scale.y;
-			mat[14] = 0.0f;
-			mat[15] = tex_waves[i * 4 + 3].phase;
-			fb_program->set_matrix4("u_rtex_coord", mat);
+			mat_model.m[0] = tex_waves[i * 4 + 0].rot_scale.x;
+			mat_model.m[1] = tex_waves[i * 4 + 0].rot_scale.y;
+			mat_model.m[2] = 0.0f;
+			mat_model.m[3] = tex_waves[i * 4 + 0].phase;
+			mat_model.m[4] = tex_waves[i * 4 + 1].rot_scale.x;
+			mat_model.m[5] = tex_waves[i * 4 + 1].rot_scale.y;
+			mat_model.m[6] = 0.0f;
+			mat_model.m[7] = tex_waves[i * 4 + 1].phase;
+			mat_model.m[8] = tex_waves[i * 4 + 2].rot_scale.x;
+			mat_model.m[9] = tex_waves[i * 4 + 2].rot_scale.y;
+			mat_model.m[10] = 0.0f;
+			mat_model.m[11] = tex_waves[i * 4 + 2].phase;
+			mat_model.m[12] = tex_waves[i * 4 + 3].rot_scale.x;
+			mat_model.m[13] = tex_waves[i * 4 + 3].rot_scale.y;
+			mat_model.m[14] = 0.0f;
+			mat_model.m[15] = tex_waves[i * 4 + 3].phase;
+			fb_program->set_matrix4("u_rtex_coord", mat_model.m);
 
 			// Set cCoefX
 			auto norm_scale = tex_waves[i * 4 + 0].fade / (float)num_bump_passes;
-			mat[0] = tex_waves[i * 4 + 0].dir.x * norm_scale;
-			mat[1] = tex_waves[i * 4 + 0].dir.y * norm_scale;
-			mat[2] = mat[3] = 1.0f;
+			mat_model.m[0] = tex_waves[i * 4 + 0].dir.x * norm_scale;
+			mat_model.m[1] = tex_waves[i * 4 + 0].dir.y * norm_scale;
+			mat_model.m[2] = mat_model.m[3] = 1.0f;
 			norm_scale = tex_waves[i * 4 + 1].fade / (float)num_bump_passes;
-			mat[4] = tex_waves[i * 4 + 1].dir.x * norm_scale;
-			mat[5] = tex_waves[i * 4 + 1].dir.y * norm_scale;
-			mat[6] = mat[7] = 1.0f;
+			mat_model.m[4] = tex_waves[i * 4 + 1].dir.x * norm_scale;
+			mat_model.m[5] = tex_waves[i * 4 + 1].dir.y * norm_scale;
+			mat_model.m[6] = mat_model.m[7] = 1.0f;
 			norm_scale = tex_waves[i * 4 + 2].fade / (float)num_bump_passes;
-			mat[8] = tex_waves[i * 4 + 2].dir.x * norm_scale;
-			mat[9] = tex_waves[i * 4 + 2].dir.y * norm_scale;
-			mat[10] = mat[11] = 1.0f;
+			mat_model.m[8] = tex_waves[i * 4 + 2].dir.x * norm_scale;
+			mat_model.m[9] = tex_waves[i * 4 + 2].dir.y * norm_scale;
+			mat_model.m[10] = mat_model.m[11] = 1.0f;
 			norm_scale = tex_waves[i * 4 + 3].fade / (float)num_bump_passes;
-			mat[12] = tex_waves[i * 4 + 3].dir.x * norm_scale;
-			mat[13] = tex_waves[i * 4 + 3].dir.y * norm_scale;
-			mat[14] = mat[15] = 1.0f;
-			fb_program->set_matrix4("u_coef", mat);
+			mat_model.m[12] = tex_waves[i * 4 + 3].dir.x * norm_scale;
+			mat_model.m[13] = tex_waves[i * 4 + 3].dir.y * norm_scale;
+			mat_model.m[14] = mat_model.m[15] = 1.0f;
+			fb_program->set_matrix4("u_coef", mat_model.m);
 			
         	fb_quad->render(fb_program);
 	        perfc.inc(PerformanceCounter::FRAME_BUFFERS);
@@ -298,12 +298,12 @@ namespace dukat
 		auto scale_bias = 0.5f * tex_state.noise / (static_cast<float>(num_bump_passes) + tex_state.noise);
 		fb_program->set("u_rescale", scale_bias, scale_bias, 0.0f, 1.0f);
 		// Repurpose cUTransX to send uvXform parameters
-		mat[0] = 20.0f; mat[4] = 0.0f; 		mat[8] = 20.0f; mat[12] = 0.0f;
-		mat[1] = 0.0f; 	mat[5] = 20.0f; 	mat[9] = 0.0f; 	mat[13] = 20.0f;
-		mat[2] = 		mat[6] = 			mat[10] = 		mat[14] = 0.0f;
-		mat[3] = 		mat[7] = 			mat[11] = 		mat[15] = 0.1f * game->get_time();
+		mat_model.m[0] = 20.0f; mat_model.m[4] = 0.0f; 		mat_model.m[8] = 20.0f; mat_model.m[12] = 0.0f;
+		mat_model.m[1] = 0.0f; 	mat_model.m[5] = 20.0f; 	mat_model.m[9] = 0.0f; 	mat_model.m[13] = 20.0f;
+		mat_model.m[2] = 		mat_model.m[6] = 			mat_model.m[10] = 		mat_model.m[14] = 0.0f;
+		mat_model.m[3] = 		mat_model.m[7] = 			mat_model.m[11] = 		mat_model.m[15] = 0.1f * game->get_time();
 
-		fb_program->set_matrix4("u_rtex_coord", mat);
+		fb_program->set_matrix4("u_rtex_coord", mat_model.m);
 
 		fb_quad->render(fb_program);
         perfc.inc(PerformanceCounter::FRAME_BUFFERS);
@@ -314,14 +314,16 @@ namespace dukat
         glEnable(GL_BLEND);
 	}
 
-	void WaveMesh::render_water_mesh(Renderer3* renderer)
+	void WaveMesh::render(Renderer* renderer)
 	{
-		renderer->switch_shader(grid_program);
+		update_framebuffer(renderer);
 
+		renderer->switch_shader(grid_program);
+		
 		grid_program->set("u_debug", game->is_debug() ? 1.0f : 0.0f);
 
 		// determine intersection of camera eye ray and mesh
-		auto cam = renderer->get_camera();
+		auto cam = dynamic_cast<Renderer3*>(renderer)->get_camera();
 		Vector3 cam_target;
 		if (cam->transform.dir.y != 0.0f)
 		{
@@ -339,17 +341,17 @@ namespace dukat
 		auto z = std::floor(cam_target.z / grid_scale);
 
 		// We're repurposing the model matrix to pass in information about the location and scale of the grid.
-		Matrix4 model;
 		// grid scale at current level
-		model.m[0] = model.m[1] = grid_scale;
+		Matrix4 mat_model;
+		mat_model.m[0] = mat_model.m[1] = grid_scale;
 		// origin of mesh in world-space
-		model.m[2] = (-0.5f * static_cast<float>(grid_size) + x) * grid_scale;
-		model.m[3] = (-0.5f * static_cast<float>(grid_size) + z) * grid_scale;
+		mat_model.m[2] = (-0.5f * static_cast<float>(grid_size) + x) * grid_scale;
+		mat_model.m[3] = (-0.5f * static_cast<float>(grid_size) + z) * grid_scale;
 		// 1 / texture width,height
-		model.m[4] = model.m[5] = 1.0f / static_cast<float>(grid_size);
+		mat_model.m[4] = mat_model.m[5] = 1.0f / static_cast<float>(grid_size);
 		// ZScale of height map 
-		model.m[13] = 1.0f;
-		grid_program->set_matrix4(Renderer::uf_model, model);
+		mat_model.m[13] = 1.0f;
+		grid_program->set_matrix4(Renderer::uf_model, mat_model);
 
 		// Bind geo state
 		grid_program->set("u_ws.water_tint", 0.05f, 0.1f, 0.1f, 0.5f);
@@ -381,18 +383,12 @@ namespace dukat
 		// Set environment and bump map
 		if (env_map != nullptr)
 		{
-	        env_map->bind(0, grid_program);
+			env_map->bind(0, grid_program);
 		}
 
 		fb_texture->bind(1, grid_program);
 
 		grid_mesh->render(grid_program);
-	}
-
-	void WaveMesh::render(Renderer3* renderer)
-	{
-		update_framebuffer(renderer);
-		render_water_mesh(renderer);
 	}
 
 	// Samples wave mesh position; this code matches the code in the 

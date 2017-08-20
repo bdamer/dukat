@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "mesh.h"
+#include "meshdata.h"
 #include "buffers.h"
 #include "shaderprogram.h"
 #include "log.h"
@@ -7,7 +7,7 @@
 
 namespace dukat
 {
-	Mesh::Mesh(GLenum mode, int max_vertices, int max_indices, const std::vector<VertexAttribute>& attributes, bool static_mesh)
+	MeshData::MeshData(GLenum mode, int max_vertices, int max_indices, const std::vector<VertexAttribute>& attributes, bool static_mesh)
 		: mode(mode), max_vertices(max_vertices), max_indices(max_indices), attributes(attributes), static_mesh(static_mesh)
 	{
 		// Revisit this if we want to support meshes with more than 64k vertices
@@ -42,17 +42,17 @@ namespace dukat
 		}
 	}
 
-	void Mesh::set_vertices(const std::vector<GLfloat>& vertices, int vertex_count)
+	void MeshData::set_vertices(const std::vector<GLfloat>& vertices, int vertex_count)
 	{
 		set_vertices(vertices.data(), vertex_count);
 	}
 
-	void Mesh::set_vertices(const std::vector<GLshort>& vertices, int vertex_count)
+	void MeshData::set_vertices(const std::vector<GLshort>& vertices, int vertex_count)
 	{
 		set_vertices(vertices.data(), vertex_count);
 	}
 
-	void Mesh::set_vertices(const GLvoid* vertices, int vertex_count)
+	void MeshData::set_vertices(const GLvoid* vertices, int vertex_count)
 	{
 		buffer->counts[0] = vertex_count > 0 ? vertex_count : max_vertices;
 		glBindBuffer(GL_ARRAY_BUFFER, buffer->buffers[0]);
@@ -69,12 +69,12 @@ namespace dukat
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void Mesh::set_indices(const std::vector<GLushort>& indices, int index_count)
+	void MeshData::set_indices(const std::vector<GLushort>& indices, int index_count)
 	{
 		set_indices(indices.data(), index_count);
 	}
 
-	void Mesh::set_indices(const GLvoid* indices, int index_count)
+	void MeshData::set_indices(const GLvoid* indices, int index_count)
 	{
 		assert(buffer->buffer_count > 1);
 		buffer->counts[1] = index_count > 0 ? index_count : max_indices;
@@ -83,7 +83,7 @@ namespace dukat
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
-	void Mesh::render(ShaderProgram* program)
+	void MeshData::render(ShaderProgram* program)
 	{
 #if OPENGL_VERSION >= 30
 		glBindVertexArray(buffer->vao);

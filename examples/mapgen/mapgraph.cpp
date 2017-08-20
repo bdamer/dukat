@@ -286,7 +286,7 @@ namespace dukat
         assign_biomes();
     }
 
-    void MapGraph::create_water_land_mesh(Mesh* mesh, float z_scale)
+    void MapGraph::create_water_land_mesh(MeshData* mesh, float z_scale)
     {
 		std::vector<VertexPosCol> verts;
         Color c;
@@ -321,7 +321,7 @@ namespace dukat
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
     }
 
-    void MapGraph::create_elevation_mesh(Mesh* mesh, float z_scale)
+    void MapGraph::create_elevation_mesh(MeshData* mesh, float z_scale)
     {
         std::vector<VertexPosCol> verts;
         Color c{0.0f, 0.0f, 0.0f, 1.0f};
@@ -346,7 +346,7 @@ namespace dukat
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
     }
 
-    void MapGraph::create_moisture_mesh(Mesh* mesh, float z_scale)
+    void MapGraph::create_moisture_mesh(MeshData* mesh, float z_scale)
     {
 		std::vector<VertexPosCol> verts;
         Color c;
@@ -381,7 +381,7 @@ namespace dukat
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
     }
 
-    void MapGraph::create_biomes_mesh(Mesh* mesh, float z_scale)
+    void MapGraph::create_biomes_mesh(MeshData* mesh, float z_scale)
     {
 		std::vector<VertexPosCol> verts;
         Color c;
@@ -447,7 +447,7 @@ namespace dukat
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
     }
 
-    void MapGraph::create_edge_mesh(Mesh* mesh, float z_scale)
+    void MapGraph::create_edge_mesh(MeshData* mesh, float z_scale)
     {
         Color c{0.0f, 0.0f, 0.0f, 1.0f};
 		std::vector<VertexPosCol> verts;
@@ -459,7 +459,7 @@ namespace dukat
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
     }
 
-    void MapGraph::create_river_mesh(Mesh* mesh, float z_scale)
+    void MapGraph::create_river_mesh(MeshData* mesh, float z_scale)
     {
         Color c{0.0f, 0.0f, 1.0f, 1.0f};
 		std::vector<VertexPosCol> verts;

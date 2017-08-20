@@ -14,10 +14,10 @@ namespace dukat
 {
 	// forward declarations
 	class Scene;
-	class Mesh;
+	class MeshData;
 	class MeshGroup;
 	class ShaderProgram;
-	class Renderable;
+	class Mesh;
 
 	class Renderer3 : public Renderer
 	{
@@ -52,7 +52,7 @@ namespace dukat
 		// used to chain effects
 		FrameBuffer* frame_buffer;
 		// Quad to composite final image onto
-		std::unique_ptr<Mesh> quad;
+		std::unique_ptr<MeshData> quad;
 		ShaderProgram* composite_program;
 		
 		void init_lights(void);
@@ -62,7 +62,7 @@ namespace dukat
 		Renderer3(Window* window, ShaderCache* shaders, TextureCache* textures);
 		~Renderer3(void) { }
 
-		void render(const std::vector<Renderable*>& meshes);
+		void render(const std::vector<Mesh*>& meshes);
 		// Updates uniform buffers for camera and lighting.
 		void update_uniforms(void);
 

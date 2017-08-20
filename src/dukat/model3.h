@@ -5,8 +5,6 @@
 #include "sysutil.h"
 #include "transform3.h"
 
-#include <memory>
-
 namespace dukat
 {
     class GameBase;

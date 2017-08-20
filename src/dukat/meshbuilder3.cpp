@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "meshbuilder3.h"
-#include "mesh.h"
+#include "meshdata.h"
 #include "vertextypes3.h"
 #include "geometry.h"
 #include "buffers.h"
@@ -10,7 +10,7 @@
 
 namespace dukat
 {
-	std::unique_ptr<Mesh> MeshBuilder3::build_axis(void)
+	std::unique_ptr<MeshData> MeshBuilder3::build_axis(void)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
@@ -25,12 +25,12 @@ namespace dukat
 			0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f
 		};
 
-		auto res = std::make_unique<Mesh>(GL_LINES, 6, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_LINES, 6, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder3::build_line(const Vector3& a, const Vector3& b)
+	std::unique_ptr<MeshData> MeshBuilder3::build_line(const Vector3& a, const Vector3& b)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
@@ -41,12 +41,12 @@ namespace dukat
 			b.x, b.y, b.z, 1.0f, 1.0f, 1.0f, 1.0f
 		};
 
-		auto res = std::make_unique<Mesh>(GL_LINES, 2, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_LINES, 2, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder3::build_points(const std::vector<Vector3>& points, const Color& color)
+	std::unique_ptr<MeshData> MeshBuilder3::build_points(const std::vector<Vector3>& points, const Color& color)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
@@ -58,12 +58,12 @@ namespace dukat
 			vertices.push_back({ it.x, it.y, it.z, color.r, color.g, color.b, color.a });
 		}
 
-		auto res = std::make_unique<Mesh>(GL_POINTS, (unsigned int)vertices.size(), 0, attr);
+		auto res = std::make_unique<MeshData>(GL_POINTS, (unsigned int)vertices.size(), 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices.data()));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder3::build_cube(void)
+	std::unique_ptr<MeshData> MeshBuilder3::build_cube(void)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
@@ -115,12 +115,12 @@ namespace dukat
 			 1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.50f, 0.75f
 		};
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLES, 36, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLES, 36, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(verts));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder3::build_cube_single_face(void)
+	std::unique_ptr<MeshData> MeshBuilder3::build_cube_single_face(void)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
@@ -172,12 +172,12 @@ namespace dukat
 			 1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f
 		};
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLES, 36, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLES, 36, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(verts));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder3::build_sphere(int slices, int stacks, bool invert)
+	std::unique_ptr<MeshData> MeshBuilder3::build_sphere(int slices, int stacks, bool invert)
 	{
 		auto vertices = generate_sphere(1.0f, slices, stacks, invert);
 		
@@ -188,7 +188,7 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3));
 		attr.push_back(VertexAttribute(Renderer::at_normal, 3));
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, num_vertices, num_indices, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, num_vertices, num_indices, attr);
 		res->set_vertices(vertices, num_vertices);
 
 		// First, generate vertex index arrays for drawing with glDrawElements
@@ -233,7 +233,7 @@ namespace dukat
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder3::build_dome(int slices, int stacks, bool invert)
+	std::unique_ptr<MeshData> MeshBuilder3::build_dome(int slices, int stacks, bool invert)
 	{
 		auto vertices = generate_dome(1.0f, slices, stacks, invert);
 		
@@ -244,7 +244,7 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3));
 		attr.push_back(VertexAttribute(Renderer::at_normal, 3));
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, num_vertices, num_indices, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, num_vertices, num_indices, attr);
 		res->set_vertices(vertices, num_vertices);
 
 		// First, generate vertex index arrays for drawing with glDrawElements

@@ -5,7 +5,7 @@
 
 namespace dukat
 {
-	class Mesh;
+	class MeshData;
 	struct Color;
 
 	// Utility class to generate meshes to render text based on a sprite map.
@@ -26,7 +26,7 @@ namespace dukat
 		// Creates a new text mesh builder for a sprite map with cols * rows characters.
 		TextMeshBuilder(int cols = 16, int rows = 16);
 		~TextMeshBuilder(void) { }
-		std::unique_ptr<Mesh> build_text_mesh(const std::string& text = "") const;
-		void rebuild_text_mesh(Mesh* mesh, const std::string& text, float& width, float& height) const;
+		std::unique_ptr<MeshData> build_text_mesh(const std::string& text = "") const;
+		void rebuild_text_mesh(MeshData* mesh, const std::string& text, float& width, float& height) const;
 	};
 }

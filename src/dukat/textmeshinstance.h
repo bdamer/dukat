@@ -10,13 +10,13 @@ namespace dukat
 	private:
 		// Unlike a regular mesh instance, a text mesh instance does not
 		// use the mesh cache. Instead it stores the mesh data directly.
-		std::unique_ptr<Mesh> text_mesh;
+		std::unique_ptr<MeshData> text_mesh;
 		std::string text;
 		// unscaled width and height
 		float width, height; 
 
 	public:
-		TextMeshInstance(std::unique_ptr<Mesh> text_mesh);
+		TextMeshInstance(std::unique_ptr<MeshData> text_mesh);
 		~TextMeshInstance(void) { }
 
 		void set_text(const std::string& text);

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "game3.h"
 #include "renderer3.h"
-#include "mesh.h"
 
 namespace dukat
 {

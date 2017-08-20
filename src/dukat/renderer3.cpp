@@ -2,7 +2,7 @@
 #include "renderer3.h"
 #include "buffers.h"
 #include "log.h"
-#include "mesh.h"
+#include "meshdata.h"
 #include "meshbuilder2.h"
 #include "meshgroup.h"
 #include "perfcounter.h"
@@ -78,7 +78,7 @@ namespace dukat
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void Renderer3::render(const std::vector<Renderable*>& meshes)
+	void Renderer3::render(const std::vector<Mesh*>& meshes)
 	{
 #if OPENGL_VERSION >= 30
 		// Update uniform buffers once per frame.

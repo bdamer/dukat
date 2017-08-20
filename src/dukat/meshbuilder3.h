@@ -5,7 +5,7 @@
 
 namespace dukat
 {
-	class Mesh;
+	class MeshData;
 	class Vector3;
 	struct Color;
 
@@ -18,18 +18,18 @@ namespace dukat
 		~MeshBuilder3(void) { }
 
 		// Creates a new coordinate axis mesh.
-		std::unique_ptr<Mesh> build_axis(void);
+		std::unique_ptr<MeshData> build_axis(void);
 		// Creates a new line segment mesh.
-		std::unique_ptr<Mesh> build_line(const Vector3& a, const Vector3& b);
+		std::unique_ptr<MeshData> build_line(const Vector3& a, const Vector3& b);
 		// Creates a new mesh for a set of points.
-		std::unique_ptr<Mesh> build_points(const std::vector<Vector3>& points, const Color& color);
+		std::unique_ptr<MeshData> build_points(const std::vector<Vector3>& points, const Color& color);
 		// Creates a new textured cube mesh.
-		std::unique_ptr<Mesh> build_cube(void);
+		std::unique_ptr<MeshData> build_cube(void);
 		// Creates a new textured cube mesh using a single set of texture coordinates.		
-		std::unique_ptr<Mesh> build_cube_single_face(void);
+		std::unique_ptr<MeshData> build_cube_single_face(void);
 		// Creates a new sphere mesh.
-		std::unique_ptr<Mesh> build_sphere(int slices, int stacks, bool invert = false);
+		std::unique_ptr<MeshData> build_sphere(int slices, int stacks, bool invert = false);
 		// Creates a new dome mesh.
-		std::unique_ptr<Mesh> build_dome(int slices, int stacks, bool invert = false);
+		std::unique_ptr<MeshData> build_dome(int slices, int stacks, bool invert = false);
 	};
 }

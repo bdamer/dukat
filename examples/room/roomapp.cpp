@@ -15,7 +15,7 @@
 
 namespace dukat
 {
-	std::unique_ptr<Mesh> build_inverted_cube(float max_u, float max_t)
+	std::unique_ptr<MeshData> build_inverted_cube(float max_u, float max_t)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
@@ -67,7 +67,7 @@ namespace dukat
 			-1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, max_t
 		};
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLES, 36, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLES, 36, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(verts));
 		return res;
 	}
@@ -86,7 +86,6 @@ namespace dukat
 		renderer->set_camera(std::move(camera));
 
 		object_meshes.stage = RenderStage::SCENE;
-		object_meshes.mat_model.identity();
 		object_meshes.visible = true;
 
 		// Origin
@@ -106,7 +105,6 @@ namespace dukat
 		mi->transform.scale = Vector3(25.0f, 25.0f, 25.0f);
 
 		debug_meshes.stage = RenderStage::OVERLAY;
-		debug_meshes.mat_model.identity();
 
 		std::unique_ptr<TextMeshInstance> debug_text;
 		debug_text = create_text_mesh(1.0f / 20.0f);
@@ -125,7 +123,7 @@ namespace dukat
 
 	void Game::render(void)
 	{
-		std::vector<Renderable*> meshes;
+		std::vector<Mesh*> meshes;
 		meshes.push_back(&debug_meshes);
 		meshes.push_back(&object_meshes);
 		renderer->render(meshes);

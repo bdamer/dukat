@@ -71,9 +71,9 @@ namespace dukat
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    std::unique_ptr<Mesh> BlockBuilder::create_mesh(void)
+    std::unique_ptr<MeshData> BlockBuilder::create_mesh(void)
     {
-        auto mesh = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, get_vertex_count(), 
+        auto mesh = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, get_vertex_count(), 
             get_index_count(), attributes);
         mesh->set_vertices(vertex_data.data());
         mesh->set_indices(index_data.data());

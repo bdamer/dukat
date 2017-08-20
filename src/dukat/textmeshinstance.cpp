@@ -4,7 +4,7 @@
 
 namespace dukat
 {
-	TextMeshInstance::TextMeshInstance(std::unique_ptr<Mesh> text_mesh)
+	TextMeshInstance::TextMeshInstance(std::unique_ptr<MeshData> text_mesh)
 	{
 		this->text_mesh = std::move(text_mesh);
 		set_mesh(this->text_mesh.get());
@@ -36,6 +36,5 @@ namespace dukat
 	void TextMeshInstance::set_size(float size)
 	{
 		transform.scale = { size, size, size };
-		transform.update();
 	}
 }

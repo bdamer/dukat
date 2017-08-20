@@ -3,7 +3,6 @@
 #include "devicemanager.h"
 #include "keyboarddevice.h"
 #include "meshcache.h"
-#include "mesh.h"
 #include "particlemanager.h"
 #include "settings.h"
 #include "shadercache.h"

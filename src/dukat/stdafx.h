@@ -19,6 +19,7 @@
 #include <climits>
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 #include <deque>
 #include <iostream>
 #include <fstream>

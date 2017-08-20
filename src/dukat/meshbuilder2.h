@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-	class Mesh;
+	class MeshData;
 	class Vector3;
 	struct Color;
 
@@ -19,16 +19,16 @@ namespace dukat
 		~MeshBuilder2(void) { }
 
 		// Creates a new coordinate axis mesh.
-		std::unique_ptr<Mesh> build_axis(void);
+		std::unique_ptr<MeshData> build_axis(void);
 		// Creates a new mesh for a set of points.
-		std::unique_ptr<Mesh> build_points(const std::vector<Vector3>& points, const Color& color);
+		std::unique_ptr<MeshData> build_points(const std::vector<Vector3>& points, const Color& color);
 		// Creates a new quad mesh.
-		std::unique_ptr<Mesh> build_quad(void);
+		std::unique_ptr<MeshData> build_quad(void);
 		// Creates a new quad mesh with a given set of texture coordinates.
-		std::unique_ptr<Mesh> build_textured_quad(const std::array<float, 4>& uv = { 0.0f, 0.0f, 1.0f, 1.0f });
+		std::unique_ptr<MeshData> build_textured_quad(const std::array<float, 4>& uv = { 0.0f, 0.0f, 1.0f, 1.0f });
 		// Creates a new triangle mesh.
-		std::unique_ptr<Mesh> build_triangle(void);
+		std::unique_ptr<MeshData> build_triangle(void);
 		// Creates a new circle mesh.
-		std::unique_ptr<Mesh> build_circle(int segments);
+		std::unique_ptr<MeshData> build_circle(int segments);
 	};
 }

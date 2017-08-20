@@ -7,7 +7,7 @@
 
 namespace dukat
 {
-	MeshInstance::MeshInstance(void) : program(nullptr), visible(true)
+	MeshInstance::MeshInstance(void) : Mesh(), program(nullptr)
 	{
 		for (auto i = 0; i < Renderer::max_texture_units; i++)
 			texture[i] = nullptr;
@@ -33,6 +33,13 @@ namespace dukat
 	{
 		assert(index >= 0 && index < Renderer::max_texture_units);
 		this->texture[index] = texture;
+	}
+
+	void MeshInstance::render(Renderer* renderer)
+	{
+		Matrix4 mat;
+		mat.identity();
+		render(renderer, mat);
 	}
 
 	void MeshInstance::render(Renderer* renderer, const Matrix4& mat)

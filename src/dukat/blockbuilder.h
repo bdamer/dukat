@@ -1,11 +1,11 @@
 #pragma once
 
 #include <vector>
-#include "mesh.h"
+#include "meshdata.h"
 
 namespace dukat
 {
-    class Mesh;
+    class MeshData;
     struct VertexBuffer;
 
     class BlockBuilder
@@ -26,7 +26,7 @@ namespace dukat
         // Binds the vertex and index data to the provided buffers.
         void bind_data(VertexBuffer& vertex_buffer, int vertex_pos = 0, int index_pos = 1);
         // Creates a new mesh from this buffer.
-        std::unique_ptr<Mesh> create_mesh(void);
+        std::unique_ptr<MeshData> create_mesh(void);
 
         // Resets all state associated with this block builder.
         void clear(void);

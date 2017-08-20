@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "textmeshbuilder.h"
 #include "buffers.h"
-#include "mesh.h"
+#include "meshdata.h"
 #include "renderer.h"
 #include "vertextypes2.h"
 #include "vertextypes3.h"
@@ -44,13 +44,13 @@ namespace dukat
 		}
 	}
 
-	std::unique_ptr<Mesh> TextMeshBuilder::build_text_mesh(const std::string& text) const
+	std::unique_ptr<MeshData> TextMeshBuilder::build_text_mesh(const std::string& text) const
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(dukat::VertexAttribute(Renderer::at_pos, 2));
 		attr.push_back(dukat::VertexAttribute(Renderer::at_color, 4));
 		attr.push_back(dukat::VertexAttribute(Renderer::at_texcoord, 2));
-		auto mesh = std::make_unique<Mesh>(GL_TRIANGLES, max_length * 6, 0, attr);
+		auto mesh = std::make_unique<MeshData>(GL_TRIANGLES, max_length * 6, 0, attr);
 		float width, height;
 		rebuild_text_mesh(mesh.get(), text, width, height);
 		return std::move(mesh);
@@ -86,7 +86,7 @@ namespace dukat
 		}
 	}
 
-	void TextMeshBuilder::rebuild_text_mesh(Mesh* mesh, const std::string& text, float& width, float& height) const
+	void TextMeshBuilder::rebuild_text_mesh(MeshData* mesh, const std::string& text, float& width, float& height) const
 	{
 		assert(text.length() <= max_length);
 

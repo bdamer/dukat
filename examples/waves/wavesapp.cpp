@@ -41,7 +41,6 @@ namespace dukat
 		renderer->set_camera(std::move(camera));		
 
 		object_meshes.stage = RenderStage::SCENE;
-		object_meshes.mat_model.identity();
 		object_meshes.visible = true;
 
 		// load environment map
@@ -62,7 +61,6 @@ namespace dukat
 		
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
-		overlay_meshes.mat_model.identity();
 
 		// Quad used to visualize normal map
 		MeshBuilder2 mb2;
@@ -103,7 +101,6 @@ namespace dukat
 
 		debug_meshes.stage = RenderStage::OVERLAY;
 		debug_meshes.visible = debug;
-		debug_meshes.mat_model.identity();
 
 		auto debug_text = create_text_mesh(1.0f / 20.0f);
 		debug_text->transform.position.x = -1.0f;
@@ -224,7 +221,7 @@ namespace dukat
 
 	void Game::render(void)
 	{
-		std::vector<Renderable*> meshes;
+		std::vector<Mesh*> meshes;
 		meshes.push_back(&debug_meshes);
 		meshes.push_back(&object_meshes);
 		meshes.push_back(wave_mesh.get());

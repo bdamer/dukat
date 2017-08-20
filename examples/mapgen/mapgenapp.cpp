@@ -93,7 +93,6 @@ namespace dukat
 		map_mode = LandWater;
 
 		object_meshes.stage = RenderStage::SCENE;
-		object_meshes.mat_model.identity();
 		object_meshes.visible = true;
 
 		// Create meshes to display diagram
@@ -103,19 +102,18 @@ namespace dukat
 
 		line_mesh = object_meshes.create_instance();
 		line_mesh->set_program(shader_cache->get_program("sc_color.vsh", "sc_color.fsh"));
-		line_mesh->set_mesh(mesh_cache->put("lines", std::make_unique<Mesh>(GL_LINES, 2048, 0, attr)));
+		line_mesh->set_mesh(mesh_cache->put("lines", std::make_unique<MeshData>(GL_LINES, 2048, 0, attr)));
 		line_mesh->transform.position = { 0.0f, 0.01f, 0.0f };
 
 		fill_mesh = object_meshes.create_instance();
 		fill_mesh->set_program(shader_cache->get_program("sc_color.vsh", "sc_color.fsh"));
-		fill_mesh->set_mesh(mesh_cache->put("triangulation", std::make_unique<Mesh>(GL_TRIANGLES, 2048, 0, attr)));
+		fill_mesh->set_mesh(mesh_cache->put("triangulation", std::make_unique<MeshData>(GL_TRIANGLES, 2048, 0, attr)));
 
 		generate_map();
 		switch_mode();
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
-		overlay_meshes.mat_model.identity();
 
 		auto info_text = create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
@@ -136,7 +134,6 @@ namespace dukat
 
 		debug_meshes.stage = RenderStage::OVERLAY;
 		debug_meshes.visible = debug;
-		debug_meshes.mat_model.identity();
 
 		auto debug_text = create_text_mesh(1.0f / 20.0f);
 		debug_text->transform.position.x = -1.0f;
@@ -211,7 +208,7 @@ namespace dukat
 
 	void Game::render(void)
 	{
-		std::vector<Renderable*> meshes;
+		std::vector<Mesh*> meshes;
 		meshes.push_back(&debug_meshes);
 		meshes.push_back(&object_meshes);
 		meshes.push_back(&overlay_meshes);

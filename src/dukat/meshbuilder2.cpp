@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "meshbuilder2.h"
-#include "mesh.h"
+#include "meshdata.h"
 #include "vertextypes3.h"
 #include "geometry.h"
 #include "buffers.h"
@@ -10,7 +10,7 @@
 
 namespace dukat
 {
-	std::unique_ptr<Mesh> MeshBuilder2::build_axis(void)
+	std::unique_ptr<MeshData> MeshBuilder2::build_axis(void)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
@@ -23,12 +23,12 @@ namespace dukat
 			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f
 		};
 
-		auto res = std::make_unique<Mesh>(GL_LINES, 4, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_LINES, 4, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder2::build_points(const std::vector<Vector3>& points, const Color& color)
+	std::unique_ptr<MeshData> MeshBuilder2::build_points(const std::vector<Vector3>& points, const Color& color)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
@@ -40,12 +40,12 @@ namespace dukat
 			vertices.push_back({ it.x, it.y, it.z, color.r, color.g, color.b, color.a });
 		}
 
-		auto res = std::make_unique<Mesh>(GL_POINTS, (unsigned int)vertices.size(), 0, attr);
+		auto res = std::make_unique<MeshData>(GL_POINTS, (unsigned int)vertices.size(), 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices.data()));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder2::build_triangle(void)
+	std::unique_ptr<MeshData> MeshBuilder2::build_triangle(void)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
@@ -57,12 +57,12 @@ namespace dukat
 			0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
 		};
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLES, 3, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLES, 3, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder2::build_quad(void)
+	std::unique_ptr<MeshData> MeshBuilder2::build_quad(void)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
@@ -75,12 +75,12 @@ namespace dukat
 			 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
 		};
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, 4, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, 4, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder2::build_textured_quad(const std::array<float, 4>& uv)
+	std::unique_ptr<MeshData> MeshBuilder2::build_textured_quad(const std::array<float, 4>& uv)
 	{
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3));
@@ -93,12 +93,12 @@ namespace dukat
 			1.0f, -1.0f, 0.0f, uv[2], uv[1]  // bottom-right
 		};
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLE_STRIP, 4, 0, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, 4, 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(verts));
 		return res;
 	}
 
-	std::unique_ptr<Mesh> MeshBuilder2::build_circle(int segments)
+	std::unique_ptr<MeshData> MeshBuilder2::build_circle(int segments)
 	{
 		assert(segments > 2);
 
@@ -140,7 +140,7 @@ namespace dukat
 			y *= rad_factor;
 		}
 
-		auto res = std::make_unique<Mesh>(GL_TRIANGLE_FAN, (unsigned int)vertices.size(), 0, attr);
+		auto res = std::make_unique<MeshData>(GL_TRIANGLE_FAN, (unsigned int)vertices.size(), 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices.data()));
 		return res;
 	}

@@ -196,7 +196,7 @@ namespace dukat
 		const auto& vertices = model.get_vertices();
 		for (const auto& m : model.get_meshes())
 		{
-			Mesh* mesh;
+			MeshData* mesh;
 			std::string mesh_id = model.get_name() + "|" + m.name;
 			if (mesh_cache->contains(mesh_id))
 			{
@@ -204,7 +204,7 @@ namespace dukat
 			}
 			else
 			{
-				auto src_mesh = std::make_unique<Mesh>(GL_TRIANGLES, m.vertex_count, m.index_count, attr);
+				auto src_mesh = std::make_unique<MeshData>(GL_TRIANGLES, m.vertex_count, m.index_count, attr);
 				src_mesh->set_vertices(reinterpret_cast<const GLfloat*>(vertices.data() + m.vertex_offset), m.vertex_count);
 				if (m.index_count > 0)
 				{

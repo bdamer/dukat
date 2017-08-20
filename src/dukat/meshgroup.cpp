@@ -1,13 +1,11 @@
 #include "stdafx.h"
 #include "meshgroup.h"
-#include "mesh.h"
 #include "renderer.h"
 
 namespace dukat
 {
 	MeshGroup::MeshGroup(void)
 	{ 
-		mat_model.identity();
 		bb.clear();
 	}
 
@@ -31,19 +29,20 @@ namespace dukat
 
 	void MeshGroup::update(float delta)
 	{
+		transform.update();
 		for (auto& it : instances)
 		{
 			it->transform.update();
 		}
 	}
 
-	void MeshGroup::render(Renderer3* renderer)
+	void MeshGroup::render(Renderer* renderer)
 	{
 		for (auto& it : instances)
 		{
 			if (it->visible)
 			{
-				it->render(renderer, mat_model);
+				it->render(renderer, transform.mat_model);
 			}
 		}
 	}

@@ -1,54 +1,33 @@
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-#include <GL/glew.h>
-#include "buffers.h"
+#include "transform3.h"
+#include "matrix4.h"
 
 namespace dukat
 {
-	// Forward declarations
-	class ShaderProgram;
+    class Renderer;
 
-	struct VertexAttribute
+	enum RenderStage
 	{
-		const std::string alias;
-		const int components;
-		const GLenum type;
-		int offset;
-
-		VertexAttribute(const std::string& alias, int components, int offset = -1, GLenum type = GL_FLOAT)
-			: alias(alias), components(components), offset(offset), type(type) { };
+        SCENE,      // scene geometry
+		OVERLAY     // no depth-buffer, used for UI
 	};
 
-	class Mesh
-	{
-	private:
-		const GLenum mode;
-		const int max_vertices;
-		const int max_indices;
-		const bool static_mesh;
-		std::vector<VertexAttribute> attributes;
-		// Buffer containing vertex data at index 0, and optionally index data at index 1.
-		std::unique_ptr<VertexBuffer> buffer;
+    // Abstract base class for objects that can be rendered.
+    class Mesh
+    {
+    public:
+		ExtendedTransform3 transform;
+		RenderStage stage;
+        bool visible;
 
-	public:
-		// Creates a new mesh with given attributes.
-		Mesh(GLenum mode, int max_vertices, int max_indices, 
-			const std::vector<VertexAttribute>& attributes, bool static_mesh = true);
-		~Mesh(void) { }
+        Mesh(void) : stage(RenderStage::SCENE), visible(true) { };
+        virtual ~Mesh(void) { };
 
-		// Sets vertices and indices. If not provided, count is assumed to be 
-		// max count as provided during mesh construction.
-		void set_vertices(const std::vector<GLfloat>& vertices, int vertex_count = 0);
-		void set_vertices(const std::vector<GLshort>& vertices, int vertex_count = 0);
-		void set_vertices(const GLvoid* vertices, int vertex_count = 0);
-		void set_indices(const std::vector<GLushort>& indicies, int index_count = 0);
-		void set_indices(const GLvoid* indices, int index_count = 0);
-		int vertex_count(void) const { return buffer->counts[0]; }
-
-		// Renders this mesh.
-		void render(ShaderProgram* program);
-	};
+        // Updates mesh transform.
+        // Dynamically generated meshes can perform additional work in this method.
+        virtual void update(float delta) = 0;
+        // Renders this mesh. 
+        virtual void render(Renderer* renderer) = 0;
+    };
 }
