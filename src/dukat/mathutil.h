@@ -6,18 +6,18 @@
 
 namespace dukat
 {
-	const float pi = 3.14159265f;
-	const float two_pi = pi * 2.0f;
-	const float pi_over_two = pi / 2.0f;
-	const float pi_over_three = pi / 3.0f;
-	const float pi_over_four = pi /  4.0f;
-	const float pi_over_six = pi / 6.0f;
-	const float pi_over_eight = pi / 8.0f;
-	const float one_over_pi = 1.0f / pi;
-	const float one_over_two_pi = 1.0f / two_pi;
-	const float small_number = 0.000001f;
-	const float big_number = 1e37f;
-	const float no_intersection = 1e30f;
+	static constexpr float pi = 3.14159265f;
+	static constexpr float two_pi = pi * 2.0f;
+	static constexpr float pi_over_two = pi / 2.0f;
+	static constexpr float pi_over_three = pi / 3.0f;
+	static constexpr float pi_over_four = pi /  4.0f;
+	static constexpr float pi_over_six = pi / 6.0f;
+	static constexpr float pi_over_eight = pi / 8.0f;
+	static constexpr float one_over_pi = 1.0f / pi;
+	static constexpr float one_over_two_pi = 1.0f / two_pi;
+	static constexpr float small_number = 0.000001f;
+	static constexpr float big_number = 1e37f;
+	static constexpr float no_intersection = 1e30f;
 
 	// Fast inverse square root.
 	extern float inv_sqrt(float number);

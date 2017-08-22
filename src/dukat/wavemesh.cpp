@@ -22,7 +22,7 @@ namespace dukat
 		noise_texture = generate_noise_texture(texture_size, texture_size);
 		reset_state();
 		init_waves();
-
+		
 		// Set up mesh, framebuffer, and texture for wave texture map
 		MeshBuilder2 mb;
 		fb_quad = mb.build_textured_quad();
@@ -111,18 +111,16 @@ namespace dukat
 	{
 		geo_waves[i].phase = randf(0.0f, two_pi);
 		geo_waves[i].len = randf(geo_state.min_length, geo_state.max_length);
-		geo_waves[i].amp = geo_waves[i].len * geo_state.amp_over_len / (float)num_geo_waves;
+		geo_waves[i].amp = geo_waves[i].len * geo_state.amp_over_len / static_cast<float>(num_geo_waves);
 		geo_waves[i].freq = two_pi / geo_waves[i].len;
 		geo_waves[i].fade = 1.f;
 
-		float rotBase = geo_state.angle_deviation * pi / 180.f;
-
-		float rads = rotBase * randf(-1.0f, 1.0f);
-		float rx = std::cos(rads);
-		float ry = std::sin(rads);
-
-		float x = geo_state.wind_dir.x;
-		float y = geo_state.wind_dir.y;
+		auto rot_base = geo_state.angle_deviation * pi / 180.f;
+		auto rads = rot_base * randf(-1.0f, 1.0f);
+		auto rx = std::cos(rads);
+		auto ry = std::sin(rads);
+		auto x = -geo_state.wind_dir.x;
+		auto y = -geo_state.wind_dir.y;
 		geo_waves[i].dirx = x * rx + y * ry;
 		geo_waves[i].diry = x * -ry + y * rx;
 		geo_waves[i].dirz = 0.0f;
@@ -131,12 +129,10 @@ namespace dukat
 	void WaveMesh::init_tex_wave(int i)
 	{
 		auto rads = randf(-1.0f, 1.0f) * tex_state.angle_deviation * pi / 180.f;
-		auto dx = std::sin(rads);
-		auto dy = std::cos(rads);
-
-		auto tx = dx;
-		dx = tex_state.wind_dir.y * dx - tex_state.wind_dir.x * dy;
-		dy = tex_state.wind_dir.x * tx + tex_state.wind_dir.y * dy;
+		auto rx = std::cos(rads);
+		auto ry = std::sin(rads);
+		auto dx = tex_state.wind_dir.x * rx + tex_state.wind_dir.y * ry;
+		auto dy = tex_state.wind_dir.x * -ry + tex_state.wind_dir.y * rx;
 
 		auto max_len = tex_state.max_length * texture_size / tex_state.ripple_scale;
 		auto min_len = tex_state.min_length * texture_size / tex_state.ripple_scale;

@@ -33,13 +33,12 @@ namespace dukat
 		void handle_event(const SDL_Event& e);
 		void handle_keyboard(const SDL_Event& e);
 
-		void load_model(const std::string& filename);
-		void save_model(const std::string& filename);
-
 	public:
 		Game(Settings& settings) : Game3(settings), light(25.0f), enable_lighting(false), selected_mesh(-1) { }
 		~Game(void) { }
 
+		void load_model(const std::string& filename);
+		void save_model(const std::string& filename);
 		void toggle_debug(void);
 	};
 }

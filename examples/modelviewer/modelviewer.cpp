@@ -37,8 +37,6 @@ namespace dukat
 		camera->refresh();
 		renderer->set_camera(std::move(camera));		
 
-		load_model("sloop.mod");
-
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
@@ -71,20 +69,26 @@ namespace dukat
 	{
 		std::stringstream ss; 
 		ss << settings.get_string("resources.models") << "/" << filename;
-
+	
 		auto is = std::fstream(ss.str(), std::fstream::in | std::fstream::binary);
 		if (!is)
 		{
 			throw std::runtime_error("Could not open file.");
 		}
-		// Load MS3D
-		//MS3DModel ms3d;
-		//is >> ms3d;
-		//model = ms3d.convert();
 
-		// Load dukat native model
-		model = std::make_unique<Model3>();
-		is >> *model;
+		auto ext = get_extension(filename);
+		if (ext == "ms3d")
+		{
+			MS3DModel ms3d;
+			is >> ms3d;
+			model = ms3d.convert();
+		}
+		else
+		{
+			// Load dukat native model
+			model = std::make_unique<Model3>();
+			is >> *model;
+		}
 
 		object_meshes = build_mesh_group(this, *model);
 		object_meshes->stage = RenderStage::SCENE;
@@ -253,12 +257,18 @@ int main(int argc, char** argv)
 	try
 	{
 		std::string config = "../assets/modelviewer.ini";
-		if (argc > 1)
-		{
-			config = argv[1];
-		}
 		dukat::Settings settings(config);
 		dukat::Game app(settings);
+
+		if (argc > 1)
+		{
+			app.load_model(argv[1]);
+		}
+		else
+		{
+			app.load_model("sloop.mod");
+		}
+
 		return app.run();
 	}
 	catch (const std::exception& e)

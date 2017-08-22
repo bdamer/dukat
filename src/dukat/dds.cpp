@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "dds.h"
+#include "dukat.h"
 #include "log.h"
 #include "sysutil.h"
 #include "texturecache.h"
@@ -212,7 +213,6 @@ namespace dukat
 			size = std::max(li->div_size, x) / li->div_size * std::max(li->div_size, y) / li->div_size * li->block_bytes;
 		}
 		free(data);
-		glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
 	}
 
 	void load_indexed_dds(std::istream& is, const DDSHeader& header, const DDSLoadInfo* li, const GLenum target)
@@ -240,7 +240,6 @@ namespace dukat
 		}
 		free(data);
 		free(unpacked);
-		glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
 	}
 
 	void load_default_dds(std::istream& is, const DDSHeader& header, const DDSLoadInfo* li, const GLenum target)
@@ -265,7 +264,6 @@ namespace dukat
 		}
 		free(data);
 		glPixelStorei(GL_UNPACK_SWAP_BYTES, GL_FALSE);
-		glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
 	}
 
 	std::unique_ptr<Texture> load_dds(const std::string& filename)
@@ -348,30 +346,46 @@ namespace dukat
 			{
 				texture->target = GL_TEXTURE_CUBE_MAP;
 				glBindTexture(GL_TEXTURE_CUBE_MAP, texture->id);
-
+			
+				// Set texture parameters
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BASE_LEVEL, 0); 
+				auto mip_map_count = (header.flags & DDSD_MIPMAPCOUNT) ? header.mip_map_count : 1;
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, mip_map_count - 1);
+				
 				if (header.mip_map_count > 0)
 				{
+#if OPENGL_VERSION < 30	
 					glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_FALSE);
+#endif
 					glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 				}
 				else
 				{
+#if OPENGL_VERSION < 30
 					glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_TRUE);
+#endif
 					glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					
 				}
-
+				
 				loader(is, header, li, GL_TEXTURE_CUBE_MAP_POSITIVE_X);
 				loader(is, header, li, GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
 				loader(is, header, li, GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
 				loader(is, header, li, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
 				loader(is, header, li, GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
 				loader(is, header, li, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
-
-				// Set texture parameters
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+								
+#if OPENGL_VERSION >= 30
+				// TODO: Review - when do we want to generate mip maps for cube maps
+				/*if (header.mip_map_count == 0)
+				{
+					glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, 1);
+					glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+				}*/
+#endif
 				
 				glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 			}

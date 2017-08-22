@@ -151,6 +151,8 @@ namespace dukat
 		// Texture angle deviation
 		void set_tex_angle_dev(float value) { tex_state.angle_deviation = value; clamp(tex_state.angle_deviation, 0.0f, 180.0f); }
 		float get_tex_angle_dev(void) const { return tex_state.angle_deviation; }
+		// Wind direction (geo and texture)
+		void set_wind_dir(const Vector2& wind_dir) { geo_state.wind_dir = wind_dir; tex_state.wind_dir = wind_dir; }
 
 		// Texture access
 		Texture* get_wave_texture(void) const { return fb_texture.get(); }
