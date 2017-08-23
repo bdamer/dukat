@@ -339,6 +339,9 @@
     <ClInclude Include="..\src\dukat\meshdata.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\gridmesh.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -543,6 +546,9 @@
       <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\meshdata.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\gridmesh.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>

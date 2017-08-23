@@ -39,10 +39,10 @@ namespace dukat
 		void set_program(ShaderProgram* program) { this->program = program; }
 		void set_texture(Texture* texture, int index = 0);
 		// Updates mesh transform.		
-		void update(float delta) { this->transform.update(); }
+		virtual void update(float delta) { this->transform.update(); }
 		// Renders mesh instance using only local transformation.
-		void render(Renderer* renderer);
+		virtual void render(Renderer* renderer);
 		// Renders mesh instance using transformation specified in mat.
-		void render(Renderer* renderer, const Matrix4& mat);
+		virtual void render(Renderer* renderer, const Matrix4& mat);
 	};
 }

@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "gridapp.h"
 
-#include <dukat/blockbuilder.h>
 #include <dukat/devicemanager.h>
 #include <dukat/diamondsquaregenerator.h>
 #include <dukat/fixedcamera3.h>
@@ -29,7 +28,8 @@ namespace dukat
 
 		renderer->disable_effects();
 	
-		camera_target.x = camera_target.z = 0.5f * (float)(grid_size * tile_spacing);
+		grid_mesh = std::make_unique<GridMesh>(this, grid_size, scale_factor);
+		camera_target.x = camera_target.z = 0.5f * (float)(grid_size * grid_mesh->tile_spacing);
 
 		auto camera = std::make_unique<OrbitCamera3>(this, camera_target, 50.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(5.0f);
@@ -38,7 +38,6 @@ namespace dukat
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
 		renderer->set_camera(std::move(camera));		
-
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
 
@@ -49,33 +48,12 @@ namespace dukat
 		gen.set_range(0.0f, 1.0f);
 		gen.set_roughness(120.0f);
 		heightmap->generate(grid_size, gen);
-
-		// Create elevation texture
-		heightmap_texture = std::make_unique<Texture>(grid_size, grid_size, ProfileLinear);
-		glBindTexture(GL_TEXTURE_2D, heightmap_texture->id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		auto& level = heightmap->get_level(0);
-#if OPENGL_VERSION >= 30
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, grid_size, grid_size, 0, GL_RED, GL_FLOAT, level.data.data());
-#else
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, grid_size, grid_size, 0, GL_RED, GL_FLOAT, level.data.data());
-#endif
-
-		// Generate mesh for terrain grid
-		BlockBuilder bb;
-		bb.add_block(grid_size, grid_size);
-		mesh_cache->put("grid", bb.create_mesh());
-		grid_mesh = object_meshes.create_instance();
-		grid_mesh->set_mesh(mesh_cache->get("grid"));
-		grid_mesh->set_program(shader_cache->get_program("sc_heightmap.vsh", "sc_heightmap.fsh"));
-		grid_mesh->set_texture(heightmap_texture.get(), 0);
+		grid_mesh->load_height_level(heightmap->get_level(0));
 
 		const int texture_size = 1024;
-
 #if OPENGL_VERSION >= 30
 		// Generate array containing textures used for splatting
-		terrain_texture = std::make_unique<Texture>(texture_size, texture_size);
+		auto terrain_texture = std::make_unique<Texture>(texture_size, texture_size);
 		terrain_texture->target = GL_TEXTURE_2D_ARRAY;
 		glBindTexture(GL_TEXTURE_2D_ARRAY, terrain_texture->id);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -100,7 +78,7 @@ namespace dukat
 		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 #else
 		// Generate texture atlas containing textures used for splatting
-		terrain_texture = std::make_unique<Texture>(2 * texture_size, 2 * texture_size);
+		auto terrain_texture = std::make_unique<Texture>(2 * texture_size, 2 * texture_size);
 		glBindTexture(GL_TEXTURE_2D, terrain_texture->id);
 		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -121,8 +99,7 @@ namespace dukat
 		glTexSubImage2D(GL_TEXTURE_2D, 0, texture_size, texture_size, texture_size, texture_size,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rock_surface->get_surface()->pixels);
 #endif
-
-		grid_mesh->set_texture(terrain_texture.get(), 1);
+		grid_mesh->set_terrain_texture(std::move(terrain_texture));
 
 		// Add skydome mesh as last object mesh
 		MeshBuilder3 mb3;
@@ -194,10 +171,10 @@ namespace dukat
 			info_mesh->visible = !info_mesh->visible;
 			break;
 		case SDLK_COMMA:
-			tile_spacing = std::max(1, tile_spacing - 1);
+			grid_mesh->tile_spacing = std::max(1, grid_mesh->tile_spacing - 1);
 			break;
 		case SDLK_PERIOD:
-			tile_spacing = std::min(32, tile_spacing + 1);
+			grid_mesh->tile_spacing = std::min(32, grid_mesh->tile_spacing + 1);
 			break;
 
 		default:
@@ -213,32 +190,20 @@ namespace dukat
 		auto cam = dynamic_cast<OrbitCamera3*>(renderer->get_camera());
 		camera_target += 10.0f * delta * (dev->ly * cam->transform.dir
 				+ dev->lx * cam->transform.right);
-		camera_target.y = 0.5f * scale_factor * (float)tile_spacing;
+		camera_target.y = 0.5f * scale_factor * (float)grid_mesh->tile_spacing;
 		cam->set_look_at(camera_target);
 
+		grid_mesh->update(delta);
 		object_meshes.update(delta);
 		overlay_meshes.update(delta);
 		debug_meshes.update(delta);
-		
-		// We're repurposing the model matrix to pass in information about the location and scale of the grid.
-		Matrix4 model;
-		model.identity();
-		// grid scale at current level
-		model.m[0] = model.m[1] = (float)tile_spacing;
-		// origin of current block in world-space
-		model.m[2] = model.m[3] = 0.0f;
-		// 1 / texture width,height
-		model.m[4] = model.m[5] = 1.0f / (float)grid_size;
-		// ZScale of height map 
-		model.m[13] = heightmap->get_scale_factor() * (float)tile_spacing;
-		// override modelview matrix for grid with custom values
-		grid_mesh->transform.mat_model = model;
 	}
 
 	void Game::render(void)
 	{
 		std::vector<Mesh*> meshes;
 		meshes.push_back(&debug_meshes);
+		meshes.push_back(grid_mesh.get());
 		meshes.push_back(&object_meshes);
 		meshes.push_back(&overlay_meshes);
 		renderer->render(meshes);

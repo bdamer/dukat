@@ -23,7 +23,7 @@ layout(std140) uniform Camera
 // u_model[1].zw - undefined
 // u_model[2].xy - undefined
 // u_model[2].zw - undefined
-// u_model[3].xy - undefined and ZScaleFactor
+// u_model[3].xy - Base Z elevation and ZScaleFactor
 // u_model[3].zw - undefined
 uniform mat4 u_model;
 
@@ -43,5 +43,5 @@ void main()
     float z = texture(u_tex0, texcoord).r;
 	v_tex_coord = vec3(texcoord, z);
     // scale elevation and return vertex
-    gl_Position = u_cam.proj_pers * u_cam.view * vec4(world_pos.x, z * u_model[3].y, world_pos.y, 1.0);
+    gl_Position = u_cam.proj_pers * u_cam.view * vec4(world_pos.x, u_model[3].x + z * u_model[3].y, world_pos.y, 1.0);
 }
