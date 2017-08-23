@@ -263,7 +263,7 @@ namespace dukat
 			direct_camera_control = false;
 			Vector3 target(observer_mesh->transform.position.x, 0.0f, observer_mesh->transform.position.z);
 			const Vector3 overhead_camera_offset(0.0f, 200.0f, 0.0f);
-			auto camera = std::make_unique<FixedCamera3>(get_window(), target + overhead_camera_offset, target, Vector3::unit_z);
+			auto camera = std::make_unique<FixedCamera3>(this, target + overhead_camera_offset, target, Vector3::unit_z);
 			camera->set_vertical_fov(settings.get_float("camera.fov"));
 			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 			camera->refresh();

@@ -23,8 +23,7 @@ namespace dukat
 		Game3::init();
 
 		// Top-down camera
-		auto camera = std::make_unique<FixedCamera3>(get_window(), 
-			Vector3{ 0.0f, 2.5f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3::unit_z);
+		auto camera = std::make_unique<FixedCamera3>(this, Vector3{ 0.0f, 2.5f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3::unit_z);
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();

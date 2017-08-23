@@ -3,8 +3,8 @@
 
 namespace dukat
 {    
-    FixedCamera3::FixedCamera3(Window* window, const Vector3& eye, const Vector3& look_at, const Vector3& up)
-		: Camera3(window), look_at(look_at)
+    FixedCamera3::FixedCamera3(GameBase* game, const Vector3& eye, const Vector3& look_at, const Vector3& up)
+		: Camera3(game->get_window()), look_at(look_at)
     {
         transform.position = eye;
         transform.up = up;
@@ -30,5 +30,4 @@ namespace dukat
 		this->look_at = look_at;
 		transform.position = this->look_at + offset;
 	}
-
 }
