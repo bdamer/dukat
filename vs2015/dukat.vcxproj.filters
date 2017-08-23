@@ -336,6 +336,9 @@
     <ClInclude Include="..\src\dukat\wavemesh.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\meshdata.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -446,9 +449,6 @@
     <ClCompile Include="..\src\dukat\renderer.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\dukat\mesh.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\dukat\meshbuilder2.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
@@ -540,6 +540,9 @@
       <Filter>Source Files\util</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\wavemesh.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\meshdata.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>

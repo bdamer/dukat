@@ -149,6 +149,7 @@
     <Text Include="..\src\dukat\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\dukat\meshdata.h" />
     <ClInclude Include="..\src\dukat\wavemesh.h" />
     <ClInclude Include="..\src\dukat\aabb2.h" />
     <ClInclude Include="..\src\dukat\aabb3.h" />
@@ -245,6 +246,7 @@
     <ClInclude Include="..\src\dukat\xboxdevice.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\dukat\meshdata.cpp" />
     <ClCompile Include="..\src\dukat\wavemesh.cpp" />
     <ClCompile Include="..\src\dukat\aabb2.cpp" />
     <ClCompile Include="..\src\dukat\aabb3.cpp" />
@@ -270,7 +272,6 @@
     <ClCompile Include="..\src\dukat\buffers.cpp" />
     <ClCompile Include="..\src\dukat\heightmap.cpp" />
     <ClCompile Include="..\src\dukat\matrix2.cpp" />
-    <ClCompile Include="..\src\dukat\mesh.cpp" />
     <ClCompile Include="..\src\dukat\meshbuilder2.cpp" />
     <ClCompile Include="..\src\dukat\meshbuilder3.cpp" />
     <ClCompile Include="..\src\dukat\meshcache.cpp" />
