@@ -4,7 +4,7 @@
 namespace dukat
 {    
     FixedCamera3::FixedCamera3(GameBase* game, const Vector3& eye, const Vector3& look_at, const Vector3& up)
-		: Camera3(game->get_window()), look_at(look_at)
+		: Camera3(game->get_window()), look_at(look_at), min_distance(0.0f), max_distance(1000.0f)
     {
         transform.position = eye;
         transform.up = up;
@@ -29,5 +29,11 @@ namespace dukat
 		auto offset = transform.position - this->look_at;
 		this->look_at = look_at;
 		transform.position = this->look_at + offset;
-	}
+    }
+    
+    void FixedCamera3::set_distance(float distance) 
+    { 
+        clamp(distance, min_distance, max_distance);
+        transform.position = look_at - transform.dir * distance; 
+    }
 }

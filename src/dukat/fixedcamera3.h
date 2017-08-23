@@ -2,6 +2,7 @@
 
 #include "camera3.h"
 #include "gamebase.h"
+#include "mathutil.h"
 #include "vector3.h"
 
 namespace dukat
@@ -9,7 +10,8 @@ namespace dukat
     class FixedCamera3 : public Camera3
     {
     private:
-
+		float min_distance, max_distance; // distance limits
+        
     public:
         Vector3 look_at;
 
@@ -25,6 +27,10 @@ namespace dukat
 		void set_look_at(const Vector3& look_at);
         // Changes distance from look-at position along direction vector.
         float get_distance(void) const { return (look_at - transform.position).mag(); }
-        void set_distance(float distance) { transform.position = look_at - transform.dir * distance; }
+        void set_distance(float distance);
+		float get_max_distance(void) const { return max_distance; }
+		void set_max_distance(float max_distance) { this->max_distance = max_distance; }
+		float get_min_distance(void) const { return max_distance; }
+		void set_min_distance(float min_distance) { this->min_distance = min_distance; }
     };
 }
