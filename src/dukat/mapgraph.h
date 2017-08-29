@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <dukat/meshdata.h>
-#include <dukat/vector2.h>
+#include "meshdata.h"
+#include "vector2.h"
 
 namespace dukat
 {
@@ -157,9 +157,6 @@ namespace dukat
         MapGraph(void);
         ~MapGraph(void);
         
-        bool show_delaunay;
-        bool show_voronoi;
-        
         // Creates a graph based on a regular grid. The points will be normalized [-1..1].
         void from_grid(int size, int seed);
         // Creates a graph for a list of input points. The points are assumed to be normalized [-1..1].
@@ -167,17 +164,7 @@ namespace dukat
 
         void generate(void);
 
-        // Generates water / land mesh.
-        void create_water_land_mesh(MeshData* mesh, float z_scale = 1.0f);
-        // Generates mesh indicating elevation of each map cell. 
-        void create_elevation_mesh(MeshData* mesh, float z_scale = 1.0f);
-        // Generates mesh indicating moisture of each map cell.
-        void create_moisture_mesh(MeshData* mesh, float z_scale = 1.0f);
-        // Generates mesh to showcase biome of each map cell.
-        void create_biomes_mesh(MeshData* mesh, float z_scale = 1.0f);
-        // Generates mesh of polygon outlines
-        void create_edge_mesh(MeshData* mesh, float z_scale = 1.0f);
-        // Generates mesh of rivers
-        void create_river_mesh(MeshData* mesh, float z_scale = 1.0f);
+        std::vector<Center*> get_centers(void) const; 
+        std::vector<Edge*> get_edges(void) const;
     };
 }

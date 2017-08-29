@@ -1,29 +1,16 @@
 #include "stdafx.h"
+#include "log.h"
 #include "mapgraph.h"
 #include "mapshape.h"
+#include "mathutil.h"
+#include "vertextypes3.h"
 #include "voronoi.h"
 
 #include <map>
-#include <dukat/log.h>
-#include <dukat/mathutil.h>
-#include <dukat/vertextypes3.h>
 
 namespace dukat
 {
-    // Define mesh colors
-    const Color land_color = { 0.59f, 0.53f, 0.44f, 1.0f };
-    const Color ocean_color = { 0.25f, 0.25f, 0.46f, 1.0f };
-    const Color lake_color = { 0.12f, 0.56f, 1.0f, 1.0f };
-    const Color ice_color{0.97f, 0.97f, 0.97f, 1.0f};
-    const Color tropical_rf_color{0.18f, 0.44f, 0.31f, 1.0f};
-    const Color temperate_df_color{0.53f, 0.67f, 0.34f, 1.0f};
-    const Color grassland_color{0.75f, 0.79f, 0.58f, 1.0f};
-    const Color bare_color{0.73f, 0.73f, 0.73f, 1.0f};
-    const Color scorched_color{0.6f, 0.6f, 0.6f, 1.0f};
-    const Color tundra_color{0.87f, 0.87f, 0.73f, 1.0f};
-    const Color marsh_color{0.27f, 0.39f, 0.32f, 1.0f};
-
-    MapGraph::MapGraph(void) : show_delaunay(true), show_voronoi(true)
+    MapGraph::MapGraph(void)
     {
     }
 
@@ -284,193 +271,6 @@ namespace dukat
         // Biome stage
         //
         assign_biomes();
-    }
-
-    void MapGraph::create_water_land_mesh(MeshData* mesh, float z_scale)
-    {
-		std::vector<VertexPosCol> verts;
-        Color c;
-        for (const auto& p : centers)
-        {
-            if (p->ocean)
-            {
-                c = ocean_color;
-            }
-            else if (p->water)
-            {
-                c = lake_color;
-            }
-            else
-            {
-                c = land_color;
-            }
-
-            for (auto i = 1u; i < p->corners.size(); i++)
-            {
-				verts.push_back({ p->pos.x, p->elevation * z_scale, p->pos.y, c.r, c.g, c.b, c.a });
-				verts.push_back({ p->corners[i]->pos.x, p->corners[i]->elevation * z_scale, p->corners[i]->pos.y, c.r, c.g, c.b, c.a });
-				verts.push_back({ p->corners[i - 1]->pos.x, p->corners[i - 1]->elevation * z_scale, p->corners[i - 1]->pos.y, c.r, c.g, c.b, c.a });
-            }
-            
-			verts.push_back({ p->pos.x, p->elevation * z_scale, p->pos.y, c.r, c.g, c.b, c.a });
-			verts.push_back({ p->corners[0]->pos.x, p->corners[0]->elevation * z_scale, p->corners[0]->pos.y, c.r, c.g, c.b, c.a });
-			verts.push_back({ p->corners[p->corners.size() - 1]->pos.x, p->corners[p->corners.size() - 1]->elevation * z_scale,
-				p->corners[p->corners.size() - 1]->pos.y, c.r, c.g, c.b, c.a });
-        }
-
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
-    }
-
-    void MapGraph::create_elevation_mesh(MeshData* mesh, float z_scale)
-    {
-        std::vector<VertexPosCol> verts;
-        Color c{0.0f, 0.0f, 0.0f, 1.0f};
-        for (const auto& p : centers)
-        {
-            c.r = p->elevation;
-            c.g = p->elevation == 0.0f ? 0.0f : 1.0f;
-            c.b = p->elevation == 0.0f ? 1.0f : p->elevation;
-            for (auto i = 1u; i < p->corners.size(); i++)
-            {
-				verts.push_back({ p->pos.x, p->elevation * z_scale, p->pos.y, c.r, c.g, c.b, c.a });
-				verts.push_back({ p->corners[i]->pos.x, p->corners[i]->elevation * z_scale, p->corners[i]->pos.y, c.r, c.g, c.b, c.a });
-				verts.push_back({ p->corners[i - 1]->pos.x, p->corners[i - 1]->elevation * z_scale, p->corners[i - 1]->pos.y, c.r, c.g, c.b, c.a });
-            }
-            
-			verts.push_back({ p->pos.x, p->elevation * z_scale, p->pos.y, c.r, c.g, c.b, c.a });
-			verts.push_back({ p->corners[0]->pos.x, p->corners[0]->elevation * z_scale, p->corners[0]->pos.y, c.r, c.g, c.b, c.a });
-			verts.push_back({ p->corners[p->corners.size() - 1]->pos.x, p->corners[p->corners.size() - 1]->elevation * z_scale,
-				p->corners[p->corners.size() - 1]->pos.y, c.r, c.g, c.b, c.a });
-        }
-
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
-    }
-
-    void MapGraph::create_moisture_mesh(MeshData* mesh, float z_scale)
-    {
-		std::vector<VertexPosCol> verts;
-        Color c;
-        for (const auto& p : centers)
-        {
-            if (p->ocean)
-            {
-                c = ocean_color;
-            }
-            else if (p->water)
-            {
-                c = lake_color;
-            }
-            else
-            {
-                c = { 1.0f - p->moisture, p->moisture, 0.0f, 1.0f };
-            }
-
-            for (auto i = 1u; i < p->corners.size(); i++)
-            {
-				verts.push_back({ p->pos.x, p->elevation * z_scale, p->pos.y, c.r, c.g, c.b, c.a });
-				verts.push_back({ p->corners[i]->pos.x, p->corners[i]->elevation * z_scale, p->corners[i]->pos.y, c.r, c.g, c.b, c.a });
-				verts.push_back({ p->corners[i - 1]->pos.x, p->corners[i - 1]->elevation * z_scale, p->corners[i - 1]->pos.y, c.r, c.g, c.b, c.a });
-            }
-
-			verts.push_back({ p->pos.x, p->elevation * z_scale, p->pos.y, c.r, c.g, c.b, c.a });
-			verts.push_back({ p->corners[0]->pos.x, p->corners[0]->elevation * z_scale, p->corners[0]->pos.y, c.r, c.g, c.b, c.a });
-			verts.push_back({ p->corners[p->corners.size() - 1]->pos.x, p->corners[p->corners.size() - 1]->elevation * z_scale,
-				p->corners[p->corners.size() - 1]->pos.y, c.r, c.g, c.b, c.a });
-        }
-
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
-    }
-
-    void MapGraph::create_biomes_mesh(MeshData* mesh, float z_scale)
-    {
-		std::vector<VertexPosCol> verts;
-        Color c;
-        for (const auto& p : centers)
-        {
-            switch (p->biome)
-            {
-            case Ocean:
-                c = ocean_color;
-                break;
-            case Lake:
-                c = lake_color;
-                break;
-            case Ice:
-            case Snow:
-                c = ice_color;
-                break;
-            case Beach:
-            case TemperateDesert:
-            case SubtropicalDesert:
-                c = land_color;
-                break;
-            case TemperateRainForest:
-            case TropicalRainForest:
-            case TropicalSeasonalForest:
-                c = tropical_rf_color;
-                break;
-            case TemperateDeciduousForest:
-            case Taiga:
-                c = temperate_df_color;
-                break;
-            case Grassland:
-                c = grassland_color;
-                break;
-            case Bare:
-            case Shrubland:
-                c = bare_color;
-                break;
-            case Scorched:
-                c = scorched_color;
-                break;
-            case Marsh:
-                c = marsh_color;
-                break;
-            case Tundra:
-                c = tundra_color;
-                break;
-            }
-
-            for (auto i = 1u; i < p->corners.size(); i++)
-            {
-				verts.push_back({ p->pos.x, p->elevation * z_scale, p->pos.y, c.r, c.g, c.b, c.a });
-				verts.push_back({ p->corners[i]->pos.x, p->corners[i]->elevation * z_scale, p->corners[i]->pos.y, c.r, c.g, c.b, c.a });
-				verts.push_back({ p->corners[i - 1]->pos.x, p->corners[i - 1]->elevation * z_scale, p->corners[i - 1]->pos.y, c.r, c.g, c.b, c.a });
-            }
-            
-            verts.push_back({ p->pos.x, p->elevation * z_scale, p->pos.y, c.r, c.g, c.b, c.a });
-            verts.push_back({ p->corners[0]->pos.x, p->corners[0]->elevation * z_scale, p->corners[0]->pos.y, c.r, c.g, c.b, c.a });
-            verts.push_back({ p->corners[p->corners.size() - 1]->pos.x, p->corners[p->corners.size() - 1]->elevation * z_scale,
-				p->corners[p->corners.size() - 1]->pos.y, c.r, c.g, c.b, c.a });
-        }
-
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
-    }
-
-    void MapGraph::create_edge_mesh(MeshData* mesh, float z_scale)
-    {
-        Color c{0.0f, 0.0f, 0.0f, 1.0f};
-		std::vector<VertexPosCol> verts;
-        for (const auto& edge : edges)
-        {
-            verts.push_back({ edge->v0->pos.x, edge->v0->elevation * z_scale, edge->v0->pos.y, c.r, c.g, c.b, c.a });
-            verts.push_back({ edge->v1->pos.x, edge->v1->elevation * z_scale, edge->v1->pos.y, c.r, c.g, c.b, c.a });
-        }
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
-    }
-
-    void MapGraph::create_river_mesh(MeshData* mesh, float z_scale)
-    {
-        Color c{0.0f, 0.0f, 1.0f, 1.0f};
-		std::vector<VertexPosCol> verts;
-        for (const auto& edge : edges)
-        {
-			if (edge->river == 0)
-				continue;
-			verts.push_back({ edge->v0->pos.x, edge->v0->elevation * z_scale, edge->v0->pos.y, c.r, c.g, c.b, c.a });
-			verts.push_back({ edge->v1->pos.x, edge->v1->elevation * z_scale, edge->v1->pos.y, c.r, c.g, c.b, c.a });
-        }
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
     }
 
     // Determine elevations and water at Voronoi corners. By construction, we have no local minima. 
@@ -871,5 +671,25 @@ namespace dukat
                     p->biome = SubtropicalDesert;
             }
         }
+    }
+
+    std::vector<MapGraph::Center*> MapGraph::get_centers(void) const
+    {
+        std::vector<Center*> res(centers.size());
+        for (auto i = 0u; i < centers.size(); i++)
+        {
+            res[i] = centers[i].get();
+        }
+        return res;
+    }
+
+    std::vector<MapGraph::Edge*> MapGraph::get_edges(void) const
+    {
+        std::vector<Edge*> res(edges.size());
+        for (auto i = 0u; i < edges.size(); i++)
+        {
+            res[i] = edges[i].get();
+        }
+        return res;
     }
 }

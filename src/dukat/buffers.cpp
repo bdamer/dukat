@@ -42,14 +42,14 @@ namespace dukat
 	}
 
 	FrameBuffer::FrameBuffer(int width, int height, bool create_color_buffer, bool create_depth_buffer) 
-		: width(width), height(height), fbo(0), texture(0), rbo(0)
+		: width(width), height(height), fbo(0), texture(nullptr), rbo(0)
 	{
 		glGenFramebuffers(1, &fbo);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 		if (create_color_buffer)
 		{
-			glGenTextures(1, &texture);
+			texture = std::make_unique<Texture>();
 		}
 
 		if (create_depth_buffer)
@@ -71,11 +71,6 @@ namespace dukat
 			glDeleteFramebuffers(1, &fbo);
 			fbo = -1;
 		}
-		if (texture >= 0)
-		{
-			glDeleteTextures(1, &texture);
-			texture = -1;
-		}
 		if (rbo >= 0)
 		{
 			glDeleteRenderbuffers(1, &rbo);
@@ -86,15 +81,15 @@ namespace dukat
 
 	void FrameBuffer::rebuild(void)
 	{
-		if (texture)
+		if (texture != nullptr)
 		{
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+			glBindTexture(texture->target, texture->id);
+			glTexImage2D(texture->target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			glTexParameteri(texture->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(texture->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameterf(texture->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameterf(texture->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture->target, texture->id, 0);
 		}
 
 		if (rbo)

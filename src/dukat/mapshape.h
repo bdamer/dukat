@@ -1,7 +1,7 @@
 #pragma once
 
-#include <dukat/mathutil.h>
-#include <dukat/shape.h>
+#include "mathutil.h"
+#include "shape.h"
 
 namespace dukat
 {

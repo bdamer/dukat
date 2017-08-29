@@ -52,7 +52,7 @@ namespace dukat
         // Set up framebuffer for normal map generation (normal map is twice the size of height map)
 		normal_program = game->get_shaders()->get_program("fx_heatmap_normal.vsh", "fx_heatmap_normal.fsh");
 		fb_normal = std::make_unique<FrameBuffer>(2 * map_size, 2 * map_size, true, false);
-        glBindTexture(GL_TEXTURE_2D, fb_normal->texture);
+        glBindTexture(GL_TEXTURE_2D, fb_normal->texture->id);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // 2-channel GL_RG16F texture for normal data
@@ -317,7 +317,7 @@ namespace dukat
         heightmap_texture->bind(0, program);
         // bind normal map
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, fb_normal->texture);
+		glBindTexture(GL_TEXTURE_2D, fb_normal->texture->id);
         glUniform1i(program->attr("u_tex1"), 1);
         heatmap_texture->bind(2, program);
         terrain_texture->bind(3, program);

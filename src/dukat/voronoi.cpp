@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "voronoi.h"
-#include <dukat/log.h>
-#include <dukat/mathutil.h>
-#include <dukat/ray2.h>
+#include "log.h"
+#include "mathutil.h"
+#include "ray2.h"
 
 namespace dukat
 {

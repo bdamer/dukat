@@ -19,7 +19,6 @@ namespace dukat
         std::unique_ptr<FrameBuffer> fbo; // frame buffer object
         ShaderProgram* fb_program; // program used during framebuffer render pass
         std::unique_ptr<MeshData> fb_quad; // quad mesh used during framebuffer render pass
-		std::unique_ptr<Texture> fb_texture; // texture written to during framebuffer pass
 
 		void init(void);
 		void update(float delta);

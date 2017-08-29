@@ -22,8 +22,10 @@ namespace dukat
 		TextureFilterProfile profile;
 		int w, h;
 
-		// Default constructor 
+		// Default constructor - allocates a new texture ID
 		Texture(void);
+		// Constructor to wrap around existing ID - note that this transfers ownership to this texture.
+		Texture(TextureId id);
 		// Creates a new texture with a predefined width and height.
 		Texture(int w, int h, TextureFilterProfile profile = ProfileNearest);
 		// Creates a new texture from a surface.

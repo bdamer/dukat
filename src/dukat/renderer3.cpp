@@ -62,7 +62,7 @@ namespace dukat
 	{
 		// set input texture
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, frame_buffer->texture);
+		glBindTexture(GL_TEXTURE_2D, frame_buffer->texture->id);
 
 		if (frame_buffer == fb1.get())
 		{
@@ -144,9 +144,9 @@ namespace dukat
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, fb0->texture);
+			glBindTexture(GL_TEXTURE_2D, fb0->texture->id);
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, frame_buffer->texture);
+			glBindTexture(GL_TEXTURE_2D, frame_buffer->texture->id);
 
 			switch_shader(composite_program);
 			glUniform1i(composite_program->attr(Renderer::uf_tex0), 0);

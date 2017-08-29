@@ -2,9 +2,9 @@
 
 #include <memory>
 #include <dukat/game3.h>
+#include <dukat/mapgraph.h>
 #include <dukat/meshgroup.h>
-#include "voronoi.h"
-#include "mapgraph.h"
+#include <dukat/voronoi.h>
 
 namespace dukat
 {
@@ -45,6 +45,19 @@ namespace dukat
 
 		void switch_mode(void);
 		void generate_map(void);
+
+		// Generates water / land mesh.
+        void create_water_land_mesh(MeshData* mesh, float z_scale = 1.0f);
+        // Generates mesh indicating elevation of each map cell. 
+        void create_elevation_mesh(MeshData* mesh, float z_scale = 1.0f);
+        // Generates mesh indicating moisture of each map cell.
+        void create_moisture_mesh(MeshData* mesh, float z_scale = 1.0f);
+        // Generates mesh to showcase biome of each map cell.
+        void create_biomes_mesh(MeshData* mesh, float z_scale = 1.0f);
+        // Generates mesh of polygon outlines
+        void create_edge_mesh(MeshData* mesh, float z_scale = 1.0f);
+        // Generates mesh of rivers
+        void create_river_mesh(MeshData* mesh, float z_scale = 1.0f);
 
 	public:
 		Game(Settings& settings) : Game3(settings) { }

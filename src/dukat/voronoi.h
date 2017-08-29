@@ -7,8 +7,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include <dukat/aabb2.h>
-#include <dukat/vector2.h>
+#include "aabb2.h"
+#include "vector2.h"
 
 namespace dukat
 {

@@ -6,8 +6,13 @@
 
 namespace dukat
 {
-	Texture::Texture(void) : id(0), w(0), h(0), profile(ProfileNearest), target(GL_TEXTURE_2D)
-	{ 
+	Texture::Texture(void) : w(0), h(0), profile(ProfileNearest), target(GL_TEXTURE_2D)
+	{
+		glGenTextures(1, &id);
+	}
+
+	Texture::Texture(TextureId id) : id(id), w(0), h(0), profile(ProfileNearest), target(GL_TEXTURE_2D)
+	{
 	}
 
 	Texture::Texture(int w, int h, TextureFilterProfile profile) : w(w), h(h), profile(profile), target(GL_TEXTURE_2D)

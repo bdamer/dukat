@@ -119,8 +119,7 @@ namespace dukat
 		elevation_mesh = debug_meshes.create_instance();
 		elevation_mesh->set_mesh(quad);
 		elevation_mesh->set_program(shader_cache->get_program("sc_ui_texture.vsh", "sc_clipmap_elevation_texture.fsh"));
-		texture = std::make_unique<Texture>();
-		texture->id = clip_map->get_elevation_map()->id;
+		texture = std::make_unique<Texture>(clip_map->get_elevation_map()->id);
 		texture->target = GL_TEXTURE_2D_ARRAY;
 		elevation_mesh->set_texture(texture.get());
 		debug_mat.custom.r = (float)display_level;

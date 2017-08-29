@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include "dukat.h"
 #include "perfcounter.h"
+#include "texture.h"
 
 // TODO: revisit number of buffers and need for centralized manager to control resource usage
 namespace dukat
@@ -72,7 +73,7 @@ namespace dukat
 		// Framebuffer
 		GLuint fbo;
 		// Texture
-		GLuint texture;
+		std::unique_ptr<Texture> texture;
 		// Render buffer
 		GLuint rbo;
 		// Dimensions

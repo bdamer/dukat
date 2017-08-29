@@ -34,8 +34,6 @@ namespace dukat
 
 		// Generate framebuffer and texture
 		fbo = std::make_unique<FrameBuffer>(texture_size, texture_size, true, false);
-		fb_texture = std::make_unique<Texture>(texture_size, texture_size, ProfileLinear);
-		fb_texture->id = fbo->texture;
 
 		fb_program = shader_cache->get_program("fx_animation.vsh", "fx_animation.fsh");
 
@@ -45,7 +43,7 @@ namespace dukat
 		quad_mesh = overlay_meshes.create_instance();
 		quad_mesh->transform.position.z = 0.5f;
 		quad_mesh->set_mesh(mesh_cache->get("quad"));
-		quad_mesh->set_texture(fb_texture.get());
+		quad_mesh->set_texture(fbo->texture.get());
 		quad_mesh->set_program(shader_cache->get_program("sc_ui_texture.vsh", "sc_texture.fsh"));
 
 		auto info_text = create_text_mesh(1.0f / 20.0f);
@@ -131,8 +129,6 @@ namespace dukat
 
 	void Game::release(void)
 	{
-		// texture is owned by FBO - set to 0 to prevent attempt to free
-		fb_texture->id = 0;
 		Game3::release();
 	}
 }
