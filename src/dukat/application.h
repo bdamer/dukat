@@ -53,5 +53,6 @@ namespace dukat
 
 		Window* get_window(void) const { return window.get(); }
 		DeviceManager* get_devices(void) const { return device_manager.get(); }
+		const Settings& get_settings(void) const { return settings; }
 	};
 }

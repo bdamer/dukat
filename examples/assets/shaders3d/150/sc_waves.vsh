@@ -56,6 +56,13 @@ struct WaveState
 };
 uniform WaveState u_ws;
 
+// Environment map
+uniform samplerCube u_tex0;
+// Elevation sampler
+uniform sampler2D u_tex1;
+// Bump map
+uniform sampler2D u_tex2;
+
 uniform float u_k;
 
 // u,v texture coordinates in bump map
@@ -236,9 +243,9 @@ void calc_final_colors(const in vec3 norm, const in vec3 cam_to_vertex, const in
 
 void main()
 {
-	// Input vertex format should be:
-	// xyz where z is elevation of ground 
+	// Sample ground level
 	// depth of water is given by water_table - z
+	float z = texture(u_tex1, a_position * u_model[1].xy).r;
 
 	// vertex color controls: [default: 1/1/1/1]
 	// r - make surface transparent as it goes to 0
@@ -258,7 +265,7 @@ void main()
 	// depth_filter.y => reflection strength
 	// depth_filter.z => wave height
 	// scale of 0.5 is from original "depthScale" but was moved into shader completely
-	vec3 depth_filter = clamp(0.5 * (u_ws.depth_offset.xyz - world_pos.zzz), 0.0, 1.0);
+	vec3 depth_filter = clamp(0.5 * (u_ws.depth_offset.xyz - z), 0.0, 1.0);
 
 	// Build our 4 waves
 	vec4 sines, cosines;

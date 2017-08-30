@@ -16,15 +16,17 @@ in vec3 v_eye_ray;
 
 // Environment map
 uniform samplerCube u_tex0;
-// Bump map
+// Elevation sampler
 uniform sampler2D u_tex1;
+// Bump map
+uniform sampler2D u_tex2;
 
 out vec4 o_color;
 
 void main()
 {
 	// Texture coordinates are used to sample bump map
-	vec3 bump_sample = normalize(2.0 * texture(u_tex1, v_tex_coord).xyz - 1.0);
+	vec3 bump_sample = normalize(2.0 * texture(u_tex2, v_tex_coord).xyz - 1.0);
 	// Convert normal from tangent to world space
 	vec3 normal = normalize(v_btn * bump_sample);
 	// Compute reflection and sample environment map

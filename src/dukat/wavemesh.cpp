@@ -16,7 +16,8 @@ namespace dukat
 	constexpr int WaveMesh::texture_size;
 	constexpr float WaveMesh::grav_constant;
 
-	WaveMesh::WaveMesh(Game3* game, int size) : game(game), grid_size(size), grid_scale(1.0f), env_map(nullptr)
+	WaveMesh::WaveMesh(Game3* game, int size) : game(game), grid_size(size), tile_spacing(1.0f), 
+		env_map(nullptr), elev_map(nullptr)
 	{
 		init_cos_table();
 		noise_texture = generate_noise_texture(texture_size, texture_size);
@@ -333,16 +334,16 @@ namespace dukat
 		}
 
 		// use camera position to determine wave mesh offset
-		auto x = std::floor(cam_target.x / grid_scale);
-		auto z = std::floor(cam_target.z / grid_scale);
+		auto x_offset = std::floor(cam_target.x / tile_spacing);
+		auto z_offset = std::floor(cam_target.z / tile_spacing);
 
 		// We're repurposing the model matrix to pass in information about the location and scale of the grid.
 		// grid scale at current level
 		Matrix4 mat_model;
-		mat_model.m[0] = mat_model.m[1] = grid_scale;
+		mat_model.m[0] = mat_model.m[1] = tile_spacing;
 		// origin of mesh in world-space
-		mat_model.m[2] = (-0.5f * static_cast<float>(grid_size) + x) * grid_scale;
-		mat_model.m[3] = (-0.5f * static_cast<float>(grid_size) + z) * grid_scale;
+		mat_model.m[2] = (-0.5f * static_cast<float>(grid_size) + x_offset) * tile_spacing;
+		mat_model.m[3] = (-0.5f * static_cast<float>(grid_size) + z_offset) * tile_spacing;
 		// 1 / texture width,height
 		mat_model.m[4] = mat_model.m[5] = 1.0f / static_cast<float>(grid_size);
 		// ZScale of height map 
@@ -381,8 +382,12 @@ namespace dukat
 		{
 			env_map->bind(0, grid_program);
 		}
+		if (elev_map != nullptr)
+		{
+			elev_map->bind(1, grid_program);
+		}
 
-		fb_texture->bind(1, grid_program);
+		fb_texture->bind(2, grid_program);
 
 		grid_mesh->render(grid_program);
 	}
@@ -413,7 +418,7 @@ namespace dukat
 			auto dist6 = dist3 * dist3;
 			auto dist7 = dist4 * dist3;
 			auto sine = dist - dist3 / 6.0f + dist5 / 120.0f - dist7 / 5040.0f;
-			auto amp = wave.len / grid_scale;
+			auto amp = wave.len / tile_spacing;
 			clamp(amp, 0.0f, 1.0f);
 			auto filtered_amp = amp * scale * wave.amp;
 			z += sine * filtered_amp;

@@ -28,7 +28,8 @@ namespace dukat
 
 		renderer->disable_effects();
 	
-		grid_mesh = std::make_unique<GridMesh>(this, grid_size, scale_factor);
+		grid_mesh = std::make_unique<GridMesh>(this, grid_size);
+		grid_mesh->scale_factor = scale_factor;
 		camera_target.x = camera_target.z = 0.5f * (float)(grid_size * grid_mesh->tile_spacing);
 
 		auto camera = std::make_unique<OrbitCamera3>(this, camera_target, 50.0f, 0.0f, pi_over_four);
@@ -171,10 +172,10 @@ namespace dukat
 			info_mesh->visible = !info_mesh->visible;
 			break;
 		case SDLK_COMMA:
-			grid_mesh->tile_spacing = std::max(1, grid_mesh->tile_spacing - 1);
+			grid_mesh->tile_spacing = std::max(1.0f, grid_mesh->tile_spacing - 1.0f);
 			break;
 		case SDLK_PERIOD:
-			grid_mesh->tile_spacing = std::min(32, grid_mesh->tile_spacing + 1);
+			grid_mesh->tile_spacing = std::min(32.0f, grid_mesh->tile_spacing + 1.0f);
 			break;
 
 		default:

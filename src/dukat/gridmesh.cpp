@@ -5,8 +5,8 @@
 
 namespace dukat
 {
-	GridMesh::GridMesh(Game3* game, int grid_size, float scale_factor)
-		: MeshInstance(), tile_spacing(2), grid_size(grid_size), base_elevation(0.0f), scale_factor(scale_factor)
+	GridMesh::GridMesh(Game3* game, int grid_size)
+		: MeshInstance(), tile_spacing(1.0f), grid_size(grid_size), base_elevation(0.0f), scale_factor(1.0f)
 	{ 
 		// Create elevation texture
 		heightmap_texture = std::make_unique<Texture>(grid_size, grid_size, ProfileLinear);
@@ -27,7 +27,7 @@ namespace dukat
 	{
 		// We're repurposing the model matrix to pass in information about the location and scale of the grid.
 		// grid scale at current level
-		transform.mat_model.m[0] = transform.mat_model.m[1] = (float)tile_spacing;
+		transform.mat_model.m[0] = transform.mat_model.m[1] = tile_spacing;
 		// origin of current block in world-space
 		transform.mat_model.m[2] = transform.mat_model.m[3] = 0.0f;
 		// 1 / texture width,height
@@ -35,7 +35,7 @@ namespace dukat
 		// Base elevation
 		transform.mat_model.m[12] = base_elevation;
 		// ZScale of height map 
-		transform.mat_model.m[13] = scale_factor * (float)tile_spacing;
+		transform.mat_model.m[13] = scale_factor * tile_spacing;
 	}
 
 	void GridMesh::load_height_level(const HeightMap::Level& level)

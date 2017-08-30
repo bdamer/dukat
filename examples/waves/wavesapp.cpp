@@ -48,7 +48,7 @@ namespace dukat
 
 		// Wave mesh
 		wave_mesh = std::make_unique<WaveMesh>(this, grid_size);
-		wave_mesh->set_grid_scale(4.0f);
+		wave_mesh->tile_spacing = 4.0f;
 		wave_mesh->set_env_map(env_map);
 
 		// Skydome

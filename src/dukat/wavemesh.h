@@ -28,8 +28,6 @@ namespace dukat
 		static constexpr int num_tex_waves = 16;
 		static constexpr int num_bump_passes = num_tex_waves / num_bump_per_pass;
 		static constexpr int texture_size = 256;
-		const int grid_size; // width / length of wave grid
-		float grid_scale; // scale of wave grid
 
 		struct GeoWaveDesc
 		{
@@ -89,6 +87,7 @@ namespace dukat
 
 		Game3* game;
 		Texture* env_map; // Environment cube map used for reflection
+		Texture* elev_map; // Elevation sampler used to determine wave height above ground
 
 		// Geo waves
 		GeoState geo_state;
@@ -112,7 +111,10 @@ namespace dukat
 		void init_tex_wave(int i);
 		void update_framebuffer(Renderer* renderer);
 
-    public:
+	public:
+		const int grid_size; // width / length of wave grid
+		float tile_spacing; // size of grid tiles
+
         WaveMesh(Game3* game, int size);
 		~WaveMesh(void) { }
 
@@ -121,9 +123,6 @@ namespace dukat
         void update(float delta);
         void render(Renderer* renderer);
 
-		// Grid scale
-		float get_grid_scale(void) const { return grid_scale; }
-		void set_grid_scale(float grid_scale) { this->grid_scale = grid_scale; clamp(this->grid_scale, 1.0f, 32.0f); }
 		// Water level
 		void set_water_level(float value) { geo_state.water_level = value; }
 		float get_water_level(void) const { return geo_state.water_level; }
@@ -157,6 +156,7 @@ namespace dukat
 		// Texture access
 		Texture* get_wave_texture(void) const { return fb_texture.get(); }
 		void set_env_map(Texture* env_map) { this->env_map = env_map; }
+		void set_elevation_map(Texture* elev_map) { this->elev_map = elev_map; }
 
 		// Samples normalized elevation at a given set of coordinates.
 		float sample(float x, float y) const;
