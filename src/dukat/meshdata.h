@@ -4,6 +4,11 @@
 #include <string>
 #include <vector>
 #include <GL/glew.h>
+
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 #include "buffers.h"
 
 namespace dukat

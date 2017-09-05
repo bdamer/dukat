@@ -2,8 +2,7 @@
 
 #include <memory>
 #include <queue>
-#include <dukat/game2.h>
-#include <dukat/particle.h>
+#include <dukat/dukat.h>
 
 namespace dukat
 {

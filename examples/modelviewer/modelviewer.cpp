@@ -4,14 +4,6 @@
 #include "stdafx.h"
 #include "modelviewer.h"
 
-#include <dukat/log.h>
-#include <dukat/model3.h>
-#include <dukat/ms3dmodel.h>
-#include <dukat/orbitcamera3.h>
-#include <dukat/renderer3.h>
-#include <dukat/settings.h>
-#include <dukat/vertextypes3.h>
-
 namespace dukat
 {
 	void Game::init(void)

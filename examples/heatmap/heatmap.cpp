@@ -1,15 +1,5 @@
 #include "stdafx.h"
 #include "heatmap.h"
-
-#include <dukat/blockbuilder.h>
-#include <dukat/log.h>
-#include <dukat/mathutil.h>
-#include <dukat/meshbuilder2.h>
-#include <dukat/renderer.h>
-#include <dukat/shape.h>
-#include <dukat/sysutil.h>
-#include <dukat/vertextypes3.h>
-
 #include <set>
 
 namespace dukat

@@ -6,25 +6,6 @@
 #include "entity.h"
 #include "octreebuilder.h"
 
-#include <dukat/aabb3.h>
-#include <dukat/application.h>
-#include <dukat/boundingsphere.h>
-#include <dukat/devicemanager.h>
-#include <dukat/inputdevice.h>
-#include <dukat/light.h>
-#include <dukat/log.h>
-#include <dukat/mathutil.h>
-#include <dukat/quaternion.h>
-#include <dukat/ray3.h>
-#include <dukat/rect.h>
-#include <dukat/renderlayer2.h>
-#include <dukat/settings.h>
-#include <dukat/sprite.h>
-#include <dukat/surface.h>
-#include <dukat/texturecache.h>
-#include <dukat/vector3.h>
-#include <dukat/voxmodel.h>
-
 namespace dukat
 {
 	void Game::init(void)

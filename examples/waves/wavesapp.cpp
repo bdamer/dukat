@@ -4,19 +4,6 @@
 #include "stdafx.h"
 #include "wavesapp.h"
 
-#include <dukat/devicemanager.h>
-#include <dukat/inputdevice.h>
-#include <dukat/log.h>
-#include <dukat/meshbuilder2.h>
-#include <dukat/meshbuilder3.h>
-#include <dukat/model3.h>
-#include <dukat/orbitcamera3.h>
-#include <dukat/settings.h>
-#include <dukat/wavemesh.h>
-
-#include <dukat/environment.h>
-#include <dukat/transition.h>
-
 namespace dukat
 {
 	constexpr int Game::grid_size;

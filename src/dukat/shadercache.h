@@ -4,6 +4,10 @@
 #include <map>
 #include <memory>
 
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 #include "shaderprogram.h"
 
 namespace dukat

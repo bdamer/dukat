@@ -3,6 +3,10 @@
 #include <vector>
 #include <SDL2/SDL.h>
 
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 namespace dukat
 {
 	class WindowEventListener

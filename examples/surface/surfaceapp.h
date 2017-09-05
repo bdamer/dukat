@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <dukat/game2.h>
+#include <dukat/dukat.h>
 
 namespace dukat
 {

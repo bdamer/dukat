@@ -38,7 +38,7 @@ namespace dukat
 				auto& t = triangles[idx];
 				for (auto i = 0; i < 3; i++)
 				{
-					assert(t.indicies[i] < vertices.size());
+					assert(t.indicies[i] < static_cast<int16_t>(vertices.size()));
 					auto vtmp = Vector3{vertices[t.indicies[i]].v[0], vertices[t.indicies[i]].v[1], vertices[t.indicies[i]].v[2]} * m;
 					auto ntmp = Vector3{t.normals[i * 3], t.normals[i * 3 + 1], t.normals[i * 3 + 2]} * m;
 					vertex_data.push_back({

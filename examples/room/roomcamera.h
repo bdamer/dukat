@@ -1,7 +1,6 @@
 #pragma once
 
-#include <dukat/firstpersoncamera3.h>
-#include <dukat/gamebase.h>
+#include <dukat/dukat.h>
 
 namespace dukat
 {

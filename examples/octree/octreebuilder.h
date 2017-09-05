@@ -1,8 +1,8 @@
 #pragma once
 
-#include <dukat/octreenode.h>
 #include <memory>
 #include <SDL2/SDL.h>
+#include <dukat/dukat.h>
 
 #ifdef NOISE_ENABLED
 #include <libnoise/noise.h>

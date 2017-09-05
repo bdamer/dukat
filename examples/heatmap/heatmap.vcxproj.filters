@@ -27,9 +27,6 @@
     <ClInclude Include="heatmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="orbitallight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

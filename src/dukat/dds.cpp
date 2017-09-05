@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "dds.h"
-#include "dukat.h"
 #include "log.h"
 #include "sysutil.h"
 #include "texturecache.h"

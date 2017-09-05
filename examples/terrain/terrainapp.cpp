@@ -4,24 +4,6 @@
 #include "stdafx.h"
 #include "terrainapp.h"
 
-#include <dukat/clipmap.h>
-#include <dukat/devicemanager.h>
-#include <dukat/diamondsquaregenerator.h>
-#include <dukat/firstpersoncamera3.h>
-#include <dukat/fixedcamera3.h>
-#include <dukat/heightmap.h>
-#include <dukat/inputdevice.h>
-#include <dukat/log.h>
-#include <dukat/mathutil.h>
-#include <dukat/meshbuilder2.h>
-#include <dukat/meshbuilder3.h>
-#include <dukat/orbitcamera3.h>
-#include <dukat/ray3.h>
-#include <dukat/renderer3.h>
-#include <dukat/settings.h>
-#include <dukat/sysutil.h>
-#include <dukat/vertextypes3.h>
-
 namespace dukat
 {
 	void Game::init(void)

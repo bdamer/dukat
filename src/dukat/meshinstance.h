@@ -2,6 +2,10 @@
 
 #include <memory>
 
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 #include "material.h"
 #include "mesh.h"
 #include "meshdata.h"

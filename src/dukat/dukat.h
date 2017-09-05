@@ -1,10 +1,116 @@
 #pragma once
+/**
+ * External header for clients using dukat library.
+ */
 
-//#define OPENGL_VERSION 21 // OpenGL 2.1 compatibility mode
+#include "version.h"
 
-#ifndef OPENGL_VERSION
-// Define OPENGL_VERSION used by application
-// Ex: 21 - OpenGL 2.1
-//	   30 - OpenGL 3.0
-#define OPENGL_VERSION 31
-#endif
+// Engine
+#include "component.h"
+#include "event.h"
+#include "game2.h"
+#include "game3.h"
+#include "gamebase.h"
+#include "messenger.h"
+#include "recipient.h"
+
+// Input
+#include "devicemanager.h"
+#include "gamepaddevice.h"
+#include "inputdevice.h"
+#include "keyboarddevice.h"
+#include "xboxdevice.h"
+
+// Math
+#include "aabb2.h"
+#include "aabb3.h"
+#include "boundingbody2.h"
+#include "boundingbody3.h"
+#include "boundingsphere.h"
+#include "eulerangles.h"
+#include "geometry.h"
+#include "mathutil.h"
+#include "matrix2.h"
+#include "matrix4.h"
+#include "obb2.h"
+#include "plane.h"
+#include "quaternion.h"
+#include "ray2.h"
+#include "ray3.h"
+#include "rect.h"
+#include "transform2.h"
+#include "transform3.h"
+#include "transition.h"
+#include "vector2.h"
+#include "vector3.h"
+// Disabled to avoid having to pull in boost into every client
+//#include "voronoi.h"
+
+// System
+#include "animation.h"
+#include "animationmanager.h"
+#include "application.h"
+#include "bytestream.h"
+#include "log.h"
+#include "perfcounter.h"
+#include "settings.h"
+#include "sysutil.h"
+#include "timermanager.h"
+#include "window.h"
+
+// Util
+#include "dds.h"
+#include "diamondsquaregenerator.h"
+#include "heightmap.h"
+#include "heightmapgenerator.h"
+#include "mapgraph.h"
+#include "mapshape.h"
+#include "model3.h"
+#include "modelconverter.h"
+#include "ms3dmodel.h"
+#include "octreenode.h"
+#include "shape.h"
+#include "textureutil.h"
+#include "voxmodel.h"
+
+// Video
+#include "blockbuilder.h"
+#include "buffers.h"
+#include "camera2.h"
+#include "camera3.h"
+#include "clipmap.h"
+#include "color.h"
+#include "effect2.h"
+#include "effect3.h"
+#include "environment.h"
+#include "firstpersoncamera3.h"
+#include "fixedcamera3.h"
+#include "gridmesh.h"
+#include "light.h"
+#include "material.h"
+#include "mesh.h"
+#include "meshbuilder2.h"
+#include "meshbuilder3.h"
+#include "meshcache.h"
+#include "meshdata.h"
+#include "meshgroup.h"
+#include "meshinstance.h"
+#include "orbitallight.h"
+#include "orbitcamera3.h"
+#include "particle.h"
+#include "particlemanager.h"
+#include "renderer.h"
+#include "renderer2.h"
+#include "renderer3.h"
+#include "renderlayer2.h"
+#include "shadercache.h"
+#include "shaderprogram.h"
+#include "sprite.h"
+#include "surface.h"
+#include "textmeshbuilder.h"
+#include "textmeshinstance.h"
+#include "texture.h"
+#include "texturecache.h"
+#include "vertextypes2.h"
+#include "vertextypes3.h"
+#include "wavemesh.h"

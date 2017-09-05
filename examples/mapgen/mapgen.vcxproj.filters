@@ -24,24 +24,12 @@
     <ClInclude Include="mapgenapp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="voronoi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mapgraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mapgenapp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="voronoi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mapgraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

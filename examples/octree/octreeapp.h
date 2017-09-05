@@ -5,9 +5,7 @@
 #include <queue>
 #include <thread>
 #include <vector>
-
-#include <dukat/game2.h>
-#include <dukat/firstpersoncamera3.h>
+#include <dukat/dukat.h>
 
 #define USE_MULTITHREADING
 

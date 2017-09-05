@@ -1,7 +1,11 @@
 #pragma once
 
 #include <GL/glew.h>
-#include "dukat.h"
+
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 #include "perfcounter.h"
 #include "texture.h"
 

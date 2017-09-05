@@ -2,7 +2,6 @@
 #include "shadercache.h"
 #include "shaderprogram.h"
 #include "log.h"
-#include "dukat.h"
 #include "sysutil.h"
 
 namespace dukat

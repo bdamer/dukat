@@ -4,9 +4,6 @@
 #include "stdafx.h"
 #include "text.h"
 
-#include <dukat/log.h>
-#include <dukat/settings.h>
-
 namespace dukat
 {
 	void Game::init(void)

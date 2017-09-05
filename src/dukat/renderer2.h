@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 #include "buffers.h"
 #include "camera2.h"
 #include "light.h"

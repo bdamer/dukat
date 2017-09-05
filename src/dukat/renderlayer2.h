@@ -6,6 +6,10 @@
 #include <vector>
 #include <queue>
 
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 #include "color.h"
 #include "renderlayer2.h"
 #include "sprite.h"

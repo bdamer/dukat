@@ -6,6 +6,7 @@ Place header files for the following libraries in include/ directory:
 * GL/ OpenGL Extension Wranger Library
 * SDL2/ SDL 2
 
+Set BOOST_PATH environment variable to the top-level directory of your boost install (ex: c:\boost_1_58_0).
 
 Place the following static library files in the lib/x86 or lib/x64 directory:
 * glew32.lib

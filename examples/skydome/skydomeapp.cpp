@@ -4,17 +4,6 @@
 #include "stdafx.h"
 #include "skydomeapp.h"
 
-#include <dukat/devicemanager.h>
-#include <dukat/environment.h>
-#include <dukat/firstpersoncamera3.h>
-#include <dukat/inputdevice.h>
-#include <dukat/log.h>
-#include <dukat/meshbuilder3.h>
-#include <dukat/renderer3.h>
-#include <dukat/settings.h>
-#include <dukat/transition.h>
-#include <dukat/vertextypes3.h>
-
 namespace dukat
 {
 	// Factor that determines how long an in-game second is. (1 in-game hour = 60 real-world seconds)

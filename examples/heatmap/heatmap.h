@@ -3,13 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include <dukat/buffers.h>
-#include <dukat/game3.h>
-#include <dukat/meshdata.h>
-#include <dukat/mesh.h>
-#include <dukat/heightmapgenerator.h>
-#include <dukat/heightmap.h>
-#include <dukat/texturecache.h>
+#include <dukat/dukat.h>
 
 namespace dukat
 {

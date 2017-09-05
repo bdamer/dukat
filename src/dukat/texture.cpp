@@ -2,7 +2,6 @@
 #include "texture.h"
 #include "surface.h"
 #include "shaderprogram.h"
-#include "dukat.h"
 
 namespace dukat
 {

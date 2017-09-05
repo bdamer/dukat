@@ -1,10 +1,8 @@
 #pragma once
 
-#include <dukat/boundingbody3.h>
-#include <dukat/octreenode.h>
-#include <dukat/transform3.h>
 #include <SDL2/SDL.h>
 #include <memory>
+#include <dukat/dukat.h>
 
 namespace dukat
 {

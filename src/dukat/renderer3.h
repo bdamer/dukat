@@ -3,6 +3,11 @@
 #include <list>
 #include <memory>
 #include <array>
+
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 #include "camera3.h"
 #include "effect3.h"
 #include "light.h"

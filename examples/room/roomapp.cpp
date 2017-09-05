@@ -5,14 +5,6 @@
 #include "roomapp.h"
 #include "roomcamera.h"
 
-#include <dukat/devicemanager.h>
-#include <dukat/inputdevice.h>
-#include <dukat/log.h>
-#include <dukat/meshbuilder3.h>
-#include <dukat/renderer3.h>
-#include <dukat/settings.h>
-#include <dukat/vertextypes3.h>
-
 namespace dukat
 {
 	std::unique_ptr<MeshData> build_inverted_cube(float max_u, float max_t)

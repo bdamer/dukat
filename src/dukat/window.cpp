@@ -2,7 +2,6 @@
 #include "log.h"
 #include "sysutil.h"
 #include "window.h"
-#include "dukat.h"
 
 namespace dukat
 {

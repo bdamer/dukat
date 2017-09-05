@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "octreebuilder.h"
-#include <dukat/log.h>
-#include <dukat/mathutil.h>
 
 namespace dukat
 {

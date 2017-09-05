@@ -72,22 +72,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\lib\$(PlatformTarget)\</OutDir>
     <IntDir>dukat\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\include\;%BOOST_PATH%;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\lib\$(PlatformTarget)\</OutDir>
     <IntDir>dukat\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\include\;%BOOST_PATH%;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)..\lib\$(PlatformTarget)\</OutDir>
     <IntDir>dukat\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\include\;%BOOST_PATH%;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)..\lib\$(PlatformTarget)\</OutDir>
     <IntDir>dukat\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\include\;%BOOST_PATH%;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -149,8 +149,18 @@
     <Text Include="..\src\dukat\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\dukat\dukat.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\src\dukat\gridmesh.h" />
+    <ClInclude Include="..\src\dukat\mapgraph.h" />
+    <ClInclude Include="..\src\dukat\mapshape.h" />
     <ClInclude Include="..\src\dukat\meshdata.h" />
+    <ClInclude Include="..\src\dukat\shape.h" />
+    <ClInclude Include="..\src\dukat\voronoi.h" />
     <ClInclude Include="..\src\dukat\wavemesh.h" />
     <ClInclude Include="..\src\dukat\aabb2.h" />
     <ClInclude Include="..\src\dukat\aabb3.h" />
@@ -170,7 +180,7 @@
     <ClInclude Include="..\src\dukat\dds.h" />
     <ClInclude Include="..\src\dukat\devicemanager.h" />
     <ClInclude Include="..\src\dukat\diamondsquaregenerator.h" />
-    <ClInclude Include="..\src\dukat\dukat.h" />
+    <ClInclude Include="..\src\dukat\version.h" />
     <ClInclude Include="..\src\dukat\effect2.h" />
     <ClInclude Include="..\src\dukat\effect3.h" />
     <ClInclude Include="..\src\dukat\environment.h" />
@@ -248,7 +258,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\gridmesh.cpp" />
+    <ClCompile Include="..\src\dukat\mapgraph.cpp" />
     <ClCompile Include="..\src\dukat\meshdata.cpp" />
+    <ClCompile Include="..\src\dukat\voronoi.cpp" />
     <ClCompile Include="..\src\dukat\wavemesh.cpp" />
     <ClCompile Include="..\src\dukat\aabb2.cpp" />
     <ClCompile Include="..\src\dukat\aabb3.cpp" />

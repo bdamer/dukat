@@ -2,9 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include <dukat/game3.h>
-#include <dukat/meshgroup.h>
-#include <dukat/texturecache.h>
+#include <dukat/dukat.h>
 
 namespace dukat
 {

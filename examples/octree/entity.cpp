@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "entity.h"
-#include <dukat/mathutil.h>
-#include <dukat/perfcounter.h>
-#include <dukat/ray3.h>
 
 namespace dukat
 {

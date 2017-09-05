@@ -5,20 +5,6 @@
 #include "heatmapapp.h"
 #include "heatmap.h"
 
-#include <dukat/devicemanager.h>
-#include <dukat/diamondsquaregenerator.h>
-#include <dukat/fixedcamera3.h>
-#include <dukat/inputdevice.h>
-#include <dukat/log.h>
-#include <dukat/mathutil.h>
-#include <dukat/meshbuilder2.h>
-#include <dukat/meshbuilder3.h>
-#include <dukat/orbitallight.h>
-#include <dukat/orbitcamera3.h>
-#include <dukat/renderer3.h>
-#include <dukat/settings.h>
-#include <dukat/vertextypes3.h>
-
 namespace dukat
 {
 	void Game::init(void)

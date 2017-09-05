@@ -1,8 +1,12 @@
 #pragma once
 
-#include "dukat.h"
-#include "window.h"
 #include <string>
+
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
+#include "window.h"
 
 namespace dukat
 {

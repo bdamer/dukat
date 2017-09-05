@@ -1,10 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <dukat/game3.h>
-#include <dukat/gridmesh.h>
-#include <dukat/heightmap.h>
-#include <dukat/meshgroup.h>
+#include <dukat/dukat.h>
 
 namespace dukat
 {

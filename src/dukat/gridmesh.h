@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef OPENGL_VERSION
+#include "version.h"
+#endif // !OPENGL_VERSION
+
 #include "heightmap.h"
 #include "meshinstance.h"
 #include "game3.h"

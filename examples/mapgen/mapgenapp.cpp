@@ -4,18 +4,6 @@
 #include "stdafx.h"
 #include "mapgenapp.h"
 
-#include <dukat/aabb2.h>
-#include <dukat/devicemanager.h>
-#include <dukat/fixedcamera3.h>
-#include <dukat/inputdevice.h>
-#include <dukat/log.h>
-#include <dukat/mathutil.h>
-#include <dukat/meshbuilder3.h>
-#include <dukat/quaternion.h>
-#include <dukat/renderer3.h>
-#include <dukat/settings.h>
-#include <dukat/vertextypes3.h>
-
 namespace dukat
 {
     // Define mesh colors

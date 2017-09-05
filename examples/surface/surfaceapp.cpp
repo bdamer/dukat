@@ -4,18 +4,6 @@
 #include "stdafx.h"
 #include "surfaceapp.h"
 
-#include <dukat/application.h>
-#include <dukat/devicemanager.h>
-#include <dukat/inputdevice.h>
-#include <dukat/light.h>
-#include <dukat/log.h>
-#include <dukat/rect.h>
-#include <dukat/renderlayer2.h>
-#include <dukat/settings.h>
-#include <dukat/sprite.h>
-#include <dukat/surface.h>
-#include <dukat/texturecache.h>
-
 namespace dukat
 {
 	void Game::init(void)
