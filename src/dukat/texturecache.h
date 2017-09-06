@@ -32,8 +32,8 @@ namespace dukat
 		Texture* get(const std::string& filename, TextureFilterProfile profile = ProfileNearest);
 		Texture* get(uint32_t id);
 		// Puts texture entry into cache.
-		void put(const std::string& filename, std::unique_ptr<Texture> texture) { put(compute_hash(filename), std::move(texture)); }
-		void put(uint32_t id, std::unique_ptr<Texture> texture) { textures.insert(std::make_pair(id, std::move(texture))); }
+		Texture* put(const std::string& filename, std::unique_ptr<Texture> texture) { put(compute_hash(filename), std::move(texture)); return get(filename); }
+		Texture* put(uint32_t id, std::unique_ptr<Texture> texture) { textures.insert(std::make_pair(id, std::move(texture))); return get(id); }
 		// Frees all cached textures.
 		void free_all(void);
 		// Frees the texture corresponding to the image file.

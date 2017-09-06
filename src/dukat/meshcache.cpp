@@ -2,11 +2,16 @@
 #include "meshcache.h"
 #include "meshdata.h"
 #include "buffers.h"
+#include "log.h"
 
 namespace dukat
 {
 	MeshData* MeshCache::put(const std::string& id, std::unique_ptr<MeshData> get_mesh)
 	{
+		if (cache.count(id) > 0)
+		{
+			logger << "Overriding mesh cache entry: " << id << std::endl;
+		}
 		cache[id] = std::move(get_mesh);
 		return cache[id].get();
 	}
