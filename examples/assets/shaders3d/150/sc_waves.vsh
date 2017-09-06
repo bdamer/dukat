@@ -245,7 +245,7 @@ void main()
 {
 	// Sample ground level
 	// depth of water is given by water_table - z
-	float z = texture(u_tex1, a_position * u_model[1].xy).r;
+	float z = texture(u_tex1, a_position * u_model[1].xy).r * u_model[3].y;
 
 	// vertex color controls: [default: 1/1/1/1]
 	// r - make surface transparent as it goes to 0

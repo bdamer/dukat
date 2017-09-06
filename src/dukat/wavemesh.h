@@ -114,6 +114,7 @@ namespace dukat
 	public:
 		const int grid_size; // width / length of wave grid
 		float tile_spacing; // size of grid tiles
+		float scale_factor; // elevation scale factor (of elevation map)
 
         WaveMesh(Game3* game, int size);
 		~WaveMesh(void) { }

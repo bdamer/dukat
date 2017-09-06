@@ -347,7 +347,7 @@ namespace dukat
 		// 1 / texture width,height
 		mat_model.m[4] = mat_model.m[5] = 1.0f / static_cast<float>(grid_size);
 		// ZScale of height map 
-		mat_model.m[13] = 1.0f;
+		mat_model.m[13] = tile_spacing * scale_factor;
 		grid_program->set_matrix4(Renderer::uf_model, mat_model);
 
 		// Bind geo state
