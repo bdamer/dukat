@@ -140,4 +140,10 @@ namespace dukat
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3]);
 	}
+
+	void FrameBuffer::attach_draw_buffer(Texture* texture)
+	{
+		glBindTexture(texture->target, texture->id);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture->target, texture->id, 0);
+	}
 }

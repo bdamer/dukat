@@ -92,5 +92,6 @@ namespace dukat
 		void resize(int width, int height);
 		void bind(void);
 		void unbind(void);
+		void attach_draw_buffer(Texture* texture);
 	};
 }
