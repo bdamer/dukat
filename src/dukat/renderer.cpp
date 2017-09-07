@@ -115,14 +115,6 @@ namespace dukat
 	void Renderer::set_wireframe(bool wireframe)
 	{
 		show_wireframe = wireframe;
-		if (show_wireframe)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		else
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
 	}
 
 	void Renderer::set_backface_culling(bool backface_culling)

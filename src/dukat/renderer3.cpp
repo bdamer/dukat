@@ -93,8 +93,12 @@ namespace dukat
 
 		window->clear();
 
+		if (show_wireframe)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		// Scene pass
 		glEnable(GL_DEPTH_TEST);
+
 		for (auto& it : meshes)
 		{
 			if (it->visible && it->stage == RenderStage::SCENE)
@@ -102,6 +106,9 @@ namespace dukat
 				it->render(this);
 			}
 		}
+
+		if (show_wireframe)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		// Effects pass		
 		glDisable(GL_DEPTH_TEST);
