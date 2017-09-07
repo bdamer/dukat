@@ -25,9 +25,9 @@ namespace dukat
 
 	void Messenger::subscribe_all(Recipient* recipient)
 	{
-		for (int it = Event::None; it != Event::Any; ++it)
+		for (auto it = Events::None; it != Events::Any; ++it)
 		{
-			subscribe((Event)it, recipient);
+			subscribe(it, recipient);
 		}
 	}
 
@@ -39,11 +39,11 @@ namespace dukat
 		}
 	}
 
-	void Messenger::unsubscribe_all(Recipient * recipient)
+	void Messenger::unsubscribe_all(Recipient* recipient)
 	{
-		for (int it = Event::None; it != Event::Any; ++it)
+		for (auto it = subscriptions.begin(); it != subscriptions.end(); ++it)
 		{
-			unsubscribe((Event)it, recipient);
+			it->second.erase(recipient);
 		}
 	}
 }
