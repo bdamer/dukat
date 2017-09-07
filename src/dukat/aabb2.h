@@ -20,6 +20,9 @@ namespace dukat
 
 		// Dimension queries
 		float size(void) const { return (max.x - min.x) * (max.y - min.y); }
+		Vector2 center(void) const { return min + (max - min) * 0.5f; }
+		float width(void) const { return max.x - min.x; }
+		float height(void) const { return max.y - min.y; }
 
 		// Box operations
 		void clear(void);
