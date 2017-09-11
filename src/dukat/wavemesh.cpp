@@ -61,10 +61,11 @@ namespace dukat
 		}
 		// Upload to texture
 		cos_texture = std::make_unique<Texture>(texture_size, 1, ProfileNearest);
-		glBindTexture(GL_TEXTURE_1D, cos_texture->id);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA8, texture_size, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, cos_table.data());
+		cos_texture->target = GL_TEXTURE_1D;
+		glBindTexture(cos_texture->target, cos_texture->id);
+		glTexParameteri(cos_texture->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(cos_texture->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexImage1D(cos_texture->target, 0, GL_RGBA8, texture_size, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, cos_table.data());
 	}
 
 	void WaveMesh::reset_state(void)
@@ -228,13 +229,13 @@ namespace dukat
 
         fbo->bind();
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb_texture->id, 0);
-
+		
         renderer->switch_shader(fb_program);
-
+		
 		// Used to scale normals to output format
 		auto s = 0.5f / (static_cast<float>(num_bump_per_pass) + tex_state.noise);
 		fb_program->set("u_rescale", s, s, 1.0f, 1.0f);
-
+		
 		cos_texture->bind(0, fb_program); // consine lookup
 		noise_texture->bind(1, fb_program); // noise texture
 		fb_texture->bind(2, fb_program); // output buffer
@@ -301,13 +302,13 @@ namespace dukat
 		mat_model.m[3] = 		mat_model.m[7] = 			mat_model.m[11] = 		mat_model.m[15] = 0.1f * game->get_time();
 
 		fb_program->set_matrix4("u_rtex_coord", mat_model.m);
-
+		
 		fb_quad->render(fb_program);
         perfc.inc(PerformanceCounter::FRAME_BUFFERS);
 		// end noise pass
 
         fbo->unbind();
-
+		
         glEnable(GL_BLEND);
 	}
 
@@ -317,8 +318,6 @@ namespace dukat
 
 		renderer->switch_shader(grid_program);
 		
-		grid_program->set("u_debug", game->is_debug() ? 1.0f : 0.0f);
-
 		// determine intersection of camera eye ray and mesh
 		auto cam = dynamic_cast<Renderer3*>(renderer)->get_camera();
 		Vector3 cam_target;
