@@ -35,7 +35,7 @@ namespace dukat
 
     ClipMap::ClipMap(Game3* game, int num_levels, int level_size, HeightMap* height_map)
         : game(game), num_levels(num_levels), level_size(level_size), height_map(height_map),
-  		  texture_size(level_size + 1), min_level(0), wireframe(false), stitching(true), 
+  		  texture_size(level_size + 1), min_level(0), stitching(true), 
 		  blending(true), culling(true), lighting(true)
     {
         logger << "Creating new clipmap: " << level_size << "x" << level_size << "x" << num_levels << std::endl;
@@ -764,9 +764,6 @@ namespace dukat
     {
 		auto cam = dynamic_cast<Renderer3*>(renderer)->get_camera();
 
-		if (wireframe)
-	        renderer->set_wireframe(true);
-
         renderer->switch_shader(program);
 
         // Bind samplers
@@ -785,9 +782,6 @@ namespace dukat
         color_map->unbind();
         normal_maps->unbind();
         elevation_maps->unbind();
-
-		if (wireframe)
-	        renderer->set_wireframe(false);
     }
 
 	void ClipMap::set_palette(const std::vector<Color>& palette)

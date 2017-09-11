@@ -105,7 +105,6 @@ namespace dukat
         void render_level(const Camera3& cam, int i);
 
     public:
-        bool wireframe;
         bool culling;
         bool stitching;
 		bool blending;

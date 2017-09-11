@@ -83,6 +83,8 @@ namespace dukat
 		info_text->set_text(ss.str());
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
+
+		game->set_controller(this);
 	}
 
 	void WaveScene::init_environment(void)

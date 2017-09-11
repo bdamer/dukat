@@ -85,6 +85,15 @@ namespace dukat
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 
+		auto options_text = game->create_text_mesh(1.0f / 20.0f);
+		options_text->transform.position = { -1.5f, -0.4f, 0.0f };
+		auto options_mesh = static_cast<TextMeshInstance*>(game->get_debug_meshes()->add_instance(std::move(options_text)));
+		game->get_timers()->create_timer(1.0f, [this,options_mesh]() {
+			std::stringstream ss;
+			ss << " CULL: " << clip_map->culling << " BLND: " << clip_map->blending << " LIGH: " << clip_map->lighting << std::endl;
+			options_mesh->set_text(ss.str());
+		}, true);
+
 		display_level = 0;
 		auto quad = game->get_meshes()->put("quad", builder2.build_textured_quad({ 0.0f, 1.0f, 1.0f, 0.0f}));
 		elevation_mesh = game->get_debug_meshes()->create_instance();
@@ -283,7 +292,7 @@ namespace dukat
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_F1:
-			clip_map->wireframe = !clip_map->wireframe;
+			game->get_renderer()->toggle_wireframe();
 			break;		
 		case SDLK_F2:
 			clip_map->culling = !clip_map->culling;
@@ -362,6 +371,7 @@ namespace dukat
 	void TerrainScene::update(float delta)
 	{
 		object_meshes.update(delta);
+		overlay_meshes.update(delta);
 
 		// Sample elevation below observer position
 		auto z = height_map->sample(0, observer_mesh->transform.position.x, observer_mesh->transform.position.z) 
@@ -421,40 +431,6 @@ namespace dukat
 		meshes.push_back(clip_map.get());
 		game->get_renderer()->render(meshes);
 	}
-
-	// TODO: fixme
-	/*
-	void Game::toggle_debug(void)
-	{
-		Game3::toggle_debug();
-		debug_meshes.visible = !debug_meshes.visible;
-		if (debug)
-		{
-			glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-			clip_map->set_program(game->get_shaders()->get_program("sc_clipmap.vsh", "sc_clipmap_debug.fsh"));
-		}
-		else
-		{
-			glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
-			clip_map->set_program(game->get_shaders()->get_program("sc_clipmap.vsh", "sc_clipmap.fsh"));
-		}
-	}
-
-	void Game::update_debug_text(void)
-	{
-		auto cam = game->get_renderer()->get_camera();
-		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
-		std::stringstream ss;
-		ss << "WIN: " << window->get_width() << "x" << window->get_height()
-			<< " FPS: " << get_fps()
-			<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl
-			<< "FBO: " << dukat::perfc.avg(dukat::PerformanceCounter::FRAME_BUFFERS) 
-			<< " CULL: " << clip_map->culling << " BLND: " << clip_map->blending << " LIGH: " << clip_map->lighting
-			<< std::endl;
-		debug_text->set_text(ss.str());
-	}
-	*/
 }
 
 int main(int argc, char** argv)
