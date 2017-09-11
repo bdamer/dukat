@@ -58,5 +58,6 @@ namespace dukat
 		TimerManager* get_timers(void) const { return timer_manager.get(); }
 		AnimationManager* get_animations(void) const { return anim_manager.get(); }
 		MeshCache* get_meshes(void) const { return mesh_cache.get(); }
+		Scene* get_scene(void) const { return scene_stack.top(); }
 	};
 }
