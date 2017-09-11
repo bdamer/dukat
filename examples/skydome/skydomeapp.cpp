@@ -30,18 +30,15 @@ namespace dukat
 		return res;
 	}
 
-	void Game::init(void)
+	SkydomeScene::SkydomeScene(Game3* game) : game(game), multiplier(1), total_time(0.0f)
 	{
-		Game3::init();
-
-		renderer->disable_effects();
-
-		auto camera = std::make_unique<FirstPersonCamera3>(this);
+		auto settings = game->get_settings();
+		auto camera = std::make_unique<FirstPersonCamera3>(game);
 		camera->transform.position.y = 1.0;
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		renderer->set_camera(std::move(camera));
+		game->get_renderer()->set_camera(std::move(camera));
 
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
@@ -50,35 +47,35 @@ namespace dukat
 
 		// Box
 		auto box = object_meshes.create_instance();
-		box->set_mesh(mesh_cache->put("box", mb3.build_cube_single_face()));
-		box->set_texture(texture_cache->get("box01_1024.png"));
-		box->set_program(shader_cache->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
+		box->set_mesh(game->get_meshes()->put("box", mb3.build_cube_single_face()));
+		box->set_texture(game->get_textures()->get("box01_1024.png"));
+		box->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
 		box->transform.scale = Vector3{0.25f, 0.25f, 0.25f};
 		box->transform.position.y = 0.25f;
 
 		// Ground plane
 		const float scale = 100.0f;
 		ground_mesh = object_meshes.create_instance();
-		ground_mesh->set_mesh(mesh_cache->put("ground", build_plane(scale, scale)));
-		ground_mesh->set_texture(texture_cache->get("sand01_1024.png", ProfileAnisotropic));
-		ground_mesh->set_program(shader_cache->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
+		ground_mesh->set_mesh(game->get_meshes()->put("ground", build_plane(scale, scale)));
+		ground_mesh->set_texture(game->get_textures()->get("sand01_1024.png", ProfileAnisotropic));
+		ground_mesh->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
 		ground_mesh->transform.position.y = scale;
 		ground_mesh->transform.scale = Vector3(scale, scale, scale);
 
 		// Skydome
 		skydome_mesh = object_meshes.create_instance();
-		skydome_mesh->set_mesh(mesh_cache->put("skydome", mb3.build_dome(32, 24, true)));
-		skydome_mesh->set_program(shader_cache->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
+		skydome_mesh->set_mesh(game->get_meshes()->put("skydome", mb3.build_dome(32, 24, true)));
+		skydome_mesh->set_program(game->get_shaders()->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
 
 		// Create cubemap
-		skydome_mesh->set_texture(texture_cache->get("skybox01.dds"), 0);
+		skydome_mesh->set_texture(game->get_textures()->get("skybox01.dds"), 0);
 
 		init_environment();		
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
-		auto multiplier_text = create_text_mesh(1.0f / 20.0f);
+		auto multiplier_text = game->create_text_mesh(1.0f / 20.0f);
 		multiplier_text->transform.position = { -1.3f, 0.85f, 0.0f };
 		std::stringstream ss;
 		ss << "<#white>" << multiplier << "x" << std::endl
@@ -87,7 +84,19 @@ namespace dukat
 		multiplier_text->transform.update();
 		mult_mesh = static_cast<TextMeshInstance*>(overlay_meshes.add_instance(std::move(multiplier_text)));
 
-		auto info_text = create_text_mesh(1.0f / 20.0f);
+		game->get_timers()->create_timer(1.0f, [&]() {
+			// Compute wallclock time from absolute counter
+			std::stringstream ss;
+			float wallclock_time = (total_time * time_factor) + 6.0f * 60.0f * 60.0f;
+			int hours = (int)(wallclock_time / 3600.0f) % 24;
+			wallclock_time -= (float)(hours * 3600);
+			int minutes = (int)(wallclock_time / 60.0f) % 60;
+			ss << "<#white>" << multiplier << "x" << std::endl
+				<< std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2) << minutes << "</>";
+			mult_mesh->set_text(ss.str());
+		}, true);
+
+		auto info_text = game->create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.3f, -0.7f, 0.0f };
 		ss.str("");
 		ss << "<#white>"
@@ -101,29 +110,21 @@ namespace dukat
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 
-		debug_meshes.stage = RenderStage::OVERLAY;
-		debug_meshes.visible = debug;
-
-		std::unique_ptr<TextMeshInstance> debug_text;
-		debug_text = create_text_mesh(1.0f / 20.0f);
-		debug_text->transform.position.x = -1.0f;
-		debug_text->transform.position.y = 1.0f;
-		debug_text->transform.update();
-		debug_meshes.add_instance(std::move(debug_text));
-
 		// Sun
-		sun_mesh = debug_meshes.create_instance();
-		sun_mesh->set_mesh(mesh_cache->put("sun", mb3.build_sphere(16, 16)));
-		sun_mesh->set_program(shader_cache->get_program("sc_texture.vsh", "sc_texture.fsh"));
-		sun_mesh->set_texture(texture_cache->get("blank.png"));
+		sun_mesh = game->get_debug_meshes()->create_instance();
+		sun_mesh->set_mesh(game->get_meshes()->put("sun", mb3.build_sphere(16, 16)));
+		sun_mesh->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
+		sun_mesh->set_texture(game->get_textures()->get("blank.png"));
 		Material m;
 		m.ambient = color_rgb(0xffff00);
 		sun_mesh->set_material(m);
+
+		game->set_controller(this);
 	}
 
-	void Game::init_environment(void)
+	void SkydomeScene::init_environment(void)
 	{
-		env = std::make_unique<Environment>(this, skydome_mesh);
+		env = std::make_unique<Environment>(game, skydome_mesh);
 
         // Phase 0: Dawn (06:00-10:00)
         Environment::Phase dawn_phase;
@@ -200,7 +201,7 @@ namespace dukat
 		env->set_current_phase(0);
 	}
 
-	void Game::handle_keyboard(const SDL_Event &e)
+	bool SkydomeScene::handle_keyboard(const SDL_Event &e)
 	{
 		Material mat;
 		switch (e.key.keysym.sym)
@@ -212,7 +213,7 @@ namespace dukat
 			multiplier = std::min(64, multiplier * 2);
 			break;
 		case SDLK_F1:
-			renderer->toggle_wireframe();
+			game->get_renderer()->toggle_wireframe();
 			break;
 		case SDLK_F2:
 			ground_mesh->visible = !ground_mesh->visible;
@@ -221,59 +222,31 @@ namespace dukat
 			info_mesh->visible = !info_mesh->visible;
 			break;
 		default:
-			Game3::handle_keyboard(e);
+			return false;
 		}
+		return true;
 	}
 
-	void Game::update(float delta)
+	void SkydomeScene::update(float delta)
 	{
-		Game3::update(delta);
 		env->update(delta * (float)multiplier);
 		total_time += delta * (float)multiplier;
 
 		// Update sun mesh position
-		auto l0 = renderer->get_light(Renderer3::dir_light_idx);
+		auto l0 = game->get_renderer()->get_light(Renderer3::dir_light_idx);
 		sun_mesh->transform.position = -64.0f * l0->position;
 
 		object_meshes.update(delta);
 		overlay_meshes.update(delta);
-		debug_meshes.update(delta);
 	}
 
-	void Game::render(void)
+	void SkydomeScene::render(void)
 	{
 		std::vector<Mesh*> meshes;
-		meshes.push_back(&debug_meshes);
+		meshes.push_back(game->get_debug_meshes());
 		meshes.push_back(&object_meshes);
 		meshes.push_back(&overlay_meshes);
-		renderer->render(meshes);
-	}
-
-	void Game::toggle_debug(void)
-	{
-		debug_meshes.visible = !debug_meshes.visible;
-	}
-
-	void Game::update_debug_text(void)
-	{
-		std::stringstream ss;
-		auto cam = renderer->get_camera();
-		ss << "WIN: " << window->get_width() << "x" << window->get_height()
-			<< " FPS: " << get_fps()
-			<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
-		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
-		debug_text->set_text(ss.str());
-
-		// Compute wallclock time from absolute counter
-		ss.str("");
-		float wallclock_time = (total_time * time_factor) + 6.0f * 60.0f * 60.0f;
-		int hours = (int)(wallclock_time / 3600.0f) % 24;
-		wallclock_time -= (float)(hours * 3600);
-		int minutes = (int)(wallclock_time / 60.0f) % 60;
-		ss << "<#white>" << multiplier << "x" << std::endl
-			<< std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2) << minutes << "</>";
-		mult_mesh->set_text(ss.str());
+		game->get_renderer()->render(meshes);
 	}
 }
 
@@ -287,7 +260,9 @@ int main(int argc, char** argv)
 			config = argv[1];
 		}
 		dukat::Settings settings(config);
-		dukat::Game app(settings);
+		dukat::Game3 app(settings);
+		app.add_scene("main", std::make_unique<dukat::SkydomeScene>(&app));
+		app.push_scene("main");
 		return app.run();
 	}
 	catch (const std::exception& e)

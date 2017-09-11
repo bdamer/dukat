@@ -12,8 +12,11 @@
 #include "gamebase.h"
 #include "messenger.h"
 #include "recipient.h"
+#include "scene.h"
+#include "scene2.h"
 
 // Input
+#include "controller.h"
 #include "devicemanager.h"
 #include "gamepaddevice.h"
 #include "inputdevice.h"

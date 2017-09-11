@@ -5,17 +5,14 @@
 
 namespace dukat
 {
-	class Game : public Game2
+	class TextScene : public Scene2
 	{
 	private:
 		std::unique_ptr<TextMeshInstance> info_text;
 		std::unique_ptr<TextMeshInstance> debug_text;
 
-		void init(void);
-		void update_debug_text(void);
-
 	public:
-		Game(Settings& settings) : Game2(settings) { }
-		~Game(void) { }
+		TextScene(Game2* game);
+		~TextScene(void) { }
 	};
 }

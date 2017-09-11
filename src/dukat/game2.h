@@ -3,6 +3,7 @@
 #include <memory>
 #include "gamebase.h"
 #include "renderer2.h"
+#include "scene2.h"
 
 namespace dukat
 {
@@ -11,8 +12,6 @@ namespace dukat
 	{
 	protected:
 		std::unique_ptr<Renderer2> renderer;
-		virtual void update(float delta);
-		virtual void render(void);
 		void toggle_debug(void);
 
 	public:

@@ -23,8 +23,6 @@ namespace dukat
 		std::unique_ptr<Window> window;
 		std::unique_ptr<DeviceManager> device_manager;
 
-		// Called to initialize the application.
-		virtual void init(void) = 0;
 		// Called to process input events.
 		virtual void handle_event(const SDL_Event& e);
 		// Called to handle keyboard events.
@@ -35,11 +33,11 @@ namespace dukat
 		virtual void update(float delta) = 0;
 		// Called to render to the screen.
 		virtual void render(void) = 0;
-		// Called to release the application.
-		virtual void release(void) = 0;
 
 	public:
+		// Called to initialize the application.
 		Application(Settings& settings);
+		// Called to destroy the application.
 		virtual ~Application(void);
 
 		// Runs the main application loop

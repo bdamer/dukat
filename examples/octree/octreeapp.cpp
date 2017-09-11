@@ -8,20 +8,20 @@
 
 namespace dukat
 {
-	void Game::init(void)
+	OctreeScene::OctreeScene(Game2* game) : game(game), show_bounding_body(false)
 	{
-		Game2::init();
+		auto layer = game->get_renderer()->create_layer("main", 1.0f);
 
-		auto layer = renderer->create_layer("main", 1.0f);
+		auto settings = game->get_settings();
 
 		// Set up default camera centered around origin
-		auto camera = std::make_unique<Camera2>(window.get(), Vector2(texture_width, texture_height));
+		auto camera = std::make_unique<Camera2>(game->get_window(), Vector2(texture_width, texture_height));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		renderer->set_camera(std::move(camera));
+		game->get_renderer()->set_camera(std::move(camera));
 
 		// Set up "fake" camera for raytracer
-		ray_camera = std::make_unique<FirstPersonCamera3>(this);
+		ray_camera = std::make_unique<FirstPersonCamera3>(game);
 		ray_camera->set_movement_speed(10.0f);
 		ray_camera->set_clip(0.01f, 1000.0f);
 		ray_camera->set_vertical_fov(55.0f);
@@ -43,7 +43,7 @@ namespace dukat
 		layer->add(sprite.get());
 
 		// Set up info text
-		info_text = create_text_mesh(12.0f);
+		info_text = game->create_text_mesh(12.0f);
 		info_text->transform.position = Vector3(
 			-0.5f * (float)texture_width, 0.40f * (float)texture_height, 0.0f);
 		info_text->transform.update();
@@ -57,8 +57,8 @@ namespace dukat
 		layer->add(info_text.get());
 
 		// Set up debug layer
-		auto debug_layer = renderer->create_layer("debug", 1000.0f);
-		debug_text = create_text_mesh(10.0f);
+		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		debug_text = game->create_text_mesh(10.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.5f * (float)texture_height, 0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
@@ -75,16 +75,27 @@ namespace dukat
 
 #ifdef USE_MULTITHREADING
 		// Create worker threads
-		thread_count = settings.get_int("renderer.threads", 1);
-		chunk_count = settings.get_int("renderer.chunks", 1);
+		thread_count = settings.get_int("game->get_renderer().threads", 1);
+		chunk_count = settings.get_int("game->get_renderer().chunks", 1);
 		logger << "Creating " << thread_count << " render threads." << std::endl;
 		for (auto i = 0; i < thread_count; i++) {
-			thread_pool.push_back(std::thread(&Game::thread_render_loop, this));
+			thread_pool.push_back(std::thread(&OctreeScene::thread_render_loop, this));
 		}
+#endif
+
+		game->set_controller(this);
+	}
+
+	OctreeScene::~OctreeScene(void)
+	{
+#ifdef USE_MULTITHREADING
+		// wait for worker threads to finish
+		std::for_each(thread_pool.begin(), thread_pool.end(),
+			std::mem_fn(&std::thread::join));
 #endif
 	}
 
-	void Game::load_model(const std::string& file)
+	void OctreeScene::load_model(const std::string& file)
 	{
 		auto is = std::fstream(file, std::fstream::in | std::fstream::binary);
 		if (!is)
@@ -95,14 +106,13 @@ namespace dukat
 		entity->set_octree(model.get_data());
 	}
 
-	void Game::handle_keyboard(const SDL_Event & e)
+	bool OctreeScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_TAB:
 			ray_camera->mouse_look = !ray_camera->mouse_look;
 			break;
-
 		case SDLK_1:
 			load_model("../assets/models/earth.vox");
 			entity->set_bb(std::make_unique<BoundingSphere>(Vector3::origin, 56.0f));
@@ -115,11 +125,9 @@ namespace dukat
 			load_model("../assets/models/cube.vox");
 			entity->set_bb(std::make_unique<BoundingSphere>(Vector3::origin, 32.0f));
 			break;
-
 		case SDLK_b:
 			show_bounding_body = !show_bounding_body;
 			break;
-
 		case SDLK_o:
 			if (e.key.keysym.mod & KMOD_CTRL)
 			{
@@ -134,25 +142,26 @@ namespace dukat
 				entity->set_octree(model.get_data());
 			}
 			break;
-
 		default:
-			Game2::handle_keyboard(e);
+			return false;
 		}
+		return true;
 	}
 
-	void Game::update_debug_text(void)
+	void OctreeScene::update_debug_text(void)
 	{
 		std::stringstream ss;
-		auto cam = renderer->get_camera();
+		auto window = game->get_window();
+		auto cam = game->get_renderer()->get_camera();
 		ss << "WIN: " << window->get_width() << "x" << window->get_height()
 			<< " VIR: " << cam->transform.dimension.x << "x" << cam->transform.dimension.y
-			<< " FPS: " << get_fps()
+			<< " FPS: " << game->get_fps()
 			<< " SAMPL: " << dukat::perfc.avg(dukat::PerformanceCounter::SAMPLES)
 			<< " BB: " << dukat::perfc.avg(dukat::PerformanceCounter::BB_CHECKS) << std::endl;
 		debug_text->set_text(ss.str());
 	}
 	
-	void Game::update_texture(void)
+	void OctreeScene::update_texture(void)
 	{
 		GLenum format, type;
 		surface->query_pixel_format(format, type);
@@ -164,7 +173,7 @@ namespace dukat
 #endif
 	}
 
-	void Game::update(float delta)
+	void OctreeScene::update(float delta)
 	{
 		// Rotate object about the y axis
 		Quaternion q;
@@ -173,11 +182,10 @@ namespace dukat
 
 		entity->update(delta);
 		ray_camera->update(delta);
-		
-		Game2::update(delta);
+		game->get_renderer()->get_camera()->update(delta);
 	}
 
-	void Game::render(void)
+	void OctreeScene::render(void)
 	{
 #ifdef USE_MULTITHREADING
 		// Reset counter and queue render tasks
@@ -191,11 +199,11 @@ namespace dukat
 		}
 
 		// While main thread is waiting for the workers, present the current screen buffer
-		Game2::render();
+		game->get_renderer()->render();
 
 		// Block until all chunks have been rendered
 		std::unique_lock<std::mutex> lk(mtx);
-		cond2.wait(lk, [&] { return finished_count == chunk_count || is_done(); });
+		cond2.wait(lk, [&] { return finished_count == chunk_count || game->is_done(); });
 #else
 		// Single-threaded rendering
 		Game2::render();
@@ -207,10 +215,10 @@ namespace dukat
 		update_texture();
 	}
 
-	void Game::thread_render_loop(void)
+	void OctreeScene::thread_render_loop(void)
 	{
 		dukat::Rect rect;
-		while (!is_done())
+		while (!game->is_done())
 		{
 			{
 				std::unique_lock<std::mutex> lk(mtx);
@@ -227,7 +235,7 @@ namespace dukat
 		}
 	}
 
-	void Game::render_segment(const Rect& rect)
+	void OctreeScene::render_segment(const Rect& rect)
 	{
 		auto cam = ray_camera.get();
 		const auto aspect_ratio = cam->get_aspect_ratio();
@@ -282,15 +290,6 @@ namespace dukat
 		}
 	}
 
-	void Game::release(void)
-	{
-#ifdef USE_MULTITHREADING
-		// wait for worker threads to finish
-		std::for_each(thread_pool.begin(), thread_pool.end(),
-			std::mem_fn(&std::thread::join));
-#endif
-		Game2::release();
-	}
 }
 
 int main(int argc, char** argv)
@@ -303,7 +302,9 @@ int main(int argc, char** argv)
 			config = argv[1];
 		}
 		dukat::Settings settings(config);
-		dukat::Game app(settings);
+		dukat::Game2 app(settings);
+		app.add_scene("main", std::make_unique<dukat::OctreeScene>(&app));
+		app.push_scene("main");
 		return app.run();
 	}
 	catch (const std::exception& e)

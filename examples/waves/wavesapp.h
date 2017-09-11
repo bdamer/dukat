@@ -8,12 +8,12 @@ namespace dukat
 	class WaveMesh;
 	class Environment;
 
-	class Game : public Game3
+	class WaveScene : public Scene, public Controller
 	{
 	private:
 		static constexpr int grid_size = 64;
 		
-		MeshGroup debug_meshes;
+		Game3* game;
 		MeshGroup object_meshes;
 		MeshGroup overlay_meshes;
 		MeshInstance* info_mesh;
@@ -25,18 +25,15 @@ namespace dukat
 		Vector3 camera_target;
 		bool wireframe; // flag to render wireframe mesh
 
-		void init(void);
 		void init_environment(void);
-		void update(float delta);
-		void update_debug_text(void);
-		void render(void);
-		void handle_event(const SDL_Event& e);
-		void handle_keyboard(const SDL_Event& e);
 
 	public:
-		Game(Settings& settings) : Game3(settings) { }
-		~Game(void) { }
+		WaveScene(Game3* game);
+		~WaveScene(void) { }
 
-		void toggle_debug(void);
+		void update(float delta);
+		void render(void);
+		bool handle_event(const SDL_Event& e);
+		bool handle_keyboard(const SDL_Event& e);
 	};
 }

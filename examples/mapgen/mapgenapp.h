@@ -19,10 +19,10 @@ namespace dukat
 		Biomes
 	};
 
-	class Game : public Game3
+	class MapgenScene : public Scene, public Controller
 	{
 	private:
-		MeshGroup debug_meshes;
+		Game3* game;
 		MeshGroup object_meshes;
 		MeshGroup overlay_meshes;
 		MeshInstance* fill_mesh;
@@ -33,12 +33,6 @@ namespace dukat
 		RenderMode render_mode;
 		MapMode map_mode;
 		int polygon_count;
-
-		void init(void);
-		void update(float delta);
-		void update_debug_text(void);
-		void render(void);
-		void handle_keyboard(const SDL_Event& e);
 
 		void switch_mode(void);
 		void generate_map(void);
@@ -57,9 +51,11 @@ namespace dukat
         void create_river_mesh(MeshData* mesh, float z_scale = 1.0f);
 
 	public:
-		Game(Settings& settings) : Game3(settings) { }
-		~Game(void) { }
+		MapgenScene(Game3* game);
+		~MapgenScene(void) { }
 
-		void toggle_debug(void);
+		void update(float delta);
+		void render(void);
+		bool handle_keyboard(const SDL_Event& e);
 	};
 }

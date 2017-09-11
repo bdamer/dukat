@@ -8,7 +8,7 @@ namespace dukat
 {
 	class Sprite;
 
-	class Game : public Game2
+	class SpritesScene : public Scene2, public Controller
 	{
 	private:
 		static const int window_width = 400;
@@ -24,13 +24,12 @@ namespace dukat
 		Vector2 sprite_vel;
 		bool particles_enabled;
 
-		void init(void);
-		void handle_keyboard(const SDL_Event& e);
+	public:
+		SpritesScene(Game2* game);
+		~SpritesScene(void) { }
+
+		bool handle_keyboard(const SDL_Event& e);
 		void update_debug_text(void);
 		void update(float delta);
-
-	public:
-		Game(Settings& settings) : Game2(settings), particles_enabled(true) { }
-		~Game(void) { }
 	};
 }

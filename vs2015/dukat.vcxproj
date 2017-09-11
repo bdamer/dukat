@@ -149,6 +149,7 @@
     <Text Include="..\src\dukat\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\dukat\controller.h" />
     <ClInclude Include="..\src\dukat\dukat.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -159,6 +160,8 @@
     <ClInclude Include="..\src\dukat\mapgraph.h" />
     <ClInclude Include="..\src\dukat\mapshape.h" />
     <ClInclude Include="..\src\dukat\meshdata.h" />
+    <ClInclude Include="..\src\dukat\scene.h" />
+    <ClInclude Include="..\src\dukat\scene2.h" />
     <ClInclude Include="..\src\dukat\shape.h" />
     <ClInclude Include="..\src\dukat\voronoi.h" />
     <ClInclude Include="..\src\dukat\wavemesh.h" />
@@ -185,7 +188,6 @@
     <ClInclude Include="..\src\dukat\effect3.h" />
     <ClInclude Include="..\src\dukat\environment.h" />
     <ClInclude Include="..\src\dukat\eulerangles.h" />
-    <ClInclude Include="..\src\dukat\event.h" />
     <ClInclude Include="..\src\dukat\firstpersoncamera3.h" />
     <ClInclude Include="..\src\dukat\fixedcamera3.h" />
     <ClInclude Include="..\src\dukat\game3.h" />
@@ -260,6 +262,7 @@
     <ClCompile Include="..\src\dukat\gridmesh.cpp" />
     <ClCompile Include="..\src\dukat\mapgraph.cpp" />
     <ClCompile Include="..\src\dukat\meshdata.cpp" />
+    <ClCompile Include="..\src\dukat\scene2.cpp" />
     <ClCompile Include="..\src\dukat\voronoi.cpp" />
     <ClCompile Include="..\src\dukat\wavemesh.cpp" />
     <ClCompile Include="..\src\dukat\aabb2.cpp" />

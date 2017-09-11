@@ -18,13 +18,13 @@ namespace dukat
 		Overhead = 2
 	};
 
-	class Game : public Game3
+	class TerrainScene : public Scene, public Controller
 	{
 	private:
 		int max_levels;
 		int level_size;
 
-		MeshGroup debug_meshes;
+		Game3* game;
 		MeshGroup object_meshes;
 		MeshGroup overlay_meshes;
 		MeshInstance* observer_mesh;
@@ -47,14 +47,6 @@ namespace dukat
 		std::unique_ptr<ClipMap> clip_map;
 		std::unique_ptr<HeightMap> height_map;
 
-		void init(void);
-		void handle_event(const SDL_Event& e);
-		void handle_keyboard(const SDL_Event& e);
-
-		void update(float delta);
-		void update_debug_text(void);
-		void render(void);
-
 		void build_palette(void);
 		void load_mtrainier(void);
 		void load_pugetsound(void);
@@ -63,9 +55,12 @@ namespace dukat
 		void switch_camera_mode(CameraMode mode);
 
 	public:
-		Game(Settings& settings) : Game3(settings) { }
-		~Game(void) { }
+		TerrainScene(Game3* game);
+		~TerrainScene(void) { }
 
-		void toggle_debug(void);
+		bool handle_event(const SDL_Event& e);
+		bool handle_keyboard(const SDL_Event& e);
+		void update(float delta);
+		void render(void);
 	};
 }

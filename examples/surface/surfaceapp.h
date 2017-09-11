@@ -9,7 +9,7 @@ namespace dukat
 	class Sprite;
 	class Surface;
 
-	class Game : public Game2
+	class SurfaceScene : public Scene2, public Controller
 	{
 	private:
 		const int texture_width = 256;
@@ -21,17 +21,15 @@ namespace dukat
 		std::unique_ptr<TextMeshInstance> info_text;
 		std::unique_ptr<TextMeshInstance> debug_text;
 
-		void init(void);
-		void handle_keyboard(const SDL_Event& e);
-		void update_debug_text(void);
-
 		void test_load_image(void);
 		void test_bw_image(void);
 		void test_color_image(void);
 		void update_texture(void);
 
 	public:
-		Game(Settings& settings) : Game2(settings) { }
-		~Game(void) { }
+		SurfaceScene(Game2* game2);
+		~SurfaceScene(void) { }
+
+		bool handle_keyboard(const SDL_Event& e);
 	};
 }

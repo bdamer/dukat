@@ -64,78 +64,51 @@ namespace dukat
 		return res;
 	}
 
-	void Game::init(void)
+	RoomScene::RoomScene(Game3* game) : game(game)
 	{
-		Game3::init();
-
-		auto camera = std::make_unique<RoomCamera>(window.get(), this);
+		auto settings = game->get_settings();
+		auto camera = std::make_unique<RoomCamera>(game->get_window(), game);
 		camera->transform.position.y = 1.0;
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		device_manager->active->on_press(InputDevice::VirtualButton::SecondaryAction, 
+		game->get_devices()->active->on_press(InputDevice::VirtualButton::SecondaryAction, 
 			std::bind(&RoomCamera::jump, camera.get()));
-		renderer->set_camera(std::move(camera));
+		game->get_renderer()->set_camera(std::move(camera));
 
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
 
 		// Origin
 		dukat::MeshBuilder3 builder3;
-		mesh_cache->put("default-axis", builder3.build_axis());
+		game->get_meshes()->put("default-axis", builder3.build_axis());
 		auto mi = object_meshes.create_instance();
-		mi->set_mesh(mesh_cache->get("default-axis"));
-		mi->set_program(shader_cache->get_program("sc_color.vsh", "sc_color.fsh"));
+		mi->set_mesh(game->get_meshes()->get("default-axis"));
+		mi->set_program(game->get_shaders()->get_program("sc_color.vsh", "sc_color.fsh"));
 
 		// Room
-		auto cube_mesh = mesh_cache->put("cube", build_inverted_cube(25.0f, 25.0f));
+		auto cube_mesh = game->get_meshes()->put("cube", build_inverted_cube(25.0f, 25.0f));
 		mi = object_meshes.create_instance();
 		mi->set_mesh(cube_mesh);
-		mi->set_texture(texture_cache->get("holodeck.png", ProfileAnisotropic));
-		mi->set_program(shader_cache->get_program("sc_texture.vsh", "sc_texture.fsh"));
+		mi->set_texture(game->get_textures()->get("holodeck.png", ProfileAnisotropic));
+		mi->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
 		mi->transform.position.y = 25.0f;
 		mi->transform.scale = Vector3(25.0f, 25.0f, 25.0f);
 
-		debug_meshes.stage = RenderStage::OVERLAY;
-
-		std::unique_ptr<TextMeshInstance> debug_text;
-		debug_text = create_text_mesh(1.0f / 20.0f);
-		debug_text->transform.position.x = -1.0f;
-		debug_text->transform.position.y = 1.0f;
-		debug_text->transform.update();
-		debug_meshes.add_instance(std::move(debug_text));
+		game->set_controller(this);
 	}
 
-	void Game::update(float delta)
+	void RoomScene::update(float delta)
 	{
-		Game3::update(delta);
 		object_meshes.update(delta);
-		debug_meshes.update(delta);
 	}
 
-	void Game::render(void)
+	void RoomScene::render(void)
 	{
 		std::vector<Mesh*> meshes;
-		meshes.push_back(&debug_meshes);
+		meshes.push_back(game->get_debug_meshes());
 		meshes.push_back(&object_meshes);
-		renderer->render(meshes);
-	}
-
-	void Game::toggle_debug(void)
-	{
-		debug_meshes.visible = !debug_meshes.visible;
-	}
-
-	void Game::update_debug_text(void)
-	{
-		std::stringstream ss;
-		auto cam = renderer->get_camera();
-		ss << "WIN: " << window->get_width() << "x" << window->get_height()
-			<< " FPS: " << get_fps()
-			<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
-		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
-		debug_text->set_text(ss.str());
+		game->get_renderer()->render(meshes);
 	}
 }
 
@@ -149,7 +122,9 @@ int main(int argc, char** argv)
 			config = argv[1];
 		}
 		dukat::Settings settings(config);
-		dukat::Game app(settings);
+		dukat::Game3 app(settings);
+		app.add_scene("main", std::make_unique<dukat::RoomScene>(&app));
+		app.push_scene("main");
 		return app.run();
 	}
 	catch (const std::exception& e)

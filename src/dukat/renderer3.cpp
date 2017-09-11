@@ -16,7 +16,7 @@ namespace dukat
 	constexpr int Renderer3::fbo_size;
 
 	Renderer3::Renderer3(Window* window, ShaderCache* shader_cache, TextureCache* textures)
-		: Renderer(window, shader_cache), effects_enabled(true)
+		: Renderer(window, shader_cache), effects_enabled(false)
 	{
 		// Enable transparency
 		glEnable(GL_BLEND); 

@@ -17,11 +17,12 @@ namespace dukat
 	class Surface;
 	struct Texture;
 
-	class Game : public Game2
+	class OctreeScene : public Scene, public Controller
 	{
 	private:
 		const int texture_width = 800;
 		const int texture_height = 600;
+		Game2* game;
 		// number of render threads.
 		int thread_count; 
 		// number of chunks to be rendered individually.
@@ -46,14 +47,6 @@ namespace dukat
 		std::unique_ptr<TextMeshInstance> debug_text;
 		std::unique_ptr<Entity> entity;
 
-		void init(void);
-		void handle_keyboard(const SDL_Event& e);
-		void update_debug_text(void);
-		void update_texture(void);
-		void update(float delta);
-		void render(void);
-		void release(void);
-
 		// Renders a screen segment.
 		void render_segment(const Rect& rect);
 		// Render thread loop function.
@@ -62,7 +55,14 @@ namespace dukat
 		void load_model(const std::string& model);
 
 	public:
-		Game(Settings& settings) : Game2(settings), show_bounding_body(false) { }
-		~Game(void) { }
+		OctreeScene(Game2* game);
+		~OctreeScene(void);
+
+		bool handle_keyboard(const SDL_Event& e);
+		void update_debug_text(void);
+		void update_texture(void);
+		void update(float delta);
+		void render(void);
+
 	};
 }

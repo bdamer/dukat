@@ -6,42 +6,40 @@
 
 namespace dukat
 {
-	constexpr int Game::grid_size;
+	constexpr int WaveScene::grid_size;
 
-	void Game::init(void)
+	WaveScene::WaveScene(Game3* game) : game(game)
 	{
 		MeshBuilder3 mb3;
 
-		Game3::init();
-
-		renderer->disable_effects();
-
 		glClearColor(0.0f, 0.1f, 0.5f, 1.0f );
 
+		auto settings = game->get_settings();
+
 		// Create scene objects
-		auto camera = std::make_unique<OrbitCamera3>(this, camera_target, 50.0f, 0.0f, pi_over_four);
+		auto camera = std::make_unique<OrbitCamera3>(game, camera_target, 50.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(5.0f);
 		camera->set_max_distance(100.0f);
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		renderer->set_camera(std::move(camera));		
+		game->get_renderer()->set_camera(std::move(camera));		
 
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
 
 		// load environment map
-		auto env_map = texture_cache->get("sorsea.dds");
+		auto env_map = game->get_textures()->get("sorsea.dds");
 
 		// Wave mesh
-		wave_mesh = std::make_unique<WaveMesh>(this, grid_size);
+		wave_mesh = std::make_unique<WaveMesh>(game, grid_size);
 		wave_mesh->tile_spacing = 4.0f;
 		wave_mesh->set_env_map(env_map);
 
 		// Skydome
 		skydome_mesh = object_meshes.create_instance();
-		skydome_mesh->set_mesh(mesh_cache->put("skydome", mb3.build_dome(32, 24, true)));
-		skydome_mesh->set_program(shader_cache->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
+		skydome_mesh->set_mesh(game->get_meshes()->put("skydome", mb3.build_dome(32, 24, true)));
+		skydome_mesh->set_program(game->get_shaders()->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
 		skydome_mesh->set_texture(env_map, 0);
 
 		init_environment();
@@ -52,15 +50,15 @@ namespace dukat
 		// Quad used to visualize normal map
 		MeshBuilder2 mb2;
 		quad_mesh = overlay_meshes.create_instance();
-		quad_mesh->set_mesh(mesh_cache->put("quad", mb2.build_textured_quad()));
+		quad_mesh->set_mesh(game->get_meshes()->put("quad", mb2.build_textured_quad()));
 		quad_mesh->set_texture(wave_mesh->get_wave_texture());
-		quad_mesh->set_program(shader_cache->get_program("sc_ui_texture.vsh", "sc_texture.fsh"));
+		quad_mesh->set_program(game->get_shaders()->get_program("sc_ui_texture.vsh", "sc_texture.fsh"));
 		quad_mesh->transform.position = { 1.0f, -0.5f, 0.0f };
 		quad_mesh->transform.scale = { 0.3f, 0.3f, 1.0f };
 		quad_mesh->transform.update();
 		quad_mesh->visible = false;		
 
-		auto info_text = create_text_mesh(1.0f / 20.0f);
+		auto info_text = game->create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, 0.0f, 0.0f };
 		std::stringstream ss;
 		ss << "<#white>" << std::endl 
@@ -85,20 +83,11 @@ namespace dukat
 		info_text->set_text(ss.str());
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
-
-		debug_meshes.stage = RenderStage::OVERLAY;
-		debug_meshes.visible = debug;
-
-		auto debug_text = create_text_mesh(1.0f / 20.0f);
-		debug_text->transform.position.x = -1.0f;
-		debug_text->transform.position.y = 1.0f;
-		debug_text->transform.update();
-		debug_meshes.add_instance(std::move(debug_text));
 	}
 
-	void Game::init_environment(void)
+	void WaveScene::init_environment(void)
 	{
-		env = std::make_unique<Environment>(this, skydome_mesh);
+		env = std::make_unique<Environment>(game, skydome_mesh);
 
 		// Add environment phase to show skydome
         Environment::Phase default_phase;
@@ -118,29 +107,29 @@ namespace dukat
 		env->set_current_phase(0);
 	}
 
-	void Game::handle_event(const SDL_Event& e)
+	bool WaveScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
 		case SDL_MOUSEWHEEL:
 		{
-			auto camera = renderer->get_camera();
+			auto camera = game->get_renderer()->get_camera();
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
 			break;
 		}
 		default:
-			Game3::handle_event(e);
-			break;		
+			return false;
 		}
+		return true;
 	}
 
-	void Game::handle_keyboard(const SDL_Event & e)
+	bool WaveScene::handle_keyboard(const SDL_Event & e)
 	{
 		auto factor = (e.key.keysym.mod & KMOD_SHIFT) ? 0.1f : -0.1f;
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_F1:
-			renderer->toggle_wireframe();
+			game->get_renderer()->toggle_wireframe();
 			break;
 		case SDLK_F2: // show normal map
 			quad_mesh->visible = !quad_mesh->visible;
@@ -183,18 +172,18 @@ namespace dukat
 			wave_mesh->set_geo_env_radius(wave_mesh->get_geo_env_radius() * (1.0f + factor * 0.5f));
 			break;
 		default:
-			Game3::handle_keyboard(e);
+			return false;
 		}
+		return true;
 	}
 
-	void Game::update(float delta)
+	void WaveScene::update(float delta)
 	{
-		Game3::update(delta);
 		env->update(delta);
 
 		// Camera controls
-		auto dev = device_manager->active;
-		auto cam = dynamic_cast<OrbitCamera3*>(renderer->get_camera());
+		auto dev = game->get_devices()->active;
+		auto cam = dynamic_cast<OrbitCamera3*>(game->get_renderer()->get_camera());
 		camera_target += 10.0f * delta * (dev->ly * cam->transform.dir
 				+ dev->lx * cam->transform.right);
 		camera_target.y = 0.5f;
@@ -202,36 +191,17 @@ namespace dukat
 
 		object_meshes.update(delta);
 		overlay_meshes.update(delta);
-		debug_meshes.update(delta);
 		wave_mesh->update(delta);
 	}
 
-	void Game::render(void)
+	void WaveScene::render(void)
 	{
 		std::vector<Mesh*> meshes;
-		meshes.push_back(&debug_meshes);
+		meshes.push_back(game->get_debug_meshes());
 		meshes.push_back(&object_meshes);
 		meshes.push_back(wave_mesh.get());
 		meshes.push_back(&overlay_meshes);
-		renderer->render(meshes);
-	}
-
-	void Game::toggle_debug(void)
-	{
-		Game3::toggle_debug();
-		debug_meshes.visible = !debug_meshes.visible;
-	}
-
-	void Game::update_debug_text(void)
-	{
-		std::stringstream ss;
-		auto cam = renderer->get_camera();
-		ss << "WIN: " << window->get_width() << "x" << window->get_height()
-			<< " FPS: " << get_fps()
-			<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
-		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
-		debug_text->set_text(ss.str());
+		game->get_renderer()->render(meshes);
 	}
 }
 
@@ -245,7 +215,9 @@ int main(int argc, char** argv)
 			config = argv[1];
 		}
 		dukat::Settings settings(config);
-		dukat::Game app(settings);
+		dukat::Game3 app(settings);
+		app.add_scene("main", std::make_unique<dukat::WaveScene>(&app));
+		app.push_scene("main");
 		return app.run();
 	}
 	catch (const std::exception& e)

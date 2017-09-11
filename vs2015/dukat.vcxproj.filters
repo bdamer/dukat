@@ -261,9 +261,6 @@
     <ClInclude Include="..\src\dukat\messenger.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\event.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\textmeshinstance.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
@@ -356,6 +353,15 @@
     </ClInclude>
     <ClInclude Include="..\src\dukat\voronoi.h">
       <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\scene.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\controller.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\scene2.h">
+      <Filter>Header Files\engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -571,6 +577,9 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\voronoi.cpp">
       <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\scene2.cpp">
+      <Filter>Source Files\engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@ namespace dukat
 	Application::Application(Settings& settings)
 		: settings(settings), title(settings.get_string("window.title")), paused(false), done(false), runtime(0.0f)
 	{
+		logger << "Initializing application." << std::endl;
 		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");
 		window = std::make_unique<Window>(settings.get_int("window.width", 640), settings.get_int("window.height", 480), 
 			settings.get_bool("window.fullscreen"), settings.get_bool("window.msaa"));
@@ -31,9 +32,6 @@ namespace dukat
 
 	int Application::run(void)
 	{
-		logger << "Initializing application." << std::endl;
-		init();
-
 		logger << "Entering application loop." << std::endl;		
 		Uint32 ticks, last_update = 0, last_frame = 0;
 		SDL_Event e;
@@ -69,8 +67,6 @@ namespace dukat
 			perfc.inc(PerformanceCounter::FRAMES);
 			perfc.reset();
 		}
-
-		release();
 
 		return 0;
 	}

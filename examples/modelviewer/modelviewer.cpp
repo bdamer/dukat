@@ -6,14 +6,10 @@
 
 namespace dukat
 {
-	void Game::init(void)
+	ModelviewerScene::ModelviewerScene(Game3* game) : game(game), light(25.0f), enable_lighting(false), selected_mesh(-1)
 	{
-		Game3::init();
-
-		renderer->disable_effects();
-
 		// White Directional Light
-		auto light0 = renderer->get_light(Renderer3::dir_light_idx);
+		auto light0 = game->get_renderer()->get_light(Renderer3::dir_light_idx);
 		light0->position = { 0.5f, 1.0f, 0.0f }; // light direction stored as position
 		light0->ambient = { 0.25f, 0.25f, 0.25f, 1.0f };
 		light0->diffuse = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -21,18 +17,19 @@ namespace dukat
 		
 		camera_target = { 0.0f, 0.0f, 0.0f };
 
-		auto camera = std::make_unique<OrbitCamera3>(this, camera_target, 50.0f, 0.0f, pi_over_four);
+		auto settings = game->get_settings();
+		auto camera = std::make_unique<OrbitCamera3>(game, camera_target, 50.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(5.0f);
 		camera->set_max_distance(100.0f);
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		renderer->set_camera(std::move(camera));		
+		game->get_renderer()->set_camera(std::move(camera));		
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
-		auto info_text = create_text_mesh(1.0f / 20.0f);
+		auto info_text = game->create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		std::stringstream ss;
 		ss << "<#white>"
@@ -46,21 +43,14 @@ namespace dukat
 		info_text->set_text(ss.str());
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
-		
-		debug_meshes.stage = RenderStage::OVERLAY;
-		debug_meshes.visible = debug;
 
-		auto debug_text = create_text_mesh(1.0f / 20.0f);
-		debug_text->transform.position.x = -1.0f;
-		debug_text->transform.position.y = 1.0f;
-		debug_text->transform.update();
-		debug_meshes.add_instance(std::move(debug_text));
+		game->set_controller(this);
 	}
 
-	void Game::load_model(const std::string& filename)
+	void ModelviewerScene::load_model(const std::string& filename)
 	{
 		std::stringstream ss; 
-		ss << settings.get_string("resources.models") << "/" << filename;
+		ss << game->get_settings().get_string("resources.models") << "/" << filename;
 	
 		auto is = std::fstream(ss.str(), std::fstream::in | std::fstream::binary);
 		if (!is)
@@ -82,12 +72,12 @@ namespace dukat
 			is >> *model;
 		}
 
-		object_meshes = build_mesh_group(this, *model);
+		object_meshes = build_mesh_group(game, *model);
 		object_meshes->stage = RenderStage::SCENE;
 		object_meshes->visible = true;
 	}
 
-	void Game::save_model(const std::string& filename)
+	void ModelviewerScene::save_model(const std::string& filename)
 	{
 		logger << "Saving model as: " << filename << std::endl;
 		auto os = std::fstream(filename, std::fstream::out | std::fstream::binary);
@@ -97,29 +87,29 @@ namespace dukat
 		os.close();
 	}
 
-	void Game::handle_event(const SDL_Event& e)
+	bool ModelviewerScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
 		case SDL_MOUSEWHEEL:
 		{
-			auto camera = renderer->get_camera();
+			auto camera = game->get_renderer()->get_camera();
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
 			break;
 		}
 		default:
-			Game3::handle_event(e);
-			break;		
+			return false;
 		}
+		return true;
 	}
 
-	void Game::handle_keyboard(const SDL_Event & e)
+	bool ModelviewerScene::handle_keyboard(const SDL_Event & e)
 	{
 		Material mat;
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_F1:
-			renderer->toggle_wireframe();
+			game->get_renderer()->toggle_wireframe();
 			break;
 		case SDLK_F2:
 			{
@@ -128,11 +118,11 @@ namespace dukat
 				{
 					if (enable_lighting)
 					{
-						object_meshes->get_instance(i)->set_program(shader_cache->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
+						object_meshes->get_instance(i)->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
 					}
   					else
 					{
-						object_meshes->get_instance(i)->set_program(shader_cache->get_program("sc_texture.vsh", "sc_texture.fsh"));
+						object_meshes->get_instance(i)->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
 					}
 				}
 			}
@@ -203,44 +193,25 @@ namespace dukat
 		}
 		break;
 		default:
-			Game3::handle_keyboard(e);
+			return false;
 		}
+		return true;
 	}
 
-	void Game::update(float delta)
+	void ModelviewerScene::update(float delta)
 	{
-		Game3::update(delta);
 		object_meshes->update(delta);
 		overlay_meshes.update(delta);
-		debug_meshes.update(delta);
-
-		light.update(delta, *renderer->get_light(Renderer3::dir_light_idx));
+		light.update(delta, *game->get_renderer()->get_light(Renderer3::dir_light_idx));
 	}
 
-	void Game::render(void)
+	void ModelviewerScene::render(void)
 	{
 		std::vector<Mesh*> meshes;
-		meshes.push_back(&debug_meshes);
+		meshes.push_back(game->get_debug_meshes());
 		meshes.push_back(object_meshes.get());
 		meshes.push_back(&overlay_meshes);
-		renderer->render(meshes);
-	}
-
-	void Game::toggle_debug(void)
-	{
-		debug_meshes.visible = !debug_meshes.visible;
-	}
-
-	void Game::update_debug_text(void)
-	{
-		std::stringstream ss;
-		auto cam = renderer->get_camera();
-		ss << "WIN: " << window->get_width() << "x" << window->get_height()
-			<< " FPS: " << get_fps()
-			<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
-		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
-		debug_text->set_text(ss.str());
+		game->get_renderer()->render(meshes);
 	}
 }
 
@@ -250,17 +221,18 @@ int main(int argc, char** argv)
 	{
 		std::string config = "../assets/modelviewer.ini";
 		dukat::Settings settings(config);
-		dukat::Game app(settings);
-
+		dukat::Game3 app(settings);
+		auto scene = std::make_unique<dukat::ModelviewerScene>(&app);
 		if (argc > 1)
 		{
-			app.load_model(argv[1]);
+			scene->load_model(argv[1]);
 		}
 		else
 		{
-			app.load_model("sloop.mod");
+			scene->load_model("sloop.mod");
 		}
-
+		app.add_scene("main", std::move(scene));
+		app.push_scene("main");
 		return app.run();
 	}
 	catch (const std::exception& e)

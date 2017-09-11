@@ -6,21 +6,17 @@
 
 namespace dukat
 {
-	void Game::init(void)
+	LightingScene::LightingScene(Game3* game) : game(game), light(10.0f), animate_light(true)
 	{
-		Game3::init();
-
-		renderer->disable_effects();
-
 		// White Directional Light
-		auto light0 = renderer->get_light(Renderer3::dir_light_idx);
+		auto light0 = game->get_renderer()->get_light(Renderer3::dir_light_idx);
 		light0->position = { 1.0f, 1.0f, 1.0f }; // light direction stored as position
 		light0->ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
 		light0->diffuse = { 0.4f, 0.4f, 0.4f, 1.0f };
 		light0->specular = { 0.4f, 0.4f, 0.4f, 1.0f };
 		
 		// Red Point Light 
-		auto light1 = renderer->get_light(Renderer3::point_light_idx);
+		auto light1 = game->get_renderer()->get_light(Renderer3::point_light_idx);
 		light1->position = { 5.0f, 0.0f, 0.0f };
 		light1->ambient = { 0.2f, 0.0f, 0.0f, 1.0f };
 		light1->diffuse = { 0.5f, 0.0f, 0.0f, 1.0f };
@@ -28,7 +24,7 @@ namespace dukat
 		light1->k0 = 1.0f; light1->k1 = 0.14f; light1->k2 = 0.07f; // Range ~20.0
 
 		// Blue Point Light 
-		auto light2 = renderer->get_light(Renderer3::point_light_idx + 1);
+		auto light2 = game->get_renderer()->get_light(Renderer3::point_light_idx + 1);
 		light2->position = { 0.0f, 10.0f, 0.0f };
 		light2->ambient = { 0.0f, 0.2f, 0.0f, 1.0f };
 		light2->diffuse = { 0.0f, 0.5f, 0.0f, 1.0f };
@@ -36,20 +32,21 @@ namespace dukat
 		light2->k0 = 1.0f; light2->k1 = 0.14f; light2->k2 = 0.07f; // Range ~20.0
 
 		// Green Point Light 
-		auto light3 = renderer->get_light(Renderer3::point_light_idx + 2);
+		auto light3 = game->get_renderer()->get_light(Renderer3::point_light_idx + 2);
 		light3->position = { 0.0f, 0.0f, 7.0f };
 		light3->ambient = { 0.0f, 0.0f, 0.2f, 1.0f };
 		light3->diffuse = { 0.0f, 0.0f, 0.5f, 1.0f };
 		light3->specular = { 0.0f, 0.0f, 1.0f, 1.0f };
 		light3->k0 = 1.0f; light3->k1 = 0.14f; light3->k2 = 0.07f; // Range ~20.0
 
-		auto camera = std::make_unique<OrbitCamera3>(this, Vector3{ 0.0f, 0.0f, 0.0f }, 10.0f, 0.0f, pi_over_four);
+		auto settings = game->get_settings();
+		auto camera = std::make_unique<OrbitCamera3>(game, Vector3{ 0.0f, 0.0f, 0.0f }, 10.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(1.0f);
 		camera->set_max_distance(50.0f);
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		renderer->set_camera(std::move(camera));
+		game->get_renderer()->set_camera(std::move(camera));
 
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
@@ -57,23 +54,23 @@ namespace dukat
 		// Generate some meshes
 		MeshBuilder3 mb3;
 		auto box_mesh = object_meshes.create_instance();
-		box_mesh->set_mesh(mesh_cache->put("box", mb3.build_cube()));
-		box_mesh->set_program(shader_cache->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
-		box_mesh->set_texture(texture_cache->get("blank.png"));
+		box_mesh->set_mesh(game->get_meshes()->put("box", mb3.build_cube()));
+		box_mesh->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
+		box_mesh->set_texture(game->get_textures()->get("blank.png"));
 		box_mesh->set_material(mat_white_rubber);
 		box_mesh->transform.position.x = 2.5f;
 		
 		auto sphere_mesh = object_meshes.create_instance();
-		sphere_mesh->set_mesh(mesh_cache->put("sphere", mb3.build_sphere(32, 32)));
-		sphere_mesh->set_program(shader_cache->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
-		sphere_mesh->set_texture(texture_cache->get("blank.png"));
+		sphere_mesh->set_mesh(game->get_meshes()->put("sphere", mb3.build_sphere(32, 32)));
+		sphere_mesh->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
+		sphere_mesh->set_texture(game->get_textures()->get("blank.png"));
 		sphere_mesh->set_material(mat_gold);
 		sphere_mesh->transform.position.x = -2.5f;
 		
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
-		auto info_text = create_text_mesh(1.0f / 20.0f);
+		auto info_text = game->create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.0f, -0.8f, 0.0f };
 		std::stringstream ss;
 		ss << "<#white>"
@@ -84,40 +81,33 @@ namespace dukat
 		info_text->set_text(ss.str());
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
-		
-		debug_meshes.stage = RenderStage::OVERLAY;
-		debug_meshes.visible = debug;
 
-		auto debug_text = create_text_mesh(1.0f / 20.0f);
-		debug_text->transform.position.x = -1.0f;
-		debug_text->transform.position.y = 1.0f;
-		debug_text->transform.update();
-		debug_meshes.add_instance(std::move(debug_text));
+		game->set_controller(this);
 	}
 
-	void Game::handle_event(const SDL_Event& e)
+	bool LightingScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
 		case SDL_MOUSEWHEEL:
 		{
-			auto camera = renderer->get_camera();
+			auto camera = game->get_renderer()->get_camera();
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
 			break;
 		}
 		default:
-			Game3::handle_event(e);
-			break;		
+			return false;
 		}
+		return true;
 	}
 
-	void Game::handle_keyboard(const SDL_Event & e)
+	bool LightingScene::handle_keyboard(const SDL_Event & e)
 	{
 		Material mat;
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_F1:
-			renderer->toggle_wireframe();
+			game->get_renderer()->toggle_wireframe();
 			break;
 		case SDLK_F2:
 			animate_light = !animate_light;
@@ -126,45 +116,27 @@ namespace dukat
 			info_mesh->visible = !info_mesh->visible;
 			break;
 		default:
-			Game3::handle_keyboard(e);
+			return false;
 		}
+		return true;
 	}
 
-	void Game::update(float delta)
+	void LightingScene::update(float delta)
 	{
-		Game3::update(delta);
 		object_meshes.update(delta);
 		overlay_meshes.update(delta);
-		debug_meshes.update(delta);
 
 		if (animate_light)
-			light.update(delta, *renderer->get_light(Renderer3::dir_light_idx));
+			light.update(delta, *game->get_renderer()->get_light(Renderer3::dir_light_idx));
 	}
 
-	void Game::render(void)
+	void LightingScene::render(void)
 	{
 		std::vector<Mesh*> meshes;
-		meshes.push_back(&debug_meshes);
 		meshes.push_back(&object_meshes);
 		meshes.push_back(&overlay_meshes);
-		renderer->render(meshes);
-	}
-
-	void Game::toggle_debug(void)
-	{
-		debug_meshes.visible = !debug_meshes.visible;
-	}
-
-	void Game::update_debug_text(void)
-	{
-		std::stringstream ss;
-		auto cam = renderer->get_camera();
-		ss << "WIN: " << window->get_width() << "x" << window->get_height()
-			<< " FPS: " << get_fps()
-			<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
-		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
-		debug_text->set_text(ss.str());
+		meshes.push_back(game->get_debug_meshes());
+		game->get_renderer()->render(meshes);
 	}
 }
 
@@ -178,7 +150,9 @@ int main(int argc, char** argv)
 			config = argv[1];
 		}
 		dukat::Settings settings(config);
-		dukat::Game app(settings);
+		dukat::Game3 app(settings);
+		app.add_scene("main", std::make_unique<dukat::LightingScene>(&app));
+		app.push_scene("main");
 		return app.run();
 	}
 	catch (const std::exception& e)

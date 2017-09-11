@@ -7,21 +7,17 @@ namespace dukat
 {
 	class Player;
 
-	class Game : public Game3
+	class RoomScene : public Scene, public Controller
 	{
 	private:
-		MeshGroup debug_meshes;
+		Game3* game;
 		MeshGroup object_meshes;
-		
-		void init(void);
-		void update(float delta);
-		void update_debug_text(void);
-		void render(void);
 
 	public:
-		Game(Settings& settings) : Game3(settings) { }
-		~Game(void) { }
+		RoomScene(Game3* game);
+		~RoomScene(void) { }
 
-		void toggle_debug(void);
+		void update(float delta);
+		void render(void);
 	};
 }

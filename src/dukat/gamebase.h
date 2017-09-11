@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <stack>
 
 #include "animationmanager.h"
 #include "application.h"
@@ -13,6 +14,9 @@
 
 namespace dukat
 {
+	class Scene;
+	class Controller;
+
 	// Abstract base class for game implementations.
 	class GameBase : public Application
 	{
@@ -23,10 +27,14 @@ namespace dukat
 		std::unique_ptr<ParticleManager> particle_manager;
 		std::unique_ptr<TimerManager> timer_manager;
 		std::unique_ptr<AnimationManager> anim_manager;
+		std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
+		std::stack<Scene*> scene_stack;
+		Controller* controller;
 
-		virtual void init(void);
+		virtual void handle_event(const SDL_Event& e);
+		virtual void handle_keyboard(const SDL_Event& e);
 		virtual void update(float delta);
-		virtual void release(void);
+		virtual void render(void);
 
 		bool debug;
 		// Called on a timer to output debug information.
@@ -34,10 +42,15 @@ namespace dukat
 
 	public:
 		GameBase(Settings& settings);
-		virtual ~GameBase(void) { }
+		virtual ~GameBase(void);
 		virtual void toggle_debug(void) { debug = !debug; }
 		bool is_debug(void) const { return debug; }
 		std::unique_ptr<TextMeshInstance> create_text_mesh(float size = 1.0f);
+
+		void add_scene(const std::string& id, std::unique_ptr<Scene> scene);
+		void push_scene(const std::string& id);
+		void pop_scene(void);
+		void set_controller(Controller* controller) { this->controller = controller; }
 
 		ShaderCache* get_shaders(void) const { return shader_cache.get(); }
 		TextureCache* get_textures(void) const { return texture_cache.get(); }

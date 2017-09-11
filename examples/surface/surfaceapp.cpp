@@ -1,4 +1,4 @@
-// surface.cpp : Defines the entry point for the console application.
+// surfaceapp.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -6,17 +6,16 @@
 
 namespace dukat
 {
-	void Game::init(void)
+	SurfaceScene::SurfaceScene(Game2* game2) : Scene2(game2)
 	{
-		Game2::init();
-
-		auto layer = renderer->create_layer("main", 1.0f);
+		auto settings = game->get_settings();
+		auto layer = game->get_renderer()->create_layer("main", 1.0f);
 
 		// Set up default camera centered around origin
-		auto camera = std::make_unique<Camera2>(window.get(), Vector2(texture_width, texture_height));
+		auto camera = std::make_unique<Camera2>(game->get_window(), Vector2(texture_width, texture_height));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		renderer->set_camera(std::move(camera));
+		game->get_renderer()->set_camera(std::move(camera));
 
 		// Initialize texture once
 		texture = std::make_unique<Texture>(texture_width, texture_height);
@@ -25,7 +24,7 @@ namespace dukat
 		layer->add(sprite.get());
 
 		// Set up info text
-		info_text = create_text_mesh(8.0f);
+		info_text = game->create_text_mesh(8.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)texture_width, 0.0f, 0.0f);
 		info_text->transform.update();
 		std::stringstream ss;
@@ -41,15 +40,29 @@ namespace dukat
 		layer->add(info_text.get());
 
 		// Set up debug layer
-		auto debug_layer = renderer->create_layer("debug", 1000.0f);
-		debug_text = create_text_mesh(4.0f);
+		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		debug_text = game->create_text_mesh(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.5f * (float)texture_height, 0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
+	
+		game->get_timers()->create_timer(1.0f, [&]() {
+			std::stringstream ss;
+			auto window = game->get_window();
+			auto cam = game->get_renderer()->get_camera();
+			ss << "WIN: " << window->get_width() << "x" << window->get_height()
+				<< " VIR: " << cam->transform.dimension.x << "x" << cam->transform.dimension.y
+				<< " FPS: " << game->get_fps()
+				<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
+				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
+			debug_text->set_text(ss.str());
+		}, true);
+
+		game->set_controller(this);
 	}
 
-	void Game::handle_keyboard(const SDL_Event & e)
+	bool SurfaceScene::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
@@ -85,29 +98,18 @@ namespace dukat
 			}
 			break;
 		default:
-			Game2::handle_keyboard(e);
+			return false;
 		}
-	}
-
-	void Game::update_debug_text(void)
-	{
-		std::stringstream ss;
-		auto cam = renderer->get_camera();
-		ss << "WIN: " << window->get_width() << "x" << window->get_height()
-			<< " VIR: " << cam->transform.dimension.x << "x" << cam->transform.dimension.y
-			<< " FPS: " << get_fps()
-			<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
-		debug_text->set_text(ss.str());
+		return true;
 	}
 	
-	void Game::test_load_image(void)
+	void SurfaceScene::test_load_image(void)
 	{
 		surface = Surface::from_file("../assets/textures/test_rgb24.png");
 		update_texture();
 	}
 
-	void Game::test_bw_image(void)
+	void SurfaceScene::test_bw_image(void)
 	{
 		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
 		for (int x = 0; x < texture_width; x++)
@@ -124,7 +126,7 @@ namespace dukat
 		update_texture();
 	}
 
-	void Game::test_color_image(void)
+	void SurfaceScene::test_color_image(void)
 	{
 		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
 		surface->fill_rect(0, 0, 64, 64, surface->color(0, 0, 0, 255));
@@ -146,7 +148,7 @@ namespace dukat
 		update_texture();
 	}
 
-	void Game::update_texture(void)
+	void SurfaceScene::update_texture(void)
 	{
 		GLenum format, type;
 		surface->query_pixel_format(format, type);
@@ -172,7 +174,9 @@ int main(int argc, char** argv)
 			config = argv[1];
 		}
 		dukat::Settings settings(config);
-		dukat::Game app(settings);
+		dukat::Game2 app(settings);
+		app.add_scene("main", std::make_unique<dukat::SurfaceScene>(&app));
+		app.push_scene("main");
 		return app.run();
 	}
 	catch (const std::exception& e)

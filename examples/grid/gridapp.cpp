@@ -6,26 +6,23 @@
 
 namespace dukat
 {
-	const int Game::grid_size = 64;
-	const float Game::scale_factor = 25.0f;
+	const int GridScene::grid_size = 64;
+	const float GridScene::scale_factor = 25.0f;
 
-	void Game::init(void)
+	GridScene::GridScene(Game3* game) : game(game)
 	{
-		Game3::init();
-
-		renderer->disable_effects();
-	
-		grid_mesh = std::make_unique<GridMesh>(this, grid_size);
+		auto settings = game->get_settings();
+		grid_mesh = std::make_unique<GridMesh>(game, grid_size);
 		grid_mesh->scale_factor = scale_factor;
 		camera_target.x = camera_target.z = 0.5f * (float)(grid_size * grid_mesh->tile_spacing);
 
-		auto camera = std::make_unique<OrbitCamera3>(this, camera_target, 50.0f, 0.0f, pi_over_four);
+		auto camera = std::make_unique<OrbitCamera3>(game, camera_target, 50.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(5.0f);
 		camera->set_max_distance(100.0f);
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		renderer->set_camera(std::move(camera));		
+		game->get_renderer()->set_camera(std::move(camera));		
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
 
@@ -50,16 +47,16 @@ namespace dukat
 			0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
 
 		int i = 0;
-		auto sand_surface = texture_cache->load_surface("sand01_1024.png");
+		auto sand_surface = game->get_textures()->load_surface("sand01_1024.png");
 		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i++, texture_size, texture_size, 1,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, sand_surface->get_surface()->pixels);
-		auto grass_surface = texture_cache->load_surface("grass01_1024.png");
+		auto grass_surface = game->get_textures()->load_surface("grass01_1024.png");
 		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i++, texture_size, texture_size, 1,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, grass_surface->get_surface()->pixels);
-		auto dirt_surface = texture_cache->load_surface("dirt01_1024.png");
+		auto dirt_surface = game->get_textures()->load_surface("dirt01_1024.png");
 		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i++, texture_size, texture_size, 1,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, dirt_surface->get_surface()->pixels);
-		auto rock_surface = texture_cache->load_surface("rock01_1024.png");
+		auto rock_surface = game->get_textures()->load_surface("rock01_1024.png");
 		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i++, texture_size, texture_size, 1,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rock_surface->get_surface()->pixels);
 
@@ -74,16 +71,16 @@ namespace dukat
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2 * texture_size, 2 * texture_size,
 			0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, nullptr);
 
-		auto sand_surface = texture_cache->load_surface("sand01_1024.png");
+		auto sand_surface = game->get_textures()->load_surface("sand01_1024.png");
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texture_size, texture_size,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, sand_surface->get_surface()->pixels);
-		auto grass_surface = texture_cache->load_surface("grass01_1024.png");
+		auto grass_surface = game->get_textures()->load_surface("grass01_1024.png");
 		glTexSubImage2D(GL_TEXTURE_2D, 0, texture_size, 0, texture_size, texture_size,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, grass_surface->get_surface()->pixels);
-		auto dirt_surface = texture_cache->load_surface("dirt01_1024.png");
+		auto dirt_surface = game->get_textures()->load_surface("dirt01_1024.png");
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, texture_size, texture_size, texture_size,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, dirt_surface->get_surface()->pixels);
-		auto rock_surface = texture_cache->load_surface("rock01_1024.png");
+		auto rock_surface = game->get_textures()->load_surface("rock01_1024.png");
 		glTexSubImage2D(GL_TEXTURE_2D, 0, texture_size, texture_size, texture_size, texture_size,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rock_surface->get_surface()->pixels);
 #endif
@@ -92,8 +89,8 @@ namespace dukat
 		// Add skydome mesh as last object mesh
 		MeshBuilder3 mb3;
 		auto skydome_mesh = object_meshes.create_instance();
-		skydome_mesh->set_mesh(mesh_cache->put("skydome", mb3.build_dome(6, 6, true)));
-		skydome_mesh->set_program(shader_cache->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
+		skydome_mesh->set_mesh(game->get_meshes()->put("skydome", mb3.build_dome(6, 6, true)));
+		skydome_mesh->set_program(game->get_shaders()->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
 		Material mat;
 		mat.ambient = Color{0.66f,0.78f,0.79f,1.0f};
 		mat.diffuse = Color{0.22f,0.41f,0.75f,1.0f};
@@ -102,7 +99,7 @@ namespace dukat
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
-		auto info_text = create_text_mesh(1.0f / 20.0f);
+		auto info_text = game->create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		std::stringstream ss;
 		ss << "<#white>"
@@ -115,39 +112,31 @@ namespace dukat
 		info_text->set_text(ss.str());
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
-		
-		debug_meshes.stage = RenderStage::OVERLAY;
-		debug_meshes.visible = debug;
 
-		auto debug_text = create_text_mesh(1.0f / 20.0f);
-		debug_text->transform.position.x = -1.0f;
-		debug_text->transform.position.y = 1.0f;
-		debug_text->transform.update();
-		debug_meshes.add_instance(std::move(debug_text));
+		game->set_controller(this);
 	}
 
-	void Game::handle_event(const SDL_Event& e)
+	bool GridScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
 		case SDL_MOUSEWHEEL:
 		{
-			auto camera = renderer->get_camera();
+			auto camera = game->get_renderer()->get_camera();
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
-			break;
+			return true;
 		}
 		default:
-			Game3::handle_event(e);
-			break;		
+			return false;
 		}
 	}
 
-	void Game::handle_keyboard(const SDL_Event & e)
+	bool GridScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_F1:
-			renderer->toggle_wireframe();
+			game->get_renderer()->toggle_wireframe();
 			break;
 		case SDLK_F5:
 			heightmap->save("heightmap.png");
@@ -164,18 +153,16 @@ namespace dukat
 		case SDLK_PERIOD:
 			grid_mesh->tile_spacing = std::min(32.0f, grid_mesh->tile_spacing + 1.0f);
 			break;
-
 		default:
-			Game3::handle_keyboard(e);
+			return false;
 		}
+		return true;
 	}
 
-	void Game::update(float delta)
+	void GridScene::update(float delta)
 	{
-		Game3::update(delta);
-
-		auto dev = device_manager->active;
-		auto cam = dynamic_cast<OrbitCamera3*>(renderer->get_camera());
+		auto dev = game->get_devices()->active;
+		auto cam = dynamic_cast<OrbitCamera3*>(game->get_renderer()->get_camera());
 		camera_target += 10.0f * delta * (dev->ly * cam->transform.dir
 				+ dev->lx * cam->transform.right);
 		camera_target.y = 0.5f * scale_factor * (float)grid_mesh->tile_spacing;
@@ -184,34 +171,16 @@ namespace dukat
 		grid_mesh->update(delta);
 		object_meshes.update(delta);
 		overlay_meshes.update(delta);
-		debug_meshes.update(delta);
 	}
 
-	void Game::render(void)
+	void GridScene::render(void)
 	{
 		std::vector<Mesh*> meshes;
-		meshes.push_back(&debug_meshes);
+		meshes.push_back(game->get_debug_meshes());
 		meshes.push_back(grid_mesh.get());
 		meshes.push_back(&object_meshes);
 		meshes.push_back(&overlay_meshes);
-		renderer->render(meshes);
-	}
-
-	void Game::toggle_debug(void)
-	{
-		debug_meshes.visible = !debug_meshes.visible;
-	}
-
-	void Game::update_debug_text(void)
-	{
-		std::stringstream ss;
-		auto cam = renderer->get_camera();
-		ss << "WIN: " << window->get_width() << "x" << window->get_height()
-			<< " FPS: " << get_fps()
-			<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-			<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
-		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
-		debug_text->set_text(ss.str());
+		game->get_renderer()->render(meshes);
 	}
 }
 
@@ -225,7 +194,9 @@ int main(int argc, char** argv)
 			config = argv[1];
 		}
 		dukat::Settings settings(config);
-		dukat::Game app(settings);
+		dukat::Game3 app(settings);
+		app.add_scene("main", std::make_unique<dukat::GridScene>(&app));
+		app.push_scene("main");
 		return app.run();
 	}
 	catch (const std::exception& e)

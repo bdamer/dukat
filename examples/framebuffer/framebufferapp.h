@@ -5,12 +5,12 @@
 
 namespace dukat
 {
-	class Game : public Game3
+	class FramebufferScene : public Scene, public Controller
 	{
 	private:
 		static constexpr int texture_size = 256;
 
-		MeshGroup debug_meshes;
+		Game3* game;
 		MeshGroup overlay_meshes;
 		MeshInstance* quad_mesh;
 		MeshInstance* info_mesh;
@@ -19,18 +19,13 @@ namespace dukat
         ShaderProgram* fb_program; // program used during framebuffer render pass
         std::unique_ptr<MeshData> fb_quad; // quad mesh used during framebuffer render pass
 
-		void init(void);
+	public:
+		FramebufferScene(Game3* game);
+		~FramebufferScene(void) { }
+
 		void update(float delta);
-		void update_debug_text(void);
 		void update_framebuffer(float delta);
 		void render(void);
-		void handle_keyboard(const SDL_Event& e);
-		void release(void);
-
-	public:
-		Game(Settings& settings) : Game3(settings) { }
-		~Game(void) { }
-
-		void toggle_debug(void);
+		bool handle_keyboard(const SDL_Event& e);
 	};
 }
