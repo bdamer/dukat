@@ -118,4 +118,16 @@ namespace dukat
 			}
 		}
 	}
+
+	Scene* GameBase::get_scene(const std::string& id) const
+	{
+		if (scenes.count(id) > 0)
+		{
+			return scenes.at(id).get();
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
 }

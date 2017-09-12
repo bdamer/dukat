@@ -34,10 +34,11 @@ namespace dukat
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		ss.str("");
 		ss << "<#white>"
+			<< "<Space> Toggle options" << std::endl
 			<< "<F1> Toggle Wirframe" << std::endl
 			<< "<F11> Toggle Info" << std::endl
 			<< "<ESC> Return to Title" << std::endl
-			<< std::endl;
+			<< "</>";
 		info_text->set_text(ss.str());
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 	}
@@ -83,6 +84,9 @@ namespace dukat
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_SPACE:
+			game->push_scene("dialog");
+			break;
 		case SDLK_F1:
 			game->get_renderer()->toggle_wireframe();
 			break;

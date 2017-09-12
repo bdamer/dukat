@@ -1,8 +1,6 @@
 #pragma once
 
-#include <dukat/controller.h>
-#include <dukat/scene.h>
-#include <dukat/meshgroup.h>
+#include <dukat/dukat.h>
 
 namespace dukat
 {

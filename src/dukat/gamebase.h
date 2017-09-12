@@ -52,6 +52,7 @@ namespace dukat
 		void add_scene(const std::string& id, std::unique_ptr<Scene> scene);
 		void push_scene(const std::string& id);
 		void pop_scene(void);
+		Scene* get_scene(const std::string& id) const;
 		void set_controller(Controller* controller) { this->controller = controller; }
 
 		ShaderCache* get_shaders(void) const { return shader_cache.get(); }
