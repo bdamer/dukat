@@ -67,6 +67,12 @@ namespace dukat
 		scene_stack.top()->render();
 	}
 
+	void GameBase::toggle_debug(void)
+	{
+		debug = !debug;
+		trigger(Message{Events::ToggleDebug});
+	}
+
 	std::unique_ptr<TextMeshInstance> GameBase::create_text_mesh(float size)
 	{
 		TextMeshBuilder mb;

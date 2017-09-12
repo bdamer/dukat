@@ -6,6 +6,7 @@
 #include "animationmanager.h"
 #include "application.h"
 #include "meshcache.h"
+#include "messenger.h"
 #include "textmeshinstance.h"
 #include "particlemanager.h"
 #include "shadercache.h"
@@ -18,7 +19,7 @@ namespace dukat
 	class Controller;
 
 	// Abstract base class for game implementations.
-	class GameBase : public Application
+	class GameBase : public Application, public Messenger
 	{
 	protected:
 		std::unique_ptr<ShaderCache> shader_cache;
@@ -35,6 +36,7 @@ namespace dukat
 		virtual void handle_keyboard(const SDL_Event& e);
 		virtual void update(float delta);
 		virtual void render(void);
+		virtual void receive(const Message& message) { }
 
 		bool debug;
 		// Called on a timer to output debug information.
@@ -43,7 +45,7 @@ namespace dukat
 	public:
 		GameBase(Settings& settings);
 		virtual ~GameBase(void);
-		virtual void toggle_debug(void) { debug = !debug; }
+		virtual void toggle_debug(void);
 		bool is_debug(void) const { return debug; }
 		std::unique_ptr<TextMeshInstance> create_text_mesh(float size = 1.0f);
 
