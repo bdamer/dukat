@@ -114,7 +114,7 @@ namespace dukat
 		case SDLK_F2:
 			{
 				enable_lighting = !enable_lighting;
-				for (auto i = 0u; i < object_meshes->size(); i++)
+				for (auto i = 0; i < object_meshes->size(); i++)
 				{
 					if (enable_lighting)
 					{
@@ -145,7 +145,7 @@ namespace dukat
 				selected_mesh = 0;
 			logger << "Showing mesh " << selected_mesh << ": " << 
 				object_meshes->get_instance(selected_mesh)->get_name() << std::endl;
-			for (auto i = 0u; i < count; i++)
+			for (auto i = 0; i < count; i++)
 			{
 				object_meshes->get_instance(i)->visible = selected_mesh == i;
 			}
@@ -159,7 +159,7 @@ namespace dukat
 				selected_mesh = (int)count - 1;
 			logger << "Showing mesh " << selected_mesh << ": " << 
 				object_meshes->get_instance(selected_mesh)->get_name() << std::endl;
-			for (auto i = 0u; i < count; i++)
+			for (auto i = 0; i < count; i++)
 			{
 				object_meshes->get_instance(i)->visible = selected_mesh == i;
 			}
@@ -168,7 +168,7 @@ namespace dukat
         case SDLK_l: // show all
 		{
 			selected_mesh = -1;
-			for (auto i = 0u; i < object_meshes->size(); i++)
+			for (auto i = 0; i < object_meshes->size(); i++)
 			{
 				object_meshes->get_instance(i)->visible = true;
 			}
@@ -176,7 +176,7 @@ namespace dukat
 		break;
 		case SDLK_LEFTBRACKET:
 		{
-			for (auto i = 0u; i < object_meshes->size(); i++)
+			for (auto i = 0; i < object_meshes->size(); i++)
 			{
 				auto inst = object_meshes->get_instance(i);
 				inst->transform.scale -= Vector3{ 1.0f, 1.0f, 1.0f };
@@ -185,7 +185,7 @@ namespace dukat
 		break;
 		case SDLK_RIGHTBRACKET:
 		{
-			for (auto i = 0u; i < object_meshes->size(); i++)
+			for (auto i = 0; i < object_meshes->size(); i++)
 			{
 				auto inst = object_meshes->get_instance(i);
 				inst->transform.scale += Vector3{ 1.0f, 1.0f, 1.0f };
