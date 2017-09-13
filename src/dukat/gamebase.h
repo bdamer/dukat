@@ -12,6 +12,7 @@
 #include "shadercache.h"
 #include "texturecache.h"
 #include "timermanager.h"
+#include "uimanager.h"
 
 namespace dukat
 {
@@ -28,6 +29,7 @@ namespace dukat
 		std::unique_ptr<ParticleManager> particle_manager;
 		std::unique_ptr<TimerManager> timer_manager;
 		std::unique_ptr<AnimationManager> anim_manager;
+		std::unique_ptr<UIManager> ui_manager;
 		std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
 		std::stack<Scene*> scene_stack;
 		Controller* controller;
@@ -60,6 +62,7 @@ namespace dukat
 		ParticleManager* get_particles(void) const { return particle_manager.get(); }
 		TimerManager* get_timers(void) const { return timer_manager.get(); }
 		AnimationManager* get_animations(void) const { return anim_manager.get(); }
+		UIManager* get_ui(void) const { return ui_manager.get(); }
 		MeshCache* get_meshes(void) const { return mesh_cache.get(); }
 		Scene* get_scene(void) const { return scene_stack.top(); }
 	};

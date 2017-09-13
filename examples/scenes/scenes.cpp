@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 		dukat::Game3 app(settings);
 		app.add_scene("title", std::make_unique<dukat::TitleScene>(&app));
 		app.add_scene("game", std::make_unique<dukat::GameScene>(&app));
-		app.add_scene("dialog", std::make_unique<dukat::DialogScene>(&app));
+		app.add_scene("options", std::make_unique<dukat::DialogScene>(&app));
 		app.push_scene("title");
 		return app.run();
 	}

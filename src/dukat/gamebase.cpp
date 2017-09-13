@@ -24,7 +24,8 @@ namespace dukat
 		particle_manager = std::make_unique<ParticleManager>();
 		timer_manager = std::make_unique<TimerManager>();
 		anim_manager = std::make_unique<AnimationManager>();
-		mesh_cache = std::make_unique<dukat::MeshCache>();
+		mesh_cache = std::make_unique<MeshCache>();
+		ui_manager = std::make_unique<UIManager>();
 
 		// TODO: need to rebind when devices change
 		device_manager->active->on_press(InputDevice::VirtualButton::Pause, std::bind(&GameBase::toggle_pause, this));

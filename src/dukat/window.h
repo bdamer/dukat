@@ -36,6 +36,7 @@ namespace dukat
 		void clear(void);
 		void resize(int width, int height);
 		void set_fullscreen(bool fullscreen);
+		bool is_fullscreen(void) const { return fullscreen; }
 		void toggle_fullscreen(void);
 		void set_title(const std::string& title);
 		void set_vsync(bool vsync);

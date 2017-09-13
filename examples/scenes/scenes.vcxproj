@@ -158,13 +158,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dialogscene.h" />
     <ClInclude Include="gamescene.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="textbutton.h" />
     <ClInclude Include="titlescene.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dialogscene.cpp" />
     <ClCompile Include="gamescene.cpp" />
+    <ClCompile Include="textbutton.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

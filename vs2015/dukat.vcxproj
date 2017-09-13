@@ -163,6 +163,8 @@
     <ClInclude Include="..\src\dukat\scene.h" />
     <ClInclude Include="..\src\dukat\scene2.h" />
     <ClInclude Include="..\src\dukat\shape.h" />
+    <ClInclude Include="..\src\dukat\uicontrol.h" />
+    <ClInclude Include="..\src\dukat\uimanager.h" />
     <ClInclude Include="..\src\dukat\voronoi.h" />
     <ClInclude Include="..\src\dukat\wavemesh.h" />
     <ClInclude Include="..\src\dukat\aabb2.h" />
@@ -263,6 +265,7 @@
     <ClCompile Include="..\src\dukat\mapgraph.cpp" />
     <ClCompile Include="..\src\dukat\meshdata.cpp" />
     <ClCompile Include="..\src\dukat\scene2.cpp" />
+    <ClCompile Include="..\src\dukat\uimanager.cpp" />
     <ClCompile Include="..\src\dukat\voronoi.cpp" />
     <ClCompile Include="..\src\dukat\wavemesh.cpp" />
     <ClCompile Include="..\src\dukat\aabb2.cpp" />

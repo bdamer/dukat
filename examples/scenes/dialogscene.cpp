@@ -3,7 +3,7 @@
 
 namespace dukat
 {
-    DialogScene::DialogScene(Game3* game) : game(game)
+    DialogScene::DialogScene(Game3* game3) : game(game3)
 	{
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
@@ -13,10 +13,27 @@ namespace dukat
 		title_text->set_text("<#red>Options screen</>");
 		overlay_meshes.add_instance(std::move(title_text));
 
-		auto title_info_text = game->create_text_mesh(1.0f / 20.0f);
-		title_info_text->transform.position = { -1.0f, 0.0f, 0.0f };
-		title_info_text->set_text("<#white>Press escape to return</>");
-		overlay_meshes.add_instance(std::move(title_info_text));
+		auto fullscreen_text = game->create_text_mesh(1.0f / 20.0f);
+		fullscreen_text->transform.position = { -1.0f, 0.0f, 0.0f };
+		fullscreen_button = std::make_unique<TextButton>(fullscreen_text.get());
+		fullscreen_button->set_text("Fullscreen");
+		fullscreen_button->set_index(0);
+		fullscreen_button->func = [&](void) {
+			bool fullscreen = !game->get_window()->is_fullscreen();
+			game->get_window()->set_fullscreen(fullscreen);
+			fullscreen_button->set_text(fullscreen ? "Windowed" : "Fullscreen");
+		};
+		overlay_meshes.add_instance(std::move(fullscreen_text));
+
+		auto return_text = game->create_text_mesh(1.0f / 20.0f);
+		return_text->transform.position = { -1.0f, -0.1f, 0.0f };
+		return_button = std::make_unique<TextButton>(return_text.get());
+		return_button->set_text("Back");
+		return_button->set_index(1);
+		return_button->func = [&](void) {
+			game->pop_scene();
+		};
+		overlay_meshes.add_instance(std::move(return_text));
 	}
 
 	void DialogScene::activate(void)
@@ -29,6 +46,15 @@ namespace dukat
 		game->get_renderer()->set_camera(std::move(camera));
 
 		game->set_controller(this);
+
+		game->get_ui()->add_control(fullscreen_button.get());
+		game->get_ui()->add_control(return_button.get());
+	}
+
+	void DialogScene::deactivate(void)
+	{
+		game->get_ui()->remove_control(fullscreen_button.get());
+		game->get_ui()->remove_control(return_button.get());
 	}
 
 	void DialogScene::update(float delta)
@@ -43,6 +69,16 @@ namespace dukat
         case SDLK_ESCAPE:
             game->pop_scene();
             break;
+		case SDLK_SPACE:
+		case SDLK_RETURN:
+			game->get_ui()->trigger_focus();
+			break;
+		case SDLK_UP:
+			game->get_ui()->prev_control();
+			break;
+		case SDLK_DOWN:
+			game->get_ui()->next_control();
+			break;
 		default:
 			return false;
 		}
