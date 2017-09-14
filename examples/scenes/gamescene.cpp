@@ -63,7 +63,7 @@ namespace dukat
 		light.update(delta, *game->get_renderer()->get_light(Renderer3::dir_light_idx));
 	}
 
-	bool GameScene::handle_event(const SDL_Event& e)
+	void GameScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
@@ -73,13 +73,10 @@ namespace dukat
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
 			break;
 		}
-		default:
-			return false;
 		}
-		return true;
 	}
 
-	bool GameScene::handle_keyboard(const SDL_Event& e)
+	void GameScene::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
@@ -92,10 +89,7 @@ namespace dukat
 		case SDLK_ESCAPE:
 			game->pop_scene();
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void GameScene::render(void)

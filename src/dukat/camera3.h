@@ -1,10 +1,11 @@
 #pragma once
 
+#include "aabb3.h"
 #include "matrix4.h"
 #include "plane.h"
+#include "recipient.h"
 #include "vector3.h"
 #include "window.h"
-#include "aabb3.h"
 
 namespace dukat
 {
@@ -25,7 +26,7 @@ namespace dukat
 			dir(-Vector3::unit_z), up(Vector3::unit_y), right(-Vector3::unit_x) { }
 	};
 
-	class Camera3 : public WindowEventListener
+	class Camera3 : public Recipient
 	{
 	private:
 		// Default values
@@ -78,5 +79,7 @@ namespace dukat
 		Ray3 pick_ray_view(float x, float y);
 		// Computes left and right clip planes.
 		static void compute_clip_planes(const CameraTransform3& transform, float fov, Plane& left_plane, Plane& right_plane);
+
+		void receive(const Message& msg);
 	};
 }

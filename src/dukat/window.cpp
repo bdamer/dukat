@@ -88,36 +88,11 @@ namespace dukat
 		SDL_ShowCursor(SDL_ENABLE);
 	}
 
-	void Window::set_title(const std::string& title)
-	{
-		SDL_SetWindowTitle(window, title.c_str());
-	}
-
-	void Window::clear(void)
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-
-	void Window::present(void)
-	{
-		SDL_GL_SwapWindow(window);
-	}
-
-	void Window::unbind(WindowEventListener* listener)
-	{
-		auto it = std::find(event_listeners.begin(), event_listeners.end(), listener);
-		if (it != event_listeners.end())
-		{
-			event_listeners.erase(it);
-		}
-	}
-
 	void Window::resize(int width, int height)
 	{
 		this->width = width;
 		this->height = height;
 		SDL_SetWindowSize(window, width, height);
-		on_resize();
 	}
 
 	void Window::set_fullscreen(bool fullscreen)
@@ -125,24 +100,8 @@ namespace dukat
 		this->fullscreen = fullscreen;
 		sdl_check_result(SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0),
 			"Change screen mode");
-		on_resize();
 	}
 
-	void Window::toggle_fullscreen(void)
-	{
-		set_fullscreen(!fullscreen);
-	}
-
-	void Window::on_resize(void)
-	{
-		SDL_GetWindowSize(window, &width, &height);
-		logger << "New window size: " << width << " * " << height << std::endl;
-		// Notify listeners
-		for (auto l : event_listeners)
-		{
-			l->resize(width, height);
-		}
-	}
 
 	void Window::set_vsync(bool vsync)
 	{
@@ -155,5 +114,12 @@ namespace dukat
 		DEBUG("VSync unsupported on old SDL versions (before 1.2.10).");
 #endif /* SDL_GL_SWAP_CONTROL */
 #endif /* SDL_VERSION_ATLEAST(1,3,0) */ 
+	}
+
+	void Window::on_resize(void)
+	{
+		SDL_GetWindowSize(window, &width, &height);
+		logger << "Window resized to: " << width << " * " << height << std::endl;
+		trigger(Message{Events::WindowResized, &width, &height});
 	}
 }

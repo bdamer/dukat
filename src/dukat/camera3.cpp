@@ -13,12 +13,12 @@ namespace dukat
 	Camera3::Camera3(Window* window) : window(window), fov_v(default_fov), 
 		near_clip(default_near_clip), far_clip(default_far_clip)
 	{
-		window->bind(this);
+		window->subscribe(Events::WindowResized, this);
 	}
 
 	Camera3::~Camera3(void)
 	{
-		window->unbind(this);
+		window->unsubscribe(Events::WindowResized, this);
 	}
 
 	void Camera3::compute_horizontal_fov(void)
@@ -26,6 +26,16 @@ namespace dukat
 		auto pixels_v = std::tan(0.5f * deg_to_rad(fov_v));
 		auto pixels_h = aspect_ratio * pixels_v;
 		fov_h = rad_to_deg(2.0f * std::atan(pixels_h));
+	}
+
+	void Camera3::receive(const Message& msg)
+	{
+		switch (msg.event)
+		{
+		case Events::WindowResized:
+			resize(*static_cast<int*>(msg.param1), *static_cast<int*>(msg.param2));
+			break;
+		}
 	}
 
 	void Camera3::resize(int width, int height)

@@ -7,15 +7,11 @@
 #include "version.h"
 #endif // !OPENGL_VERSION
 
+#include "messenger.h"
+
 namespace dukat
 {
-	class WindowEventListener
-	{
-	public:
-		virtual void resize(int width, int height) = 0;
-	};
-
-	class Window
+	class Window : public Messenger
 	{
 	private:
 		// Physical resolution
@@ -25,29 +21,31 @@ namespace dukat
 		bool msaa_enabled;
 		SDL_Window* window;
 		SDL_GLContext context;
-		std::vector<WindowEventListener*> event_listeners;
-
-		void on_resize(void);
 
 	public:
 		Window(int width = 640, int height = 480, bool fullscreen = false, bool msaa = false);
 		~Window();
 
-		void clear(void);
-		void resize(int width, int height);
-		void set_fullscreen(bool fullscreen);
-		bool is_fullscreen(void) const { return fullscreen; }
-		void toggle_fullscreen(void);
-		void set_title(const std::string& title);
+		// Clears screen buffers.
+		void clear(void) { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
+		// Called by application to update screen buffer.
+		void present(void) { SDL_GL_SwapWindow(window); }
+		void receive(const Message& message);
+		
+		void set_title(const std::string& title) { SDL_SetWindowTitle(window, title.c_str()); }
 		void set_vsync(bool vsync);
+		void set_fullscreen(bool fullscreen);
+		void toggle_fullscreen(void) { set_fullscreen(!fullscreen); }
+
+		void resize(int width, int height);
 		int get_height(void) const { return height; }
 		int get_width(void) const { return width; }
 		float get_aspect_ratio(void) const { return (float)width / (float)height; }
+
+		bool is_fullscreen(void) const { return fullscreen; }
 		bool is_msaa_enabled(void) const { return msaa_enabled; }
-
-		void present(void);
-
-		void bind(WindowEventListener* listener) { event_listeners.push_back(listener); }
-		void unbind(WindowEventListener* listener);		
+		
+		// Triggered by application / SDL after resize.
+		void on_resize(void);
 	};
 }

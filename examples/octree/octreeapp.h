@@ -58,7 +58,7 @@ namespace dukat
 		OctreeScene(Game2* game);
 		~OctreeScene(void);
 
-		bool handle_keyboard(const SDL_Event& e);
+		void handle_keyboard(const SDL_Event& e);
 		void update_debug_text(void);
 		void update_texture(void);
 		void update(float delta);

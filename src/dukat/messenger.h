@@ -8,16 +8,21 @@ namespace dukat
 {
 	struct Events
 	{
-		static constexpr Event None = 0; // Range marker - does not trigger
+		// Range marker - does not trigger
+		static constexpr Event None = 0;
+		// System events
 		static constexpr Event ToggleDebug = 1;
-		static constexpr Event Created = 2;
-		static constexpr Event Destroyed = 3;
-		static constexpr Event Selected = 4;
-		static constexpr Event Deselected = 5;
-		static constexpr Event ParentChanged = 6;
-		static constexpr Event TransformChanged = 7;
-		static constexpr Event VisibilityChanged = 8;
-		static constexpr Event Any = 9; // catch-all to allow subscription to all supported events
+		static constexpr Event WindowResized = 2;
+		// Entity Events
+		static constexpr Event Created = 10;
+		static constexpr Event Destroyed = 11;
+		static constexpr Event Selected = 12;
+		static constexpr Event Deselected = 13;
+		static constexpr Event ParentChanged = 14;
+		static constexpr Event TransformChanged = 15;
+		static constexpr Event VisibilityChanged = 16;
+		// catch-all to allow subscription to all supported events
+		static constexpr Event Any = 20; 
 	};
 
 	// Messenging class
@@ -33,13 +38,10 @@ namespace dukat
 
 		// Triggers an event for all recievers subscribed to this entity.
 		void trigger(const Message& message);
-		// Receives a message.
-		virtual void receive(const Message& message) = 0;
 		// Subscribes to an event on this entity.
 		void subscribe(Event ev, Recipient* recipient);
 		// Subscribes to all events on this entity.
 		void subscribe_all(Recipient* recipient);
-		
 		// Unsubscribes from an event on this entity.
 		void unsubscribe(Event ev, Recipient* recipient);
 		// Unsubscribes from all events this recipient was registered for.

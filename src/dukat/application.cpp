@@ -97,9 +97,6 @@ namespace dukat
 	{
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_ESCAPE:
-			done = true;
-			break;
 		case SDLK_RETURN:
 			if (e.key.keysym.mod & KMOD_ALT)
 			{
@@ -135,6 +132,11 @@ namespace dukat
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
 			}
 	        break;
+		case SDL_WINDOWEVENT_RESIZED:
+			window->on_resize();
+			break;
+		case SDL_WINDOWEVENT_SIZE_CHANGED:
+			break;
 		}
 	}
 }

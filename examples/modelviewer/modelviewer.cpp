@@ -87,7 +87,7 @@ namespace dukat
 		os.close();
 	}
 
-	bool ModelviewerScene::handle_event(const SDL_Event& e)
+	void ModelviewerScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
@@ -97,17 +97,17 @@ namespace dukat
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
 			break;
 		}
-		default:
-			return false;
 		}
-		return true;
 	}
 
-	bool ModelviewerScene::handle_keyboard(const SDL_Event & e)
+	void ModelviewerScene::handle_keyboard(const SDL_Event & e)
 	{
 		Material mat;
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_F1:
 			game->get_renderer()->toggle_wireframe();
 			break;
@@ -192,10 +192,7 @@ namespace dukat
 			}
 		}
 		break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void ModelviewerScene::update(float delta)

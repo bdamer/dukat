@@ -20,7 +20,7 @@ namespace dukat
 	class Controller;
 
 	// Abstract base class for game implementations.
-	class GameBase : public Application, public Messenger
+	class GameBase : public Application
 	{
 	protected:
 		std::unique_ptr<ShaderCache> shader_cache;

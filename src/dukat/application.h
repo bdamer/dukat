@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include "messenger.h"
 
 namespace dukat
 {
@@ -9,7 +10,7 @@ namespace dukat
 	class DeviceManager;
 	class Settings;
 
-	class Application
+	class Application : public Messenger
 	{
 	private:
 		const std::string title;

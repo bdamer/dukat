@@ -11,14 +11,24 @@ namespace dukat
 	Camera2::Camera2(Window* window, const Vector2& dimension)
 		: window(window), near_clip(default_near_clip), far_clip(default_far_clip)
 	{
-		window->bind(this);
+		window->subscribe(Events::WindowResized, this);
 		fixed_dimension = (dimension.x != 0.0f && dimension.y != 0.0f);
 		transform.dimension = dimension;
 	}
 
 	Camera2::~Camera2(void)
 	{
-		window->unbind(this);
+		window->unsubscribe(Events::WindowResized, this);
+	}
+
+	void Camera2::receive(const Message& msg)
+	{
+		switch (msg.event)
+		{
+		case Events::WindowResized:
+			resize(*static_cast<int*>(msg.param1), *static_cast<int*>(msg.param2));
+			break;
+		}
 	}
 
 	void Camera2::resize(int width, int height)

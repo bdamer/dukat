@@ -29,8 +29,8 @@ namespace dukat
 
 		void update(float delta);
 		void render(void);
-		bool handle_event(const SDL_Event& e);
-		bool handle_keyboard(const SDL_Event& e);
+		void handle_event(const SDL_Event& e);
+		void handle_keyboard(const SDL_Event& e);
 
 		void load_model(const std::string& filename);
 		void save_model(const std::string& filename);

@@ -62,7 +62,7 @@ namespace dukat
 		overlay_meshes.update(delta);
 	}
 
-	bool DialogScene::handle_keyboard(const SDL_Event& e)
+	void DialogScene::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
@@ -79,10 +79,7 @@ namespace dukat
 		case SDLK_DOWN:
 			game->get_ui()->next_control();
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void DialogScene::render(void)

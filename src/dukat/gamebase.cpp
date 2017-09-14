@@ -41,18 +41,16 @@ namespace dukat
 
 	void GameBase::handle_event(const SDL_Event& e)
 	{
-		if (controller == nullptr || !controller->handle_event(e))
-		{
-			Application::handle_event(e);
-		}
+		Application::handle_event(e);
+		if (controller != nullptr)
+			controller->handle_event(e);
 	}
 
 	void GameBase::handle_keyboard(const SDL_Event& e)
 	{
-		if (controller == nullptr || !controller->handle_keyboard(e))
-		{
-			Application::handle_keyboard(e);
-		}
+		Application::handle_keyboard(e);
+		if (controller != nullptr)
+			controller->handle_keyboard(e);
 	}
 
 	void GameBase::update(float delta)

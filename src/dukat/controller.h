@@ -7,9 +7,9 @@ namespace dukat
 	public:
 		Controller(void) { }
 		virtual ~Controller(void) { }
-		// Handles event and returns true if event was processed.
-		virtual bool handle_event(const SDL_Event& e) { return false; }
-		// Handles keyboard event and returns true if event was processed.
-		virtual bool handle_keyboard(const SDL_Event& e) { return false; }
+		// Handles application event.
+		virtual void handle_event(const SDL_Event& e) { }
+		// Handles keyboard event.
+		virtual void handle_keyboard(const SDL_Event& e) { }
 	};
 }

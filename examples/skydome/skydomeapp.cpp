@@ -201,11 +201,14 @@ namespace dukat
 		env->set_current_phase(0);
 	}
 
-	bool SkydomeScene::handle_keyboard(const SDL_Event &e)
+	void SkydomeScene::handle_keyboard(const SDL_Event &e)
 	{
 		Material mat;
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_COMMA:
 			multiplier = std::max(1, multiplier / 2);
 			break;
@@ -221,10 +224,7 @@ namespace dukat
 		case SDLK_F11:
 			info_mesh->visible = !info_mesh->visible;
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void SkydomeScene::update(float delta)

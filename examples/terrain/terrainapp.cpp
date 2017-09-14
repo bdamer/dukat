@@ -255,7 +255,7 @@ namespace dukat
 		}
 	}
 
-	bool TerrainScene::handle_event(const SDL_Event& e)
+	void TerrainScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
@@ -281,16 +281,16 @@ namespace dukat
 			}
 			break;
 		}
-		default:
-			return false;
 		}
-		return true;
 	}
 
-	bool TerrainScene::handle_keyboard(const SDL_Event& e)
+	void TerrainScene::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_F1:
 			game->get_renderer()->toggle_wireframe();
 			break;		
@@ -361,11 +361,7 @@ namespace dukat
 		case SDLK_v:
 			direct_camera_control = !direct_camera_control;
 			break;
-			
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void TerrainScene::update(float delta)

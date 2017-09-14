@@ -116,7 +116,7 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	bool GridScene::handle_event(const SDL_Event& e)
+	void GridScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
@@ -124,17 +124,18 @@ namespace dukat
 		{
 			auto camera = game->get_renderer()->get_camera();
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
-			return true;
+			break;
 		}
-		default:
-			return false;
 		}
 	}
 
-	bool GridScene::handle_keyboard(const SDL_Event & e)
+	void GridScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_F1:
 			game->get_renderer()->toggle_wireframe();
 			break;
@@ -153,10 +154,7 @@ namespace dukat
 		case SDLK_PERIOD:
 			grid_mesh->tile_spacing = std::min(32.0f, grid_mesh->tile_spacing + 1.0f);
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void GridScene::update(float delta)

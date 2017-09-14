@@ -30,6 +30,6 @@ namespace dukat
 		SurfaceScene(Game2* game2);
 		~SurfaceScene(void) { }
 
-		bool handle_keyboard(const SDL_Event& e);
+		void handle_keyboard(const SDL_Event& e);
 	};
 }
