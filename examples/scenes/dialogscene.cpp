@@ -18,11 +18,11 @@ namespace dukat
 		fullscreen_button = std::make_unique<TextButton>(fullscreen_text.get());
 		fullscreen_button->set_text("Fullscreen");
 		fullscreen_button->set_index(0);
-		fullscreen_button->func = [&](void) {
+		fullscreen_button->set_trigger([&](void) {
 			bool fullscreen = !game->get_window()->is_fullscreen();
 			game->get_window()->set_fullscreen(fullscreen);
 			fullscreen_button->set_text(fullscreen ? "Windowed" : "Fullscreen");
-		};
+		});
 		overlay_meshes.add_instance(std::move(fullscreen_text));
 
 		auto return_text = game->create_text_mesh(1.0f / 20.0f);
@@ -30,9 +30,9 @@ namespace dukat
 		return_button = std::make_unique<TextButton>(return_text.get());
 		return_button->set_text("Back");
 		return_button->set_index(1);
-		return_button->func = [&](void) {
+		return_button->set_trigger([&](void) {
 			game->pop_scene();
-		};
+		});
 		overlay_meshes.add_instance(std::move(return_text));
 	}
 

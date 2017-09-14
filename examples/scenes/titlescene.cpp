@@ -20,9 +20,9 @@ namespace dukat
 		start_button = std::make_unique<TextButton>(start_text.get());
 		start_button->set_text("Start Game");
 		start_button->set_index(0);
-		start_button->func = [&](void) {
+		start_button->set_trigger([&](void) {
 			game->push_scene("game");
-		};
+		});
 		overlay_meshes.add_instance(std::move(start_text));
 
 		auto options_text = game->create_text_mesh(1.0f / 20.0f);
@@ -30,9 +30,9 @@ namespace dukat
 		options_button = std::make_unique<TextButton>(options_text.get());
 		options_button->set_text("Options");
 		options_button->set_index(1);
-		options_button->func = [&](void) {
+		options_button->set_trigger([&](void) {
 			game->push_scene("options");
-		};
+		});
 		overlay_meshes.add_instance(std::move(options_text));
 
 		auto quit_text = game->create_text_mesh(1.0f / 20.0f);
@@ -40,9 +40,9 @@ namespace dukat
 		quit_button = std::make_unique<TextButton>(quit_text.get());
 		quit_button->set_text("Quit");
 		quit_button->set_index(2);
-		quit_button->func = [&](void) {
+		quit_button->set_trigger([&](void) {
 			game->set_done(true);
-		};
+		});
 		overlay_meshes.add_instance(std::move(quit_text));
 	}	
 

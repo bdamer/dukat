@@ -25,7 +25,7 @@ namespace dukat
 		}
 		if (control == focus)
 		{
-			focus->lose_focus();
+			focus->set_focus(false);
 			focus = nullptr;
 		}
 	}
@@ -58,10 +58,10 @@ namespace dukat
 		{
 			if (focus != nullptr)
 			{
-				focus->lose_focus();
+				focus->set_focus(false);
 			}
 			focus = *it;
-			focus->gain_focus();
+			focus->set_focus(true);
 		}
 	}
 
@@ -80,10 +80,10 @@ namespace dukat
 		{
 			if (focus != nullptr)
 			{
-				focus->lose_focus();
+				focus->set_focus(false);
 			}
 			focus = *it;
-			focus->gain_focus();
+			focus->set_focus(true);
 		}
 	}
 

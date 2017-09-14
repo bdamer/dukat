@@ -9,24 +9,17 @@ namespace dukat
 	{
 	private:
 		TextMeshInstance* text_mesh;
-		bool in_focus;
 
 	public:
 		std::string primary_color;
 		std::string highlight_color;
 		std::string text;
-		std::function<void(void)> func;
 
 		TextButton(TextMeshInstance* text_mesh) : UIControl(), 
-			text_mesh(text_mesh), primary_color("white"), highlight_color("yellow"), in_focus(false) { }
-
+			text_mesh(text_mesh), primary_color("white"), highlight_color("yellow") { }
 		~TextButton(void) { }
 
 		void set_text(const std::string& text);
-
-		// Event handlers
-		void gain_focus(void);
-		void lose_focus(void);
-		void trigger(void);
+		void set_focus(bool focus);
 	};
 }

@@ -9,12 +9,14 @@ namespace dukat
 	{
 	protected:
 		int index;
-		AABB2 bb;
 		float priority;
 		bool enabled;
-
+		bool focus; // flag indicating that this control has focus
+		std::function<void(void)> trigger_func; // function to be executed when triggered
+		AABB2 bb;
+		
 	public:
-		UIControl(void) : index(-1), priority(0.0f), enabled(true) { }
+		UIControl(void) : index(-1), priority(0.0f), enabled(true), focus(false) { }
 		UIControl(const UIControl& rhs) = delete;
 		virtual ~UIControl(void) { }
 		void operator=(const UIControl& rhs) = delete;
@@ -30,9 +32,10 @@ namespace dukat
 		// Screen priority
 		virtual float get_priority(void) { return priority; }
 
-		// Event handlers
-		virtual void gain_focus(void) { }
-		virtual void lose_focus(void) { }
-		virtual void trigger(void) { }
+		// Event handling
+		bool is_focus(void) const { return focus; }
+		virtual void set_focus(bool focus) { this->focus = focus; }
+		void set_trigger(std::function<void(void)> trigger_func) { this->trigger_func = trigger_func; }
+		virtual void trigger(void) { if (trigger_func) trigger_func(); }
 	};
 }
