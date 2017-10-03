@@ -12,9 +12,15 @@ namespace dukat
 	GridScene::GridScene(Game3* game) : game(game)
 	{
 		auto settings = game->get_settings();
-		grid_mesh = std::make_unique<GridMesh>(game, grid_size);
-		grid_mesh->scale_factor = scale_factor;
+		grid_mesh = std::make_unique<GridMesh>(game, grid_size, scale_factor);
 		camera_target.x = camera_target.z = 0.5f * (float)(grid_size * grid_mesh->tile_spacing);
+
+		// White Directional Light
+		auto light0 = game->get_renderer()->get_light(Renderer3::dir_light_idx);
+		light0->position = { 0.0f, -0.5f, 0.5f }; // light direction stored as position
+		light0->ambient = { 0.2f, 0.1f, 0.05f, 1.0f };
+		light0->diffuse = { 0.5f, 0.5f, 0.5f, 1.0f };
+		light = std::make_unique<OrbitalLight>(600.0f);
 
 		auto camera = std::make_unique<OrbitCamera3>(game, camera_target, 50.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(5.0f);

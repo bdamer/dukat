@@ -86,6 +86,7 @@
 #include "color.h"
 #include "effect2.h"
 #include "effect3.h"
+#include "effectpass.h"
 #include "environment.h"
 #include "firstpersoncamera3.h"
 #include "fixedcamera3.h"

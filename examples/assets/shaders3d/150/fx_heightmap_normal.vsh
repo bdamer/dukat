@@ -1,6 +1,6 @@
 #version 150
 ///
-// Vertex shader to generate heatmap normal.
+// Vertex shader to generate normal map from heightmap.
 ///
 in vec4 a_position;
 in vec2 a_tex_coord;

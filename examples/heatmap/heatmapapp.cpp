@@ -44,8 +44,7 @@ namespace dukat
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
 
-		heatmap = std::make_unique<HeatMap>(game, map_size);
-		heatmap->set_scale_factor(100.0f);
+		heatmap = std::make_unique<HeatMap>(game, map_size, 100.0f);
 		//heatmap->set_tile_spacing(5);
 		DiamondSquareGenerator gen(42);
 		gen.set_range(0.0f, 0.1f);

@@ -20,9 +20,10 @@ namespace dukat
 		MeshInstance* observer_mesh;
 		std::unique_ptr<GridMesh> grid_mesh;
 		std::unique_ptr<HeightMap> heightmap; // elevation data
-
+		std::unique_ptr<OrbitalLight> light;
+		
 		Vector3 camera_target;
-
+		
 	public:
 		GridScene(Game3* game);
 		~GridScene(void) { }
