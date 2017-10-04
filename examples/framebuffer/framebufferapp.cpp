@@ -47,15 +47,16 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	bool FramebufferScene::handle_keyboard(const SDL_Event & e)
+	void FramebufferScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_F11:
 			info_mesh->visible = !info_mesh->visible;
-			return true;
-		default:
-			return false;
+			break;
 		}
 	}
 

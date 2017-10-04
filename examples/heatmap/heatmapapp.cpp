@@ -44,8 +44,7 @@ namespace dukat
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
 
-		heatmap = std::make_unique<HeatMap>(game, map_size);
-		heatmap->set_scale_factor(100.0f);
+		heatmap = std::make_unique<HeatMap>(game, map_size, 100.0f);
 		//heatmap->set_tile_spacing(5);
 		DiamondSquareGenerator gen(42);
 		gen.set_range(0.0f, 0.1f);
@@ -95,7 +94,7 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	bool HeatmapScene::handle_event(const SDL_Event& e)
+	void HeatmapScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
@@ -103,18 +102,19 @@ namespace dukat
 		{
 			auto camera = game->get_renderer()->get_camera();
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
-			return true;
+			break;
 		}
-		default:
-			return false;
 		}
 	}
 
-	bool HeatmapScene::handle_keyboard(const SDL_Event & e)
+	void HeatmapScene::handle_keyboard(const SDL_Event & e)
 	{
 		Material mat;
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_COMMA:
 			{
 				multiplier = std::max(1, multiplier / 2);
@@ -149,10 +149,7 @@ namespace dukat
 		case SDLK_F11:
 			info_mesh->visible = !info_mesh->visible;
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void HeatmapScene::update(float delta)

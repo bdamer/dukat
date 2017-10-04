@@ -69,10 +69,8 @@ namespace dukat
         std::unique_ptr<Texture> heightmap_texture; // 1-channel GL_R32F texture used for elevation data
 		std::unique_ptr<Texture> heatmap_texture; // 3-channel GL_RGB8 texture used to update the heat map
 		std::unique_ptr<Texture> terrain_texture; // RGB texture array for texture splatting.
-
-        ShaderProgram* normal_program; // used to generate normal sampler
-        std::unique_ptr<FrameBuffer> fb_normal; // frame buffer to update heat sampler 
-        std::unique_ptr<MeshData> quad_normal; // quad mesh used to update normal sampler
+        std::unique_ptr<EffectPass> normal_pass; // generates normal map
+        Texture* normal_texture; // normal map
         
         void emitter_phase(float delta);
         void compute_phase(float delta);
@@ -80,7 +78,7 @@ namespace dukat
         void update_textures(void);
 
     public:
-        HeatMap(Game3* game, int map_size);
+        HeatMap(Game3* game, int map_size, float scale_factor);
         ~HeatMap(void) { }
 
         // Resets the state of the heat map, preserving existing emitters.
@@ -102,8 +100,6 @@ namespace dukat
         // Renders this heat map.
         void render(Renderer* renderer);
 
-        void set_scale_factor(float scale_factor) { heightmap->set_scale_factor(scale_factor); }
-        float get_scale_factor(void) const { return heightmap->get_scale_factor(); }
         HeightMap* get_height_map(void) const { return heightmap.get(); }
         void set_tile_spacing(int tile_spacing) { this->tile_spacing = tile_spacing; }
         int get_tile_spacing(void) const { return tile_spacing; }

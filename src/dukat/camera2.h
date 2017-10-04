@@ -1,6 +1,7 @@
 #pragma once
 
 #include "matrix4.h"
+#include "recipient.h"
 #include "vector2.h"
 #include "window.h"
 
@@ -15,7 +16,7 @@ namespace dukat
 		CameraTransform2(void) : position(Vector2::origin) { }
 	};
 
-	class Camera2 : public WindowEventListener
+	class Camera2 : public Recipient
 	{
 	private:
 		static const float default_near_clip;
@@ -42,5 +43,7 @@ namespace dukat
 		// Updates the camera's view matrix. Subclasses of camera should update
 		// the camera axes and call this method to update the view matrix.
 		virtual void update(float delta);
+
+		void receive(const Message& msg);
 	};
 }

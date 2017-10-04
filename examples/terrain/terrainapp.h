@@ -58,8 +58,8 @@ namespace dukat
 		TerrainScene(Game3* game);
 		~TerrainScene(void) { }
 
-		bool handle_event(const SDL_Event& e);
-		bool handle_keyboard(const SDL_Event& e);
+		void handle_event(const SDL_Event& e);
+		void handle_keyboard(const SDL_Event& e);
 		void update(float delta);
 		void render(void);
 	};

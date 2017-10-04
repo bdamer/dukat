@@ -363,6 +363,12 @@
     <ClInclude Include="..\src\dukat\scene2.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\uicontrol.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\uimanager.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -579,6 +585,9 @@
       <Filter>Source Files\math</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\scene2.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\uimanager.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
   </ItemGroup>

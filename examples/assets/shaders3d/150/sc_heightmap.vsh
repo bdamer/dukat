@@ -29,8 +29,10 @@ uniform mat4 u_model;
 
 // Elevation sampler
 uniform sampler2D u_tex0;
+// Normal sampler
+uniform sampler2D u_tex1;
 // Texture atlas
-uniform sampler2DArray u_tex1;
+uniform sampler2DArray u_tex2;
 
 out vec3 v_tex_coord;
 

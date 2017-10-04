@@ -28,7 +28,7 @@ namespace dukat
 		SpritesScene(Game2* game);
 		~SpritesScene(void) { }
 
-		bool handle_keyboard(const SDL_Event& e);
+		void handle_keyboard(const SDL_Event& e);
 		void update_debug_text(void);
 		void update(float delta);
 	};

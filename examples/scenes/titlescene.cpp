@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "titlescene.h"
+#include "textbutton.h"
 #include <dukat/dukat.h>
 
 namespace dukat
 {
-	TitleScene::TitleScene(Game3* game) : game(game)
+	TitleScene::TitleScene(Game3* game3) : game(game3)
 	{
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
@@ -14,11 +15,36 @@ namespace dukat
 		title_text->set_text("<#red>Title screen</>");
 		overlay_meshes.add_instance(std::move(title_text));
 
-		auto title_info_text = game->create_text_mesh(1.0f / 20.0f);
-		title_info_text->transform.position = { -1.0f, 0.0f, 0.0f };
-		title_info_text->set_text("<#white>Press space to continue, Escape to exit</>");
-		overlay_meshes.add_instance(std::move(title_info_text));
-	}
+		auto start_text = game->create_text_mesh(1.0f / 20.0f);
+		start_text->transform.position = { -1.0f, 0.0f, 0.0f };
+		start_button = std::make_unique<TextButton>(start_text.get());
+		start_button->set_text("Start Game");
+		start_button->set_index(0);
+		start_button->set_trigger([&](void) {
+			game->push_scene("game");
+		});
+		overlay_meshes.add_instance(std::move(start_text));
+
+		auto options_text = game->create_text_mesh(1.0f / 20.0f);
+		options_text->transform.position = { -1.0f, -0.1f, 0.0f };
+		options_button = std::make_unique<TextButton>(options_text.get());
+		options_button->set_text("Options");
+		options_button->set_index(1);
+		options_button->set_trigger([&](void) {
+			game->push_scene("options");
+		});
+		overlay_meshes.add_instance(std::move(options_text));
+
+		auto quit_text = game->create_text_mesh(1.0f / 20.0f);
+		quit_text->transform.position = { -1.0f, -0.2f, 0.0f };
+		quit_button = std::make_unique<TextButton>(quit_text.get());
+		quit_button->set_text("Quit");
+		quit_button->set_index(2);
+		quit_button->set_trigger([&](void) {
+			game->set_done(true);
+		});
+		overlay_meshes.add_instance(std::move(quit_text));
+	}	
 
 	void TitleScene::activate(void)
 	{ 
@@ -30,6 +56,17 @@ namespace dukat
 		game->get_renderer()->set_camera(std::move(camera));
 
 		game->set_controller(this);
+
+		game->get_ui()->add_control(start_button.get());
+		game->get_ui()->add_control(options_button.get());
+		game->get_ui()->add_control(quit_button.get());
+	}
+
+	void TitleScene::deactivate(void)
+	{
+		game->get_ui()->remove_control(start_button.get());
+		game->get_ui()->remove_control(options_button.get());
+		game->get_ui()->remove_control(quit_button.get());
 	}
 
 	void TitleScene::update(float delta)
@@ -37,17 +74,21 @@ namespace dukat
 		overlay_meshes.update(delta);
 	}
 
-	bool TitleScene::handle_keyboard(const SDL_Event& e)
+	void TitleScene::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_SPACE:
-			game->push_scene("game");
+		case SDLK_RETURN:
+			game->get_ui()->trigger_focus();
 			break;
-		default:
-			return false;
+		case SDLK_UP:
+			game->get_ui()->prev_control();
+			break;
+		case SDLK_DOWN:
+			game->get_ui()->next_control();
+			break;
 		}
-		return true;
 	}
 
 	void TitleScene::render(void)

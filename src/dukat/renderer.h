@@ -6,6 +6,7 @@
 #include "version.h"
 #endif // !OPENGL_VERSION
 
+#include "recipient.h"
 #include "window.h"
 
 namespace dukat
@@ -15,7 +16,7 @@ namespace dukat
 	struct GenericBuffer;
 
 	// Base class for 2D and 3D renderers.
-	class Renderer : public WindowEventListener
+	class Renderer : public Recipient
 	{
 	protected:		
 		Window* window;
@@ -75,7 +76,7 @@ namespace dukat
 		virtual ~Renderer(void);
 
 		// Called on window resize
-		virtual void resize(int width, int height);
+		void receive(const Message& msg);
 
 		// Display settings
 		void toggle_wireframe(void) { set_wireframe(!show_wireframe); }

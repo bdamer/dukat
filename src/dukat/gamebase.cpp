@@ -24,7 +24,8 @@ namespace dukat
 		particle_manager = std::make_unique<ParticleManager>();
 		timer_manager = std::make_unique<TimerManager>();
 		anim_manager = std::make_unique<AnimationManager>();
-		mesh_cache = std::make_unique<dukat::MeshCache>();
+		mesh_cache = std::make_unique<MeshCache>();
+		ui_manager = std::make_unique<UIManager>();
 
 		// TODO: need to rebind when devices change
 		device_manager->active->on_press(InputDevice::VirtualButton::Pause, std::bind(&GameBase::toggle_pause, this));
@@ -40,18 +41,16 @@ namespace dukat
 
 	void GameBase::handle_event(const SDL_Event& e)
 	{
-		if (controller == nullptr || !controller->handle_event(e))
-		{
-			Application::handle_event(e);
-		}
+		Application::handle_event(e);
+		if (controller != nullptr)
+			controller->handle_event(e);
 	}
 
 	void GameBase::handle_keyboard(const SDL_Event& e)
 	{
-		if (controller == nullptr || !controller->handle_keyboard(e))
-		{
-			Application::handle_keyboard(e);
-		}
+		Application::handle_keyboard(e);
+		if (controller != nullptr)
+			controller->handle_keyboard(e);
 	}
 
 	void GameBase::update(float delta)
@@ -65,6 +64,12 @@ namespace dukat
 	void GameBase::render(void)
 	{
 		scene_stack.top()->render();
+	}
+
+	void GameBase::toggle_debug(void)
+	{
+		debug = !debug;
+		trigger(Message{Events::ToggleDebug});
 	}
 
 	std::unique_ptr<TextMeshInstance> GameBase::create_text_mesh(float size)
@@ -110,6 +115,18 @@ namespace dukat
 			{
 				scene_stack.top()->activate();
 			}
+		}
+	}
+
+	Scene* GameBase::get_scene(const std::string& id) const
+	{
+		if (scenes.count(id) > 0)
+		{
+			return scenes.at(id).get();
+		}
+		else
+		{
+			return nullptr;
 		}
 	}
 }

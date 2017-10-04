@@ -14,6 +14,8 @@
 #include "recipient.h"
 #include "scene.h"
 #include "scene2.h"
+#include "uicontrol.h"
+#include "uimanager.h"
 
 // Input
 #include "controller.h"
@@ -84,6 +86,7 @@
 #include "color.h"
 #include "effect2.h"
 #include "effect3.h"
+#include "effectpass.h"
 #include "environment.h"
 #include "firstpersoncamera3.h"
 #include "fixedcamera3.h"

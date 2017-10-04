@@ -19,11 +19,12 @@ namespace dukat
     const float HeatMap::min_period = 120.0f;
     const float HeatMap::max_period = 360.0f;
 
-    HeatMap::HeatMap(Game3* game, int map_size) : game(game), map_size(map_size), 
+    HeatMap::HeatMap(Game3* game, int map_size, float scale_factor) : game(game), map_size(map_size), 
         cells(map_size * map_size), tile_spacing(1)
     {
         heightmap = std::make_unique<HeightMap>(1);
         heightmap->allocate(map_size);
+        heightmap->set_scale_factor(scale_factor);
 
         // Create elevation texture
         heightmap_texture = std::make_unique<Texture>(map_size, map_size, ProfileNearest);
@@ -40,16 +41,28 @@ namespace dukat
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, map_size, map_size, 0, GL_RGB, GL_FLOAT, nullptr);
 
         // Set up framebuffer for normal map generation (normal map is twice the size of height map)
-		normal_program = game->get_shaders()->get_program("fx_heatmap_normal.vsh", "fx_heatmap_normal.fsh");
-		fb_normal = std::make_unique<FrameBuffer>(2 * map_size, 2 * map_size, true, false);
-        glBindTexture(GL_TEXTURE_2D, fb_normal->texture->id);
+        const auto nm_size = 2 * map_size;
+        auto fb_normal = std::make_unique<FrameBuffer>(nm_size, nm_size, true, false);
+        normal_texture = fb_normal->texture.get();
+        glBindTexture(GL_TEXTURE_2D, normal_texture->id);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // 2-channel GL_RG16F texture for normal data
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 2 * map_size, 2 * map_size, 0, GL_RG, GL_FLOAT, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, nm_size, nm_size, 0, GL_RG, GL_FLOAT, nullptr);
+        
+        normal_pass = std::make_unique<EffectPass>();
+        normal_pass->set_fbo(std::move(fb_normal));
+        normal_pass->set_program(game->get_shaders()->get_program("fx_heightmap_normal.vsh", "fx_heightmap_normal.fsh"));
+        normal_pass->set_texture(heightmap_texture.get(), 0);
 
-		MeshBuilder2 builder;
-		quad_normal = builder.build_textured_quad();
+        // size of normal map
+        normal_pass->set_attribute(uniform_size, { static_cast<float>(nm_size) });
+        // 1 / normal map texture size 
+        const auto one_over_size = 1.0f / static_cast<float>(nm_size);
+        normal_pass->set_attribute(uniform_one_over_size, { one_over_size });
+        // pass in ratio of z to x/y grid spacing
+        const auto grid_scale = -0.5f * heightmap->get_scale_factor();
+        normal_pass->set_attribute(uniform_grid_scale, { grid_scale, grid_scale });
 
         // Generate mesh for terrain grid
         program = game->get_shaders()->get_program("sc_heatmap.vsh", "sc_heatmap.fsh");
@@ -275,28 +288,7 @@ namespace dukat
         glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, map_size, map_size, 0, GL_RED, GL_FLOAT, level.data.data());
 
         // Update normal maps
-
-        // Disable blending so we can use ALPHA channel for map flags
-        glDisable(GL_BLEND);
-
-        fb_normal->bind();
-        game->get_renderer()->switch_shader(normal_program);
-        heightmap_texture->bind(0, normal_program);
-
-        // size of normal map
-        glUniform1f(normal_program->attr(uniform_size), (float)(2 * map_size));
-        // 1 / normal map texture size 
-        const auto one_over_size = 1.0f / (float)(2 * map_size);
-        glUniform1f(normal_program->attr(uniform_one_over_size), one_over_size);
-        // pass in ratio of z to x/y grid spacing
-        const auto grid_scale = -0.5f * heightmap->get_scale_factor();
-        glUniform2f(normal_program->attr(uniform_grid_scale), grid_scale, grid_scale);
-
-        quad_normal->render(normal_program);
-
-        fb_normal->unbind();
-        glEnable(GL_BLEND);
-        perfc.inc(PerformanceCounter::FRAME_BUFFERS);
+        normal_pass->render(game->get_renderer());
     }
 
     void HeatMap::render(Renderer* renderer)
@@ -305,10 +297,7 @@ namespace dukat
         
         // bind elevation map
         heightmap_texture->bind(0, program);
-        // bind normal map
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, fb_normal->texture->id);
-        glUniform1i(program->attr("u_tex1"), 1);
+        normal_texture->bind(1, program);
         heatmap_texture->bind(2, program);
         terrain_texture->bind(3, program);
 
@@ -329,9 +318,9 @@ namespace dukat
         perfc.inc(PerformanceCounter::MESHES);
 
         // unbind textures
+        terrain_texture->unbind();
         heatmap_texture->unbind();
-		glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        normal_texture->unbind();
         heightmap_texture->unbind();
     }
 

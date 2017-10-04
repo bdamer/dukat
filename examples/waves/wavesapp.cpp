@@ -109,7 +109,7 @@ namespace dukat
 		env->set_current_phase(0);
 	}
 
-	bool WaveScene::handle_event(const SDL_Event& e)
+	void WaveScene::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
 		{
@@ -119,17 +119,17 @@ namespace dukat
 			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
 			break;
 		}
-		default:
-			return false;
 		}
-		return true;
 	}
 
-	bool WaveScene::handle_keyboard(const SDL_Event & e)
+	void WaveScene::handle_keyboard(const SDL_Event & e)
 	{
 		auto factor = (e.key.keysym.mod & KMOD_SHIFT) ? 0.1f : -0.1f;
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_F1:
 			game->get_renderer()->toggle_wireframe();
 			break;
@@ -173,10 +173,7 @@ namespace dukat
 		case SDLK_g: // environment map radius
 			wave_mesh->set_geo_env_radius(wave_mesh->get_geo_env_radius() * (1.0f + factor * 0.5f));
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void WaveScene::update(float delta)

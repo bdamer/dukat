@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "buffers.h"
+#include "color.h"
 #include "mathutil.h"
 #include "meshdata.h"
 #include "mesh.h"
@@ -88,6 +89,7 @@ namespace dukat
 		Game3* game;
 		Texture* env_map; // Environment cube map used for reflection
 		Texture* elev_map; // Elevation sampler used to determine wave height above ground
+		Color water_tint; // Base water color
 
 		// Geo waves
 		GeoState geo_state;
@@ -153,7 +155,10 @@ namespace dukat
 		float get_tex_angle_dev(void) const { return tex_state.angle_deviation; }
 		// Wind direction (geo and texture)
 		void set_wind_dir(const Vector2& wind_dir) { geo_state.wind_dir = wind_dir; tex_state.wind_dir = wind_dir; }
-
+		// Wave tint
+		void set_water_tint(const Color& color) { this->water_tint = color; } 
+		Color get_water_tint(void) const { return water_tint; } 
+		
 		// Texture access
 		Texture* get_wave_texture(void) const { return fb_texture.get(); }
 		void set_env_map(Texture* env_map) { this->env_map = env_map; }

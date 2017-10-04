@@ -1,6 +1,6 @@
 #version 150
 ///
-// Fragment shader to generate heatmap normal.
+// Fragment shader to generate normal map from heightmap.
 ///
 in vec2 v_tex_coord;
 

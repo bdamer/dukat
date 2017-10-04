@@ -30,7 +30,7 @@ namespace dukat
 		SkydomeScene(Game3* game);
 		~SkydomeScene(void) { }
 
-		bool handle_keyboard(const SDL_Event &e);
+		void handle_keyboard(const SDL_Event &e);
 		void update(float delta);
 		void render(void);
 	};

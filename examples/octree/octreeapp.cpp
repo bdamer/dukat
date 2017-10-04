@@ -106,10 +106,13 @@ namespace dukat
 		entity->set_octree(model.get_data());
 	}
 
-	bool OctreeScene::handle_keyboard(const SDL_Event & e)
+	void OctreeScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_TAB:
 			ray_camera->mouse_look = !ray_camera->mouse_look;
 			break;
@@ -142,10 +145,7 @@ namespace dukat
 				entity->set_octree(model.get_data());
 			}
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void OctreeScene::update_debug_text(void)

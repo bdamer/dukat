@@ -135,10 +135,13 @@ namespace dukat
 		}
 	}
 
-	bool MapgenScene::handle_keyboard(const SDL_Event & e)
+	void MapgenScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_g: // generate map
 			generate_map();
 			switch_mode();
@@ -176,10 +179,7 @@ namespace dukat
 		case SDLK_F11:
 			info_mesh->visible = !info_mesh->visible;
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void MapgenScene::update(float delta)

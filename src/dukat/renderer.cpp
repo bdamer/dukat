@@ -11,7 +11,7 @@ namespace dukat
 	Renderer::Renderer(Window* window, ShaderCache* shader_cache)
 		: window(window), shader_cache(shader_cache), active_program(0), show_wireframe(false)
 	{
-		window->bind(this);
+		window->subscribe(Events::WindowResized, this);
 		test_capabilities();
 		uniform_buffers = std::make_unique<GenericBuffer>(UniformBuffer::_COUNT);
 		// Default settings
@@ -24,7 +24,7 @@ namespace dukat
 
 	Renderer::~Renderer(void)
 	{
-		window->unbind(this);
+		window->unsubscribe(Events::WindowResized, this);
 	}
 
 	void Renderer::test_capabilities(void)
@@ -80,9 +80,14 @@ namespace dukat
 #endif
 	}
 
-	void Renderer::resize(int width, int height)
+	void Renderer::receive(const Message& msg)
 	{
-		glViewport(0, 0, width, height);
+		switch (msg.event)
+		{
+		case Events::WindowResized:
+			glViewport(0, 0, *static_cast<int*>(msg.param1), *static_cast<int*>(msg.param2));
+			break;
+		}
 	}
 
 	void Renderer::switch_shader(ShaderProgram* program)

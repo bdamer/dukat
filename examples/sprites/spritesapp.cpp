@@ -57,17 +57,17 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	bool SpritesScene::handle_keyboard(const SDL_Event & e)
+	void SpritesScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_t:
 			particles_enabled = !particles_enabled;
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 
 	void SpritesScene::update(float delta)

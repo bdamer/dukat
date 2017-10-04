@@ -17,7 +17,7 @@ namespace dukat
 	constexpr float WaveMesh::grav_constant;
 
 	WaveMesh::WaveMesh(Game3* game, int size) : game(game), grid_size(size), tile_spacing(1.0f), 
-		env_map(nullptr), elev_map(nullptr)
+		env_map(nullptr), elev_map(nullptr), water_tint({0.05f, 0.1f, 0.1f, 0.5f})
 	{
 		init_cos_table();
 		noise_texture = generate_noise_texture(texture_size, texture_size);
@@ -350,7 +350,7 @@ namespace dukat
 		grid_program->set_matrix4(Renderer::uf_model, mat_model);
 
 		// Bind geo state
-		grid_program->set("u_ws.water_tint", 0.05f, 0.1f, 0.1f, 0.5f);
+		grid_program->set("u_ws.water_tint", water_tint.r, water_tint.g, water_tint.b, water_tint.a);
 		grid_program->set("u_ws.depth_offset",
 			geo_state.water_level + 1.0f, geo_state.water_level + 1.0f, 
 			geo_state.water_level, geo_state.water_level);

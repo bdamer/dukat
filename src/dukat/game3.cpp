@@ -18,7 +18,7 @@ namespace dukat
 
 		auto debug_text = create_text_mesh(1.0f / 30.0f);
 		debug_text->transform.position.x = -1.25f;
-		debug_text->transform.position.y = 1.0f;
+		debug_text->transform.position.y = 0.95f;
 		debug_text->transform.update();
 		debug_meshes.add_instance(std::move(debug_text));
 	}
@@ -32,7 +32,8 @@ namespace dukat
 
 	void Game3::toggle_debug(void)
 	{
-		debug_meshes.visible = !debug_meshes.visible;
+		GameBase::toggle_debug();
+		debug_meshes.visible = debug;
 	}
 
 	void Game3::update_debug_text(void)

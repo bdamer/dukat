@@ -62,10 +62,13 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	bool SurfaceScene::handle_keyboard(const SDL_Event& e)
+	void SurfaceScene::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
 		case SDLK_1:
 			test_load_image();
 			break;
@@ -97,10 +100,7 @@ namespace dukat
 				update_texture();
 			}
 			break;
-		default:
-			return false;
 		}
-		return true;
 	}
 	
 	void SurfaceScene::test_load_image(void)
