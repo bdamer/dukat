@@ -42,6 +42,8 @@ namespace dukat
 		logger << "GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &int_val);
 		logger << "GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
+		glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &int_val);
+		logger << "GL_MAX_UNIFORM_LOCATIONS: " << int_val << std::endl;
 
 #if OPENGL_VERSION >= 42
 		// TODO: validate with ctx 4.x
