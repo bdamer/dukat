@@ -10,7 +10,8 @@ namespace dukat
     static const std::string uniform_grid_scale = "u_grid_scale";
 
 	GridMesh::GridMesh(Game3* game, int grid_size, float scale_factor)
-		: MeshInstance(), game(game), tile_spacing(1.0f), grid_size(grid_size), base_elevation(0.0f), scale_factor(scale_factor)
+		: MeshInstance(), game(game), grid_size(grid_size), scale_factor(scale_factor), 
+		tile_spacing(1.0f), base_elevation(0.0f), texture_scale(1.0f / 16.0f)
 	{ 
 		// Create elevation texture
 		heightmap_texture = std::make_unique<Texture>(grid_size, grid_size, ProfileLinear);
@@ -65,6 +66,7 @@ namespace dukat
 		transform.mat_model.m[12] = base_elevation;
 		// ZScale of height map 
 		transform.mat_model.m[13] = scale_factor * tile_spacing;
+		transform.mat_model.m[14] = texture_scale;
 	}
 
 	void GridMesh::load_height_level(const HeightMap::Level& level)

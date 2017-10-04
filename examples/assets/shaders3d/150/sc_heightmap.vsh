@@ -24,7 +24,7 @@ layout(std140) uniform Camera
 // u_model[2].xy - undefined
 // u_model[2].zw - undefined
 // u_model[3].xy - Base Z elevation and ZScaleFactor
-// u_model[3].zw - undefined
+// u_model[3].zw - Texture Scale and undefined
 uniform mat4 u_model;
 
 // Elevation sampler
@@ -35,6 +35,7 @@ uniform sampler2D u_tex1;
 uniform sampler2DArray u_tex2;
 
 out vec3 v_tex_coord;
+out vec4 v_world_pos;
 
 void main()
 {
@@ -43,7 +44,8 @@ void main()
     // sample elevation and store texture coordinates + elevation for fragment shader
     vec2 texcoord = a_position * u_model[1].xy;
     float z = texture(u_tex0, texcoord).r;
-	v_tex_coord = vec3(texcoord, z);
+  	v_tex_coord = vec3(texcoord, z);
     // scale elevation and return vertex
-    gl_Position = u_cam.proj_pers * u_cam.view * vec4(world_pos.x, u_model[3].x + z * u_model[3].y, world_pos.y, 1.0);
+    v_world_pos = vec4(world_pos.x, u_model[3].x + z * u_model[3].y, world_pos.y, 1.0);
+    gl_Position = u_cam.proj_pers * u_cam.view * v_world_pos;
 }
