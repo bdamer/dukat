@@ -113,6 +113,7 @@ namespace dukat
 		ss << "<#white>"
 			<< "<,.> Change Grid Spacing" << std::endl
 			<< "<F1> Toggle Wirframe" << std::endl
+			<< "<F2> Generate Terrain" << std::endl
 			<< "<F5> Save Heightmap" << std::endl
 			<< "<F6> Load Heightmap" << std::endl
 			<< "<F11> Toggle Info" << std::endl
@@ -146,6 +147,15 @@ namespace dukat
 			break;
 		case SDLK_F1:
 			game->get_renderer()->toggle_wireframe();
+			break;
+		case SDLK_F2:
+			{
+			DiamondSquareGenerator gen(rand() % 10000);
+			gen.set_range(0.0f, 1.0f);
+			gen.set_roughness(120.0f);
+			heightmap->generate(grid_size, gen);
+			grid_mesh->load_height_level(heightmap->get_level(0));
+			}
 			break;
 		case SDLK_F5:
 			heightmap->save("heightmap.png");
