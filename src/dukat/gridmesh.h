@@ -23,10 +23,11 @@ namespace dukat
 		
 	public:
 		const int grid_size; // width / length of grid
+		const float scale_factor; // elevation scale factor
 		float tile_spacing; // size of grid tiles
 		float base_elevation; // base elevation
-		const float scale_factor; // elevation scale factor
-		
+		float texture_scale; 
+
 		GridMesh(Game3* game, int grid_size, float scale_factor);
 		virtual ~GridMesh(void) { };
 
