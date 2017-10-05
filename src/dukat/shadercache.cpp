@@ -132,7 +132,9 @@ namespace dukat
 		}
 #endif
 
+#ifdef _DEBUG
 		gl_check_error();
+#endif
 		return program;
 	}
 

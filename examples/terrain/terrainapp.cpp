@@ -39,7 +39,7 @@ namespace dukat
 		observer_mesh = object_meshes.create_instance();
 		observer_mesh->set_mesh(game->get_meshes()->get("observer"));
 		observer_mesh->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
-		observer_mesh->set_texture(game->get_textures()->get("blank.png"));
+		observer_mesh->set_texture(game->get_textures()->get("white.png"));
 		Material m;
 		m.ambient = { 1.0f, 0.0f, 1.0f, 1.0f };
 		observer_mesh->set_material(m);
@@ -50,7 +50,7 @@ namespace dukat
 		cursor_mesh = object_meshes.create_instance();
 		cursor_mesh->set_mesh(cursor_quad);
 		cursor_mesh->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
-		cursor_mesh->set_texture(game->get_textures()->get("blank.png"));
+		cursor_mesh->set_texture(game->get_textures()->get("white.png"));
 		cursor_mesh->transform.rot *= Quaternion().set_to_rotate_x(-pi_over_two);
 
 		generate_terrain();

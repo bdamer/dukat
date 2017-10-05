@@ -11,8 +11,6 @@ namespace dukat
 	class WaveScene : public Scene, public Controller
 	{
 	private:
-		static constexpr int grid_size = 64;
-		
 		Game3* game;
 		MeshGroup object_meshes;
 		MeshGroup overlay_meshes;

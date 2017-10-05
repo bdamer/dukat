@@ -56,14 +56,14 @@ namespace dukat
 		auto box_mesh = object_meshes.create_instance();
 		box_mesh->set_mesh(game->get_meshes()->put("box", mb3.build_cube()));
 		box_mesh->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
-		box_mesh->set_texture(game->get_textures()->get("blank.png"));
+		box_mesh->set_texture(game->get_textures()->get("white.png"));
 		box_mesh->set_material(mat_white_rubber);
 		box_mesh->transform.position.x = 2.5f;
 		
 		auto sphere_mesh = object_meshes.create_instance();
 		sphere_mesh->set_mesh(game->get_meshes()->put("sphere", mb3.build_sphere(32, 32)));
 		sphere_mesh->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
-		sphere_mesh->set_texture(game->get_textures()->get("blank.png"));
+		sphere_mesh->set_texture(game->get_textures()->get("white.png"));
 		sphere_mesh->set_material(mat_gold);
 		sphere_mesh->transform.position.x = -2.5f;
 		

@@ -114,7 +114,7 @@ namespace dukat
 		sun_mesh = game->get_debug_meshes()->create_instance();
 		sun_mesh->set_mesh(game->get_meshes()->put("sun", mb3.build_sphere(16, 16)));
 		sun_mesh->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
-		sun_mesh->set_texture(game->get_textures()->get("blank.png"));
+		sun_mesh->set_texture(game->get_textures()->get("white.png"));
 		Material m;
 		m.ambient = color_rgb(0xffff00);
 		sun_mesh->set_material(m);

@@ -2,6 +2,7 @@
 #include "texture.h"
 #include "surface.h"
 #include "shaderprogram.h"
+#include "sysutil.h"
 
 namespace dukat
 {
@@ -90,6 +91,7 @@ namespace dukat
 
 #ifdef _DEBUG
 		glBindTexture(target, 0);
+		gl_check_error();
 #endif
 	}
 

@@ -30,7 +30,6 @@ namespace dukat
 		void clear(void) { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 		// Called by application to update screen buffer.
 		void present(void) { SDL_GL_SwapWindow(window); }
-		void receive(const Message& message);
 		
 		void set_title(const std::string& title) { SDL_SetWindowTitle(window, title.c_str()); }
 		void set_vsync(bool vsync);

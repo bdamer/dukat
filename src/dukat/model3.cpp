@@ -226,7 +226,7 @@ namespace dukat
 			}
 			else
 			{
-				instance->set_texture(game->get_textures()->get("blank.png", TextureFilterProfile::ProfileNearest));
+				instance->set_texture(game->get_textures()->get("white.png", TextureFilterProfile::ProfileNearest));
 			}
 			instance->set_material(m.material);
 			instance->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));

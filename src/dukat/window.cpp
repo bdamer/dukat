@@ -70,7 +70,9 @@ namespace dukat
 		auto error = glGetError();
 		assert(error == GL_NO_ERROR || error == GL_INVALID_ENUM);
 
+#ifdef _DEBUG
 		gl_check_error();
+#endif
 	}
 
 	Window::~Window()

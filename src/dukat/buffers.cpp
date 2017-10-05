@@ -2,6 +2,7 @@
 #include "buffers.h"
 #include "log.h"
 #include "perfcounter.h"
+#include "sysutil.h"
 
 // Rebind EXT_framebuffer_object methods
 #if OPENGL_VERSION < 30
@@ -62,6 +63,9 @@ namespace dukat
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#ifdef _DEBUG
+		gl_check_error();
+#endif
 	}
 
 	FrameBuffer::~FrameBuffer(void)
@@ -109,6 +113,9 @@ namespace dukat
 				throw std::runtime_error(ss.str());
 			}
 		}
+#ifdef _DEBUG
+		gl_check_error();
+#endif
 	}
 
 	void FrameBuffer::resize(int width, int height)

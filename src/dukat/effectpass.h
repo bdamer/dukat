@@ -1,16 +1,16 @@
 #pragma once
 
+#include "buffers.h"
 #include "renderer.h"
 
 namespace dukat
 {
-    struct FrameBuffer;
     class MeshData;
     class ShaderProgram;
     struct Texture;
 
     class EffectPass
-    {
+    { 
     private:
         std::unique_ptr<FrameBuffer> fbo;
         std::unique_ptr<MeshData> mesh;
@@ -34,7 +34,9 @@ namespace dukat
         void set_texture(Texture* texture, int index = 0);
         // Sets shader attribute.
         void set_attribute(const std::string& name, const std::vector<GLfloat>& attr) { attributes[name] = attr; }
-        // Renders effect pass.
+		// Returns target texture.
+		Texture* get_target_buffer(void) const { return (fbo != nullptr ? fbo->texture.get() : nullptr); }
+		// Renders effect pass.
         void render(Renderer* renderer);
     };
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "shaderprogram.h"
 #include "perfcounter.h"
+#include "sysutil.h"
 
 namespace dukat
 {
@@ -50,6 +51,10 @@ namespace dukat
 				attributes[buffer] = location;
 			}
 		}
+
+#ifdef _DEBUG
+		gl_check_error();
+#endif
 	}
 
 	GLint ShaderProgram::attr(const std::string & name)

@@ -6,8 +6,6 @@
 
 namespace dukat
 {
-	constexpr int WaveScene::grid_size;
-
 	WaveScene::WaveScene(Game3* game) : game(game)
 	{
 		MeshBuilder3 mb3;
@@ -32,9 +30,11 @@ namespace dukat
 		auto env_map = game->get_textures()->get("sorsea.dds");
 
 		// Wave mesh
-		wave_mesh = std::make_unique<WaveMesh>(game, grid_size);
+		wave_mesh = std::make_unique<WaveMesh>(game, game->get_settings().get_int("renderer.terrain.size"));
 		wave_mesh->tile_spacing = 4.0f;
+		wave_mesh->scale_factor = 10.0f;
 		wave_mesh->set_env_map(env_map);
+		wave_mesh->set_elevation_map(game->get_textures()->get("black.png"));
 
 		// Skydome
 		skydome_mesh = object_meshes.create_instance();

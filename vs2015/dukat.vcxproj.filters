@@ -369,6 +369,9 @@
     <ClInclude Include="..\src\dukat\uimanager.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\effectpass.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -589,6 +592,9 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\uimanager.cpp">
       <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\effectpass.cpp">
+      <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

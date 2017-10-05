@@ -35,6 +35,7 @@ namespace dukat
 		auto shader_version = std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 		logger << "GL_SHADING_LANGUAGE_VERSION: " << shader_version << std::endl;
 
+		// Check capabilities
 		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &int_val);
 		logger << "GL_MAX_TEXTURE_UNITS: " << int_val << std::endl;
 		assert(int_val >= Renderer::max_texture_units);
@@ -42,8 +43,14 @@ namespace dukat
 		logger << "GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &int_val);
 		logger << "GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " << int_val << std::endl;
-		glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &int_val);
-		logger << "GL_MAX_UNIFORM_LOCATIONS: " << int_val << std::endl;
+
+#if OPENGL_VERSION >= 30
+		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &int_val);
+		logger << "GL_MAX_UNIFORM_BUFFER_BINDINGS: " << int_val << std::endl;
+		assert(int_val >= UniformBuffer::_COUNT);
+		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &int_val);
+		logger << "GL_MAX_UNIFORM_BLOCK_SIZE: " << int_val << std::endl;
+#endif
 
 #if OPENGL_VERSION >= 42
 		// TODO: validate with ctx 4.x
@@ -57,12 +64,9 @@ namespace dukat
 		logger << "Preferred format for GL_RGB16: " << int_val << std::endl;
 #endif
 
-#if OPENGL_VERSION >= 30
-		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &int_val);
-		logger << "GL_MAX_UNIFORM_BUFFER_BINDINGS: " << int_val << std::endl;
-		assert(int_val >= UniformBuffer::_COUNT);
-		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &int_val);
-		logger << "GL_MAX_UNIFORM_BLOCK_SIZE: " << int_val << std::endl;
+#if OPENGL_VERSION >= 43
+		glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &int_val);
+		logger << "GL_MAX_UNIFORM_LOCATIONS: " << int_val << std::endl;
 #endif
 
 		// Check supported extensions
@@ -70,7 +74,7 @@ namespace dukat
 			(glewIsExtensionSupported("GL_EXT_geometry_shader4") ? "yes" : "no") << std::endl;
 		logger << "GL_EXT_texture_filter_anisotropic: " <<
 			(glewIsExtensionSupported("GL_EXT_texture_filter_anisotropic") ? "yes" : "no") << std::endl;
-		logger << "GL_EXT_vertex_array_object: " << 
+		logger << "GL_EXT_vertex_array_object: " <<
 			(glewIsExtensionSupported("GL_EXT_vertex_array_object") ? "yes" : "no") << std::endl;
 		logger << "GL_EXT_framebuffer_object: " <<
 			(glewIsExtensionSupported("GL_EXT_framebuffer_object") ? "yes" : "no") << std::endl;
