@@ -4,7 +4,7 @@
 
 namespace dukat
 {
-	TextMeshInstance::TextMeshInstance(std::unique_ptr<MeshData> text_mesh)
+	TextMeshInstance::TextMeshInstance(std::unique_ptr<MeshData> text_mesh) : align(Align::Left)
 	{
 		this->text_mesh = std::move(text_mesh);
 		set_mesh(this->text_mesh.get());
@@ -36,5 +36,27 @@ namespace dukat
 	void TextMeshInstance::set_size(float size)
 	{
 		transform.scale = { size, size, size };
+	}
+
+	void TextMeshInstance::update(float delta) 
+	{
+		float x_offset;
+		switch (align)
+		{
+			case Left:
+				x_offset = 0.0f;
+				break;
+			case Center:
+				x_offset = -0.5f * get_width();
+				break;
+			case Right:
+				x_offset = -get_width();
+				break;
+		}
+		// temporarily shift X position by offset for alignment.
+		auto tmp_x = this->transform.position.x;
+		this->transform.position.x += x_offset;
+		this->transform.update(); 
+		this->transform.position.x = tmp_x;
 	}
 }

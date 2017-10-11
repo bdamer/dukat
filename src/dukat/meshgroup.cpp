@@ -32,7 +32,7 @@ namespace dukat
 		transform.update();
 		for (auto& it : instances)
 		{
-			it->transform.update();
+			it->update(delta);
 		}
 	}
 
