@@ -108,9 +108,9 @@ namespace dukat
 			break;
 		case SDLK_F12:
 			{
-			std::stringstream ss;
-			ss << "screenshot_" << std::time(nullptr) << ".png";
-			save_screenshot(ss.str());
+				std::stringstream ss;
+				ss << "screenshot_" << std::time(nullptr) << ".png";
+				save_screenshot(ss.str());
 			}
 			break;
 		}

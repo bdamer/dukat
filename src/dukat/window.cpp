@@ -102,8 +102,10 @@ namespace dukat
 		this->fullscreen = fullscreen;
 		sdl_check_result(SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0),
 			"Change screen mode");
+		// On Linux, seeing duplicate SDL events get sent after window resize. 
+		// Introduce slight delay to avoid this...
+		SDL_Delay(100);
 	}
-
 
 	void Window::set_vsync(bool vsync)
 	{
