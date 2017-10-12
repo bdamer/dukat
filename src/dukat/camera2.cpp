@@ -2,14 +2,15 @@
 #include "camera2.h"
 #include "log.h"
 #include "vector3.h"
+#include "gamebase.h"
 
 namespace dukat
 {
 	const float Camera2::default_near_clip = 0.0f;
 	const float Camera2::default_far_clip = 1000.0f;
 
-	Camera2::Camera2(Window* window, const Vector2& dimension)
-		: window(window), near_clip(default_near_clip), far_clip(default_far_clip)
+	Camera2::Camera2(GameBase* game, const Vector2& dimension)
+		: window(game->get_window()), near_clip(default_near_clip), far_clip(default_far_clip)
 	{
 		window->subscribe(Events::WindowResized, this);
 		fixed_dimension = (dimension.x != 0.0f && dimension.y != 0.0f);

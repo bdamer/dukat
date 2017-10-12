@@ -7,6 +7,8 @@
 
 namespace dukat
 {
+	class GameBase;
+	
 	struct CameraTransform2
 	{
 		Matrix4 mat_proj_orth; // orthographic projection matrix
@@ -32,7 +34,7 @@ namespace dukat
 
 		// Creates a new camera for a given window. Unless specified, the 
 		// camera will use the dimensions of the window.
-		Camera2(Window* window, const Vector2& dimension = { 0.0f, 0.0f });
+		Camera2(GameBase* game, const Vector2& dimension = { 0.0f, 0.0f });
 		virtual ~Camera2(void);
 
 		void resize(int width, int height);
