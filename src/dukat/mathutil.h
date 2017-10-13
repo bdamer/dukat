@@ -74,7 +74,10 @@ namespace dukat
 
 	inline int randi(int min, int max)
 	{
-		return min + rand() % (max - min);
+		if (min == max)
+			return min;
+		else
+			return min + rand() % (max - min);
 	}
 
 	// normalizes the value of an angle between 0 and 2 pi
