@@ -31,11 +31,12 @@ namespace dukat
 
         struct Cell
         {
+            int id;
             Point* site;
             std::list<std::unique_ptr<Edge>> edges;
             std::unordered_set<Cell*> neighbors;
 
-            Cell(void) : site(nullptr) { }
+            Cell(void) : id(-1), site(nullptr) { }
         };
 
     private:

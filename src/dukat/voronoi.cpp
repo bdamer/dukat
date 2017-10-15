@@ -86,7 +86,8 @@ namespace dukat
         for (auto it = vd->cells().begin(); it != vd->cells().end(); ++it)
         {
             auto cell = std::make_unique<Cell>();
-            cell->site = &sites[it->source_index()];
+            cell->id = it->source_index();
+            cell->site = &sites[cell->id];
             
             // associate our cell with boost's cell to perform neighbor detection
             it->color((long unsigned int)cell.get());

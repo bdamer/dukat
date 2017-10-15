@@ -98,7 +98,8 @@ namespace dukat
 		return diff;
 	}
 
-	inline void clamp(float& value, float min, float max)
+	template<typename T>
+	inline void clamp(T& value, const T min, const T max)
 	{
 		if (value < min)
 			value = min;
