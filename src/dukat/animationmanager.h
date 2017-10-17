@@ -9,12 +9,12 @@ namespace dukat
 	class AnimationManager
 	{
 	private:
-		std::list<std::unique_ptr<Animation<float>>> animations;
-
+		std::list<std::unique_ptr<Animation>> animations;
+		
 	public:
 		AnimationManager(void) { }
 		~AnimationManager(void) { }
-		Animation<float>* add(std::unique_ptr<Animation<float>> animation);
+		Animation* add(std::unique_ptr<Animation> animation);
 		void update(float delta);
 	};
 }

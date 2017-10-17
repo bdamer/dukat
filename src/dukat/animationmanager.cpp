@@ -3,7 +3,7 @@
 
 namespace dukat
 {
-	Animation<float>* AnimationManager::add(std::unique_ptr<Animation<float>> animation)
+	Animation* AnimationManager::add(std::unique_ptr<Animation> animation)
 	{
 		auto anim = animation.get();
 		animations.push_back(std::move(animation));

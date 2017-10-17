@@ -20,8 +20,21 @@ namespace dukat
 		AnimationKey(float index, T value, Mode mode = Mode::Continuous) : index(index), value(value), mode(mode) { }
 	};
 
-	template <typename T>
+	// Virtual interface used to store different animations in a single container.
 	class Animation
+	{
+	public:
+		Animation(void) { }
+		virtual ~Animation(void) { }
+		virtual bool is_running(void) const = 0;
+		virtual bool is_done(void) const = 0;
+		virtual void start(void) = 0;
+		virtual void stop(void) = 0;
+		virtual void step(float delta) = 0;
+	};
+
+	template <typename T>
+	class ValueAnimation : public Animation
 	{
 	private:
 		// animation keys
@@ -40,11 +53,11 @@ namespace dukat
 
 	public:
 		// Creates a new animation for the attribute provided.
-		Animation(T* attribute) : attribute(attribute), next_key(-1), loop(false) { }
+		ValueAnimation(T* attribute) : attribute(attribute), next_key(-1), loop(false) { }
 		// Creates a new animation with a single animation key specified by time and value.
-		Animation(T* attribute, float time, T value, bool loop = false)
+		ValueAnimation(T* attribute, float time, T value, bool loop = false)
 			: attribute(attribute), next_key(-1), loop(loop) { add_key({ time, value }); }
-		~Animation(void) { }
+		~ValueAnimation(void) { }
 
 		void set_callback(const std::function<void(void)>& callback) { this->callback = callback; }
 		void set_loop(bool loop) { this->loop = loop; }
@@ -60,7 +73,7 @@ namespace dukat
 	};
 
 	template<typename T>
-	inline void Animation<T>::start(void)
+	inline void ValueAnimation<T>::start(void)
 	{
 		time = 0.0f;
 		next_key = 0;
@@ -70,13 +83,13 @@ namespace dukat
 	}
 
 	template<typename T>
-	inline void Animation<T>::stop(void)
+	inline void ValueAnimation<T>::stop(void)
 	{
 		next_key = keys.end() - keys.begin();
 	}
 
 	template<typename T>
-	inline void Animation<T>::step(float delta)
+	inline void ValueAnimation<T>::step(float delta)
 	{
 		auto next = keys.begin() + next_key;
 		if (next->mode == AnimationKey<T>::Continuous)
