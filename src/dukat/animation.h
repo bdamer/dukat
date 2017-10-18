@@ -45,7 +45,7 @@ namespace dukat
 		// target attribute
 		T* attribute;
 		// change to attribute per second
-		T value_delta;
+		float value_delta;
 		// if true will loop animation
 		bool loop;
 		// called when animation is done
@@ -94,7 +94,7 @@ namespace dukat
 		auto next = keys.begin() + next_key;
 		if (next->mode == AnimationKey<T>::Continuous)
 		{
-			*attribute += value_delta * delta;
+			*attribute += static_cast<T>(value_delta * delta);
 		}
 		// next animation key
 		if (time >= next->index)
