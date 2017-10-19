@@ -72,7 +72,7 @@ namespace dukat
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		game->get_devices()->active->on_press(InputDevice::VirtualButton::SecondaryAction, 
+		game->get_devices()->active->on_press(InputDevice::VirtualButton::Action2, 
 			std::bind(&RoomCamera::jump, camera.get()));
 		game->get_renderer()->set_camera(std::move(camera));
 

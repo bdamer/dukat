@@ -9,7 +9,7 @@ namespace dukat
 
 	KeyboardDevice::KeyboardDevice(Window* window) : InputDevice(window, keyboard_id, true), sensitivity(2)
 	{
-		mapping[VirtualButton::Jump] = SDL_SCANCODE_SPACE;
+		mapping[VirtualButton::Action3] = SDL_SCANCODE_SPACE;
 		mapping[VirtualButton::Pause] = SDL_SCANCODE_P;
 		mapping[VirtualButton::Debug1] = SDL_SCANCODE_GRAVE;
 		mapping[VirtualButton::Debug2] = SDL_SCANCODE_2;
@@ -55,13 +55,13 @@ namespace dukat
 		// Handle mapped keys & mouse buttons
 		for (int i = 0; i < VirtualButton::_Count; i++)
 		{
-			if (VirtualButton::PrimaryAction == (VirtualButton)i)
+			if (VirtualButton::Action1 == (VirtualButton)i)
 			{
-				update_button_state(VirtualButton::PrimaryAction, mouse_lb);
+				update_button_state(VirtualButton::Action1, mouse_lb);
 			}
-            else if (VirtualButton::SecondaryAction == (VirtualButton)i)
+            else if (VirtualButton::Action2 == (VirtualButton)i)
             {
-				update_button_state(VirtualButton::SecondaryAction, mouse_rb);
+				update_button_state(VirtualButton::Action2, mouse_rb);
             }
 			else
 			{
@@ -72,11 +72,11 @@ namespace dukat
 
 	bool KeyboardDevice::is_pressed(VirtualButton button) const
 	{
-		if (VirtualButton::PrimaryAction == button)
+		if (VirtualButton::Action1 == button)
 		{
 			return mouse_lb;
 		}
-        else if (VirtualButton::SecondaryAction == button)
+        else if (VirtualButton::Action2 == button)
         {
             return mouse_rb;
         }
