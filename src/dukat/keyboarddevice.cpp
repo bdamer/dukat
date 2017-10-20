@@ -10,6 +10,7 @@ namespace dukat
 	KeyboardDevice::KeyboardDevice(Window* window) : InputDevice(window, keyboard_id, true), sensitivity(2)
 	{
 		mapping[VirtualButton::Action3] = SDL_SCANCODE_SPACE;
+		mapping[VirtualButton::Action4] = SDL_SCANCODE_RETURN;
 		mapping[VirtualButton::Pause] = SDL_SCANCODE_P;
 		mapping[VirtualButton::Debug1] = SDL_SCANCODE_GRAVE;
 		mapping[VirtualButton::Debug2] = SDL_SCANCODE_2;
