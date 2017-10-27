@@ -15,6 +15,16 @@ namespace dukat
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
 		}
 
+		// Create OpenGL context with desired profile version
+#if OPENGL_VERSION >= 30
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#else
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#endif
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
 		// Create the window
 		if (fullscreen)
 		{
@@ -30,17 +40,7 @@ namespace dukat
 		}
 
 		SDL_ShowCursor(SDL_DISABLE);
-		set_vsync(true);
-
-		// Create OpenGL context with desired profile version
-#if OPENGL_VERSION >= 30
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#else
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#endif
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		
 		context = SDL_GL_CreateContext(window);
 		if (context == nullptr)
 		{
@@ -50,6 +50,9 @@ namespace dukat
 		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
 		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
 		logger << "Created OpenGL context " << major << "." << minor << std::endl;
+
+		// Set vsync for current context 
+		set_vsync(true);
 
 		if (msaa)
 		{
