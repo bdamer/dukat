@@ -132,7 +132,34 @@ namespace dukat
 			else
 			{
 				Vector2 half_dim(sprite->scale * sprite->w / 2.0f, sprite->scale * sprite->h / 2.0f);
-				AABB2 sprite_bb(sprite->p - half_dim, sprite->p + half_dim);
+				auto min_p = sprite->p - half_dim;
+				auto max_p = sprite->p + half_dim;
+
+				if (sprite->center > 0)
+				{
+					if ((sprite->center & Sprite::align_bottom) == Sprite::align_bottom)
+					{
+						min_p.y -= (sprite->h / 2) * sprite->scale;
+						max_p.y -= (sprite->h / 2) * sprite->scale;
+					}
+					else if ((sprite->center & Sprite::align_top) == Sprite::align_top)
+					{
+						min_p.y += (sprite->h / 2) * sprite->scale;
+						max_p.y += (sprite->h / 2) * sprite->scale;
+					}
+					if ((sprite->center & Sprite::align_right) == Sprite::align_right)
+					{
+						min_p.x -= (sprite->w / 2) * sprite->scale;
+						max_p.x -= (sprite->w / 2) * sprite->scale;
+					}
+					else if ((sprite->center & Sprite::align_left) == Sprite::align_left)
+					{
+						min_p.x += (sprite->w / 2) * sprite->scale;
+						max_p.x += (sprite->w / 2) * sprite->scale;
+					}
+				}
+
+				AABB2 sprite_bb(min_p, max_p);
 				if (!camera_bb.overlaps(sprite_bb))
 				{
 					sprite->rendered = false;
