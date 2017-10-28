@@ -9,7 +9,7 @@
 
 namespace dukat
 {
-	Sprite::Sprite(Texture* texture) : p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+	Sprite::Sprite(Texture* texture) : p(0, 0), z(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
 		index(0), COLS(1), ROWS(1), normal_id(0), rendered(true), pixel_aligned(false), relative(false)
 	{
 		w = texture->w;
@@ -21,7 +21,7 @@ namespace dukat
 		tex[3] = 1.0f;
 	}
 
-	Sprite::Sprite(Texture* texture, Rect rect) : p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+	Sprite::Sprite(Texture* texture, Rect rect) : p(0, 0), z(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
 		index(0), COLS(1), ROWS(1), normal_id(0), rendered(true), pixel_aligned(false), relative(false)
 	{
 		w = rect.w;
@@ -34,7 +34,7 @@ namespace dukat
 		tex[3] = (float)(rect.h) / (float)texture->h;
 	}
 
-	Sprite::Sprite(Texture* texture, int cols, int rows) : p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+	Sprite::Sprite(Texture* texture, int cols, int rows) : p(0, 0), z(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
 		index(0), COLS(cols), ROWS(rows), normal_id(0), rendered(true), pixel_aligned(false), relative(false)
 	{
 		// determine the dimensions of each map entry
@@ -75,32 +75,5 @@ namespace dukat
 		tex[0] = (index % COLS) * tex[2];
 		tex[1] = (index / COLS) * tex[3];
 		return *this;
-	}
-
-	Matrix4 Sprite::compute_model_matrix(const Vector2& camera_position)
-	{
-		Matrix4 mat_model, tmp;
-
-		// if we're in relative addressing mode, transpose sprite
-		// position by camera position.
-		Vector2 p_tmp = (relative ? p + camera_position : p);
-
-		// scale * rotation * translation
-		if (pixel_aligned)
-		{
-			mat_model.setup_translation(Vector3(round(p_tmp.x), round(p_tmp.y), 0.0f));
-		}
-		else
-		{
-			mat_model.setup_translation(Vector3(p_tmp.x, p_tmp.y, 0.0f));
-		}
-		if (rot != 0.0f)
-		{
-			tmp.setup_rotation(Vector3::unit_z, rot);
-			mat_model *= tmp;
-		}
-		tmp.setup_scale(Vector3(scale * w, scale * h, 1.0f));
-		mat_model *= tmp;
-		return mat_model;
 	}
 }

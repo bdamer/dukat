@@ -197,6 +197,7 @@ namespace dukat
 
 		// Render in order
 		GLuint last_texture = -1;
+		Matrix4 mat_m;
 		while (!queue.empty())
 		{
 			// get top element from queue
@@ -213,7 +214,7 @@ namespace dukat
 				last_texture = sprite->texture_id;
 			}
 
-			Matrix4 mat_m = sprite->compute_model_matrix(renderer->get_camera()->transform.position);
+			compute_model_matrix(*sprite, renderer->get_camera()->transform.position, mat_m);
 			glUniformMatrix4fv(model_id, 1, false, &mat_m.m[0]);
 			glUniform4fv(color_id, 1, &sprite->color.r);
 			glUniform4fv(uvwh_id, 1, sprite->tex);
@@ -234,6 +235,56 @@ namespace dukat
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	#endif
 #endif
+	}
+
+	void RenderLayer2::compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, Matrix4& mat_model)
+	{
+		Vector2 pos = sprite.p;
+
+		// adjust position based on alignment
+		if (sprite.center > 0)
+		{
+			if ((sprite.center & Sprite::align_bottom) == Sprite::align_bottom)
+			{
+				pos.y -= (sprite.h / 2) * sprite.scale;
+			}
+			else if ((sprite.center & Sprite::align_top) == Sprite::align_top)
+			{
+				pos.y += (sprite.h / 2) * sprite.scale;
+			}
+			if ((sprite.center & Sprite::align_right) == Sprite::align_right)
+			{
+				pos.x -= (sprite.w / 2) * sprite.scale;
+			}
+			else if ((sprite.center & Sprite::align_left) == Sprite::align_left)
+			{
+				pos.x += (sprite.w / 2) * sprite.scale;
+			}
+		}
+
+		// if we're in relative addressing mode, transpose sprite
+		// position by camera position.
+		if (sprite.relative)
+		{
+			pos += camera_position;
+		}
+
+		if (sprite.pixel_aligned)
+		{
+			pos.x = std::round(pos.x);
+			pos.y = std::round(pos.y);
+		}
+
+		// scale * rotation * translation
+		static Matrix4 tmp;
+		mat_model.setup_translation(Vector3(pos.x, pos.y, 0.0f));
+		if (sprite.rot != 0.0f)
+		{
+			tmp.setup_rotation(Vector3::unit_z, sprite.rot);
+			mat_model *= tmp;
+		}
+		tmp.setup_scale(Vector3(sprite.scale * sprite.w, sprite.scale * sprite.h, 1.0f));
+		mat_model *= tmp;
 	}
 
 	void RenderLayer2::render_particles(Renderer2* renderer, const AABB2& camera_bb)

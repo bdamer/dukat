@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-	class Sprite;
+	struct Sprite;
 
 	class SpritesScene : public Scene2, public Controller
 	{
@@ -29,7 +29,6 @@ namespace dukat
 		~SpritesScene(void) { }
 
 		void handle_keyboard(const SDL_Event& e);
-		void update_debug_text(void);
 		void update(float delta);
 	};
 }

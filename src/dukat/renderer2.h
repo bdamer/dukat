@@ -18,7 +18,7 @@
 
 namespace dukat
 {
-	class Sprite;
+	struct Sprite;
 
 	// 2D Renderer
 	// The coordinate system used assumes that the x-axis goes towards the right and the y-axis

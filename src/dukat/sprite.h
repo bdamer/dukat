@@ -10,14 +10,17 @@ namespace dukat
 	struct Rect;
 	class Matrix4;
 
-	class Sprite
-	{
-	private:
-		const int COLS, ROWS;
-		// current index for sprite map.
-		int index;
 
-	public:
+	struct Sprite
+	{
+		typedef Uint8 Alignment;
+		static constexpr Alignment align_center = 0;
+		static constexpr Alignment align_bottom = 1;
+		static constexpr Alignment align_right = 2;
+		static constexpr Alignment align_top = 4;
+		static constexpr Alignment align_left = 8;
+
+		const int COLS, ROWS;
 		// Position
 		Vector2 p;
 		// Rendering priority
@@ -26,6 +29,8 @@ namespace dukat
 		int w, h;
 		// Texture coordinates
 		GLfloat tex[4];
+		// Sprite Alignment
+		Alignment center;
 		// Scaling factor
 		GLfloat scale;
 		GLfloat rot;
@@ -33,15 +38,17 @@ namespace dukat
 		Color color;
 		TextureId texture_id;
 		TextureId normal_id;
+		// current index for sprite map.
+		int index;
 		// If true will align sprite to pixel boundaries.
 		bool pixel_aligned;
 		// If true will interpret position relative to camera.
 		bool relative;
-		// true if this particle was rendered during last frame
+		// True if sprite was rendered during last frame
 		bool rendered;
 
 		// Default constructor
-		Sprite(void) : p(0, 0), z(0), w(0), h(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+		Sprite(void) : p(0, 0), z(0), w(0), h(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
 			texture_id(0), normal_id(0), index(0), COLS(1), ROWS(1), pixel_aligned(false), relative(false) { }
 		// Creates a sprite with the full size of the texture
 		Sprite(Texture* texture);
@@ -60,8 +67,6 @@ namespace dukat
 
 		bool operator<(const Sprite& s) const { return z < s.z; }
 		bool operator>(const Sprite& s) const { return z > s.z; }
-
-		Matrix4 compute_model_matrix(const Vector2& camera_position);
 	};
 
 	// Used to order entities by z value. For sprites with the same z value,

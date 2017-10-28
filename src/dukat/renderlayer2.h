@@ -50,6 +50,9 @@ namespace dukat
 		void fill_sprite_queue(const AABB2& camera_bb, 
 			std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator>& queue);
 
+		// Generates sprite model matrix.
+		void compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, Matrix4& mat_model);
+
 	public:
 		const std::string id;
 		// value for parallax projection
