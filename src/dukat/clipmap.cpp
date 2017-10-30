@@ -302,7 +302,7 @@ namespace dukat
 
         std::vector<VertexAttribute> attributes;
 		attributes.push_back(VertexAttribute(Renderer::at_pos, 2, 0, GL_SHORT));
-        perimeter_mesh = std::make_unique<MeshData>(GL_TRIANGLES, vc, index_data.size(), attributes);
+        perimeter_mesh = std::make_unique<MeshData>(GL_TRIANGLES, vc, static_cast<int>(index_data.size()), attributes);
         perimeter_mesh->set_vertices(vertex_data);
         perimeter_mesh->set_indices(index_data);
     }

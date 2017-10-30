@@ -18,7 +18,7 @@ namespace dukat
 
 		auto debug_text = create_text_mesh(1.0f / 30.0f);
 		debug_text->align = TextMeshInstance::Align::Center;
-		debug_text->transform.position.y = 0.95f;
+		debug_text->transform.position.y = 0.75f;
 		debug_text->transform.update();
 		debug_meshes.add_instance(std::move(debug_text));
 	}
