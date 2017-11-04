@@ -106,7 +106,7 @@ namespace dukat
 		case SDLK_PAUSE:
 			toggle_pause();
 			break;
-		case SDLK_F12:
+		case SDLK_PRINTSCREEN:
 			{
 				std::stringstream ss;
 				ss << "screenshot_" << std::time(nullptr) << ".png";
