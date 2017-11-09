@@ -56,7 +56,7 @@ namespace dukat
         // Cell / Edge vertices
         std::list<std::unique_ptr<Point>> vertices;
         // Cells
-        std::vector<std::unique_ptr<Cell>> cells;
+        std::unordered_map<int,std::unique_ptr<Cell>> cells;
         // List of edge vertices that lie on bounding box in clockwise order.
         std::list<Point*> border_vertices;
 
@@ -88,6 +88,6 @@ namespace dukat
         ~VoronoiDiagram(void) { }
         // If iterations > 1, Lloyd relaxation will be performed between each pass.
         void compute(int iterations = 1);
-        const std::vector<std::unique_ptr<Cell>>& get_cells(void) const { return cells; }
+		std::vector<Cell*> get_cells(void) const;
     };
 }

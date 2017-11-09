@@ -101,16 +101,16 @@ namespace dukat
 
         // First create centers for each cell
         const auto& cells = vd.get_cells();
-        for (auto i = 0u; i < cells.size(); i++)
+        for (auto c : cells)
         {
             // Create a new center for cell's site
             auto center = create_center();
-            center->pos = *cells[i]->site;
+            center->pos = *c->site;
             // register new cell 
-            center_map[cells[i].get()] = center;
+            center_map[c] = center;
 
             // Loop over edges and create corner for each vertex
-            for (auto it = cells[i]->edges.begin(); it != cells[i]->edges.end(); ++it)
+            for (auto it = c->edges.begin(); it != c->edges.end(); ++it)
             {
                 auto point = (*it)->v0;
                 Corner* corner;

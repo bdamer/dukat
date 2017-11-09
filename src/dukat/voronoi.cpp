@@ -29,15 +29,15 @@ namespace dukat
                 // perform lloyd relaxation on input sites
                 std::vector<Vector2> new_sites;
                 new_sites.reserve(cells.size());
-                for (const auto& cell : cells)
+                for (const auto& it : cells)
                 {
                     // compute midpoint of cell
                     Vector2 mid;
-                    for (const auto& edge : cell->edges)
+                    for (const auto& edge : it.second->edges)
                     {
                         mid += *edge->v0;
                     }
-                    mid /= (float)cell->edges.size();
+                    mid /= (float)it.second->edges.size();
                     new_sites.push_back(mid);
                 }
                 this->sites = new_sites;
@@ -88,9 +88,9 @@ namespace dukat
             auto cell = std::make_unique<Cell>();
             cell->id = it->source_index();
             cell->site = &sites[cell->id];
-            
-            // associate our cell with boost's cell to perform neighbor detection
-            it->color((long unsigned int)cell.get());
+			auto c_ptr = cell.get();
+			// Add cell to cell map here, since it will be needed during edge clipping
+			cells[cell->id] = std::move(cell);
 
             // Iterate over cell's edges
             auto edge = it->incident_edge();
@@ -110,15 +110,13 @@ namespace dukat
                     if (new_edge != nullptr)
                     {
                         // insert new edge
-                        new_edge->cell = cell.get();
-                        cell->edges.push_back(std::move(new_edge));
+                        new_edge->cell = c_ptr;
+						c_ptr->edges.push_back(std::move(new_edge));
                     }
                 }
                 edge = edge->next();
             }
             while (edge != it->incident_edge());
-
-            cells.push_back(std::move(cell));
         }
     }
 
@@ -149,7 +147,7 @@ namespace dukat
     {
         for (auto cit = cells.begin(); cit != cells.end(); ++cit)
         {
-            auto cell = cit->get();
+            auto cell = cit->second.get();
 
             // Check that edges form a loop
             Edge* start = nullptr;
@@ -398,8 +396,10 @@ namespace dukat
         // Establish neighbor relationship. If other cell is null,
         // assume that this relationship will get created when it is
         // processed.
-        Cell* this_cell = (Cell*)cell1->color();
-        Cell* other_cell = (Cell*)cell2->color();
+		auto this_idx = cell1->source_index();
+		auto other_idx = cell2->source_index();
+		auto this_cell = cells[this_idx].get();
+		auto other_cell = cells[other_idx].get();
         if (other_cell != nullptr)
         {
             this_cell->neighbors.insert(other_cell);
@@ -420,4 +420,15 @@ namespace dukat
 
         return std::move(res);
     }
+
+	std::vector<VoronoiDiagram::Cell*> VoronoiDiagram::get_cells(void) const
+	{
+		std::vector<Cell*> res;
+		res.reserve(cells.size());
+		for (auto& it : cells) 
+		{
+			res.push_back(it.second.get());
+		}
+		return res;
+	}
 }
