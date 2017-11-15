@@ -18,12 +18,13 @@ namespace dukat
 		int width;
 		int height;
 		bool fullscreen;
+		bool vsync;
 		bool msaa_enabled;
 		SDL_Window* window;
 		SDL_GLContext context;
 
 	public:
-		Window(int width = 640, int height = 480, bool fullscreen = false, bool msaa = false);
+		Window(int width, int height, bool fullscreen, bool vsync, bool msaa);
 		~Window();
 
 		// Clears screen buffers.

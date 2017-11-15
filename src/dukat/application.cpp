@@ -17,7 +17,7 @@ namespace dukat
 		logger << "Initializing application." << std::endl;
 		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");
 		window = std::make_unique<Window>(settings.get_int("window.width", 640), settings.get_int("window.height", 480), 
-			settings.get_bool("window.fullscreen"), settings.get_bool("window.msaa"));
+			settings.get_bool("window.fullscreen"), settings.get_bool("window.vsync", true), settings.get_bool("window.msaa"));
 		window->set_title(title);
 		device_manager = std::make_unique<DeviceManager>();
 		device_manager->add_keyboard(window.get());

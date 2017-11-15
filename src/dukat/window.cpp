@@ -5,7 +5,7 @@
 
 namespace dukat
 {
-	Window::Window(int width, int height, bool fullscreen, bool msaa)
+	Window::Window(int width, int height, bool fullscreen, bool vsync, bool msaa)
 		: width(width), height(height), fullscreen(fullscreen)
 	{
 		// Need to request MSAA buffers before creating window
@@ -52,7 +52,7 @@ namespace dukat
 		logger << "Created OpenGL context " << major << "." << minor << std::endl;
 
 		// Set vsync for current context 
-		set_vsync(true);
+		set_vsync(vsync);
 
 		if (msaa)
 		{
@@ -112,6 +112,7 @@ namespace dukat
 
 	void Window::set_vsync(bool vsync)
 	{
+		this->vsync = vsync;
 #if SDL_VERSION_ATLEAST(1,3,0)
 		SDL_GL_SetSwapInterval(vsync);
 #else /* SDL_VERSION_ATLEAST(1,3,0) */

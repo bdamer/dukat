@@ -15,7 +15,7 @@ namespace dukat
 		static const int window_height = 300;
 
 		std::unique_ptr<Sprite> bg_sprite;
-		std::unique_ptr<Sprite> sprite;		
+		std::unique_ptr<Sprite> sprite;
 		RenderLayer2* bg_layer;
 		RenderLayer2* particle_layer;
 		RenderLayer2* main_layer;
