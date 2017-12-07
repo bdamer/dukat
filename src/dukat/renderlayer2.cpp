@@ -176,7 +176,7 @@ namespace dukat
 
 	void RenderLayer2::render_sprites(Renderer2* renderer, const AABB2& camera_bb)
 	{
-		std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator> queue;
+		static std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator> queue;
 		fill_sprite_queue(camera_bb, queue);
 		if (queue.empty())
 			return; // nothing to render
