@@ -10,7 +10,6 @@ namespace dukat
 	struct Rect;
 	class Matrix4;
 
-
 	struct Sprite
 	{
 		typedef Uint8 Alignment;

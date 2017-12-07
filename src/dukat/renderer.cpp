@@ -89,7 +89,7 @@ namespace dukat
 		switch (msg.event)
 		{
 		case Events::WindowResized:
-			glViewport(0, 0, *static_cast<int*>(msg.param1), *static_cast<int*>(msg.param2));
+			glViewport(0, 0, *static_cast<const int*>(msg.param1), *static_cast<const int*>(msg.param2));
 			break;
 		}
 	}

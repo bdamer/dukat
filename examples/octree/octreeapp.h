@@ -13,7 +13,7 @@ namespace dukat
 {
 	class Entity;
 	struct Rect;
-	class Sprite;
+	struct Sprite;
 	class Surface;
 	struct Texture;
 

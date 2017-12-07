@@ -33,7 +33,7 @@ namespace dukat
 		switch (msg.event)
 		{
 		case Events::WindowResized:
-			resize(*static_cast<int*>(msg.param1), *static_cast<int*>(msg.param2));
+			resize(*static_cast<const int*>(msg.param1), *static_cast<const int*>(msg.param2));
 			break;
 		}
 	}

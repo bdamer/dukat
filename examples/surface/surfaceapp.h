@@ -6,7 +6,7 @@
 namespace dukat
 {
 	struct Texture;
-	class Sprite;
+	struct Sprite;
 	class Surface;
 
 	class SurfaceScene : public Scene2, public Controller
