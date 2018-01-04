@@ -84,6 +84,11 @@ namespace dukat
 		}
 	}
 
+	void Renderer2::destroy_layers(void)
+	{
+		layers.clear();
+	}
+
 	RenderLayer2* Renderer2::get_layer(const std::string& id) const
 	{
 		for (auto it = layers.begin(); it != layers.end(); ++it)

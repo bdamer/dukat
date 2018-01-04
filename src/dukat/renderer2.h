@@ -53,6 +53,8 @@ namespace dukat
 		RenderLayer2* create_layer(const std::string& id, float priority, float parallax = 1.0f);
 		// Destroys an existing render layer.
 		void destroy_layer(const std::string& id);
+		// Destroys all rendering layers.
+		void destroy_layers(void);
 		// Returns a pointer to a named layer.
 		RenderLayer2* get_layer(const std::string& id) const;
 		// Adds sprite to layer.
