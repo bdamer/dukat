@@ -6,7 +6,7 @@ namespace dukat
 	class Matrix4;
 	class EulerAngles;
 
-	// Implement a quaternion for the purpose of representing an angular 
+	// Implements a quaternion for the purpose of representing an angular 
 	// displacement (orientation) in 3D.
 	class Quaternion
 	{

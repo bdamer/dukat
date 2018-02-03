@@ -372,6 +372,9 @@
     <ClInclude Include="..\src\dukat\effectpass.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\followercamera3.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">

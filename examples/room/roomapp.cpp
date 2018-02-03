@@ -67,7 +67,7 @@ namespace dukat
 	RoomScene::RoomScene(Game3* game) : game(game)
 	{
 		auto settings = game->get_settings();
-		auto camera = std::make_unique<RoomCamera>(game->get_window(), game);
+		auto camera = std::make_unique<RoomCamera>(game);
 		camera->transform.position.y = 1.0;
 		camera->set_vertical_fov(settings.get_float("camera.fov"));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));

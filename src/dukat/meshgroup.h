@@ -24,8 +24,9 @@ namespace dukat
 		MeshInstance* create_instance(void) { instances.push_back(std::make_unique<MeshInstance>()); return instances.back().get(); }
 		MeshInstance* add_instance(std::unique_ptr<MeshInstance> instance);
         void remove_instance(MeshInstance* instance);
-		MeshInstance* get_instance(int index) { return instances[index].get(); }
+		MeshInstance* get_instance(int index) const { return instances[index].get(); }
 		int size(void) { return static_cast<int>(instances.size()); }
+		void clear(void) { instances.clear(); }
 
 		void update(float delta);
 		// TODO: revisit - we may want to batch these calls

@@ -29,6 +29,8 @@ namespace dukat
 		// Creates a new triangle mesh.
 		std::unique_ptr<MeshData> build_triangle(void);
 		// Creates a new circle mesh.
-		std::unique_ptr<MeshData> build_circle(int segments);
+		std::unique_ptr<MeshData> build_circle(int segments = 12);
+		// Creates a new filled circle mesh.
+		std::unique_ptr<MeshData> build_filled_circle(int segments = 12);
 	};
 }

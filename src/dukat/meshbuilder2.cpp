@@ -107,6 +107,51 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(VertexPosCol, col)));
 
 		std::vector<VertexPosCol> vertices;
+
+		// angle per segment
+		float theta = two_pi / (float)segments;
+		// calculate the tangential factor 
+		float tan_factor = std::tan(theta);
+		// calculate the radial factor 
+		float rad_factor = std::cos(theta);
+
+		// we start at angle = 0 
+		float x = 1.0f;
+		float y = 0;
+
+		for (int i = 0; i <= segments; i++)
+		{
+			vertices.push_back({ x, y, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f });
+
+			// calculate the tangential vector 
+			// remember, the radial vector is (x, y) 
+			// to get the tangential vector we flip those coordinates and negate one of them 
+			float tx = -y;
+			float ty = x;
+
+			// add the tangential vector 
+			x += tx * tan_factor;
+			y += ty * tan_factor;
+
+			// correct using the radial factor 
+			x *= rad_factor;
+			y *= rad_factor;
+		}
+
+		auto res = std::make_unique<MeshData>(GL_LINE_STRIP, (unsigned int)vertices.size(), 0, attr);
+		res->set_vertices(reinterpret_cast<GLfloat*>(vertices.data()));
+		return res;
+	}
+
+	std::unique_ptr<MeshData> MeshBuilder2::build_filled_circle(int segments)
+	{
+		assert(segments > 2);
+
+		std::vector<VertexAttribute> attr;
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
+		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(VertexPosCol, col)));
+
+		std::vector<VertexPosCol> vertices;
 		// add center position
 		vertices.push_back({ 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f });
 

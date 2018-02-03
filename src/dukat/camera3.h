@@ -48,7 +48,7 @@ namespace dukat
 	public:
 		CameraTransform3 transform;
 		Camera3(Window* window);
-		~Camera3(void);
+		virtual ~Camera3(void);
 
 		void resize(int width, int height);
 		void set_vertical_fov(float fov) { fov_v = fov; compute_horizontal_fov(); }

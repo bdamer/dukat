@@ -53,10 +53,10 @@ namespace dukat
 		return sources[filename];
 	}
 
-	GLuint ShaderCache::build_shader(GLenum shaderType, const std::string& filename)
+	GLuint ShaderCache::build_shader(GLenum shader_type, const std::string& filename)
 	{
 		logger << "Compiling shader [" << filename << "]: ";
-		GLuint shader = glCreateShader(shaderType);
+		GLuint shader = glCreateShader(shader_type);
 		auto src = load_shader(filename);
 		auto srcPtr = src.c_str();
 		glShaderSource(shader, 1, &srcPtr, NULL);
@@ -87,25 +87,25 @@ namespace dukat
 		return shader;
 	}
 
-	GLuint ShaderCache::build_program(const std::string& vertexFile, const std::string& fragmentFile,
-			const std::string& geometryFile)
+	GLuint ShaderCache::build_program(const std::string& vertex_file, const std::string& fragment_file,
+			const std::string& geometry_file)
 	{
-		GLuint program = glCreateProgram();
-		GLuint vertexShader = build_shader(GL_VERTEX_SHADER, vertexFile);
-		glAttachShader(program, vertexShader);
+		auto program = glCreateProgram();
+		auto vertex_shader = build_shader(GL_VERTEX_SHADER, vertex_file);
+		glAttachShader(program, vertex_shader);
 
 #if OPENGL_VERSION >= 30
 		// Geometry shader is optional
-		GLuint geometryShader = 0;
-		if (geometryFile != "")
+		auto geometry_shader = 0;
+		if (geometry_file != "")
 		{
-			geometryShader = build_shader(GL_GEOMETRY_SHADER, geometryFile);
-			glAttachShader(program, geometryShader);
+			geometry_shader = build_shader(GL_GEOMETRY_SHADER, geometry_file);
+			glAttachShader(program, geometry_shader);
 		}
 #endif
 
-		GLuint fragmentShader = build_shader(GL_FRAGMENT_SHADER, fragmentFile);
-		glAttachShader(program, fragmentShader);
+		auto fragment_shader = build_shader(GL_FRAGMENT_SHADER, fragment_file);
+		glAttachShader(program, fragment_shader);
 
 #if OPENGL_VERSION >= 30
 		// tell opengl the name of the output variable of the fragment shader
@@ -114,21 +114,21 @@ namespace dukat
 #endif
 		glLinkProgram(program);
 
-		if (vertexShader > 0)
+		if (vertex_shader > 0)
 		{
-			glDetachShader(program, vertexShader);
-			glDeleteShader(vertexShader);
+			glDetachShader(program, vertex_shader);
+			glDeleteShader(vertex_shader);
 		}
-		if (fragmentShader > 0)
+		if (fragment_shader > 0)
 		{
-			glDetachShader(program, fragmentShader);
-			glDeleteShader(fragmentShader);
+			glDetachShader(program, fragment_shader);
+			glDeleteShader(fragment_shader);
 		}
 #if OPENGL_VERSION >= 30
-		if (geometryShader > 0)
+		if (geometry_shader > 0)
 		{
-			glDetachShader(program, geometryShader);
-			glDeleteShader(geometryShader);
+			glDetachShader(program, geometry_shader);
+			glDeleteShader(geometry_shader);
 		}
 #endif
 
@@ -138,13 +138,13 @@ namespace dukat
 		return program;
 	}
 
-	ShaderProgram* ShaderCache::get_program(const std::string& vertexFile, const std::string& fragmentFile,
-		const std::string& geometryFile)
+	ShaderProgram* ShaderCache::get_program(const std::string& vertex_file, const std::string& fragment_file,
+		const std::string& geometry_file)
 	{
-		std::string key = vertexFile + "|" + fragmentFile + "|" + geometryFile;
+		std::string key = vertex_file + "|" + fragment_file + "|" + geometry_file;
 		if (programs.count(key) == 0)
 		{
-			GLuint program = build_program(vertexFile, fragmentFile, geometryFile);
+			auto program = build_program(vertex_file, fragment_file, geometry_file);
 			programs[key] = std::make_unique<ShaderProgram>(program);
 		}
 		return programs[key].get();
