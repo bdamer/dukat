@@ -67,7 +67,7 @@ namespace dukat
         return (i % n + n) % n;
     }
 
-	inline float randf(float min, float max)
+	inline float randf(float min = 0.0f, float max = 1.0f)
 	{
 		return min + (max - min) * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
 	}

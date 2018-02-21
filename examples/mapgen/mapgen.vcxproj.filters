@@ -24,12 +24,24 @@
     <ClInclude Include="mapgenapp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mapgenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hexmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mapgenapp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapgenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hexmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
