@@ -80,77 +80,66 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	const Color get_cell_color(const HexMap::Cell& cell)
+	const Color get_cell_color(HexMap::Cell* cell)
 	{
-		if (cell.border)
+		if (cell->x % 2 == 0)
 		{
-			return bare_color;
-		}
-		else if (cell.ocean)
+			if (cell->y % 2 == 0)
+			{
+				return bare_color;
+			}
+			else
+			{
+				return ocean_color;
+			}
+		}	
+		else 
 		{
-			return ocean_color;
-		}
-		else if (cell.water)
-		{
-			return lake_color;
-		}
-		else
-		{
-			return land_color;
-		}
+			if (cell->y % 2 == 0)
+			{
+				return scorched_color;
+			}
+			else
+			{
+				return tropical_rf_color;
+			}
+		}	
 	}
 
 	void create_hex_mesh(MeshData* mesh)
 	{
-		const float size = 1.0f;
-		const float w = sqrtf(3.0f) * size;
-		const float h = 2.0f * size;
-
-		HexMap map(12, 12);
+		HexMap map(8, 8, 1.0f);
 
 		std::vector<VertexPosCol> verts;
 		std::vector<GLushort> indices;
 
-		float offset_x = -0.5f * w * static_cast<float>(map.get_width());
-		float offset_y = 0.0f;
-		float offset_z = -0.5f * h * static_cast<float>(map.get_height());
 		GLushort vidx = 0;
-
-		float pos_x, pos_y, pos_z;
-		for (auto y = 0; y < map.get_height(); y++)
+		for (auto i = 0; i < map.get_width() * map.get_height(); i++)
 		{
-			pos_x = offset_x + ((y % 2 == 0) ? 0.0f : 0.5f * w);
-			pos_z = offset_z + 0.75f * h * (float)y;
+			auto cell = map.get_cell(i);
+			const auto c = get_cell_color(cell);
+			float y = cell->elevation; // TODO: should use corner elevation
 
-			for (auto x = 0; x < map.get_width(); x++)
-			{
-				auto cell = map.get_cell(x, y);
-				const auto c = get_cell_color(cell);
-				pos_y = offset_y + cell.elevation;
+			verts.insert(verts.end(), {
+				{ cell->pos.x, y, cell->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[0]->pos.x, y, cell->corners[0]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[1]->pos.x, y, cell->corners[1]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[2]->pos.x, y, cell->corners[2]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[3]->pos.x, y, cell->corners[3]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[4]->pos.x, y, cell->corners[4]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[5]->pos.x, y, cell->corners[5]->pos.y, c.r, c.g, c.b, c.a }
+			});
 
-				verts.insert(verts.end(), {
-					{ pos_x, pos_y, pos_z, c.r, c.g, c.b, c.a },
-					{ pos_x, pos_y, pos_z + 0.5f * h, c.r, c.g, c.b, c.a },
-					{ pos_x + 0.5f * w, pos_y, pos_z + 0.25f * h, c.r, c.g, c.b, c.a },
-					{ pos_x + 0.5f * w, pos_y, pos_z - 0.25f * h, c.r, c.g, c.b, c.a },
-					{ pos_x, pos_y, pos_z - 0.5f * h, c.r, c.g, c.b, c.a },
-					{ pos_x - 0.5f * w, pos_y, pos_z - 0.25f * h, c.r, c.g, c.b, c.a },
-					{ pos_x - 0.5f * w, pos_y, pos_z + 0.25f * h, c.r, c.g, c.b, c.a }
-				});
+			indices.insert(indices.end(), {
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 1), static_cast<GLushort>(vidx + 2),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 2), static_cast<GLushort>(vidx + 3),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 3), static_cast<GLushort>(vidx + 4),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 4), static_cast<GLushort>(vidx + 5),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 5), static_cast<GLushort>(vidx + 6),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 6), static_cast<GLushort>(vidx + 1)
+			});
 
-				indices.insert(indices.end(), {
-					static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 1), static_cast<GLushort>(vidx + 2),
-					static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 2), static_cast<GLushort>(vidx + 3),
-					static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 3), static_cast<GLushort>(vidx + 4),
-					static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 4), static_cast<GLushort>(vidx + 5),
-					static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 5), static_cast<GLushort>(vidx + 6),
-					static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 6), static_cast<GLushort>(vidx + 1)
-				});
-
-				vidx += 7;
-
-				pos_x += w;
-			}
+			vidx += 7;
 		}
 
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
@@ -174,7 +163,7 @@ namespace dukat
 		auto settings = game->get_settings();
 		if (render_mode == Overhead)
 		{
-			auto camera = std::make_unique<FixedCamera3>(game, Vector3{ 0.0f, 15.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, -Vector3::unit_z);
+			auto camera = std::make_unique<FixedCamera3>(game, Vector3{ 5.0f, 15.0f, 5.0f }, Vector3{ 5.0f, 0.0f, 5.0f }, -Vector3::unit_z);
 			camera->set_vertical_fov(settings.get_float("camera.fov"));
 			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 			camera->refresh();
@@ -254,6 +243,10 @@ namespace dukat
 		case SDLK_F4: // show biomes mesh
 			map_mode = Biomes;
 			switch_mode();
+			break;
+		case SDLK_F5:
+		//	game->get_renderer()->set_backface_culling(false);
+			game->get_renderer()->set_wireframe(true);
 			break;
 		case SDLK_F11:
 			info_mesh->visible = !info_mesh->visible;

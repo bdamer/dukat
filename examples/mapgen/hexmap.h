@@ -13,6 +13,10 @@ namespace dukat
 		{
 			Vector2 pos;
 			float elevation;
+
+			int x;
+			int y;
+
 			bool border;
 			bool water;
 			bool ocean;
@@ -32,6 +36,10 @@ namespace dukat
 		{
 			Vector2 pos;
 			float elevation;
+
+			int x;
+			int y;
+
 			bool border;
 			bool water;
 			bool ocean;
@@ -51,14 +59,22 @@ namespace dukat
 	private:
 		const int width;
 		const int height;
+		const float size;
+		const float cell_width;
+		const float cell_height;
+		
 		std::vector<Cell> cells;
 		std::vector<Corner> corners;
 
 	public:
-		HexMap(int width, int height);
+		// Creates a new map with size <width> by <height>.
+		// <size> defines the size of each map cell.
+		HexMap(int width, int height, float size);
 
 		// Retrieves a cell by axial coordinates.
-		Cell& get_cell(int x, int y);
+		Cell* get_cell(int x, int y);
+		// Returns cell by index - check if needed
+		Cell* get_cell(int index) { return &(cells[index]); }
 
 		int get_width(void) const { return width; }
 		int get_height(void) const { return height; }
