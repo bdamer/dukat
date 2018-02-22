@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "hexmap.h"
+#include "thirdparty/PerlinNoise.hpp"
 
 namespace dukat
 {
@@ -64,6 +65,7 @@ namespace dukat
 				auto idx = y * corners_width + x;
 				auto& corner = corners[idx];
 				corner.pos.x = static_cast<float>(x) * 0.5f * cell_width;
+				corner.elevation = 0.0f;
 
 				// TODO: remove - used for debugging only
 				corner.x = x;
@@ -101,5 +103,34 @@ namespace dukat
 			return nullptr;
 		else
 			return &(cells[y * width + offset]);
+	}
+
+	void HexMap::noise_pass(float frequency, int octaves, std::uint32_t seed)
+	{
+		clamp(frequency, 0.1f, 64.0f);
+		clamp(octaves, 1, 16);
+
+		const siv::PerlinNoise perlin(seed);
+		const auto fx = (width * cell_width) / frequency;
+		const auto fy = (height * cell_height) / frequency;
+
+		for (auto& corner : corners)
+		{
+			auto x = corner.pos.x / fx;
+			auto y = corner.pos.y / fy;
+			corner.elevation = static_cast<float>(perlin.octaveNoise0_1(x, y, octaves));
+//			corner.elevation = static_cast<float>(perlin.noise(corner.pos.x / fx, corner.pos.y / fy));
+		}
+
+		// recompute cell elevation by averaging corners
+		for (auto& cell : cells) 
+		{
+			auto sum = 0.0f;
+			for (auto corner : cell.corners)
+			{
+				sum += corner->elevation;
+			}
+			cell.elevation = sum / cell.corners.size();
+		}
 	}
 }

@@ -108,26 +108,38 @@ namespace dukat
 
 	void create_hex_mesh(MeshData* mesh)
 	{
-		HexMap map(8, 8, 1.0f);
+		HexMap map(32, 32, 0.5f);
+		// TODO: look into combining noise
+		// Lower frequencies are looking quite good - 1-4
+		// so maybe combine 1-2 passes to add some varietay!
+		map.noise_pass(2.0f, 10, 42);
+
+		// TODO:
+		// - add some useable camera controls
+		// - rescale different elevation stages
+		// - water & watersheds
+		// - shade cells
 
 		std::vector<VertexPosCol> verts;
 		std::vector<GLushort> indices;
+
+		const auto ys = 5.0f;
 
 		GLushort vidx = 0;
 		for (auto i = 0; i < map.get_width() * map.get_height(); i++)
 		{
 			auto cell = map.get_cell(i);
 			const auto c = get_cell_color(cell);
-			float y = cell->elevation; // TODO: should use corner elevation
+			//Color c = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 			verts.insert(verts.end(), {
-				{ cell->pos.x, y, cell->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[0]->pos.x, y, cell->corners[0]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[1]->pos.x, y, cell->corners[1]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[2]->pos.x, y, cell->corners[2]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[3]->pos.x, y, cell->corners[3]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[4]->pos.x, y, cell->corners[4]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[5]->pos.x, y, cell->corners[5]->pos.y, c.r, c.g, c.b, c.a }
+				{ cell->pos.x, cell->elevation * ys, cell->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[0]->pos.x, cell->corners[0]->elevation * ys, cell->corners[0]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[1]->pos.x, cell->corners[1]->elevation * ys, cell->corners[1]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[2]->pos.x, cell->corners[2]->elevation * ys, cell->corners[2]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[3]->pos.x, cell->corners[3]->elevation * ys, cell->corners[3]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[4]->pos.x, cell->corners[4]->elevation * ys, cell->corners[4]->pos.y, c.r, c.g, c.b, c.a },
+				{ cell->corners[5]->pos.x, cell->corners[5]->elevation * ys, cell->corners[5]->pos.y, c.r, c.g, c.b, c.a }
 			});
 
 			indices.insert(indices.end(), {
@@ -174,7 +186,7 @@ namespace dukat
 		}
 		else
 		{
-			auto camera = std::make_unique<FixedCamera3>(game, Vector3{ 1.5f, 1.5f, 1.5f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3::unit_y);
+			auto camera = std::make_unique<FixedCamera3>(game, Vector3{ 1.5f, 15.0f, 1.5f }, Vector3{ 6.0f, 0.0f, 6.0f }, Vector3::unit_y);
 			camera->set_vertical_fov(settings.get_float("camera.fov"));
 			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 			camera->refresh();
@@ -203,10 +215,18 @@ namespace dukat
 		}*/
 	}
 
+	float angle = 0.0f;
+
 	void MapgenScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_q:
+			angle += 0.01f;
+			break;
+		case SDLK_e:
+			angle -= 0.01f;
+			break;
 		case SDLK_ESCAPE:
 			game->set_done(true);
 			break;
@@ -245,8 +265,7 @@ namespace dukat
 			switch_mode();
 			break;
 		case SDLK_F5:
-		//	game->get_renderer()->set_backface_culling(false);
-			game->get_renderer()->set_wireframe(true);
+			game->get_renderer()->toggle_wireframe();
 			break;
 		case SDLK_F11:
 			info_mesh->visible = !info_mesh->visible;
@@ -259,9 +278,9 @@ namespace dukat
 		if (render_mode == Perspective)
 		{
 			Quaternion q;
-			q.set_to_rotate_y(delta);
-			fill_mesh->transform.rot *= q;
-			line_mesh->transform.rot *= q;
+			q.set_to_rotate_y(angle);
+			fill_mesh->transform.rot = q;
+			line_mesh->transform.rot = q;
 		}
 
 		object_meshes.update(delta);

@@ -62,7 +62,7 @@ namespace dukat
 		const float size;
 		const float cell_width;
 		const float cell_height;
-		
+
 		std::vector<Cell> cells;
 		std::vector<Corner> corners;
 
@@ -78,5 +78,7 @@ namespace dukat
 
 		int get_width(void) const { return width; }
 		int get_height(void) const { return height; }
+	
+		void noise_pass(float frequency, int octaves, std::uint32_t seed);
 	};
 }
