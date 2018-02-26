@@ -3,7 +3,15 @@
 
 #include "stdafx.h"
 #include "mapgenapp.h"
-#include "hexmap.h"
+
+// TODO:
+// - compute & visualize watersheds ... ongoing
+// - select some more applicable colors for cells 
+//		- base color is a function of altitude & humidity [i.e., cells near water are greener than cells without rivers or lakes]
+
+// - rescale different elevation stages
+// - water & watersheds
+// - shade cells
 
 namespace dukat
 {
@@ -20,6 +28,11 @@ namespace dukat
     const Color tundra_color{0.87f, 0.87f, 0.73f, 1.0f};
     const Color marsh_color{0.27f, 0.39f, 0.32f, 1.0f};
 
+	// Cell colors
+	const Color desert_color = color_rgb(0xe4b871);
+	const Color hill_color = color_rgb(0x9B7653);
+	const Color mountain_color = color_rgb(0x837e7c);
+
 	std::vector<Vector2> generate_point_set(int count, const AABB2& limits)
 	{
 		std::vector<Vector2> points(count);
@@ -30,12 +43,15 @@ namespace dukat
 		return points;
 	}
 
-	MapgenScene::MapgenScene(Game3* game) : game(game)
+	MapgenScene::MapgenScene(Game3* game) : game(game), map(64, 64, 1.0f)
 	{
 		// Default values
 		polygon_count = 500;
 		render_mode = Overhead;
 		map_mode = LandWater;
+		noise_octaves = 3; // looks like at the current resolution we're not getting much past 3 iterations
+		noise_frequency = 8.0f;
+		noise_seed = 42;
 
 		object_meshes.stage = RenderStage::SCENE;
 		object_meshes.visible = true;
@@ -51,14 +67,14 @@ namespace dukat
 		line_mesh->transform.position = { 0.0f, 0.01f, 0.0f };
 
 		fill_mesh = object_meshes.create_instance();
-		fill_mesh->set_program(game->get_shaders()->get_program("sc_color.vsh", "sc_color.fsh"));
+		fill_mesh->set_program(game->get_shaders()->get_program("sc_hexmap.vsh", "sc_hexmap.fsh"));
 		fill_mesh->set_mesh(game->get_meshes()->put("triangulation", std::make_unique<MeshData>(GL_TRIANGLES, 2048, 2048, attr)));
 
 		generate_map();
 		switch_mode();
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
-		overlay_meshes.visible = true;
+		overlay_meshes.visible = false;
 
 		auto info_text = game->create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
@@ -80,93 +96,26 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	const Color get_cell_color(HexMap::Cell* cell)
+	void MapgenScene::generate_map(void)
 	{
-		if (cell->x % 2 == 0)
-		{
-			if (cell->y % 2 == 0)
-			{
-				return bare_color;
-			}
-			else
-			{
-				return ocean_color;
-			}
-		}	
-		else 
-		{
-			if (cell->y % 2 == 0)
-			{
-				return scorched_color;
-			}
-			else
-			{
-				return tropical_rf_color;
-			}
-		}	
-	}
+		map.reset();
 
-	void create_hex_mesh(MeshData* mesh)
-	{
-		HexMap map(32, 32, 0.5f);
 		// TODO: look into combining noise
 		// Lower frequencies are looking quite good - 1-4
 		// so maybe combine 1-2 passes to add some varietay!
-		map.noise_pass(2.0f, 10, 42);
+		//		map.noise_pass(32.0f, 10, 42);
+		logger << "Generate map: " << noise_frequency << " - " << noise_octaves << " - " << noise_seed << std::endl;
+		map.elevation_pass(noise_frequency, noise_octaves, noise_seed);
+		map.moisture_pass();
 
-		// TODO:
-		// - add some useable camera controls
-		// - rescale different elevation stages
-		// - water & watersheds
-		// - shade cells
-
-		std::vector<VertexPosCol> verts;
-		std::vector<GLushort> indices;
-
-		const auto ys = 5.0f;
-
-		GLushort vidx = 0;
-		for (auto i = 0; i < map.get_width() * map.get_height(); i++)
-		{
-			auto cell = map.get_cell(i);
-			const auto c = get_cell_color(cell);
-			//Color c = { 0.0f, 0.0f, 0.0f, 1.0f };
-
-			verts.insert(verts.end(), {
-				{ cell->pos.x, cell->elevation * ys, cell->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[0]->pos.x, cell->corners[0]->elevation * ys, cell->corners[0]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[1]->pos.x, cell->corners[1]->elevation * ys, cell->corners[1]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[2]->pos.x, cell->corners[2]->elevation * ys, cell->corners[2]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[3]->pos.x, cell->corners[3]->elevation * ys, cell->corners[3]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[4]->pos.x, cell->corners[4]->elevation * ys, cell->corners[4]->pos.y, c.r, c.g, c.b, c.a },
-				{ cell->corners[5]->pos.x, cell->corners[5]->elevation * ys, cell->corners[5]->pos.y, c.r, c.g, c.b, c.a }
-			});
-
-			indices.insert(indices.end(), {
-				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 1), static_cast<GLushort>(vidx + 2),
-				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 2), static_cast<GLushort>(vidx + 3),
-				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 3), static_cast<GLushort>(vidx + 4),
-				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 4), static_cast<GLushort>(vidx + 5),
-				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 5), static_cast<GLushort>(vidx + 6),
-				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 6), static_cast<GLushort>(vidx + 1)
-			});
-
-			vidx += 7;
-		}
-
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
-		mesh->set_indices(reinterpret_cast<GLushort*>(indices.data()), indices.size());
-	}
-
-	void MapgenScene::generate_map(void)
-	{
 		// AABB2 limits(Vector2({ -1.0f, -1.0f }), Vector2({ 1.0f, 1.0f }));
 		// auto points = generate_point_set(polygon_count, limits);
 		// graph.from_points(points);
 		// graph.generate();
 		// create_water_land_mesh(fill_mesh->get_mesh());
 		// create_edge_mesh(line_mesh->get_mesh());
-		create_hex_mesh(fill_mesh->get_mesh());
+		create_hex_mesh(fill_mesh->get_mesh(), 1.0f);
+		create_river_mesh(line_mesh->get_mesh(), 5.0f);
 	}
 
 	void MapgenScene::switch_mode(void)
@@ -175,7 +124,7 @@ namespace dukat
 		auto settings = game->get_settings();
 		if (render_mode == Overhead)
 		{
-			auto camera = std::make_unique<FixedCamera3>(game, Vector3{ 5.0f, 15.0f, 5.0f }, Vector3{ 5.0f, 0.0f, 5.0f }, -Vector3::unit_z);
+			auto camera = std::make_unique<FixedCamera3>(game, Vector3{ 0.0f, 25.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, -Vector3::unit_z);
 			camera->set_vertical_fov(settings.get_float("camera.fov"));
 			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 			camera->refresh();
@@ -186,85 +135,55 @@ namespace dukat
 		}
 		else
 		{
-			auto camera = std::make_unique<FixedCamera3>(game, Vector3{ 1.5f, 15.0f, 1.5f }, Vector3{ 6.0f, 0.0f, 6.0f }, Vector3::unit_y);
+			auto camera = std::make_unique<FixedCamera3>(game, Vector3{ 0.0f, 10.0f, 10.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3::unit_y);
 			camera->set_vertical_fov(settings.get_float("camera.fov"));
 			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 			camera->refresh();
 			game->get_renderer()->set_camera(std::move(camera));
 			z_scale = 0.25f;
 		}
-
-		/*switch (map_mode)
-		{
-		case LandWater:
-			create_water_land_mesh(fill_mesh->get_mesh(), z_scale);
-			create_edge_mesh(line_mesh->get_mesh(), z_scale);
-			break;
-		case Elevation:
-			create_elevation_mesh(fill_mesh->get_mesh(), z_scale);
-			create_edge_mesh(line_mesh->get_mesh(), z_scale);
-			break;
-		case Moisture:
-			create_moisture_mesh(fill_mesh->get_mesh(), z_scale);
-			create_river_mesh(line_mesh->get_mesh(), z_scale);
-			break;
-		case Biomes:
-			create_biomes_mesh(fill_mesh->get_mesh(), z_scale);
-			create_river_mesh(line_mesh->get_mesh(), z_scale);
-			break;
-		}*/
 	}
 
-	float angle = 0.0f;
+	void MapgenScene::handle_event(const SDL_Event& e)
+	{
+		switch (e.type)
+		{
+		case SDL_MOUSEWHEEL:
+		{
+			auto camera = game->get_renderer()->get_camera();
+			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
+			break;
+		}
+		}
+	}
 
 	void MapgenScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_q:
-			angle += 0.01f;
-			break;
-		case SDLK_e:
-			angle -= 0.01f;
-			break;
 		case SDLK_ESCAPE:
 			game->set_done(true);
 			break;
+
+		case SDLK_COMMA:
+			noise_octaves--;
+			break;
+		case SDLK_PERIOD:
+			noise_octaves++;
+			break;
+
+		case SDLK_r: // new random seed
+			noise_seed = static_cast<uint32_t>(time(nullptr));
+			generate_map();
+			break;
 		case SDLK_g: // generate map
 			generate_map();
-			switch_mode();
 			break;
-		case SDLK_r: // render mode 
+		case SDLK_c: // camera mode 
 			render_mode = render_mode == Overhead ? Perspective : Overhead;
 			switch_mode();
 			break;
-		case SDLK_d: // Decrease number of polygons
-			polygon_count = std::max(polygon_count - 100, 100);
-			generate_map();
-			switch_mode();
-			break;
-		case SDLK_i: // Increase number of polygons
-			polygon_count = std::min(polygon_count + 100, 2000);
-			generate_map();
-			switch_mode();
-			break;
-		case SDLK_F1: // show land / water
-			map_mode = LandWater;
-			switch_mode();
-			break;
-		case SDLK_F2: // show elevation mesh
-			map_mode = Elevation;
-			switch_mode();
-			break;
-		case SDLK_F3: // show moisture mesh
-			map_mode = Moisture;
-			switch_mode();
-			break;
-		case SDLK_F4: // show biomes mesh
-			map_mode = Biomes;
-			switch_mode();
-			break;
-		case SDLK_F5:
+		case SDLK_F10:
 			game->get_renderer()->toggle_wireframe();
 			break;
 		case SDLK_F11:
@@ -275,18 +194,16 @@ namespace dukat
 
 	void MapgenScene::update(float delta)
 	{
-		if (render_mode == Perspective)
-		{
-			Quaternion q;
-			q.set_to_rotate_y(angle);
-			fill_mesh->transform.rot = q;
-			line_mesh->transform.rot = q;
-		}
+		auto dev = game->get_devices()->active;
+		auto offset = 10.0f * delta * (-dev->ly * Vector3::unit_z + dev->lx * Vector3::unit_x);
+		auto cam = dynamic_cast<FixedCamera3*>(game->get_renderer()->get_camera());
+		cam->move(offset);
 
 		object_meshes.update(delta);
 		overlay_meshes.update(delta);
 	}
 
+	/*
 	void MapgenScene::create_water_land_mesh(MeshData* mesh, float z_scale)
     {
 		std::vector<VertexPosCol> verts;
@@ -473,6 +390,63 @@ namespace dukat
         }
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
     }
+	*/
+
+	void MapgenScene::create_hex_mesh(MeshData* mesh, float z_scale)
+	{
+		std::vector<VertexPosCol> verts;
+		std::vector<GLushort> indices;
+
+		GLushort vidx = 0;
+		for (auto i = 0; i < map.get_width() * map.get_height(); i++)
+		{
+			auto cell = map.get_cell(i);
+
+			verts.insert(verts.end(), {
+				{ cell->pos.x, z_scale * cell->elevation, cell->pos.y, 0.0f, 0.0f, cell->moisture, 1.0f },
+				{ cell->corners[0]->pos.x, z_scale * cell->corners[0]->elevation, cell->corners[0]->pos.y, 0.0f, 0.0f, cell->corners[0]->moisture, 1.0f },
+				{ cell->corners[1]->pos.x, z_scale * cell->corners[1]->elevation, cell->corners[1]->pos.y, 0.0f, 0.0f, cell->corners[1]->moisture, 1.0f },
+				{ cell->corners[2]->pos.x, z_scale * cell->corners[2]->elevation, cell->corners[2]->pos.y, 0.0f, 0.0f, cell->corners[2]->moisture, 1.0f },
+				{ cell->corners[3]->pos.x, z_scale * cell->corners[3]->elevation, cell->corners[3]->pos.y, 0.0f, 0.0f, cell->corners[3]->moisture, 1.0f },
+				{ cell->corners[4]->pos.x, z_scale * cell->corners[4]->elevation, cell->corners[4]->pos.y, 0.0f, 0.0f, cell->corners[4]->moisture, 1.0f },
+				{ cell->corners[5]->pos.x, z_scale * cell->corners[5]->elevation, cell->corners[5]->pos.y, 0.0f, 0.0f, cell->corners[5]->moisture, 1.0f }
+			});
+
+			indices.insert(indices.end(), {
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 1), static_cast<GLushort>(vidx + 2),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 2), static_cast<GLushort>(vidx + 3),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 3), static_cast<GLushort>(vidx + 4),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 4), static_cast<GLushort>(vidx + 5),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 5), static_cast<GLushort>(vidx + 6),
+				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 6), static_cast<GLushort>(vidx + 1)
+			});
+
+			vidx += 7;
+		}
+
+		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
+		mesh->set_indices(reinterpret_cast<GLushort*>(indices.data()), indices.size());
+	}
+
+	void MapgenScene::create_river_mesh(MeshData* mesh, float z_scale)
+	{
+		Color c{ 0.0f, 0.0f, 1.0f, 1.0f };
+		std::vector<VertexPosCol> verts;
+		for (const auto& river :map.rivers)
+		{
+			HexMap::Corner* last = nullptr;
+			for (auto corner : river.corners)
+			{
+				if (last != nullptr)
+				{
+					verts.push_back({ last->pos.x, 0.05f + z_scale * last->elevation, last->pos.y, c.r, c.g, c.b, c.a });
+					verts.push_back({ corner->pos.x, 0.05f + z_scale * corner->elevation, corner->pos.y, c.r, c.g, c.b, c.a });
+				}
+				last = corner;
+			}
+		}
+		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
+	}
 
 	void MapgenScene::render(void)
 	{

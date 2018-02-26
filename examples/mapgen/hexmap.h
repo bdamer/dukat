@@ -13,22 +13,27 @@ namespace dukat
 		{
 			Vector2 pos;
 			float elevation;
-
-			int x;
-			int y;
-
+			float moisture;
 			bool border;
 			bool water;
 			bool ocean;
 			bool coast;
+			int river; // 0 if no river or volume of water in river
+			int watershed_size;
+			Corner* downslope; // points to adjacent corner most downhill
+			Corner* watershed; // points to coastal corner or null
 
 			std::array<Cell*, 3> cells;
-			std::array<Corner*, 3> neighbors;
+			std::array<Corner*, 3> adjacent;
 
-			Corner(void)
+			int x, y; // TODO: used for debugging
+
+			Corner(void) : pos({ 0.0f, 0.0f }), elevation(0.0f), moisture(0.0f), 
+				border(false), water(false), ocean(false), coast(false), river(0), watershed_size(0),
+				downslope(nullptr), watershed(nullptr)
 			{
 				cells.fill(nullptr);
-				neighbors.fill(nullptr);
+				adjacent.fill(nullptr);
 			}
 		};
 
@@ -36,25 +41,27 @@ namespace dukat
 		{
 			Vector2 pos;
 			float elevation;
-
-			int x;
-			int y;
-
+			float moisture;
 			bool border;
 			bool water;
 			bool ocean;
 			bool coast;
-
 			std::array<Corner*, 6> corners; // Corners of this cell in order (NW, N, NE, SE, S, SW)
 			std::array<Cell*, 6> neighbors; // Neighboring cells in order (NW, N, NE, SE, S, SW)
 
-			Cell(void) : pos({0.0f, 0.0f}), elevation(0.0f)
+			int x, y; // TODO: used for debugging
+
+			Cell(void) : pos({0.0f, 0.0f}), elevation(0.0f), moisture(0.0f), border(false), water(false), ocean(false), coast(false)
 			{
 				corners.fill(nullptr);
 				neighbors.fill(nullptr);
 			}
 		};
 
+		struct River
+		{
+			std::vector<Corner*> corners;
+		};
 
 	private:
 		const int width;
@@ -66,7 +73,12 @@ namespace dukat
 		std::vector<Cell> cells;
 		std::vector<Corner> corners;
 
+		void create_rivers(int num_rivers);
+		void create_lakes(void);
+
 	public:
+		std::vector<River> rivers;
+
 		// Creates a new map with size <width> by <height>.
 		// <size> defines the size of each map cell.
 		HexMap(int width, int height, float size);
@@ -78,7 +90,10 @@ namespace dukat
 
 		int get_width(void) const { return width; }
 		int get_height(void) const { return height; }
-	
-		void noise_pass(float frequency, int octaves, std::uint32_t seed);
+
+		void reset(void);
+
+		void elevation_pass(float frequency, int octaves, std::uint32_t seed);
+		void moisture_pass(void);
 	};
 }

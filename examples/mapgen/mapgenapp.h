@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <dukat/dukat.h>
+#include "hexmap.h"
 
 namespace dukat
 {
@@ -28,27 +29,37 @@ namespace dukat
 		MeshInstance* fill_mesh;
 		MeshInstance* line_mesh;
 		MeshInstance* info_mesh;
-		MapGraph graph;
+		//MapGraph graph;
+		Vector3 look_at;
+
+		HexMap map;
 
 		RenderMode render_mode;
 		MapMode map_mode;
 		int polygon_count;
 
+		float noise_frequency;
+		int noise_octaves;
+		uint32_t noise_seed;
+
 		void switch_mode(void);
 		void generate_map(void);
 
 		// Generates water / land mesh.
-        void create_water_land_mesh(MeshData* mesh, float z_scale = 1.0f);
+        //void create_water_land_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh indicating elevation of each map cell. 
-        void create_elevation_mesh(MeshData* mesh, float z_scale = 1.0f);
+        //void create_elevation_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh indicating moisture of each map cell.
-        void create_moisture_mesh(MeshData* mesh, float z_scale = 1.0f);
+        //void create_moisture_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh to showcase biome of each map cell.
-        void create_biomes_mesh(MeshData* mesh, float z_scale = 1.0f);
+        //void create_biomes_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh of polygon outlines
-        void create_edge_mesh(MeshData* mesh, float z_scale = 1.0f);
+        //void create_edge_mesh(MeshData* mesh, float z_scale = 1.0f);
         // Generates mesh of rivers
-        void create_river_mesh(MeshData* mesh, float z_scale = 1.0f);
+        //void create_river_mesh(MeshData* mesh, float z_scale = 1.0f);
+
+		void create_hex_mesh(MeshData* mesh, float z_scale);
+		void create_river_mesh(MeshData* mesh, float z_scale);
 
 	public:
 		MapgenScene(Game3* game);
@@ -56,6 +67,7 @@ namespace dukat
 
 		void update(float delta);
 		void render(void);
+		void handle_event(const SDL_Event& e);
 		void handle_keyboard(const SDL_Event& e);
 	};
 }
