@@ -28,6 +28,7 @@ namespace dukat
 		MeshGroup overlay_meshes;
 		MeshInstance* fill_mesh;
 		MeshInstance* line_mesh;
+		MeshInstance* grid_mesh;
 		MeshInstance* info_mesh;
 		//MapGraph graph;
 		Vector3 look_at;
@@ -58,6 +59,7 @@ namespace dukat
         // Generates mesh of rivers
         //void create_river_mesh(MeshData* mesh, float z_scale = 1.0f);
 
+		void create_grid_mesh(MeshData* mesh, float z_scale);
 		void create_hex_mesh(MeshData* mesh, float z_scale);
 		void create_river_mesh(MeshData* mesh, float z_scale);
 

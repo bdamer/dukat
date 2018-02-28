@@ -20,15 +20,11 @@ layout(std140) uniform Camera
 uniform mat4 u_model;
 
 out vec4 v_color;
-out vec4 v_world_pos;
+out vec2 v_world_pos;
 
 void main()
 {
     v_color = a_color;
-	v_world_pos = a_position;
-	
-	vec4 pos = a_position;
-	pos.y *= 5.0;
-	
-    gl_Position = u_cam.proj_pers * u_cam.view * u_model * pos;
+	v_world_pos = a_position.xz;
+    gl_Position = u_cam.proj_pers * u_cam.view * u_model * a_position;
 }

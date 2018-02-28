@@ -61,10 +61,15 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
 		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(VertexPosCol, col)));
 
-		line_mesh = object_meshes.create_instance();
+		line_mesh = overlay_meshes.create_instance();
 		line_mesh->set_program(game->get_shaders()->get_program("sc_color.vsh", "sc_color.fsh"));
 		line_mesh->set_mesh(game->get_meshes()->put("lines", std::make_unique<MeshData>(GL_LINES, 2048, 0, attr)));
 		line_mesh->transform.position = { 0.0f, 0.01f, 0.0f };
+
+		grid_mesh = overlay_meshes.create_instance();
+		grid_mesh->set_program(game->get_shaders()->get_program("sc_color.vsh", "sc_color.fsh"));
+		grid_mesh->set_mesh(game->get_meshes()->put("grid", std::make_unique<MeshData>(GL_LINES, 2048, 2048, attr)));
+		grid_mesh->transform.position = { 0.0f, 0.01f, 0.0f };
 
 		fill_mesh = object_meshes.create_instance();
 		fill_mesh->set_program(game->get_shaders()->get_program("sc_hexmap.vsh", "sc_hexmap.fsh"));
@@ -73,8 +78,9 @@ namespace dukat
 		generate_map();
 		switch_mode();
 
+		// TODO: Need more render stages / make stages runtime objects
 		overlay_meshes.stage = RenderStage::OVERLAY;
-		overlay_meshes.visible = false;
+		overlay_meshes.visible = true;
 
 		auto info_text = game->create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
@@ -92,6 +98,7 @@ namespace dukat
 		info_text->set_text(ss.str());
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
+		info_mesh->visible = false;
 
 		game->set_controller(this);
 	}
@@ -114,8 +121,9 @@ namespace dukat
 		// graph.generate();
 		// create_water_land_mesh(fill_mesh->get_mesh());
 		// create_edge_mesh(line_mesh->get_mesh());
-		create_hex_mesh(fill_mesh->get_mesh(), 1.0f);
-		create_river_mesh(line_mesh->get_mesh(), 5.0f);
+		create_hex_mesh(fill_mesh->get_mesh(), 2.5f);
+		create_river_mesh(line_mesh->get_mesh(), 2.5f);
+		create_grid_mesh(grid_mesh->get_mesh(), 2.5f);
 	}
 
 	void MapgenScene::switch_mode(void)
@@ -392,6 +400,50 @@ namespace dukat
     }
 	*/
 
+	void MapgenScene::create_grid_mesh(MeshData* mesh, float z_scale)
+	{
+		std::vector<VertexPosCol> verts;
+		std::vector<GLushort> indices;
+
+		for (auto& q : map.corners)
+		{
+			verts.push_back({ q.pos.x, z_scale * q.elevation, q.pos.y, 0.4f, 0.4f, 0.4f, 0.5f });
+		}
+
+		for (auto y = 0; y < map.corners_height; y++)
+		{
+			for (auto x = 0; x < map.corners_width; x++)
+			{
+				auto idx = y * map.corners_width + x;
+				// skip ghost corner in last row
+				if (y == map.corners_height - 1)
+				{
+					if ((map.get_height() % 2 == 0) && (x == 0)) // even number of cell rows -> ghost on 1st
+						continue;
+					if ((map.get_height() % 2 == 1) && (x == map.corners_width - 1)) // odd number of cell rows -> ghost on last
+						continue;
+				}
+
+				if ((y > 0 && x < map.corners_width - 1) || (y == 0 && x < map.corners_width - 2))
+				{
+					// horizontal line
+					indices.push_back(idx);
+					indices.push_back(idx + 1);
+				}
+
+				if (y < map.corners_height - 1 && ((x + y) % 2 == 0))
+				{
+					// vertical line
+					indices.push_back(idx);
+					indices.push_back(idx + map.corners_width);
+				}
+			}
+		}
+
+		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), verts.size());
+		mesh->set_indices(reinterpret_cast<GLushort*>(indices.data()), indices.size());
+	}
+
 	void MapgenScene::create_hex_mesh(MeshData* mesh, float z_scale)
 	{
 		std::vector<VertexPosCol> verts;
@@ -403,13 +455,20 @@ namespace dukat
 			auto cell = map.get_cell(i);
 
 			verts.insert(verts.end(), {
-				{ cell->pos.x, z_scale * cell->elevation, cell->pos.y, 0.0f, 0.0f, cell->moisture, 1.0f },
-				{ cell->corners[0]->pos.x, z_scale * cell->corners[0]->elevation, cell->corners[0]->pos.y, 0.0f, 0.0f, cell->corners[0]->moisture, 1.0f },
-				{ cell->corners[1]->pos.x, z_scale * cell->corners[1]->elevation, cell->corners[1]->pos.y, 0.0f, 0.0f, cell->corners[1]->moisture, 1.0f },
-				{ cell->corners[2]->pos.x, z_scale * cell->corners[2]->elevation, cell->corners[2]->pos.y, 0.0f, 0.0f, cell->corners[2]->moisture, 1.0f },
-				{ cell->corners[3]->pos.x, z_scale * cell->corners[3]->elevation, cell->corners[3]->pos.y, 0.0f, 0.0f, cell->corners[3]->moisture, 1.0f },
-				{ cell->corners[4]->pos.x, z_scale * cell->corners[4]->elevation, cell->corners[4]->pos.y, 0.0f, 0.0f, cell->corners[4]->moisture, 1.0f },
-				{ cell->corners[5]->pos.x, z_scale * cell->corners[5]->elevation, cell->corners[5]->pos.y, 0.0f, 0.0f, cell->corners[5]->moisture, 1.0f }
+				{ cell->pos.x, z_scale * cell->elevation, cell->pos.y, 
+					cell->elevation, 0.0f, cell->moisture, 1.0f },
+				{ cell->corners[0]->pos.x, z_scale * cell->corners[0]->elevation, cell->corners[0]->pos.y, 
+					cell->corners[0]->elevation, 0.0f, cell->corners[0]->moisture, 1.0f },
+				{ cell->corners[1]->pos.x, z_scale * cell->corners[1]->elevation, cell->corners[1]->pos.y, 
+					cell->corners[1]->elevation, 0.0f, cell->corners[1]->moisture, 1.0f },
+				{ cell->corners[2]->pos.x, z_scale * cell->corners[2]->elevation, cell->corners[2]->pos.y, 
+					cell->corners[2]->elevation, 0.0f, cell->corners[2]->moisture, 1.0f },
+				{ cell->corners[3]->pos.x, z_scale * cell->corners[3]->elevation, cell->corners[3]->pos.y, 
+					cell->corners[3]->elevation, 0.0f, cell->corners[3]->moisture, 1.0f },
+				{ cell->corners[4]->pos.x, z_scale * cell->corners[4]->elevation, cell->corners[4]->pos.y, 
+					cell->corners[4]->elevation, 0.0f, cell->corners[4]->moisture, 1.0f },
+				{ cell->corners[5]->pos.x, z_scale * cell->corners[5]->elevation, cell->corners[5]->pos.y, 
+					cell->corners[5]->elevation, 0.0f, cell->corners[5]->moisture, 1.0f }
 			});
 
 			indices.insert(indices.end(), {
@@ -439,8 +498,8 @@ namespace dukat
 			{
 				if (last != nullptr)
 				{
-					verts.push_back({ last->pos.x, 0.05f + z_scale * last->elevation, last->pos.y, c.r, c.g, c.b, c.a });
-					verts.push_back({ corner->pos.x, 0.05f + z_scale * corner->elevation, corner->pos.y, c.r, c.g, c.b, c.a });
+					verts.push_back({ last->pos.x, z_scale * last->elevation, last->pos.y, c.r, c.g, c.b, c.a });
+					verts.push_back({ corner->pos.x, z_scale * corner->elevation, corner->pos.y, c.r, c.g, c.b, c.a });
 				}
 				last = corner;
 			}

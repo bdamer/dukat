@@ -64,19 +64,27 @@ namespace dukat
 		};
 
 	private:
+		// map width and height in cells
 		const int width;
 		const int height;
+		// cell dimensions
 		const float size;
 		const float cell_width;
 		const float cell_height;
-
+		// cell buffer
 		std::vector<Cell> cells;
-		std::vector<Corner> corners;
 
 		void create_rivers(int num_rivers);
 		void create_lakes(void);
 
 	public:
+		// TODO: make private
+
+		// width and height of corner buffer
+		const int corners_width;
+		const int corners_height;
+		std::vector<Corner> corners;
+
 		std::vector<River> rivers;
 
 		// Creates a new map with size <width> by <height>.

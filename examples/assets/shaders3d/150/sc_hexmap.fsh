@@ -3,7 +3,7 @@
 // Flat shaded fragment shader.
 ///
 in vec4 v_color;
-in vec4 v_world_pos;
+in vec2 v_world_pos;
 
 out vec4 o_color;
 
@@ -16,7 +16,7 @@ void main()
 	vec4 color_mountain = vec4(0.5137, 0.4941, 0.4863, 1.0);
 	vec4 color_snow = vec4(1.0, 1.0, 1.0, 1.0);
 	
-	float z = v_world_pos.y;
+	float z = v_color.r;
 
 	float weight;
 	if (z < 0.5)
@@ -50,6 +50,6 @@ void main()
 	}
 	
 	// Add some noise to make color look a little more interesting
-	float n = random(v_world_pos.xz);
+	float n = random(v_world_pos);
 	o_color.rgb += n * 0.10 - 0.05;
 }

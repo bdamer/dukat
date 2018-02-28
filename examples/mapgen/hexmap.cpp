@@ -143,7 +143,7 @@ namespace dukat
 	}
 
 	HexMap::HexMap(int width, int height, float size) : width(width), height(height), size(size),
-		cell_width(sqrtf(3.0f) * size), cell_height(2.0f * size)
+		corners_width(2 * width + 2), corners_height(height + 1), cell_width(sqrtf(3.0f) * size), cell_height(2.0f * size)
 	{
 		reset();
 	}
@@ -155,8 +155,6 @@ namespace dukat
 		rivers.clear();
 
 		cells.resize(width * height);
-		const auto corners_width = 2 * width + 2;
-		const auto corners_height = height + 1;
 		corners.resize(corners_width * corners_height);
 
 		float pos_x, pos_y;
@@ -223,7 +221,8 @@ namespace dukat
 				if (idx == (corners_width - 1))
 					continue;
 				// skip ghost corner in last row
-				if (y == corners_height - 1) {
+				if (y == corners_height - 1) 
+				{
 					if ((height % 2 == 0) && (x == 0)) // even number of cell rows -> ghost on 1st
 						continue;
 					if ((height % 2 == 1) && (x == corners_width - 1)) // odd number of cell rows -> ghost on last
