@@ -65,6 +65,7 @@ namespace dukat
 		line_mesh->set_program(game->get_shaders()->get_program("sc_color.vsh", "sc_color.fsh"));
 		line_mesh->set_mesh(game->get_meshes()->put("lines", std::make_unique<MeshData>(GL_LINES, 2048, 0, attr)));
 		line_mesh->transform.position = { 0.0f, 0.01f, 0.0f };
+		line_mesh->visible = false;
 
 		grid_mesh = overlay_meshes.create_instance();
 		grid_mesh->set_program(game->get_shaders()->get_program("sc_color.vsh", "sc_color.fsh"));
@@ -159,7 +160,8 @@ namespace dukat
 		case SDL_MOUSEWHEEL:
 		{
 			auto camera = game->get_renderer()->get_camera();
-			camera->set_distance(camera->get_distance() - 2.0f * (float)e.wheel.y);
+			auto dist = camera->get_distance() - 2.0f * (float)e.wheel.y;
+			camera->set_distance(std::max(5.0f, dist));
 			break;
 		}
 		}
@@ -454,22 +456,14 @@ namespace dukat
 		{
 			auto cell = map.get_cell(i);
 
-			verts.insert(verts.end(), {
-				{ cell->pos.x, z_scale * cell->elevation, cell->pos.y, 
-					cell->elevation, 0.0f, cell->moisture, 1.0f },
-				{ cell->corners[0]->pos.x, z_scale * cell->corners[0]->elevation, cell->corners[0]->pos.y, 
-					cell->corners[0]->elevation, 0.0f, cell->corners[0]->moisture, 1.0f },
-				{ cell->corners[1]->pos.x, z_scale * cell->corners[1]->elevation, cell->corners[1]->pos.y, 
-					cell->corners[1]->elevation, 0.0f, cell->corners[1]->moisture, 1.0f },
-				{ cell->corners[2]->pos.x, z_scale * cell->corners[2]->elevation, cell->corners[2]->pos.y, 
-					cell->corners[2]->elevation, 0.0f, cell->corners[2]->moisture, 1.0f },
-				{ cell->corners[3]->pos.x, z_scale * cell->corners[3]->elevation, cell->corners[3]->pos.y, 
-					cell->corners[3]->elevation, 0.0f, cell->corners[3]->moisture, 1.0f },
-				{ cell->corners[4]->pos.x, z_scale * cell->corners[4]->elevation, cell->corners[4]->pos.y, 
-					cell->corners[4]->elevation, 0.0f, cell->corners[4]->moisture, 1.0f },
-				{ cell->corners[5]->pos.x, z_scale * cell->corners[5]->elevation, cell->corners[5]->pos.y, 
-					cell->corners[5]->elevation, 0.0f, cell->corners[5]->moisture, 1.0f }
-			});
+			verts.push_back({ cell->pos.x, z_scale * cell->elevation, cell->pos.y, 
+				cell->elevation, cell->water ? 1.0f : 0.0f, cell->moisture, 1.0f });
+
+			for (auto q : cell->corners)
+			{
+				verts.push_back({ q->pos.x, z_scale * q->elevation, q->pos.y, 
+					q->elevation, q->water ? 1.0f : 0.0f, q->moisture, 1.0f });
+			}
 
 			indices.insert(indices.end(), {
 				static_cast<GLushort>(vidx), static_cast<GLushort>(vidx + 1), static_cast<GLushort>(vidx + 2),

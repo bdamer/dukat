@@ -85,7 +85,9 @@ namespace dukat
 		{
 			if ((q.water || q.river > 0) && !q.ocean)
 			{
-				q.moisture = q.river > 0 ? std::min(2.0f, 0.2f * static_cast<float>(q.river)) : 1.0f;
+				// Setting it to 1 for now, since moisture is only used by shader
+				// we may want to track a more precise value for simrep
+				q.moisture = 1.0f;//q.river > 0 ? std::min(2.0f, 0.2f * static_cast<float>(q.river)) : 1.0f;
 				queue.push(&q);
 			}
 			else
@@ -127,7 +129,7 @@ namespace dukat
 	}
 
 	template<typename T>
-	void MapGraph::assign_cell_moisture(std::vector<T>& cells)
+	void assign_cell_moisture(std::vector<T>& cells)
 	{
 		for (auto& p : cells)
 		{
@@ -319,7 +321,6 @@ namespace dukat
 			auto q = &corners[std::rand() % (corners.size() - 1)];
 			if (q->coast || q->ocean || q->elevation < 0.8f)
 				continue;
-
 			River r;
 			while (!q->coast)
 			{
@@ -331,10 +332,20 @@ namespace dukat
 				q = q->downslope;
 			}
 
+			// cull very short rivers
 			if (r.corners.size() < 5)
-				continue; // cull very short rivers
+				continue;
 
-			logger << "Adding river starting at elev: " << r.corners[0]->elevation << " of length: " << r.corners.size() << std::endl;
+			// cull identical rivers
+			auto it = std::find_if(rivers.begin(), rivers.end(), [&r](const River& r2) {
+				return r.corners[0] == r2.corners[0];				
+			});
+			if (it != rivers.end())
+			{
+				continue;
+			}
+
+			// logger << "Adding river starting at elev: " << r.corners[0]->elevation << " of length: " << r.corners.size() << std::endl;
 			rivers.push_back(r);
 		}
 	}
@@ -344,11 +355,24 @@ namespace dukat
 		for (auto& r : rivers)
 		{
 			auto last = r.corners.back();
-			logger << "Last river: " << last->x << "," << last->y << std::endl;
-			// TODO: nullptr
-			//last->cells[0]->water = true;
-			//last->cells[1]->water = true;
-			//last->cells[2]->water = true;
+			// logger << "Last river: " << last->x << "," << last->y << " = " << last->river << std::endl;
+			// Lake size is determined by amount of rivers flowing into them
+			auto lake_count = 0;
+			for (auto c : last->cells) 
+			{
+				if (c != nullptr && !c->water)
+				{
+					lake_count++;
+					c->water = true;
+					for (auto q : c->corners)
+					{
+						q->water = true;
+					}
+				}
+
+				if (lake_count >= last->river)
+					break;
+			}
 		}
 	}
 }
