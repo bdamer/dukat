@@ -4,34 +4,34 @@
 
 namespace dukat
 {
-	struct Vertex2
+	struct Vertex2P
 	{
-		GLfloat x, y;
+		GLfloat px, py;
 	};
 
-	struct TexturedVertex2
+	struct Vertex2PT
 	{
-		GLfloat x, y;
-		GLfloat u, v;
+		GLfloat px, py;
+		GLfloat tu, tv;
 	};
 
-	struct ColoredVertex2
+	struct Vertex2PC
 	{
-		GLfloat x, y;
-		GLfloat r, g, b, a;
+		GLfloat px, py;
+		GLfloat cr, cg, cb, ca;
 	};
 
-	struct ColoredTexturedVertex2
+	struct Vertex2PCT
 	{
-		GLfloat x, y;
-		GLfloat r, g, b, a;
-		GLfloat u, v;
+		GLfloat px, py;
+		GLfloat cr, cg, cb, ca;
+		GLfloat tu, tv;
 	};
 
-	struct ParticleVertex2
+	struct Vertex2PSC
 	{
-		GLfloat x, y;
+		GLfloat px, py;
 		GLfloat size;
-		GLfloat r, g, b, a;
+		GLfloat cr, cg, cb, ca;
 	};
 }

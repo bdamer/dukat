@@ -16,7 +16,7 @@
 namespace dukat
 {
 	// module-global buffer for particle data used during rendering
-	static ParticleVertex2 particle_data[Renderer2::max_particles];
+	static Vertex2PSC particle_data[Renderer2::max_particles];
 
 	RenderLayer2::RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
 		const std::string& id, float priority, float parallax)
@@ -194,13 +194,13 @@ namespace dukat
 		// bind vertex position
 		auto pos_id = sprite_program->attr(Renderer::at_pos);
 		glEnableVertexAttribArray(pos_id);
-		glVertexAttribPointer(pos_id, 2, GL_FLOAT, GL_FALSE, sizeof(TexturedVertex2),
-			reinterpret_cast<const GLvoid*>(offsetof(TexturedVertex2, x)));
+		glVertexAttribPointer(pos_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2PT),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, px)));
 		// bind texture position
 		auto uv_id = sprite_program->attr(Renderer::at_texcoord);
 		glEnableVertexAttribArray(uv_id);
-		glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(TexturedVertex2),
-			reinterpret_cast<const GLvoid*>(offsetof(TexturedVertex2, u)));
+		glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2PT),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, tu)));
 #else
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -330,13 +330,13 @@ namespace dukat
 			// check if particle visible and store result in ->rendered
 			if (p->rendered = camera_bb.contains(p->pos))
 			{
-				particle_data[particle_count].x = p->pos.x;
-				particle_data[particle_count].y = p->pos.y;
+				particle_data[particle_count].px = p->pos.x;
+				particle_data[particle_count].py = p->pos.y;
 				particle_data[particle_count].size = p->size;
-				particle_data[particle_count].r = p->color.r;
-				particle_data[particle_count].g = p->color.g;
-				particle_data[particle_count].b = p->color.b;
-				particle_data[particle_count].a = p->color.a;
+				particle_data[particle_count].cr = p->color.r;
+				particle_data[particle_count].cg = p->color.g;
+				particle_data[particle_count].cb = p->color.b;
+				particle_data[particle_count].ca = p->color.a;
 				perfc.inc(PerformanceCounter::PARTICLES);
 				particle_count++;
 			}
@@ -358,18 +358,18 @@ namespace dukat
 		glBindVertexArray(particle_buffer->vao);
 		glBindBuffer(GL_ARRAY_BUFFER, particle_buffer->buffers[0]);
 		// Orphan buffer to improve streaming performance
-		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(ParticleVertex2), nullptr, GL_STREAM_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(ParticleVertex2), particle_data);
+		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(Vertex2PSC), nullptr, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(Vertex2PSC), particle_data);
 		// bind vertex position
 		auto pos_id = particle_program->attr(Renderer::at_pos);
 		glEnableVertexAttribArray(pos_id);
-		glVertexAttribPointer(pos_id, 4, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex2),
-			reinterpret_cast<const GLvoid*>(offsetof(ParticleVertex2, x)));
+		glVertexAttribPointer(pos_id, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex2PSC),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PSC, px)));
 		// bind color position
 		auto color_id = particle_program->attr(Renderer::at_color);
 		glEnableVertexAttribArray(color_id);
-		glVertexAttribPointer(color_id, 4, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex2),
-			reinterpret_cast<const GLvoid*>(offsetof(ParticleVertex2, r)));
+		glVertexAttribPointer(color_id, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex2PSC),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PSC, cr)));
 #else
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);

@@ -94,7 +94,7 @@ namespace dukat
 		float x = 0.0f, y = 0.0f;
 		float tw = 1.0f / (float)cols, th = 1.0f / (float)rows;
 		float max_x = 0.0f;
-		std::vector<ColoredTexturedVertex2> verts;
+		std::vector<Vertex2PCT> verts;
 		Color color = color_map.at(simple_hash("white"));
 		for (size_t i = 0; i < text.length(); i++)
 		{

@@ -41,8 +41,8 @@ namespace dukat
 
 		// Create meshes to display diagram
 		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
-		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(VertexPosCol, col)));
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(Vertex3PC, px)));
+		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(Vertex3PC, cr)));
 
 		line_mesh = object_meshes.create_instance();
 		line_mesh->set_program(game->get_shaders()->get_program("sc_color.vsh", "sc_color.fsh"));
@@ -198,7 +198,7 @@ namespace dukat
 
 	void MapgenScene::create_water_land_mesh(MeshData* mesh, float z_scale)
     {
-		std::vector<VertexPosCol> verts;
+		std::vector<Vertex3PC> verts;
         Color c;
         for (const auto& p : graph.get_centers())
         {
@@ -233,7 +233,7 @@ namespace dukat
 
     void MapgenScene::create_elevation_mesh(MeshData* mesh, float z_scale)
     {
-        std::vector<VertexPosCol> verts;
+        std::vector<Vertex3PC> verts;
         Color c{0.0f, 0.0f, 0.0f, 1.0f};
         for (const auto& p : graph.get_centers())
         {
@@ -258,7 +258,7 @@ namespace dukat
 
     void MapgenScene::create_moisture_mesh(MeshData* mesh, float z_scale)
     {
-		std::vector<VertexPosCol> verts;
+		std::vector<Vertex3PC> verts;
         Color c;
         for (const auto& p : graph.get_centers())
         {
@@ -293,7 +293,7 @@ namespace dukat
 
     void MapgenScene::create_biomes_mesh(MeshData* mesh, float z_scale)
     {
-		std::vector<VertexPosCol> verts;
+		std::vector<Vertex3PC> verts;
         Color c;
         for (const auto& p : graph.get_centers())
         {
@@ -360,7 +360,7 @@ namespace dukat
     void MapgenScene::create_edge_mesh(MeshData* mesh, float z_scale)
     {
         Color c{0.0f, 0.0f, 0.0f, 1.0f};
-		std::vector<VertexPosCol> verts;
+		std::vector<Vertex3PC> verts;
         for (const auto& edge : graph.get_edges())
         {
             verts.push_back({ edge->v0->pos.x, edge->v0->elevation * z_scale, edge->v0->pos.y, c.r, c.g, c.b, c.a });
@@ -372,7 +372,7 @@ namespace dukat
     void MapgenScene::create_river_mesh(MeshData* mesh, float z_scale)
     {
         Color c{0.0f, 0.0f, 1.0f, 1.0f};
-		std::vector<VertexPosCol> verts;
+		std::vector<Vertex3PC> verts;
         for (const auto& edge : graph.get_edges())
         {
 			if (edge->river == 0)

@@ -13,10 +13,10 @@ namespace dukat
 	std::unique_ptr<MeshData> MeshBuilder3::build_axis(void)
 	{
 		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
-		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(VertexPosCol, col)));
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(Vertex3PC, px)));
+		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(Vertex3PC, cr)));
 
-		VertexPosCol vertices[6] = {
+		Vertex3PC vertices[6] = {
 			0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 			1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 			0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
@@ -33,10 +33,10 @@ namespace dukat
 	std::unique_ptr<MeshData> MeshBuilder3::build_line(const Vector3& a, const Vector3& b)
 	{
 		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
-		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(VertexPosCol, col)));
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(Vertex3PC, px)));
+		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(Vertex3PC, cr)));
 
-		VertexPosCol vertices[2] = {
+		Vertex3PC vertices[2] = {
 			a.x, a.y, a.z, 1.0f, 1.0f, 1.0f, 1.0f,
 			b.x, b.y, b.z, 1.0f, 1.0f, 1.0f, 1.0f
 		};
@@ -49,16 +49,16 @@ namespace dukat
 	std::unique_ptr<MeshData> MeshBuilder3::build_points(const std::vector<Vector3>& points, const Color& color)
 	{
 		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosCol, pos)));
-		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(VertexPosCol, col)));
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(Vertex3PC, px)));
+		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(Vertex3PC, cr)));
 
-		std::vector<VertexPosCol> vertices;
+		std::vector<Vertex3PC> vertices;
 		for (const auto& it : points)
 		{
 			vertices.push_back({ it.x, it.y, it.z, color.r, color.g, color.b, color.a });
 		}
 
-		auto res = std::make_unique<MeshData>(GL_POINTS, (unsigned int)vertices.size(), 0, attr);
+		auto res = std::make_unique<MeshData>(GL_POINTS, static_cast<unsigned int>(vertices.size()), 0, attr);
 		res->set_vertices(reinterpret_cast<GLfloat*>(vertices.data()));
 		return res;
 	}
@@ -66,11 +66,11 @@ namespace dukat
 	std::unique_ptr<MeshData> MeshBuilder3::build_cube(void)
 	{
 		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
-		attr.push_back(VertexAttribute(Renderer::at_normal, 3, offsetof(VertexPosNorTex, nor)));
-		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2, offsetof(VertexPosNorTex, u)));
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(Vertex3PNT, px)));
+		attr.push_back(VertexAttribute(Renderer::at_normal, 3, offsetof(Vertex3PNT, nx)));
+		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2, offsetof(Vertex3PNT, tu)));
 
-		VertexPosNorTex verts[36] = {
+		Vertex3PNT verts[36] = {
 			// Down
 			-1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.25f, 0.25f,
 			 1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.50f, 0.25f,
@@ -123,11 +123,11 @@ namespace dukat
 	std::unique_ptr<MeshData> MeshBuilder3::build_cube_single_face(void)
 	{
 		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
-		attr.push_back(VertexAttribute(Renderer::at_normal, 3, offsetof(VertexPosNorTex, nor)));
-		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2, offsetof(VertexPosNorTex, u)));
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(Vertex3PNT, px)));
+		attr.push_back(VertexAttribute(Renderer::at_normal, 3, offsetof(Vertex3PNT, nx)));
+		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2, offsetof(Vertex3PNT, tu)));
 
-		VertexPosNorTex verts[36] = {
+		Vertex3PNT verts[36] = {
 			// Down
 			-1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
 			 1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,

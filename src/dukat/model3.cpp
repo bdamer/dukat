@@ -109,7 +109,7 @@ namespace dukat
 		}
 
 		os.write(reinterpret_cast<const char*>(v.indices.data()), sizeof(GLushort) * v.indices.size());
-		os.write(reinterpret_cast<const char*>(v.vertices.data()), sizeof(VertexPosNorTex) * v.vertices.size());
+		os.write(reinterpret_cast<const char*>(v.vertices.data()), sizeof(Vertex3PNT) * v.vertices.size());
 
 		return os;
 	}
@@ -158,7 +158,7 @@ namespace dukat
 		v.indices.resize(v.header.index_count);
 		is.read(reinterpret_cast<char*>(v.indices.data()), sizeof(GLushort) * v.indices.size());
 		v.vertices.resize(v.header.vertex_count);
-		is.read(reinterpret_cast<char*>(v.vertices.data()), sizeof(VertexPosNorTex) * v.vertices.size());
+		is.read(reinterpret_cast<char*>(v.vertices.data()), sizeof(Vertex3PNT) * v.vertices.size());
 
 		return is;
 	}
@@ -185,9 +185,9 @@ namespace dukat
 		auto res = std::make_unique<MeshGroup>();
 
 		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(dukat::Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
-		attr.push_back(VertexAttribute(dukat::Renderer::at_normal, 3, offsetof(VertexPosNorTex, nor)));
-		attr.push_back(VertexAttribute(dukat::Renderer::at_texcoord, 2, offsetof(VertexPosNorTex, u)));
+		attr.push_back(VertexAttribute(dukat::Renderer::at_pos, 3, offsetof(Vertex3PNT, px)));
+		attr.push_back(VertexAttribute(dukat::Renderer::at_normal, 3, offsetof(Vertex3PNT, nx)));
+		attr.push_back(VertexAttribute(dukat::Renderer::at_texcoord, 2, offsetof(Vertex3PNT, tu)));
 
 		auto mesh_cache = game->get_meshes();
 

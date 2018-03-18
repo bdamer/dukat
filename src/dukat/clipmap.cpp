@@ -92,7 +92,7 @@ namespace dukat
 		std::vector<VertexAttribute> attr;
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3));
 		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2));
-		VertexPosTex verts[4] = {
+		Vertex3PT verts[4] = {
 			0.0f,  1.0f, 0.0f, 0.0f, 1.0f, // top-left
 			0.0f,  0.0f, 0.0f, 0.0f, 0.0f, // bottom-left
 			1.0f,  1.0f, 0.0f, 1.0f, 1.0f, // top-right

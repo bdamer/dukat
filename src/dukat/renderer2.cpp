@@ -31,7 +31,7 @@ namespace dukat
 		// Vertex order:
 		//	0 2 / 3
 		//	1 /	4 5
-		TexturedVertex2 vertices[] = {
+		Vertex2PT vertices[] = {
 			{ -0.5f, -0.5f, 0.0f, 0.0f },
 			{ -0.5f,  0.5f, 0.0f, 1.0f },
 			{ 0.5f, -0.5f, 1.0f, 0.0f },
@@ -39,14 +39,14 @@ namespace dukat
 		};
 		// Create buffer for sprite rendering
 		sprite_buffer = std::make_unique<VertexBuffer>(1);
-		sprite_buffer->load_data(0, GL_ARRAY_BUFFER, 4, sizeof(TexturedVertex2), vertices, GL_STATIC_DRAW);
+		sprite_buffer->load_data(0, GL_ARRAY_BUFFER, 4, sizeof(Vertex2PT), vertices, GL_STATIC_DRAW);
 	}
 
 	void Renderer2::initialize_particle_buffers(void)
 	{
 		// Create buffer for particle rendering
 		particle_buffer = std::make_unique<VertexBuffer>(1);
-		particle_buffer->load_data(0, GL_ARRAY_BUFFER, max_particles, sizeof(ParticleVertex2), nullptr, GL_STREAM_DRAW);
+		particle_buffer->load_data(0, GL_ARRAY_BUFFER, max_particles, sizeof(Vertex2PSC), nullptr, GL_STREAM_DRAW);
 	}
 
 	RenderLayer2* Renderer2::create_layer(const std::string& id, float priority, float parallax)

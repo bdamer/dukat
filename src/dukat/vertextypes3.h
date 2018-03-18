@@ -5,39 +5,34 @@
 
 namespace dukat
 {
-	struct Vector
+	struct Vertex3P
 	{
-		GLfloat x, y, z;
+		GLfloat px, py, pz;
 	};
 
-	struct VertexPos
+	struct Vertex3PC
 	{
-		Vector pos;
+		GLfloat px, py, pz;
+		GLfloat cr, cb, cg, ca;
 	};
 
-	struct VertexPosNorTex
+	struct Vertex3PNT
 	{
-		Vector pos;
-		Vector nor;
-		GLfloat u, v;
+		GLfloat px, py, pz;
+		GLfloat nx, ny, nz;
+		GLfloat tu, tv;
 	};
 
-	struct VertexPosTex
+	struct Vertex3PT
 	{
-		Vector pos;
-		GLfloat u, v;
+		GLfloat px, py, pz;
+		GLfloat tu, tv;
 	};
 
-	struct VertexPosCol
+	struct Vertex3PCT
 	{
-		Vector pos;
-		Color col;
-	};
-
-	struct VertexPosColTex
-	{
-		Vector pos;
-		Color col;
-		GLfloat u, v;
+		GLfloat px, py, pz;
+		GLfloat cr, cb, cg, ca;
+		GLfloat tu, tv;
 	};
 }

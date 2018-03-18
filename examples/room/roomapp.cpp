@@ -10,11 +10,11 @@ namespace dukat
 	std::unique_ptr<MeshData> build_inverted_cube(float max_u, float max_t)
 	{
 		std::vector<VertexAttribute> attr;
-		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(VertexPosNorTex, pos)));
-		attr.push_back(VertexAttribute(Renderer::at_normal, 3, offsetof(VertexPosNorTex, nor)));
-		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2, offsetof(VertexPosNorTex, u)));
+		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(Vertex3PNT, px)));
+		attr.push_back(VertexAttribute(Renderer::at_normal, 3, offsetof(Vertex3PNT, nx)));
+		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2, offsetof(Vertex3PNT, tu)));
 
-		VertexPosNorTex verts[36] = {
+		Vertex3PNT verts[36] = {
 			// Top
 			-1.0f, 1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
 			1.0f, 1.0f, -1.0f, 0.0f, -1.0f, 0.0f, max_u, 0.0f,
