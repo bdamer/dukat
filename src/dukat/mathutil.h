@@ -39,8 +39,8 @@ namespace dukat
 	{
 		// For simplicity, we'll just use the normal trig functions.
 		// Not that on some platforms we may be able to do better.
-		return_sin = ::sin(theta);
-		return_cos = cos(theta);
+		return_sin = std::sin(theta);
+		return_cos = std::cos(theta);
 	}
 
 	// convert degrees to radians and back

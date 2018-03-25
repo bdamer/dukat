@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "scene2.h"
 #include "game2.h"
+#include "collisionmanager2.h"
 
 namespace dukat
 {
 	void Scene2::update(float delta)
 	{
+		game->get_collisions()->update(delta);
 		auto renderer = game->get_renderer();
 		renderer->get_camera()->update(delta);
 	}

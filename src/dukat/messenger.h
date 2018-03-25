@@ -21,7 +21,8 @@ namespace dukat
 		static constexpr Event ParentChanged = 14;
 		static constexpr Event TransformChanged = 15;
 		static constexpr Event VisibilityChanged = 16;
-		static constexpr Event Collision = 17;
+		static constexpr Event CollisionBegin = 17;
+		static constexpr Event CollisionEnd = 18;
 		// catch-all to allow subscription to all supported events
 		// TODO: review - I don't like the hard-coded max ID here
 		static constexpr Event Any = 64;
