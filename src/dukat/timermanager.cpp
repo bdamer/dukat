@@ -41,7 +41,7 @@ namespace dukat
                 }
                 else
                 {
-                    timers.erase(it);
+                    it = timers.erase(it);
                     continue;
                 }
             }
