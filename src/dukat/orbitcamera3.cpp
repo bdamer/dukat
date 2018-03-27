@@ -16,7 +16,7 @@ namespace dukat
 	void OrbitCamera3::update(float delta)
 	{
 		auto dev = game->get_devices()->active;
-		if (dev->is_pressed(InputDevice::VirtualButton::Action2))
+		if (dev->is_pressed(InputDevice::VirtualButton::Button2))
 		{
 			longitude -= dev->rx * delta;
 			latitude += dev->ry * delta;

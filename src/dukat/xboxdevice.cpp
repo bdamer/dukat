@@ -12,11 +12,14 @@ namespace dukat
 	XBoxDevice::XBoxDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
 	{
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
-		mapping[VirtualButton::Action1] = XINPUT_GAMEPAD_A;
-        mapping[VirtualButton::Action2] = XINPUT_GAMEPAD_B;
-		mapping[VirtualButton::Action3] = XINPUT_GAMEPAD_X;
-		mapping[VirtualButton::Action4] = XINPUT_GAMEPAD_Y;
-		mapping[VirtualButton::Pause] = XINPUT_GAMEPAD_START;
+		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_A;
+        mapping[VirtualButton::Button2] = XINPUT_GAMEPAD_B;
+		mapping[VirtualButton::Button3] = XINPUT_GAMEPAD_X;
+		mapping[VirtualButton::Button4] = XINPUT_GAMEPAD_Y;
+		mapping[VirtualButton::Button5] = XINPUT_GAMEPAD_LEFT_SHOULDER;
+		mapping[VirtualButton::Button6] = XINPUT_GAMEPAD_RIGHT_SHOULDER;
+		mapping[VirtualButton::Menu] = XINPUT_GAMEPAD_START;
+		mapping[VirtualButton::Pause] = XINPUT_GAMEPAD_BACK;
 		mapping[VirtualButton::Debug1] = XINPUT_GAMEPAD_DPAD_UP;
 		mapping[VirtualButton::Debug2] = XINPUT_GAMEPAD_DPAD_RIGHT;
 		mapping[VirtualButton::Debug3] = XINPUT_GAMEPAD_DPAD_DOWN;

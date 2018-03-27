@@ -10,10 +10,10 @@ namespace dukat
 
 	GamepadDevice::GamepadDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
 	{
-		mapping[VirtualButton::Action1] = 1;
-        mapping[VirtualButton::Action2] = 2;
-		mapping[VirtualButton::Action3] = 3;
-		mapping[VirtualButton::Action4] = 4;
+		mapping[VirtualButton::Button1] = 1;
+        mapping[VirtualButton::Button2] = 2;
+		mapping[VirtualButton::Button3] = 3;
+		mapping[VirtualButton::Button4] = 4;
 		mapping[VirtualButton::Debug1] = -1;
 		mapping[VirtualButton::Debug2] = -1;
 		mapping[VirtualButton::Debug3] = -1;

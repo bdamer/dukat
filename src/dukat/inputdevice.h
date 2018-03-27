@@ -13,14 +13,19 @@ namespace dukat
 	public:
 		enum VirtualButton
 		{
-			Action1,
-            Action2,
-			Action3,
-			Action4,
+			Button1,
+            Button2,
+			Button3,
+			Button4,
+			Button5,
+			Button6,
+			Button7,
+			Button8,
 			Debug1,
 			Debug2,
 			Debug3,
 			Debug4,
+			Menu,
 			Pause,
 			_Count
 		};

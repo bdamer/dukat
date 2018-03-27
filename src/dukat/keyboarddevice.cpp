@@ -6,11 +6,13 @@
 
 namespace dukat
 {
-
 	KeyboardDevice::KeyboardDevice(Window* window) : InputDevice(window, keyboard_id, true), sensitivity(2)
 	{
-		mapping[VirtualButton::Action3] = SDL_SCANCODE_SPACE;
-		mapping[VirtualButton::Action4] = SDL_SCANCODE_RETURN;
+		mapping[VirtualButton::Button3] = SDL_SCANCODE_SPACE;
+		mapping[VirtualButton::Button4] = SDL_SCANCODE_T;
+		mapping[VirtualButton::Button5] = SDL_SCANCODE_Q;
+		mapping[VirtualButton::Button6] = SDL_SCANCODE_E;
+		mapping[VirtualButton::Menu] = SDL_SCANCODE_ESCAPE;
 		mapping[VirtualButton::Pause] = SDL_SCANCODE_P;
 		mapping[VirtualButton::Debug1] = SDL_SCANCODE_GRAVE;
 		mapping[VirtualButton::Debug2] = SDL_SCANCODE_2;
@@ -56,13 +58,13 @@ namespace dukat
 		// Handle mapped keys & mouse buttons
 		for (int i = 0; i < VirtualButton::_Count; i++)
 		{
-			if (VirtualButton::Action1 == (VirtualButton)i)
+			if (VirtualButton::Button1 == (VirtualButton)i)
 			{
-				update_button_state(VirtualButton::Action1, mouse_lb);
+				update_button_state(VirtualButton::Button1, mouse_lb);
 			}
-            else if (VirtualButton::Action2 == (VirtualButton)i)
+            else if (VirtualButton::Button2 == (VirtualButton)i)
             {
-				update_button_state(VirtualButton::Action2, mouse_rb);
+				update_button_state(VirtualButton::Button2, mouse_rb);
             }
 			else
 			{
@@ -73,11 +75,11 @@ namespace dukat
 
 	bool KeyboardDevice::is_pressed(VirtualButton button) const
 	{
-		if (VirtualButton::Action1 == button)
+		if (VirtualButton::Button1 == button)
 		{
 			return mouse_lb;
 		}
-        else if (VirtualButton::Action2 == button)
+        else if (VirtualButton::Button2 == button)
         {
             return mouse_rb;
         }
