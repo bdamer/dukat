@@ -95,19 +95,17 @@ namespace dukat
 		}
 	}
 
-	/*
-	Texture* TextureCache::get(const TextureId tid) const
+	Texture* TextureCache::find_by_texture_id(const TextureId id) const
 	{
 		for (auto& t : textures)
 		{
-			if (t.second->id == tid)
+			if (t.second->id == id)
 			{
 				return t.second.get();
 			}
 		}
-		throw std::runtime_error("Could not find texture by id!");
+		return nullptr;
 	}
-	*/
 
 	void TextureCache::free(uint32_t id)
 	{

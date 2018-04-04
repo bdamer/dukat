@@ -31,6 +31,10 @@ namespace dukat
 		// Returns a texture for a image file.
 		Texture* get(const std::string& filename, TextureFilterProfile profile = ProfileNearest);
 		Texture* get(uint32_t id);
+		
+		// Returns a texture with a specific id if it exists in the cache.
+		Texture* find_by_texture_id(const TextureId id) const;
+
 		// Puts texture entry into cache.
 		Texture* put(const std::string& filename, std::unique_ptr<Texture> texture) { put(compute_hash(filename), std::move(texture)); return get(filename); }
 		Texture* put(uint32_t id, std::unique_ptr<Texture> texture) { textures.insert(std::make_pair(id, std::move(texture))); return get(id); }
