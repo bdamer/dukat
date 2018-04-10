@@ -8,7 +8,7 @@ namespace dukat
 	class FramebufferScene : public Scene, public Controller
 	{
 	private:
-		static constexpr int texture_size = 256;
+		static constexpr int texture_size = 512;
 
 		Game3* game;
 		MeshGroup overlay_meshes;

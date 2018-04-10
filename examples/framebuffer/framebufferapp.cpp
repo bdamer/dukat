@@ -23,8 +23,8 @@ namespace dukat
 		// Generate framebuffer and texture
 		fbo = std::make_unique<FrameBuffer>(texture_size, texture_size, true, false);
 
-		fb_program = game->get_shaders()->get_program("fx_animation.vsh", "fx_animation.fsh");
-
+		fb_program = game->get_shaders()->get_program("fx_default.vsh", "fx_fractal.fsh");
+		
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
@@ -37,8 +37,12 @@ namespace dukat
 		auto info_text = game->create_text_mesh(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.5f };
 		std::stringstream ss;
-		ss << "<#magenta><F1> Nothing" << std::endl
+		ss << "<#white>"
+			<< "<WASD> Move" << std::endl
+			<< "<LMB> Zoom in" << std::endl
+			<< "<RMB> Zoom out" << std::endl
 			<< "<F11> Toggle Info" << std::endl
+			<< "<ESC> Quit" << std::endl
 			<< std::endl;
 		info_text->set_text(ss.str());
 		info_text->transform.update();
@@ -68,12 +72,32 @@ namespace dukat
 
 	void FramebufferScene::update_framebuffer(float delta)
 	{
-        glDisable(GL_BLEND);
+		static float increment = 2.0f;
+		static float zoom = 1.0f;
+		static Vector2 pos{ 0.0f, 0.0f };
+		
+		glDisable(GL_BLEND);
 
         fbo->bind();
 
+		auto ctrl = game->get_devices()->active;
+		if (ctrl->is_pressed(InputDevice::Button1))
+		{
+			zoom += increment * delta;
+			increment *= 1.01f;
+		}
+		else if (zoom > 0.1f && ctrl->is_pressed(InputDevice::Button2))
+		{
+			zoom -= increment * delta;
+			increment *= 0.99f;
+		}
+		pos.x += ctrl->lx / zoom * delta;
+		pos.y += ctrl->ly / zoom * delta;
+
         game->get_renderer()->switch_shader(fb_program);
-		fb_program->set("u_time", game->get_time());
+		fb_program->set("u_k", 0.35f, 0.4f);
+		fb_program->set("u_offset", pos.x, pos.y);
+		fb_program->set("u_zoom", zoom);
         game->get_meshes()->get("quad")->render(fb_program);
 
         fbo->unbind();
