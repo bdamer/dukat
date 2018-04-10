@@ -409,8 +409,11 @@ namespace dukat
 		mat_identity.identity();
 		for (const auto& text : texts)
 		{
-			// TODO: perform boundary check
-			text->render(renderer, mat_identity);
+			if (text->visible)
+			{
+				// TODO: perform boundary check
+				text->render(renderer, mat_identity);
+			}
 		}
 	}
 

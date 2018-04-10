@@ -30,9 +30,11 @@ namespace dukat
 
 		float mag2(void) const { return x * x + y * y; }
 		float mag(void) const { return sqrt(mag2()); }
-		void normalize(void) { float oneOverMag = 1 / mag(); x *= oneOverMag; y *= oneOverMag; } 
+		void normalize(void) { float one_over_mag = 1 / mag(); x *= one_over_mag; y *= one_over_mag; }
 		// Faster, less accurate normalization method.
 		Vector2& normalize_fast(void);
+		void set_mag(float magnitude) { auto k = magnitude / mag(); x *= k; y *= k; }
+		void limit(float max_mag) { auto m = mag(); auto k = std::min(m, max_mag) / m; x *= k; y *= k; }
 
 		bool in_range(const Vector2& min, const Vector2& max) const { return (min.x <= x) && (x <= max.x) && (min.y <= y) && (y <= max.y); }
 		static Vector2 random(const Vector2& min, const Vector2& max);
