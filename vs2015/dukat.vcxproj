@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\dukat\collisionmanager2.h" />
     <ClInclude Include="..\src\dukat\controller.h" />
+    <ClInclude Include="..\src\dukat\debugeffect2.h" />
     <ClInclude Include="..\src\dukat\dukat.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -265,6 +266,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\collisionmanager2.cpp" />
+    <ClCompile Include="..\src\dukat\debugeffect2.cpp" />
     <ClCompile Include="..\src\dukat\effectpass.cpp" />
     <ClCompile Include="..\src\dukat\gridmesh.cpp" />
     <ClCompile Include="..\src\dukat\mapgraph.cpp" />

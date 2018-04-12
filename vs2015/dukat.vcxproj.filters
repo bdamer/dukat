@@ -49,6 +49,24 @@
     <Filter Include="Source Files\engine">
       <UniqueIdentifier>{ed696220-105e-4b0c-a693-a2181f7c0410}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\video\effects">
+      <UniqueIdentifier>{ee9669c1-1821-48a1-80ab-cda471b805b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\video\effects">
+      <UniqueIdentifier>{55aa3012-963e-483f-94dd-095483ff3885}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\video\camera">
+      <UniqueIdentifier>{c8ff6ffc-6067-4a3e-8878-c1e606057304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\video\mesh">
+      <UniqueIdentifier>{b32134b1-4fea-4c59-9384-efbe0f8646f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\video\camera">
+      <UniqueIdentifier>{5e9f130a-7f61-4dcc-b039-59ca3835a8b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\video\mesh">
+      <UniqueIdentifier>{64e5dd1b-c87f-4580-a3d4-1518dc6c4b68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\src\dukat\ReadMe.txt" />
@@ -153,9 +171,6 @@
     <ClInclude Include="..\src\dukat\renderlayer2.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\camera2.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\sprite.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
@@ -192,19 +207,7 @@
     <ClInclude Include="..\src\dukat\renderer.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\camera3.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\particle.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\mesh.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\meshbuilder2.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\meshbuilder3.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\vertextypes3.h">
@@ -213,13 +216,7 @@
     <ClInclude Include="..\src\dukat\particlemanager.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\meshinstance.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\material.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\meshgroup.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\timermanager.h">
@@ -227,9 +224,6 @@
     </ClInclude>
     <ClInclude Include="..\src\dukat\dds.h">
       <Filter>Header Files\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\meshcache.h">
-      <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\recipient.h">
       <Filter>Header Files\engine</Filter>
@@ -240,17 +234,11 @@
     <ClInclude Include="..\src\dukat\obb2.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\textmeshbuilder.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\game2.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\gamebase.h">
       <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\effect2.h">
-      <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\game3.h">
       <Filter>Header Files\engine</Filter>
@@ -261,20 +249,11 @@
     <ClInclude Include="..\src\dukat\messenger.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\textmeshinstance.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\animation.h">
       <Filter>Header Files\system</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\animationmanager.h">
       <Filter>Header Files\system</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\effect3.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\firstpersoncamera3.h">
-      <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\voxmodel.h">
       <Filter>Header Files\util</Filter>
@@ -282,17 +261,11 @@
     <ClInclude Include="..\src\dukat\octreenode.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\fixedcamera3.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\texture.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\heightmap.h">
       <Filter>Header Files\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\blockbuilder.h">
-      <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\clipmap.h">
       <Filter>Header Files\video</Filter>
@@ -302,9 +275,6 @@
     </ClInclude>
     <ClInclude Include="..\src\dukat\heightmapgenerator.h">
       <Filter>Header Files\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\orbitcamera3.h">
-      <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\orbitallight.h">
       <Filter>Header Files\video</Filter>
@@ -326,15 +296,6 @@
     </ClInclude>
     <ClInclude Include="..\src\dukat\textureutil.h">
       <Filter>Header Files\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\wavemesh.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\meshdata.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\gridmesh.h">
-      <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\version.h">
       <Filter>Header Files</Filter>
@@ -372,11 +333,71 @@
     <ClInclude Include="..\src\dukat\effectpass.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\followercamera3.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\collisionmanager2.h">
       <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\effect3.h">
+      <Filter>Header Files\video\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\effect2.h">
+      <Filter>Header Files\video\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\camera2.h">
+      <Filter>Header Files\video\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\camera3.h">
+      <Filter>Header Files\video\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\firstpersoncamera3.h">
+      <Filter>Header Files\video\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\followercamera3.h">
+      <Filter>Header Files\video\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\fixedcamera3.h">
+      <Filter>Header Files\video\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\blockbuilder.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\gridmesh.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\mesh.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\meshbuilder2.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\meshbuilder3.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\meshcache.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\meshdata.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\meshgroup.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\meshinstance.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\orbitcamera3.h">
+      <Filter>Header Files\video\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\textmeshbuilder.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\textmeshinstance.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\wavemesh.h">
+      <Filter>Header Files\video\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\debugeffect2.h">
+      <Filter>Header Files\video\effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -464,9 +485,6 @@
     <ClCompile Include="..\src\dukat\renderlayer2.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\dukat\camera2.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\dukat\sprite.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
@@ -488,32 +506,14 @@
     <ClCompile Include="..\src\dukat\renderer.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\dukat\meshbuilder2.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\meshbuilder3.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\dukat\particlemanager.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\meshinstance.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\meshgroup.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\timermanager.cpp">
       <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\dukat\camera3.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\dukat\dds.cpp">
       <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\meshcache.cpp">
-      <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\obb2.cpp">
       <Filter>Source Files\math</Filter>
@@ -542,29 +542,17 @@
     <ClCompile Include="..\src\dukat\voxmodel.cpp">
       <Filter>Source Files\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\dukat\firstpersoncamera3.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\fixedcamera3.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\dukat\texture.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\heightmap.cpp">
       <Filter>Source Files\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\dukat\blockbuilder.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\dukat\clipmap.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\diamondsquaregenerator.cpp">
       <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\orbitcamera3.cpp">
-      <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\environment.cpp">
       <Filter>Source Files\video</Filter>
@@ -577,15 +565,6 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\textureutil.cpp">
       <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\wavemesh.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\meshdata.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\gridmesh.cpp">
-      <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\mapgraph.cpp">
       <Filter>Source Files\util</Filter>
@@ -604,6 +583,51 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\collisionmanager2.cpp">
       <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\firstpersoncamera3.cpp">
+      <Filter>Source Files\video\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\fixedcamera3.cpp">
+      <Filter>Source Files\video\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\orbitcamera3.cpp">
+      <Filter>Source Files\video\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\camera2.cpp">
+      <Filter>Source Files\video\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\camera3.cpp">
+      <Filter>Source Files\video\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\wavemesh.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\meshinstance.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\meshgroup.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\meshdata.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\meshcache.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\meshbuilder3.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\meshbuilder2.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\gridmesh.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\blockbuilder.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\debugeffect2.cpp">
+      <Filter>Source Files\video\effects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
