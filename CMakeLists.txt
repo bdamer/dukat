@@ -10,6 +10,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 # FIXME
 set(SDL2_LIBRARY /usr/lib/x86_64-linux-gnu/libSDL2-2.0.so)
 set(SDL2_IMAGE_LIBRARIES /usr/lib/x86_64-linux-gnu/libSDL2_image-2.0.so)
+set(BOX2D_LIBRARY /usr/lib/x86_64-linux-gnu/libBox2D.so.2.3.0)
 
 #find_package(SDL2 REQUIRED)
 #find_package(SDL2_Image REQUIRED)
@@ -22,6 +23,7 @@ find_package(PNG REQUIRED)
 
 # The following folders will be included
 add_subdirectory(src/dukat)
+add_subdirectory(examples/flocking)
 add_subdirectory(examples/framebuffer)
 add_subdirectory(examples/grid)
 add_subdirectory(examples/heatmap)
