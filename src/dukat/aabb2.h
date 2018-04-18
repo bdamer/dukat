@@ -4,6 +4,7 @@
 #include "vector2.h"
 #include "transform2.h"
 #include "ray2.h"
+#include "collision.h"
 
 namespace dukat
 {
@@ -35,6 +36,7 @@ namespace dukat
 		// Containment / Intersection tests
 		bool empty(void) const;
 		bool overlaps(const AABB2& another) const;
+		bool intersect(const AABB2& another, Collision& collision) const;
 		bool contains(const Vector2& p) const;
 		bool intersect_circle(const Vector2& center, float radius) const;
 		float intersect_ray(const Ray2& ray, float near, float far) const;

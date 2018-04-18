@@ -126,4 +126,10 @@ namespace dukat
 	{
 		return ((float)value / 255.0f);
 	}
+
+	template <typename T> 
+	int sgn(T val) 
+	{
+		return (T(0) < val) - (val < T(0));
+	}
 }

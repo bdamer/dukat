@@ -35,6 +35,7 @@ namespace dukat
 		Vector2& normalize_fast(void);
 		void set_mag(float magnitude) { auto k = magnitude / mag(); x *= k; y *= k; }
 		void limit(float max_mag) { auto m = mag(); auto k = std::min(m, max_mag) / m; x *= k; y *= k; }
+		Vector2 abs(void) const { return Vector2{ std::abs(x), std::abs(y) }; }
 
 		bool in_range(const Vector2& min, const Vector2& max) const { return (min.x <= x) && (x <= max.x) && (min.y <= y) && (y <= max.y); }
 		static Vector2 random(const Vector2& min, const Vector2& max);

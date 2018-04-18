@@ -2,17 +2,19 @@
 
 #include <memory>
 #include <list>
+
 #include "animation.h"
+#include "manager.h"
 
 namespace dukat
 {
-	class AnimationManager
+	class AnimationManager : public Manager
 	{
 	private:
 		std::list<std::unique_ptr<Animation>> animations;
 		
 	public:
-		AnimationManager(void) { }
+		AnimationManager(GameBase* game) : Manager(game) { }
 		~AnimationManager(void) { }
 		Animation* add(std::unique_ptr<Animation> animation);
 		void update(float delta);

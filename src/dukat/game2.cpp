@@ -1,14 +1,12 @@
 #include "stdafx.h"
 #include "game2.h"
 #include "settings.h"
-#include "collisionmanager2.h"
 
 namespace dukat
 {
 	Game2::Game2(Settings& settings) : GameBase(settings)
 	{
 		renderer = std::make_unique<Renderer2>(window.get(), shader_cache.get());
-		collision_manger = std::make_unique<CollisionManager2>(this);
 	}
 
 	Game2::~Game2(void) 

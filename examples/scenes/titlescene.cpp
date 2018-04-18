@@ -57,16 +57,16 @@ namespace dukat
 
 		game->set_controller(this);
 
-		game->get_ui()->add_control(start_button.get());
-		game->get_ui()->add_control(options_button.get());
-		game->get_ui()->add_control(quit_button.get());
+		game->get<UIManager>()->add_control(start_button.get());
+		game->get<UIManager>()->add_control(options_button.get());
+		game->get<UIManager>()->add_control(quit_button.get());
 	}
 
 	void TitleScene::deactivate(void)
 	{
-		game->get_ui()->remove_control(start_button.get());
-		game->get_ui()->remove_control(options_button.get());
-		game->get_ui()->remove_control(quit_button.get());
+		game->get<UIManager>()->remove_control(start_button.get());
+		game->get<UIManager>()->remove_control(options_button.get());
+		game->get<UIManager>()->remove_control(quit_button.get());
 	}
 
 	void TitleScene::update(float delta)
@@ -80,13 +80,13 @@ namespace dukat
 		{
 		case SDLK_SPACE:
 		case SDLK_RETURN:
-			game->get_ui()->trigger_focus();
+			game->get<UIManager>()->trigger_focus();
 			break;
 		case SDLK_UP:
-			game->get_ui()->prev_control();
+			game->get<UIManager>()->prev_control();
 			break;
 		case SDLK_DOWN:
-			game->get_ui()->next_control();
+			game->get<UIManager>()->next_control();
 			break;
 		}
 	}

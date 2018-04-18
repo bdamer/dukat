@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <queue>
 #include <dukat/dukat.h>
 
 namespace dukat
@@ -11,8 +10,8 @@ namespace dukat
 	class SpritesScene : public Scene2, public Controller
 	{
 	private:
-		static const int window_width = 400;
-		static const int window_height = 300;
+		static constexpr int window_width = 400;
+		static constexpr int window_height = 300;
 
 		std::unique_ptr<Sprite> bg_sprite;
 		std::unique_ptr<Sprite> sprite;

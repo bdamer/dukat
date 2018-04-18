@@ -52,9 +52,6 @@
     <Filter Include="Header Files\video\effects">
       <UniqueIdentifier>{ee9669c1-1821-48a1-80ab-cda471b805b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\video\effects">
-      <UniqueIdentifier>{55aa3012-963e-483f-94dd-095483ff3885}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\video\camera">
       <UniqueIdentifier>{c8ff6ffc-6067-4a3e-8878-c1e606057304}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,15 @@
     </Filter>
     <Filter Include="Source Files\video\mesh">
       <UniqueIdentifier>{64e5dd1b-c87f-4580-a3d4-1518dc6c4b68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\collision">
+      <UniqueIdentifier>{e9041602-68cf-48c8-8121-b5fee3acc4d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\collision">
+      <UniqueIdentifier>{9888bb8f-527a-4bd0-9914-60877f892bfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\video\effects">
+      <UniqueIdentifier>{55aa3012-963e-483f-94dd-095483ff3885}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,9 +120,6 @@
     <ClInclude Include="..\src\dukat\xboxdevice.h">
       <Filter>Header Files\input</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\boundingsphere.h">
-      <Filter>Header Files\math</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\eulerangles.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
@@ -144,12 +147,6 @@
     <ClInclude Include="..\src\dukat\surface.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\aabb3.h">
-      <Filter>Header Files\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\boundingbody3.h">
-      <Filter>Header Files\math</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\transform3.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
@@ -173,9 +170,6 @@
     </ClInclude>
     <ClInclude Include="..\src\dukat\sprite.h">
       <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\aabb2.h">
-      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\matrix2.h">
       <Filter>Header Files\math</Filter>
@@ -227,12 +221,6 @@
     </ClInclude>
     <ClInclude Include="..\src\dukat\recipient.h">
       <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\boundingbody2.h">
-      <Filter>Header Files\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\dukat\obb2.h">
-      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="..\src\dukat\game2.h">
       <Filter>Header Files\engine</Filter>
@@ -333,9 +321,6 @@
     <ClInclude Include="..\src\dukat\effectpass.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\dukat\collisionmanager2.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\dukat\effect3.h">
       <Filter>Header Files\video\effects</Filter>
     </ClInclude>
@@ -396,8 +381,44 @@
     <ClInclude Include="..\src\dukat\wavemesh.h">
       <Filter>Header Files\video\mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\boundingsphere.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\aabb2.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\aabb3.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\boundingbody2.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\boundingbody3.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\obb2.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\box2dmanager.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\collisionmanager2.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\manager.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\box2deffect2.h">
+      <Filter>Header Files\video\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\quadtree.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\dukat\debugeffect2.h">
       <Filter>Header Files\video\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\collision.h">
+      <Filter>Header Files\collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -446,9 +467,6 @@
     <ClCompile Include="..\src\dukat\vector3.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\dukat\boundingsphere.cpp">
-      <Filter>Source Files\math</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\dukat\eulerangles.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
@@ -463,9 +481,6 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\surface.cpp">
       <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\aabb3.cpp">
-      <Filter>Source Files\math</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\transform3.cpp">
       <Filter>Source Files\math</Filter>
@@ -487,9 +502,6 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\sprite.cpp">
       <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\aabb2.cpp">
-      <Filter>Source Files\math</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\matrix2.cpp">
       <Filter>Source Files\math</Filter>
@@ -514,9 +526,6 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\dds.cpp">
       <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\dukat\obb2.cpp">
-      <Filter>Source Files\math</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\textmeshbuilder.cpp">
       <Filter>Source Files\video</Filter>
@@ -581,9 +590,6 @@
     <ClCompile Include="..\src\dukat\effectpass.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\dukat\collisionmanager2.cpp">
-      <Filter>Source Files\engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\dukat\firstpersoncamera3.cpp">
       <Filter>Source Files\video\camera</Filter>
     </ClCompile>
@@ -625,6 +631,27 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\blockbuilder.cpp">
       <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\aabb2.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\aabb3.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\boundingsphere.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\obb2.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\box2dmanager.cpp">
+      <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\box2deffect2.cpp">
+      <Filter>Source Files\video\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\collisionmanager2.cpp">
+      <Filter>Source Files\collision</Filter>
     </ClCompile>
     <ClCompile Include="..\src\dukat\debugeffect2.cpp">
       <Filter>Source Files\video\effects</Filter>

@@ -1,20 +1,22 @@
 #pragma once
 
 #include <list>
+
+#include "manager.h"
 #include "uicontrol.h"
 
 namespace dukat
 {
 	class Vector2;
 
-	class UIManager
+	class UIManager : public Manager
 	{
 	private:
 		std::list<UIControl*> controls;
 		UIControl* focus;
 
 	public:
-		UIManager(void) : focus(nullptr) { }
+		UIManager(GameBase* game) : Manager(game), focus(nullptr) { }
 		~UIManager(void) { }
 
 		// Adds and removes control.

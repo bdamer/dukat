@@ -4,6 +4,7 @@
 #include "devicemanager.h"
 #include "keyboarddevice.h"
 #include "log.h"
+#include "manager.h"
 #include "meshcache.h"
 #include "particlemanager.h"
 #include "scene.h"
@@ -21,16 +22,15 @@ namespace dukat
 	{
 		shader_cache = std::make_unique<ShaderCache>(settings.get_string("resources.shaders"));
 		texture_cache = std::make_unique<TextureCache>(settings.get_string("resources.textures"));
-		particle_manager = std::make_unique<ParticleManager>();
-		timer_manager = std::make_unique<TimerManager>();
-		anim_manager = std::make_unique<AnimationManager>();
 		mesh_cache = std::make_unique<MeshCache>();
-		ui_manager = std::make_unique<UIManager>();
-
+		add_manager<ParticleManager>();
+		add_manager<TimerManager>();
+		add_manager<AnimationManager>();
+		add_manager<UIManager>();
 		// TODO: need to rebind when devices change
 		device_manager->active->on_press(InputDevice::VirtualButton::Pause, std::bind(&GameBase::toggle_pause, this));
 		device_manager->active->on_press(InputDevice::VirtualButton::Debug1, std::bind(&GameBase::toggle_debug, this));
-		timer_manager->create_timer(1.0f, std::bind(&GameBase::update_debug_text, this), true);
+		get<TimerManager>()->create_timer(1.0f, std::bind(&GameBase::update_debug_text, this), true);
 	}
 
 	GameBase::~GameBase(void)
@@ -55,10 +55,12 @@ namespace dukat
 
 	void GameBase::update(float delta)
 	{
-		timer_manager->update(delta);
-		anim_manager->update(delta);
-		particle_manager->update(delta);
+		// Scene first so that managers can operate on updated properties.
 		scene_stack.top()->update(delta);
+		for (auto& it : managers)
+		{
+			(it.second)->update(delta);
+		}
 	}
 
 	void GameBase::render(void)

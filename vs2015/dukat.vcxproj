@@ -94,7 +94,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);XBOX_SUPPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);XBOX_SUPPORT;BOX2D_SUPPORT</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -149,8 +149,11 @@
     <Text Include="..\src\dukat\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\dukat\box2dmanager.h" />
+    <ClInclude Include="..\src\dukat\collision.h" />
     <ClInclude Include="..\src\dukat\collisionmanager2.h" />
     <ClInclude Include="..\src\dukat\controller.h" />
+    <ClInclude Include="..\src\dukat\box2deffect2.h" />
     <ClInclude Include="..\src\dukat\debugeffect2.h" />
     <ClInclude Include="..\src\dukat\dukat.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -161,9 +164,11 @@
     <ClInclude Include="..\src\dukat\effectpass.h" />
     <ClInclude Include="..\src\dukat\followercamera3.h" />
     <ClInclude Include="..\src\dukat\gridmesh.h" />
+    <ClInclude Include="..\src\dukat\manager.h" />
     <ClInclude Include="..\src\dukat\mapgraph.h" />
     <ClInclude Include="..\src\dukat\mapshape.h" />
     <ClInclude Include="..\src\dukat\meshdata.h" />
+    <ClInclude Include="..\src\dukat\quadtree.h" />
     <ClInclude Include="..\src\dukat\scene.h" />
     <ClInclude Include="..\src\dukat\scene2.h" />
     <ClInclude Include="..\src\dukat\shape.h" />
@@ -265,6 +270,8 @@
     <ClInclude Include="..\src\dukat\xboxdevice.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\dukat\box2dmanager.cpp" />
+    <ClCompile Include="..\src\dukat\box2deffect2.cpp" />
     <ClCompile Include="..\src\dukat\collisionmanager2.cpp" />
     <ClCompile Include="..\src\dukat\debugeffect2.cpp" />
     <ClCompile Include="..\src\dukat\effectpass.cpp" />

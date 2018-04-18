@@ -14,6 +14,34 @@ namespace dukat
 		return true; // boxes overlap
 	}
 
+	bool AABB2::intersect(const AABB2& another, Collision& collision) const
+	{
+		auto this_c = center();
+		auto that_c = another.center();
+		auto d = this_c - that_c;
+		auto p = ((max - min) + (another.max - another.min)) * 0.5f - d.abs();
+		if (p.x <= 0.0f || p.y <= 0.0f)
+			return false;
+
+		if (p.x < p.y)
+		{
+			auto sx = sgn(d.x);
+			collision.delta.x = p.x * sx;
+			collision.normal.x = static_cast<float>(sx);
+			collision.pos.x = sx < 0 ? min.x : max.x;
+			collision.pos.y = that_c.y;
+		}
+		else
+		{
+			auto sy = sgn(d.y);
+			collision.delta.y = p.y * sy;
+			collision.normal.y = static_cast<float>(sy);
+			collision.pos.x = that_c.x;			
+			collision.pos.y = sy < 0 ? min.y : max.y;
+		}
+		return true;
+	}
+
 	bool AABB2::contains(const Vector2& p) const
 	{
 		// check for overlap on each axis

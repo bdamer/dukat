@@ -81,6 +81,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scenes", "..\examples\scene
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "flocking", "..\examples\flocking\flocking.vcxproj", "{9CF2F0A1-B568-46A3-A89C-180C7A09F745}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "collision", "..\examples\collision\collision.vcxproj", "{F172A060-0539-4853-A4A2-B4A1172A7ABD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -226,6 +234,14 @@ Global
 		{9CF2F0A1-B568-46A3-A89C-180C7A09F745}.Release|x64.Build.0 = Release|x64
 		{9CF2F0A1-B568-46A3-A89C-180C7A09F745}.Release|x86.ActiveCfg = Release|Win32
 		{9CF2F0A1-B568-46A3-A89C-180C7A09F745}.Release|x86.Build.0 = Release|Win32
+		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Debug|x64.ActiveCfg = Debug|x64
+		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Debug|x64.Build.0 = Debug|x64
+		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Debug|x86.ActiveCfg = Debug|Win32
+		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Debug|x86.Build.0 = Debug|Win32
+		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Release|x64.ActiveCfg = Release|x64
+		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Release|x64.Build.0 = Release|x64
+		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Release|x86.ActiveCfg = Release|Win32
+		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

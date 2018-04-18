@@ -62,7 +62,7 @@ namespace dukat
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 
-		game->get_timers()->create_timer(1.0f, [&]() {
+		game->get<TimerManager>()->create_timer(1.0f, [&]() {
 			std::stringstream ss;
 			auto window = game->get_window();
 			auto cam = game->get_renderer()->get_camera();
@@ -80,7 +80,7 @@ namespace dukat
 
 	void FlockingScene::add_boid(const Vector2& pos, bool predator)
 	{
-		auto p = game->get_particles()->create_particle();
+		auto p = game->get<ParticleManager>()->create_particle();
 		p->pos = pos;
 		if (predator)
 		{

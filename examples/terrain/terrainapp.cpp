@@ -88,7 +88,7 @@ namespace dukat
 		auto options_text = game->create_text_mesh(1.0f / 20.0f);
 		options_text->transform.position = { -1.5f, -0.4f, 0.0f };
 		auto options_mesh = static_cast<TextMeshInstance*>(game->get_debug_meshes()->add_instance(std::move(options_text)));
-		game->get_timers()->create_timer(1.0f, [this,options_mesh]() {
+		game->get<TimerManager>()->create_timer(1.0f, [this,options_mesh]() {
 			std::stringstream ss;
 			ss << " CULL: " << clip_map->culling << " BLND: " << clip_map->blending << " LIGH: " << clip_map->lighting << std::endl;
 			options_mesh->set_text(ss.str());

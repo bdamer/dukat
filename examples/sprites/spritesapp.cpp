@@ -42,7 +42,7 @@ namespace dukat
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 
-		game->get_timers()->create_timer(1.0f, [&]() {
+		game->get<TimerManager>()->create_timer(1.0f, [&]() {
 			std::stringstream ss;
 			auto window = game->get_window();
 			auto cam = game->get_renderer()->get_camera();
@@ -96,7 +96,7 @@ namespace dukat
 		// Create a new particle
 		if (particles_enabled && (input.x != 0.0f || input.y != 0.0f))
 		{
-			auto p = game->get_particles()->create_particle();
+			auto p = game->get<ParticleManager>()->create_particle();
 			p->pos = sprite->p + Vector2{ randf(-pos_offset, pos_offset), randf(-pos_offset, pos_offset) }; 
 			p->color = { std::abs(input.x), std::abs(input.y), 1.0f, 1.0f };
 			p->size = randf(5.0f, 10.0f);

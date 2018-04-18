@@ -26,17 +26,11 @@
 #include "xboxdevice.h"
 
 // Math
-#include "aabb2.h"
-#include "aabb3.h"
-#include "boundingbody2.h"
-#include "boundingbody3.h"
-#include "boundingsphere.h"
 #include "eulerangles.h"
 #include "geometry.h"
 #include "mathutil.h"
 #include "matrix2.h"
 #include "matrix4.h"
-#include "obb2.h"
 #include "plane.h"
 #include "quaternion.h"
 #include "ray2.h"
@@ -49,6 +43,17 @@
 #include "vector3.h"
 // Disabled to avoid having to pull in boost into every client
 //#include "voronoi.h"
+
+// Collision
+#include "aabb2.h"
+#include "aabb3.h"
+#include "boundingbody2.h"
+#include "boundingbody3.h"
+#include "boundingsphere.h"
+#include "box2dmanager.h"
+#include "collisionmanager2.h"
+#include "obb2.h"
+#include "quadtree.h"
 
 // System
 #include "animation.h"
@@ -79,11 +84,13 @@
 
 // Video
 #include "blockbuilder.h"
+#include "box2deffect2.h"
 #include "buffers.h"
 #include "camera2.h"
 #include "camera3.h"
 #include "clipmap.h"
 #include "color.h"
+#include "debugeffect2.h"
 #include "effect2.h"
 #include "effect3.h"
 #include "effectpass.h"

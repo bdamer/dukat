@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <stack>
+#include <typeindex>
 
 #include "animationmanager.h"
 #include "application.h"
@@ -18,6 +19,7 @@ namespace dukat
 {
 	class Scene;
 	class Controller;
+	class Manager;
 
 	// Abstract base class for game implementations.
 	class GameBase : public Application
@@ -26,10 +28,7 @@ namespace dukat
 		std::unique_ptr<ShaderCache> shader_cache;
 		std::unique_ptr<TextureCache> texture_cache;
 		std::unique_ptr<MeshCache> mesh_cache;
-		std::unique_ptr<ParticleManager> particle_manager;
-		std::unique_ptr<TimerManager> timer_manager;
-		std::unique_ptr<AnimationManager> anim_manager;
-		std::unique_ptr<UIManager> ui_manager;
+		std::map<std::type_index, std::unique_ptr<Manager>> managers;
 		std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
 		std::stack<Scene*> scene_stack;
 		Controller* controller;
@@ -55,15 +54,51 @@ namespace dukat
 		void push_scene(const std::string& id);
 		void pop_scene(void);
 		Scene* get_scene(const std::string& id) const;
+		Scene* get_scene(void) const { return scene_stack.top(); }
 		void set_controller(Controller* controller) { this->controller = controller; }
+
+		// Retrieves a registered manager.
+		template <typename T>
+		T* get(void);
+		// Registers a new manager.
+		template <typename T>
+		T* add_manager(void);
+		// Removes a registered manager.
+		template <typename T>
+		void remove_manager(void);
 
 		ShaderCache* get_shaders(void) const { return shader_cache.get(); }
 		TextureCache* get_textures(void) const { return texture_cache.get(); }
-		ParticleManager* get_particles(void) const { return particle_manager.get(); }
-		TimerManager* get_timers(void) const { return timer_manager.get(); }
-		AnimationManager* get_animations(void) const { return anim_manager.get(); }
-		UIManager* get_ui(void) const { return ui_manager.get(); }
 		MeshCache* get_meshes(void) const { return mesh_cache.get(); }
-		Scene* get_scene(void) const { return scene_stack.top(); }
 	};
+
+	// Define template methods here:
+	template <typename T>
+	T* GameBase::get(void)
+	{
+		std::type_index index(typeid(T));
+		if (managers.count(index) != 0)
+		{
+			return static_cast<T*>(managers[index].get());
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
+	template <typename T>
+	T* GameBase::add_manager(void)
+	{
+		std::type_index index(typeid(T));
+		managers[index] = std::unique_ptr<T>(new T(this));
+		return static_cast<T*>(managers[index].get());
+	}
+
+	template <typename T>
+	void GameBase::remove_manager(void)
+	{
+		std::type_index index(typeid(T));
+		managers.erase(index);
+	}
 }
