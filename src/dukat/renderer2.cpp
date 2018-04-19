@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "camera2.h"
+#include "log.h"
 #include "renderer2.h"
 #include "renderlayer2.h"
 #include "shadercache.h"
@@ -103,12 +104,28 @@ namespace dukat
 
 	void Renderer2::add_to_layer(const std::string& id, Sprite* sprite)
 	{
-		get_layer(id)->add(sprite);
+		auto layer = get_layer(id);
+		if (layer == nullptr)
+		{
+			logger << "Invalid layer: " << id << std::endl;
+		}
+		else
+		{
+			layer->add(sprite);
+		}
 	}
 
 	void Renderer2::remove_from_layer(const std::string& id, Sprite* sprite)
 	{
-		get_layer(id)->remove(sprite);
+		auto layer = get_layer(id);
+		if (layer == nullptr)
+		{
+			logger << "Invalid layer: " << id << std::endl;
+		}
+		else
+		{
+			layer->remove(sprite);
+		}
 	}
 
 	void Renderer2::render(void)
