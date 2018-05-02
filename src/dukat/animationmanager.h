@@ -18,5 +18,8 @@ namespace dukat
 		~AnimationManager(void) { }
 		Animation* add(std::unique_ptr<Animation> animation);
 		void update(float delta);
+
+		// Clears all active animations.
+		void clear(void) { animations.clear(); }
 	};
 }
