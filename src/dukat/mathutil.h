@@ -43,6 +43,10 @@ namespace dukat
 		return_cos = std::cos(theta);
 	}
 
+	// Fast sin / cos based on lookup tables.
+	extern float fast_sin(float value);
+	extern float fast_cos(float value);
+
 	// convert degrees to radians and back
 	inline float deg_to_rad(float x) { return (x*pi)/180.0f; }
 	inline float rad_to_deg(float x) { return (x*180.0f)/pi; }
