@@ -14,6 +14,15 @@ namespace dukat
 		return anim;
 	}
 
+	void AnimationManager::cancel(Animation* animation)
+	{
+		auto it = std::find_if(animations.begin(), animations.end(), [animation](const std::unique_ptr<Animation>& anim) {
+			return animation == anim.get();
+		});
+		if (it != animations.end())
+			animations.erase(it);
+	}
+
 	void AnimationManager::update(float delta)
 	{
 		for (auto it = animations.begin(); it != animations.end(); )

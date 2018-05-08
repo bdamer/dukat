@@ -17,6 +17,8 @@ namespace dukat
 		AnimationManager(GameBase* game) : Manager(game) { }
 		~AnimationManager(void) { }
 		Animation* add(std::unique_ptr<Animation> animation);
+		void cancel(Animation* animation);
+
 		void update(float delta);
 
 		// Clears all active animations.
