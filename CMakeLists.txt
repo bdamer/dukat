@@ -23,6 +23,7 @@ find_package(PNG REQUIRED)
 
 # The following folders will be included
 add_subdirectory(src/dukat)
+add_subdirectory(examples/collision)
 add_subdirectory(examples/flocking)
 add_subdirectory(examples/framebuffer)
 add_subdirectory(examples/grid)
