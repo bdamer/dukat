@@ -15,7 +15,16 @@ namespace dukat
 		: settings(settings), title(settings.get_string("window.title")), paused(false), done(false), runtime(0.0f)
 	{
 		logger << "Initializing application." << std::endl;
-		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");
+
+		SDL_version compiled;
+		SDL_version linked;
+		SDL_VERSION(&compiled);
+		SDL_GetVersion(&linked);
+		logger << "SDL version: " << static_cast<int>(compiled.major) << "." << static_cast<int>(compiled.minor) << "." << static_cast<int>(compiled.patch)
+			<< " (" << static_cast<int>(linked.major) << "." << static_cast<int>(linked.minor) << "." << static_cast<int>(linked.patch) << ")" << std::endl;
+
+		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");	
+		
 		window = std::make_unique<Window>(settings.get_int("window.width", 640), settings.get_int("window.height", 480), 
 			settings.get_bool("window.fullscreen"), settings.get_bool("window.vsync", true), settings.get_bool("window.msaa"));
 		window->set_title(title);
