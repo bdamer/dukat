@@ -7,6 +7,7 @@
 namespace dukat
 {
 	class Window;
+	class AudioManager;
 	class DeviceManager;
 	class Settings;
 
@@ -22,6 +23,7 @@ namespace dukat
 	protected:
 		Settings& settings;
 		std::unique_ptr<Window> window;
+		std::unique_ptr<AudioManager> audio_manager;
 		std::unique_ptr<DeviceManager> device_manager;
 
 		// Called to process input events.
@@ -51,6 +53,7 @@ namespace dukat
 		float get_time(void) const { return runtime; }
 
 		Window* get_window(void) const { return window.get(); }
+		AudioManager* get_audio(void) const { return audio_manager.get(); }
 		DeviceManager* get_devices(void) const { return device_manager.get(); }
 		const Settings& get_settings(void) const { return settings; }
 	};

@@ -95,7 +95,7 @@ namespace dukat
 		mi->transform.position.y = 25.0f;
 		mi->transform.scale = Vector3(25.0f, 25.0f, 25.0f);
 
-		game->set_controller(this);
+		game->set_controller(this);	
 	}
 
 	void RoomScene::update(float delta)

@@ -149,6 +149,8 @@
     <Text Include="..\src\dukat\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\dukat\audiocache.h" />
+    <ClInclude Include="..\src\dukat\audiomanager.h" />
     <ClInclude Include="..\src\dukat\box2dmanager.h" />
     <ClInclude Include="..\src\dukat\collision.h" />
     <ClInclude Include="..\src\dukat\collisionmanager2.h" />
@@ -270,6 +272,8 @@
     <ClInclude Include="..\src\dukat\xboxdevice.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\dukat\audiocache.cpp" />
+    <ClCompile Include="..\src\dukat\audiomanager.cpp" />
     <ClCompile Include="..\src\dukat\box2dmanager.cpp" />
     <ClCompile Include="..\src\dukat\box2deffect2.cpp" />
     <ClCompile Include="..\src\dukat\collisionmanager2.cpp" />

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "application.h"
+#include "audiomanager.h"
 #include "log.h"
 #include "perfcounter.h"
 #include "sysutil.h"
@@ -28,6 +29,11 @@ namespace dukat
 		window = std::make_unique<Window>(settings.get_int("window.width", 640), settings.get_int("window.height", 480), 
 			settings.get_bool("window.fullscreen"), settings.get_bool("window.vsync", true), settings.get_bool("window.msaa"));
 		window->set_title(title);
+
+		audio_manager = std::make_unique<AudioManager>(settings.get_int("audio.channels", 16));
+		audio_manager->set_music_volume(settings.get_float("audio.music.volume", 1.0f));
+		audio_manager->set_sample_volume(settings.get_float("audio.sample.volume", 1.0f));
+
 		device_manager = std::make_unique<DeviceManager>();
 		device_manager->add_keyboard(window.get());
 		device_manager->joystick_support = settings.get_bool("input.joystick.support", true);

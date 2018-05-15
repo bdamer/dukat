@@ -34,6 +34,10 @@ namespace dukat
 		info_text->set_text(ss.str());
 		main_layer->add(info_text.get());
 
+		// Play some tunes
+		auto music = game->get_samples()->get_music("space_ambience.mp3");
+		game->get_audio()->play_music(music, -1);
+
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh(4.0f);
@@ -79,19 +83,31 @@ namespace dukat
 		// Update sprite position
 		sprite->p += sprite_vel * delta;
 
-		const auto half_width = window_width / 2;
-		const auto half_height = window_height / 2;
+		const auto half_width = 0.5f * static_cast<float>(window_width);
+		const auto half_height = 0.5f * static_cast<float>(window_height);
+		bool bounce = false;
 		if (sprite->p.x < -half_width || sprite->p.x > half_width)
 		{
 			sprite_vel.x = -sprite_vel.x;
+			sprite->p.x = std::min(half_width, std::max(-half_width, sprite->p.x));
+			bounce = true;
 		}
 		if (sprite->p.y < -half_height || sprite->p.y > half_height)
 		{
 			sprite_vel.y = -sprite_vel.y;
+			sprite->p.y = std::min(half_height, std::max(-half_height, sprite->p.y));
+			bounce = true;
 		}
 
-		const float pos_offset = 5.0f;
-		const float vel_offset = 5.0f;
+		audio_delay -= delta;
+		if (bounce && audio_delay <= 0.0f)
+		{
+			game->get_audio()->play_sample(game->get_samples()->get_sample("kickstep.mp3"));
+			audio_delay = 0.2f;
+		}
+
+		const auto pos_offset = 5.0f;
+		const auto vel_offset = 5.0f;
 
 		// Create a new particle
 		if (particles_enabled && (input.x != 0.0f || input.y != 0.0f))

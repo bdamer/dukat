@@ -17,6 +17,10 @@
 #include "uicontrol.h"
 #include "uimanager.h"
 
+// Audio
+#include "audiocache.h"
+#include "audiomanager.h"
+
 // Input
 #include "controller.h"
 #include "devicemanager.h"

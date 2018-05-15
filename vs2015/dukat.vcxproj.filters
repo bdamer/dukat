@@ -73,6 +73,12 @@
     <Filter Include="Source Files\video\effects">
       <UniqueIdentifier>{55aa3012-963e-483f-94dd-095483ff3885}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\audio">
+      <UniqueIdentifier>{ab0798fc-0305-4661-a397-22ba6c7b2184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\audio">
+      <UniqueIdentifier>{75f21753-fa1e-4e69-b8f4-bdef6a1954d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\src\dukat\ReadMe.txt" />
@@ -420,6 +426,12 @@
     <ClInclude Include="..\src\dukat\collision.h">
       <Filter>Header Files\collision</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\audiomanager.h">
+      <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dukat\audiocache.h">
+      <Filter>Header Files\audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -655,6 +667,12 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\debugeffect2.cpp">
       <Filter>Source Files\video\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\audiomanager.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\audiocache.cpp">
+      <Filter>Source Files\audio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

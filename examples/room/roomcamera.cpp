@@ -9,7 +9,8 @@ namespace dukat
     void RoomCamera::update(float delta) 
     {
         // jumping
-		if (accel != 0.0f)
+		bool jumping = accel != 0.0f;
+		if (jumping)
 		{
 			transform.position.y += accel * delta;
 			accel -= gravity * delta;
@@ -19,6 +20,21 @@ namespace dukat
 				transform.position.y = 1.0f;
 				accel = 0.0f;
 			}
+		}
+
+		// Play / stop footsteps sample
+		auto dev = game->get_devices()->active;
+		auto should_walk = !jumping && (dev->lx != 0.0f || dev->ly != 0.0f);
+		if (should_walk && !walking)
+		{
+			auto sample = game->get_samples()->get_sample("footsteps.ogg");
+			game->get_audio()->play_sample(sample, 0, -1);
+			walking = true;
+		}
+		else if (!should_walk && walking)
+		{
+			game->get_audio()->stop_sample(0);
+			walking = false;
 		}
 
         FirstPersonCamera3::update(delta);

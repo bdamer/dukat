@@ -22,6 +22,7 @@ namespace dukat
 		std::unique_ptr<TextMeshInstance> debug_text;
 		Vector2 sprite_vel;
 		bool particles_enabled;
+		float audio_delay;
 
 	public:
 		SpritesScene(Game2* game);

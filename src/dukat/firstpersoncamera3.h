@@ -10,7 +10,7 @@ namespace dukat
 {
 	class FirstPersonCamera3 : public Camera3
 	{
-	private:
+	protected:
 		const float yaw_speed;
 		const float pitch_speed;
 		float movement_speed;
