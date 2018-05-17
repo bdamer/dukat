@@ -7,7 +7,7 @@ namespace dukat
 {
 	std::unique_ptr<Sample> AudioCache::load_sample(const std::string& filename)
 	{
-		logger << "Loading sample [" << filename << "]: " << std::endl;
+		logger << "Loading sample [" << filename << "]: ";
 		auto fqn = sample_dir + "/" + filename;
 		auto chunk = Mix_LoadWAV(fqn.c_str());
 		if (chunk == nullptr)
@@ -17,12 +17,16 @@ namespace dukat
 			ss << "Could not load sample: " << filename;
 			throw std::runtime_error(ss.str());
 		}
+		else
+		{
+			logger << "OK" << std::endl;
+		}
 		return std::make_unique<Sample>(chunk);
 	}
 
 	std::unique_ptr<Music> AudioCache::load_music(const std::string& filename)
 	{
-		logger << "Loading music [" << filename << "]: " << std::endl;
+		logger << "Loading music [" << filename << "]: ";
 		auto fqn = music_dir + "/" + filename;
 		auto music = Mix_LoadMUS(fqn.c_str());
 		if (music == nullptr)
@@ -31,6 +35,10 @@ namespace dukat
 			std::stringstream ss;
 			ss << "Could not load music: " << filename;
 			throw std::runtime_error(ss.str());
+		}
+		else
+		{
+			logger << "OK" << std::endl;
 		}
 		return std::make_unique<Music>(music);
 	}

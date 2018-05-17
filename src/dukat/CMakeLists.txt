@@ -1,4 +1,5 @@
-add_library(dukat STATIC aabb2.cpp aabb3.cpp animationmanager.cpp application.cpp 
+add_library(dukat STATIC 
+    aabb2.cpp aabb3.cpp animationmanager.cpp application.cpp audiocache.cpp audiomanager.cpp
 	blockbuilder.cpp boundingsphere.cpp box2deffect2.cpp box2dmanager.cpp buffers.cpp 
 	camera2.cpp camera3.cpp clipmap.cpp collisionmanager2.cpp
 	debugeffect2.cpp dds.cpp devicemanager.cpp diamondsquaregenerator.cpp 

@@ -12,6 +12,8 @@ namespace dukat
 		mapping[VirtualButton::Button4] = SDL_SCANCODE_T;
 		mapping[VirtualButton::Button5] = SDL_SCANCODE_Q;
 		mapping[VirtualButton::Button6] = SDL_SCANCODE_E;
+		mapping[VirtualButton::Button7] = -1;
+		mapping[VirtualButton::Button8] = -1;
 		mapping[VirtualButton::Menu] = SDL_SCANCODE_ESCAPE;
 		mapping[VirtualButton::Pause] = SDL_SCANCODE_P;
 		mapping[VirtualButton::Debug1] = SDL_SCANCODE_GRAVE;
@@ -66,7 +68,7 @@ namespace dukat
             {
 				update_button_state(VirtualButton::Button2, mouse_rb);
             }
-			else
+			else if (mapping[i] > -1)
 			{
 				update_button_state((VirtualButton)i, keystate[mapping[i]] == 1);
 			}

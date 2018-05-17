@@ -10,6 +10,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 # FIXME
 set(SDL2_LIBRARY /usr/lib/x86_64-linux-gnu/libSDL2-2.0.so)
 set(SDL2_IMAGE_LIBRARIES /usr/lib/x86_64-linux-gnu/libSDL2_image-2.0.so)
+set(SDL2_MIXER_LIBRARIES /usr/lib/x86_64-linux-gnu/libSDL2_mixer-2.0.so)
 set(BOX2D_LIBRARY /usr/lib/x86_64-linux-gnu/libBox2D.so.2.3.0)
 
 #find_package(SDL2 REQUIRED)
