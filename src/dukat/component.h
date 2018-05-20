@@ -2,6 +2,11 @@
 
 #include "recipient.h"
 
+namespace Json
+{
+	class Value;
+}
+
 namespace dukat
 {
 	// Forward declarations
@@ -20,5 +25,9 @@ namespace dukat
 		virtual void update(float delta) { }
         // Receives a message.
         virtual void receive(const Message& message) { }
+	
+		// Serialization
+		virtual void serialize(Json::Value& node) { }
+		virtual void deserialize(const Json::Value& node) { }
 	};
 }
