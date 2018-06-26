@@ -5,7 +5,7 @@ namespace dukat
 {
     Timer* TimerManager::create_timer(float interval, std::function<void(void)> callback, bool recurring)
     {
-        auto timer = std::make_unique<Timer>(interval, callback, recurring);
+        auto timer = std::make_unique<Timer>(++last_id, interval, callback, recurring);
         auto res = timer.get();
         timers.push_back(std::move(timer));
         return res;
