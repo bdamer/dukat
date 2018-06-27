@@ -21,9 +21,15 @@ namespace dukat
 		static constexpr Event ParentChanged = 14;
 		static constexpr Event TransformChanged = 15;
 		static constexpr Event VisibilityChanged = 16;
+		// Marks begin of a collision.
+		// param1: Body* that entity collided with.
+		// param2: Contact* contact of this collision.
 		static constexpr Event CollisionBegin = 17;
+		// Marks end of a collision.
+		// param1: Body* that entity collided with.
 		static constexpr Event CollisionEnd = 18;
 		// Indicates that a collision was resolved.
+		// param1: Vector2* direction of resolution.
 		static constexpr Event CollisionResolve = 19; 
 		// catch-all to allow subscription to all supported events
 		// TODO: review - I don't like the hard-coded max ID here
