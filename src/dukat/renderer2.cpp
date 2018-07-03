@@ -8,9 +8,13 @@
 #include "vertextypes2.h"
 #include "sysutil.h"
 
+#include "meshbuilder2.h"
+#include "meshdata.h"
+#include "textureutil.h"
+
 namespace dukat
 {
-	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache)
+	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), composite_binder(nullptr)
 	{ 
 		// Enable transparency
 		glEnable(GL_BLEND);
@@ -22,6 +26,12 @@ namespace dukat
 
 		initialize_sprite_buffers();
 		initialize_particle_buffers();
+		initialize_frame_buffer();
+
+		MeshBuilder2 builder;
+		quad = builder.build_textured_quad();
+		// Load default composite program
+		composite_program = shader_cache->get_program("fx_default.vsh", "fx_default.fsh");
 
 		light.position = Vector3(0.0f, 0.0f, 0.0f);
 		gl_check_error();
@@ -48,6 +58,25 @@ namespace dukat
 		// Create buffer for particle rendering
 		particle_buffer = std::make_unique<VertexBuffer>(1);
 		particle_buffer->load_data(0, GL_ARRAY_BUFFER, max_particles, sizeof(Vertex2PSC), nullptr, GL_STREAM_DRAW);
+	}
+
+	void Renderer2::initialize_frame_buffer(void)
+	{
+		logger << "Initializing frame buffer" << std::endl;
+		if (camera == nullptr)
+		{
+			frame_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false);
+		}
+		else
+		{
+			const auto& dim = camera->transform.dimension;
+			frame_buffer->resize(static_cast<int>(dim.x), static_cast<int>(dim.y));
+		}
+
+		// Force linear filtering
+		glBindTexture(frame_buffer->texture->target, frame_buffer->texture->id);
+		glTexParameteri(frame_buffer->texture->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(frame_buffer->texture->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
 	RenderLayer2* Renderer2::create_layer(const std::string& id, float priority, float parallax)
@@ -128,8 +157,19 @@ namespace dukat
 		}
 	}
 
+	void Renderer2::set_camera(std::unique_ptr<Camera2> camera)
+	{
+		this->camera = std::move(camera);
+		if (frame_buffer == nullptr || frame_buffer->texture->w != this->camera->transform.dimension.x
+			|| frame_buffer->texture->h != this->camera->transform.dimension.y)
+		{
+			initialize_frame_buffer();
+		}
+	}
+
 	void Renderer2::render(void)
 	{
+		frame_buffer->bind();
 		window->clear();
 
 #if OPENGL_VERSION >= 30
@@ -138,9 +178,31 @@ namespace dukat
 		update_uniforms();
 #endif
 
+		// Scene pass
 		for (auto& layer : layers)
 		{
-			if (layer->visible())
+			if (layer->visible() && layer->stage == RenderStage::SCENE)
+			{
+				layer->render(this);
+			}
+		}
+
+		frame_buffer->unbind();
+
+		// Composite pass
+		window->clear();
+		switch_shader(composite_program);
+		composite_program->set("u_aspect", camera->get_aspect_ratio());
+		frame_buffer->texture->bind(0, composite_program);
+		if (composite_binder)
+			composite_binder(composite_program);
+
+		quad->render(composite_program);
+
+		// Overlay pass
+		for (auto& layer : layers)
+		{
+			if (layer->visible() && layer->stage == RenderStage::OVERLAY)
 			{
 				layer->render(this);
 			}

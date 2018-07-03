@@ -15,6 +15,12 @@ namespace dukat
 	class ShaderProgram;
 	struct GenericBuffer;
 
+	enum RenderStage
+	{
+		SCENE,      // scene geometry
+		OVERLAY     // no depth-buffer, used for UI
+	};
+
 	// Base class for 2D and 3D renderers.
 	class Renderer : public Recipient
 	{

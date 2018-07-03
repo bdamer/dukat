@@ -9,6 +9,8 @@ namespace dukat
 	TextScene::TextScene(Game2* game2) : Scene2(game2)
 	{
 		auto layer = game->get_renderer()->create_layer("main", 1.0f);
+		layer->stage = RenderStage::OVERLAY;
+
 		auto settings = game->get_settings();
 
 		// Set up default camera centered around origin

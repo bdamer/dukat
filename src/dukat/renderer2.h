@@ -18,6 +18,8 @@
 
 namespace dukat
 {
+	// Forward declarations
+	class MeshData;
 	struct Sprite;
 
 	// 2D Renderer
@@ -29,6 +31,11 @@ namespace dukat
 		std::unique_ptr<Camera2> camera;
 		std::unique_ptr<VertexBuffer> sprite_buffer;
 		std::unique_ptr<VertexBuffer> particle_buffer;
+		std::unique_ptr<FrameBuffer> frame_buffer;
+		// Used to compose the layers into a single image.
+		std::unique_ptr<MeshData> quad;
+		ShaderProgram* composite_program;
+		std::function<void(ShaderProgram*)> composite_binder;
 		// list of layers ordered by priority
 		std::vector<std::unique_ptr<RenderLayer2>> layers;
 		// just a single light for now
@@ -36,6 +43,7 @@ namespace dukat
 
 		void initialize_sprite_buffers(void);
 		void initialize_particle_buffers(void);
+		void initialize_frame_buffer(void);
 
 	public:
 		static const int max_particles = 2048;
@@ -62,11 +70,14 @@ namespace dukat
 		// Removs sprite from layer
 		void remove_from_layer(const std::string& id, Sprite* sprite);
 		// Assigns the current camera.
-		void set_camera(std::unique_ptr<Camera2> camera) { this->camera = std::move(camera); }
+		void set_camera(std::unique_ptr<Camera2> camera);
 		// Returns the current camera.
 		Camera2* get_camera(void) const { return camera.get(); }
 		// Updates uniform buffers for camera and lighting.
 		void update_uniforms(void);
 		void set_light(const Light& light) { this->light = light; }
+		// Sets the program used for composition.
+		void set_composite_program(ShaderProgram* program) { composite_program = program; }
+		void set_composite_binder(std::function<void(ShaderProgram*)> binder) { composite_binder = binder; }
 	};
 }

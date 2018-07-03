@@ -24,6 +24,8 @@ namespace dukat
 		layer->add(sprite.get());
 
 		// Set up info text
+		auto info_layer = game->get_renderer()->create_layer("overlay", 25.0f);
+		info_layer->stage = RenderStage::OVERLAY;
 		info_text = game->create_text_mesh(8.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)texture_width, 0.0f, 0.0f);
 		info_text->transform.update();
@@ -37,10 +39,11 @@ namespace dukat
 			<< "Press H: Flip image horizontally" << std::endl
 			<< "Press V: Flip image horizontally" << std::endl;
 		info_text->set_text(ss.str());
-		layer->add(info_text.get());
+		info_layer->add(info_text.get());
 
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		debug_layer->stage = RenderStage::OVERLAY;
 		debug_text = game->create_text_mesh(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.5f * (float)texture_height, 0.0f);
 		debug_text->transform.update();

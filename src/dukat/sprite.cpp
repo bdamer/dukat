@@ -5,6 +5,7 @@
 #include "rect.h"
 #include "matrix4.h"
 #include "vector3.h"
+#include "meshdata.h"
 #include "renderer2.h"
 
 namespace dukat

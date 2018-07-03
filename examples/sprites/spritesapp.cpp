@@ -18,12 +18,14 @@ namespace dukat
 		bg_layer = game->get_renderer()->create_layer("background", 10.0f, 2.0f);
 		particle_layer = game->get_renderer()->create_layer("particles", 15.0f);
 		main_layer = game->get_renderer()->create_layer("main", 20.0f);
-		
+
 		auto texture = game->get_textures()->get("dukat.png");
 		sprite = std::make_unique<Sprite>(texture);
 		main_layer->add(sprite.get());
 
 		// Set up info text
+		auto info_layer = game->get_renderer()->create_layer("overlay", 25.0f);
+		info_layer->stage = RenderStage::OVERLAY;
 		info_text = game->create_text_mesh(8.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)window_width, 0.4f * (float)window_height, 0.0f);
 		info_text->transform.update();
@@ -32,7 +34,7 @@ namespace dukat
 			<< "<WASD> to move sprite" << std::endl
 			<< "<T>oggle particles" << std::endl;
 		info_text->set_text(ss.str());
-		main_layer->add(info_text.get());
+		info_layer->add(info_text.get());
 
 		// Play some tunes
 		auto music = game->get_samples()->get_music("space_ambience.mp3");
@@ -40,6 +42,7 @@ namespace dukat
 
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		debug_layer->stage = RenderStage::OVERLAY;
 		debug_text = game->create_text_mesh(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window_width, -0.5f * (float)window_height, 0.0f);
 		debug_text->transform.update();

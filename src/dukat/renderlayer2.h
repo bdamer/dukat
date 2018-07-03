@@ -11,8 +11,8 @@
 #endif // !OPENGL_VERSION
 
 #include "color.h"
-#include "renderlayer2.h"
 #include "sprite.h"
+#include "renderer.h"
 
 namespace dukat
 {
@@ -59,6 +59,8 @@ namespace dukat
 		const float parallax;
 		// base rendering priority
 		const float priority;	
+		// Determines during which stage to render this layer.
+		RenderStage stage;
 
 		// Constructor
 		RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
