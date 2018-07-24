@@ -8,7 +8,7 @@ namespace dukat
         auto timer = std::make_unique<Timer>(++last_id, interval, callback, recurring);
         auto res = timer.get();
         timers.push_back(std::move(timer));
-        return res;
+		return res;
     }
     
     void TimerManager::cancel_timer(Timer* timer)

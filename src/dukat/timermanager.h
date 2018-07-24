@@ -34,5 +34,8 @@ namespace dukat
         Timer* create_timer(float interval, std::function<void(void)> callback, bool recurring = false);
         void cancel_timer(Timer* timer);
         void update(float delta);
+
+		// Cancels all active timers.
+		void clear(void) { timers.clear(); }
     };
 }
