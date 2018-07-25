@@ -17,7 +17,7 @@ namespace dukat
 	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), composite_binder(nullptr)
 	{ 
 		// Enable transparency
-		glEnable(GL_BLEND);
+		set_blending(true);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		// Disable depth test - we'll have to take care of rendering order ourselves
 		glDisable(GL_DEPTH_TEST);

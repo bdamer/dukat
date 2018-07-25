@@ -33,6 +33,7 @@ namespace dukat
 		std::unique_ptr<GenericBuffer> uniform_buffers;
 		bool show_wireframe;
 		bool backface_culling;
+		bool blending;
 
 		void test_capabilities(void);
 
@@ -88,6 +89,7 @@ namespace dukat
 		void toggle_wireframe(void) { set_wireframe(!show_wireframe); }
 		void set_wireframe(bool wireframe);
 		void set_backface_culling(bool backface_culling);
+		void set_blending(bool blending);
 
 		// Changes active program.
 		void switch_shader(ShaderProgram* program);

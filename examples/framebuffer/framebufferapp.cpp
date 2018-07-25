@@ -76,7 +76,7 @@ namespace dukat
 		static float zoom = 1.0f;
 		static Vector2 pos{ 0.0f, 0.0f };
 		
-		glDisable(GL_BLEND);
+		game->get_renderer()->set_blending(false);
 
         fbo->bind();
 
@@ -102,7 +102,7 @@ namespace dukat
 
         fbo->unbind();
 
-        glEnable(GL_BLEND);
+		game->get_renderer()->set_blending(true);
         perfc.inc(PerformanceCounter::FRAME_BUFFERS);
 	}
 

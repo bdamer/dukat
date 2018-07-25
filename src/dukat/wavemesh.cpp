@@ -225,7 +225,7 @@ namespace dukat
 
     void WaveMesh::update_framebuffer(Renderer* renderer)
 	{
-        glDisable(GL_BLEND);
+		renderer->set_blending(false);
 
         fbo->bind();
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb_texture->id, 0);
@@ -309,7 +309,7 @@ namespace dukat
 
         fbo->unbind();
 		
-        glEnable(GL_BLEND);
+		renderer->set_blending(true);
 	}
 
 	void WaveMesh::render(Renderer* renderer)

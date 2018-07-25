@@ -19,7 +19,7 @@ namespace dukat
 		: Renderer(window, shader_cache), effects_enabled(false)
 	{
 		// Enable transparency
-		glEnable(GL_BLEND); 
+		set_blending(true);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		// Enable depth buffer
 		glEnable(GL_DEPTH_TEST);

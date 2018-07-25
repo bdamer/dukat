@@ -27,7 +27,7 @@ namespace dukat
         if (disable_blend)
         {
             // Disable blending so we can use ALPHA channel for map flags
-            glDisable(GL_BLEND);
+			renderer->set_blending(false);
         }
 
         fbo->bind();
@@ -70,6 +70,6 @@ namespace dukat
         
         fbo->unbind();
 
-        glEnable(GL_BLEND);
+		renderer->set_blending(true);
     }
 }

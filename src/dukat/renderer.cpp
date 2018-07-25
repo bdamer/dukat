@@ -9,7 +9,7 @@
 namespace dukat
 {
 	Renderer::Renderer(Window* window, ShaderCache* shader_cache)
-		: window(window), shader_cache(shader_cache), active_program(0), show_wireframe(false)
+		: window(window), shader_cache(shader_cache), active_program(0), show_wireframe(false), blending(false)
 	{
 		window->subscribe(Events::WindowResized, this);
 		test_capabilities();
@@ -147,6 +147,19 @@ namespace dukat
 			glDisable(GL_CULL_FACE);
 			glPolygonMode(GL_BACK, GL_LINE);
 			glPolygonMode(GL_FRONT, GL_FILL);
+		}
+	}
+
+	void Renderer::set_blending(bool blending)
+	{
+		this->blending = blending;
+		if (blending)
+		{
+			glEnable(GL_BLEND);
+		}
+		else
+		{
+			glDisable(GL_BLEND);
 		}
 	}
 }
