@@ -86,21 +86,21 @@ namespace dukat
 			{
 				auto img = Surface::from_file("../assets/textures/test_rgb24.png");
 				surface->blend(*img);
-				update_texture();
+				texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 			}
 			break;
 		case SDLK_h:
 			if (surface != nullptr)
 			{
 				surface->flip_horizontal();
-				update_texture();
+				texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 			}
 			break;
 		case SDLK_v:
 			if (surface != nullptr)
 			{
 				surface->flip_vertical();
-				update_texture();
+				texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 			}
 			break;
 		}
@@ -109,7 +109,7 @@ namespace dukat
 	void SurfaceScene::test_load_image(void)
 	{
 		surface = Surface::from_file("../assets/textures/test_rgb24.png");
-		update_texture();
+		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 
 	void SurfaceScene::test_bw_image(void)
@@ -126,7 +126,7 @@ namespace dukat
 				surface->set_pixel(x, y, surface->color(0xff, 0xff, 0xff, alpha));
 			}
 		}
-		update_texture();
+		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 
 	void SurfaceScene::test_color_image(void)
@@ -148,22 +148,7 @@ namespace dukat
 		surface->fill_rect(64, 192, 64, 64, surface->color(255, 0, 255, 127));
 		surface->fill_rect(128, 192, 64, 64, surface->color(0, 255, 255, 127));
 		surface->fill_rect(192, 192, 64, 64, surface->color(255, 255, 255, 127));
-		update_texture();
-	}
-
-	void SurfaceScene::update_texture(void)
-	{
-		GLenum format, type;
-		surface->query_pixel_format(format, type);
-
-		glBindTexture(GL_TEXTURE_2D, texture->id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->get_width(), surface->get_height(), 0,
-			format, type, surface->get_surface()->pixels);
-#ifdef _DEBUG
-		glBindTexture(GL_TEXTURE_2D, 0);
-#endif
+		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 }
 

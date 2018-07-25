@@ -24,7 +24,6 @@ namespace dukat
 		void test_load_image(void);
 		void test_bw_image(void);
 		void test_color_image(void);
-		void update_texture(void);
 
 	public:
 		SurfaceScene(Game2* game2);
