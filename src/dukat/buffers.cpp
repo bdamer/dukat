@@ -50,7 +50,7 @@ namespace dukat
 
 		if (create_color_buffer)
 		{
-			texture = std::make_unique<Texture>();
+			texture = std::make_unique<Texture>(width, height);
 		}
 
 		if (create_depth_buffer)
@@ -88,7 +88,7 @@ namespace dukat
 		if (texture != nullptr)
 		{
 			glBindTexture(texture->target, texture->id);
-			glTexImage2D(texture->target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(texture->target, 0, GL_RGBA, texture->w, texture->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 			glTexParameteri(texture->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(texture->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameterf(texture->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -125,6 +125,12 @@ namespace dukat
 
 		this->width = width;
 		this->height = height;
+
+		if (texture != nullptr)
+		{
+			texture->w = width;
+			texture->h = height;
+		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 

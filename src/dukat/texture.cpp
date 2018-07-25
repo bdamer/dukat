@@ -80,7 +80,10 @@ namespace dukat
 			break;
 		}
 		
-		glTexImage2D(target, 0, GL_RGBA, w, h, 0, format, type, surface.get_surface()->pixels);
+		// Handle surface that is smaller than texture
+		auto min_width = std::min(w, surface.get_width());
+		auto min_height = std::min(h, surface.get_height());
+		glTexImage2D(target, 0, GL_RGBA, min_width, min_height, 0, format, type, surface.get_surface()->pixels);
 
 		if (generate_map)
 		{
