@@ -43,7 +43,8 @@ namespace dukat
 		});
 
 		// Set up info text
-		info_text = game->create_text_mesh(16.0f);
+		info_text = game->create_text_mesh();
+		info_text->set_size(16.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)window_width, 0.4f * (float)window_height, 0.0f);
 		info_text->transform.update();
 		std::stringstream ss;
@@ -56,7 +57,8 @@ namespace dukat
 
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
-		debug_text = game->create_text_mesh(16.0f);
+		debug_text = game->create_text_mesh();
+		debug_text->set_size(16.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window_width, -0.5f * (float)window_height, 0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());

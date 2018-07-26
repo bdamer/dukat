@@ -10,12 +10,14 @@ namespace dukat
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
-		auto title_text = game->create_text_mesh(1.0f / 10.0f);
+		auto title_text = game->create_text_mesh();
+		title_text->set_size(1.0f / 10.0f);
 		title_text->transform.position = { -0.75f, 0.25f, 0.0f };
 		title_text->set_text("<#red>Title screen</>");
 		overlay_meshes.add_instance(std::move(title_text));
 
-		auto start_text = game->create_text_mesh(1.0f / 20.0f);
+		auto start_text = game->create_text_mesh();
+		start_text->set_size(1.0f / 20.0f);
 		start_text->transform.position = { -1.0f, 0.0f, 0.0f };
 		start_button = std::make_unique<TextButton>(start_text.get());
 		start_button->set_text("Start Game");
@@ -25,7 +27,8 @@ namespace dukat
 		});
 		overlay_meshes.add_instance(std::move(start_text));
 
-		auto options_text = game->create_text_mesh(1.0f / 20.0f);
+		auto options_text = game->create_text_mesh();
+		options_text->set_size(1.0f / 20.0f);
 		options_text->transform.position = { -1.0f, -0.1f, 0.0f };
 		options_button = std::make_unique<TextButton>(options_text.get());
 		options_button->set_text("Options");
@@ -35,7 +38,8 @@ namespace dukat
 		});
 		overlay_meshes.add_instance(std::move(options_text));
 
-		auto quit_text = game->create_text_mesh(1.0f / 20.0f);
+		auto quit_text = game->create_text_mesh();
+		quit_text->set_size(1.0f / 20.0f);
 		quit_text->transform.position = { -1.0f, -0.2f, 0.0f };
 		quit_button = std::make_unique<TextButton>(quit_text.get());
 		quit_button->set_text("Quit");

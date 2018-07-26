@@ -16,7 +16,8 @@ namespace dukat
 		debug_meshes.stage = RenderStage::OVERLAY;
 		debug_meshes.visible = debug;
 
-		auto debug_text = create_text_mesh(1.0f / 30.0f);
+		auto debug_text = create_text_mesh();
+		debug_text->set_size(1.0f / 30.0f);
 		debug_text->align = TextMeshInstance::Align::Center;
 		debug_text->transform.position.y = 0.75f;
 		debug_text->transform.update();
@@ -52,5 +53,12 @@ namespace dukat
 			<< "</>" << std::endl;
 		auto debug_text = dynamic_cast<TextMeshInstance*>(debug_meshes.get_instance(0));
 		debug_text->set_text(ss.str());
+	}
+
+	std::unique_ptr<TextMeshInstance> Game3::create_text_mesh(void)
+	{
+		auto tex = texture_cache->get("font_256.png", ProfileMipMapped);
+		auto sp = shader_cache->get_program("sc_text.vsh", "sc_text.fsh");
+		return build_text_mesh(tex, sp, 1.0f);
 	}
 }

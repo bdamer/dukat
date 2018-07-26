@@ -8,12 +8,14 @@ namespace dukat
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
-		auto title_text = game->create_text_mesh(1.0f / 10.0f);
+		auto title_text = game->create_text_mesh();
+		title_text->set_size(1.0f / 10.0f);
 		title_text->transform.position = { -0.75f, 0.25f, 0.0f };
 		title_text->set_text("<#red>Options screen</>");
 		overlay_meshes.add_instance(std::move(title_text));
 
-		auto fullscreen_text = game->create_text_mesh(1.0f / 20.0f);
+		auto fullscreen_text = game->create_text_mesh();
+		fullscreen_text->set_size(1.0f / 20.0f);
 		fullscreen_text->transform.position = { -1.0f, 0.0f, 0.0f };
 		fullscreen_button = std::make_unique<TextButton>(fullscreen_text.get());
 		fullscreen_button->set_text("Fullscreen");
@@ -25,7 +27,8 @@ namespace dukat
 		});
 		overlay_meshes.add_instance(std::move(fullscreen_text));
 
-		auto return_text = game->create_text_mesh(1.0f / 20.0f);
+		auto return_text = game->create_text_mesh();
+		return_text->set_size(1.0f / 20.0f);
 		return_text->transform.position = { -1.0f, -0.1f, 0.0f };
 		return_button = std::make_unique<TextButton>(return_text.get());
 		return_button->set_text("Back");

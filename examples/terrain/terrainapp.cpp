@@ -68,7 +68,8 @@ namespace dukat
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
-		auto info_text = game->create_text_mesh(1.0f / 20.0f);
+		auto info_text = game->create_text_mesh();
+		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		std::stringstream ss;
 		ss << "<F1> Toggle Wirframe" << std::endl
@@ -85,7 +86,8 @@ namespace dukat
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 
-		auto options_text = game->create_text_mesh(1.0f / 20.0f);
+		auto options_text = game->create_text_mesh();
+		options_text->set_size(1.0f / 20.0f);
 		options_text->transform.position = { -1.5f, -0.4f, 0.0f };
 		auto options_mesh = static_cast<TextMeshInstance*>(game->get_debug_meshes()->add_instance(std::move(options_text)));
 		game->get<TimerManager>()->create_timer(1.0f, [this,options_mesh]() {

@@ -58,7 +58,8 @@ namespace dukat
 		quad_mesh->transform.update();
 		quad_mesh->visible = false;		
 
-		auto info_text = game->create_text_mesh(1.0f / 20.0f);
+		auto info_text = game->create_text_mesh();
+		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, 0.0f, 0.0f };
 		std::stringstream ss;
 		ss << "<#white>" << std::endl 

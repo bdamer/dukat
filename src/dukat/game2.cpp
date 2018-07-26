@@ -31,4 +31,11 @@ namespace dukat
 			debug_layer->hide();
 		}
 	}
+
+	std::unique_ptr<TextMeshInstance> Game2::create_text_mesh(void)
+	{
+		auto tex = texture_cache->get("font_256.png", ProfileNearest);
+		auto sp = shader_cache->get_program("sc_text.vsh", "sc_text.fsh");
+		return build_text_mesh(tex, sp, 1.0f);
+	}
 }

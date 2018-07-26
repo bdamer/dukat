@@ -75,7 +75,8 @@ namespace dukat
 		overlay_meshes.stage = RenderStage::OVERLAY;
 		overlay_meshes.visible = true;
 
-		auto multiplier_text = game->create_text_mesh(1.0f / 20.0f);
+		auto multiplier_text = game->create_text_mesh();
+		multiplier_text->set_size(1.0f / 20.0f);
 		multiplier_text->transform.position = { -1.3f, 0.85f, 0.0f };
 		std::stringstream ss;
 		ss << "<#white>" << multiplier << "x" << std::endl
@@ -96,7 +97,8 @@ namespace dukat
 			mult_mesh->set_text(ss.str());
 		}, true);
 
-		auto info_text = game->create_text_mesh(1.0f / 20.0f);
+		auto info_text = game->create_text_mesh();
+		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.3f, -0.7f, 0.0f };
 		ss.str("");
 		ss << "<#white>"

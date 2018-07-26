@@ -34,7 +34,8 @@ namespace dukat
 		quad_mesh->set_texture(fbo->texture.get());
 		quad_mesh->set_program(game->get_shaders()->get_program("sc_ui_texture.vsh", "sc_texture.fsh"));
 
-		auto info_text = game->create_text_mesh(1.0f / 20.0f);
+		auto info_text = game->create_text_mesh();
+		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.5f };
 		std::stringstream ss;
 		ss << "<#white>"

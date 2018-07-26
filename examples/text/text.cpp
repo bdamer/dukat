@@ -21,7 +21,8 @@ namespace dukat
 		game->get_renderer()->set_camera(std::move(camera));
 
 		// Set up info text
-		info_text = game->create_text_mesh(10.0f);
+		info_text = game->create_text_mesh();
+		info_text->set_size(10.0f);
 		std::stringstream ss;
 		ss << "I sing the <#red>body electric</>," << std::endl
 			<< "The <#yellow>armies</> of those I <#magenta>love</> engirth me and I engirth them," << std::endl
@@ -38,7 +39,8 @@ namespace dukat
 
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
-		debug_text = game->create_text_mesh(12.0f);
+		debug_text = game->create_text_mesh();
+		debug_text->set_size(12.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window->get_width(), -0.5f * (float)window->get_height(), 0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
