@@ -12,7 +12,6 @@ namespace dukat
 	{
 		// Revisit this if we want to support meshes with more than 64k vertices
 		assert((max_vertices - 1) <= std::numeric_limits<unsigned short>::max());
-		logger << "Creating mesh: [vertices=" << max_vertices << ",indices=" << max_indices << ",static=" << static_mesh;
 		// compute stride and offset
 		GLsizei stride = 0;
 		for (auto& it : this->attributes)
@@ -30,7 +29,8 @@ namespace dukat
 				stride += it.components * sizeof(GLshort);
 			}
 		}
-		logger << ",stride=" << stride << "]" << std::endl;
+		log->trace("Creating mesh: [vertices={},indices={},static={},stride={}]", 
+			max_vertices, max_indices, static_mesh, stride);
 
 		buffer = std::make_unique<VertexBuffer>(max_indices > 0 ? 2 : 1);
 		buffer->load_data(0, GL_ARRAY_BUFFER, max_vertices, stride, nullptr, 

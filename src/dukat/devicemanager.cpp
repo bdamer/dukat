@@ -12,7 +12,7 @@ namespace dukat
 {
 	void DeviceManager::add_keyboard(Window* window)
 	{
-		logger << "Keyboard device added." << std::endl;
+		log->info("Keyboard device added.");
 		controllers.push_back(std::make_unique<KeyboardDevice>(window));
 		active = controllers.back().get();
 	}
@@ -27,14 +27,14 @@ namespace dukat
 		if (!joystick_support)
 			return;
 
-		logger << "Joystick device added: " << id << std::endl;
+		log->info("Joystick device added: {}", id);
 #ifdef XBOX_SUPPORT
 		const std::string name = SDL_JoystickNameForIndex(id);
 		// TODO: figure out how we can detect this properly
 		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(id);
 		char buffer[33];
 		SDL_JoystickGetGUIDString(guid, buffer, 33);
-		logger << "Device: " << name << " " << buffer << std::endl;
+		log->debug("Device: {} {}", name, buffer);
 		if (name == "Controller (Xbox 360 Wireless Receiver for Windows)" ||
 			name == "XInput Controller #1")
 		{
@@ -54,7 +54,7 @@ namespace dukat
 	{
 		if (!joystick_support)
 			return;
-		logger << "Joystick device removed: " << id << std::endl;
+		log->info("Joystick device removed: {}", id);
 		std::vector<std::unique_ptr<InputDevice>>::size_type i = 0;
 		while (i < controllers.size())
 		{

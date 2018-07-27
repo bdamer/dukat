@@ -79,7 +79,7 @@ namespace dukat
 		// Create worker threads
 		thread_count = settings.get_int("game->get_renderer().threads", 1);
 		chunk_count = settings.get_int("game->get_renderer().chunks", 1);
-		logger << "Creating " << thread_count << " render threads." << std::endl;
+		log->info("Creating {} render threads.", thread_count);
 		for (auto i = 0; i < thread_count; i++) {
 			thread_pool.push_back(std::thread(&OctreeScene::thread_render_loop, this));
 		}
@@ -136,7 +136,7 @@ namespace dukat
 		case SDLK_o:
 			if (e.key.keysym.mod & KMOD_CTRL)
 			{
-				logger << "Saving model to ../assets/model.vox" << std::endl;
+				log->info("Saving model to ../assets/model.vox");
 				VoxModel model;
 				model.set_data(entity->get_octree());
 				auto os = std::fstream("../assets/model.vox", std::fstream::out | std::fstream::binary);
@@ -311,7 +311,7 @@ int main(int argc, char** argv)
 	}
 	catch (const std::exception& e)
 	{
-		dukat::logger << "Application failed with error." << std::endl << e.what() << std::endl;
+		dukat::log->error("Application failed with error: {}", e.what());
 		return -1;
 	}
 	return 0;

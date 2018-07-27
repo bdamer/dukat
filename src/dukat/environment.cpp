@@ -23,7 +23,7 @@ namespace dukat
             {
                 cur_phase = 0;
             }
-            logger << "Switching phase: " << cur_phase << std::endl;
+            log->debug("Switching phase: {}", cur_phase);
         }
 
         const auto& p0 = phases[cur_phase];

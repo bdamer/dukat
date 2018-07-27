@@ -55,7 +55,7 @@ namespace dukat
 
 	GLuint ShaderCache::build_shader(GLenum shader_type, const std::string& filename)
 	{
-		logger << "Compiling shader [" << filename << "]: ";
+		log->debug("Compiling shader [{}]", filename);
 		GLuint shader = glCreateShader(shader_type);
 		auto src = load_shader(filename);
 		auto srcPtr = src.c_str();
@@ -67,16 +67,12 @@ namespace dukat
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 
 		// Print compilation output, if any
-		char log[1024];
-		glGetShaderInfoLog(shader, 1024, NULL, log);
-		std::string shader_log(log);
+		char msg[1024];
+		glGetShaderInfoLog(shader, 1024, NULL, msg);
+		std::string shader_log(msg);
 		if (shader_log.size() > 0)
 		{
-			logger << shader_log << std::endl;
-		}
-		else
-		{
-			logger << "OK" << std::endl;
+			log->warn("Failed to compile shader: {}", shader_log);
 		}
 
 		if (!status)

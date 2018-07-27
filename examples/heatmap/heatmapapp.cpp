@@ -205,7 +205,7 @@ int main(int argc, char** argv)
 	}
 	catch (const std::exception& e)
 	{
-		dukat::logger << "Application failed with error." << std::endl << e.what() << std::endl;
+		dukat::log->error("Application failed with error: {}", e.what());
 		return -1;
 	}
 	return 0;

@@ -15,14 +15,16 @@ namespace dukat
 	Application::Application(Settings& settings)
 		: settings(settings), title(settings.get_string("window.title")), paused(false), done(false), runtime(0.0f)
 	{
-		logger << "Initializing application." << std::endl;
+		init_logging(settings);
+		log->info("Initializing application.");
 
 		SDL_version compiled;
 		SDL_version linked;
 		SDL_VERSION(&compiled);
 		SDL_GetVersion(&linked);
-		logger << "SDL version: " << static_cast<int>(compiled.major) << "." << static_cast<int>(compiled.minor) << "." << static_cast<int>(compiled.patch)
-			<< " (" << static_cast<int>(linked.major) << "." << static_cast<int>(linked.minor) << "." << static_cast<int>(linked.patch) << ")" << std::endl;
+		log->debug("SDL version {}.{}.{} ({}.{}.{})", 
+			static_cast<int>(compiled.major), static_cast<int>(compiled.minor), static_cast<int>(compiled.patch),
+			static_cast<int>(linked.major), static_cast<int>(linked.minor), static_cast<int>(linked.patch));
 
 		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");	
 		
@@ -47,7 +49,7 @@ namespace dukat
 
 	int Application::run(void)
 	{
-		logger << "Entering application loop." << std::endl;		
+		log->debug("Entering application loop.");
 		Uint32 ticks, last_update = 0, last_frame = 0;
 		SDL_Event e;
 		while (!done)

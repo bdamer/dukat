@@ -95,7 +95,7 @@ namespace dukat
 	{
 		if (scenes.count(id) == 0)
 		{
-			logger << "Failed to push scene: " << id << std::endl;
+			log->warn("Failed to push scene: {}", id);
 			return;
 		}
 

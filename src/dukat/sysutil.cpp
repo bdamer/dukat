@@ -49,7 +49,7 @@ namespace dukat
 					error = "unkown";
 					break;
 			}
-			logger << "glError: " << error << std::endl;
+			log->error("glError: {}", error);
 		}
 	}
 
@@ -91,7 +91,7 @@ namespace dukat
 
 	void save_screenshot(const std::string& filename)
 	{
-		logger << "Saving screenshot to: " << filename << std::endl;
+		log->info("Saving screenshot to: {}", filename);
 		GLint viewport[4];
 		glGetIntegerv(GL_VIEWPORT, viewport);
 		Surface surface(viewport[2], viewport[3], SDL_PIXELFORMAT_RGB24);

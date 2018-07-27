@@ -28,13 +28,13 @@ namespace dukat
 		// Create the window
 		if (fullscreen)
 		{
-			logger << "Creating fullscreen window." << std::endl;
+			log->debug("Creating fullscreen window.");
 			window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 				width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
 		}
 		else
 		{
-			logger << "Creating window with size: " << width << " by " << height << std::endl;
+			log->debug("Creating window with size: {}x{}", width, height);
 			window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 				width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 		}
@@ -49,7 +49,7 @@ namespace dukat
 		int major, minor;
 		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
 		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
-		logger << "Created OpenGL context " << major << "." << minor << std::endl;
+		log->debug("Created OpenGL context {}.{}", major, minor);
 
 		// Set vsync for current context 
 		set_vsync(vsync);
@@ -127,7 +127,7 @@ namespace dukat
 	void Window::on_resize(void)
 	{
 		SDL_GetWindowSize(window, &width, &height);
-		logger << "Window resized to: " << width << " * " << height << std::endl;
+		log->debug("Window resized to: {}x{}", width, height);
 		trigger(Message{Events::WindowResized, &width, &height});
 	}
 }

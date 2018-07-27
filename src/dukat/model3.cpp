@@ -58,7 +58,7 @@ namespace dukat
 	void Model3::add_mesh(const std::string& name, const Material& material, const std::string& texture,
 		const Transform3& transform, const std::vector<GLushort>& mesh_indices, const std::vector<Model3::Vertex>& mesh_vertices)
 	{
-		logger << "Adding mesh: " << name << std::endl;
+		log->trace("Adding mesh: {}", name);
 		// copy mesh data
 		indices.insert(indices.end(), mesh_indices.begin(), mesh_indices.end());
         vertices.insert(vertices.end(), mesh_vertices.begin(), mesh_vertices.end());
@@ -116,7 +116,7 @@ namespace dukat
 
 	std::istream& operator>>(std::istream& is, Model3& v)
 	{
-		logger << "Loading model...";
+		log->info("Loading model.");
 
 		is.read(reinterpret_cast<char*>(&v.header.id), sizeof(uint32_t));
 		is.read(reinterpret_cast<char*>(&v.header.version), sizeof(uint32_t));
@@ -152,7 +152,7 @@ namespace dukat
 			is.read(reinterpret_cast<char*>(&m.vertex_offset), sizeof(uint32_t));
 			is.read(reinterpret_cast<char*>(&m.vertex_count), sizeof(uint32_t));
 
-			logger << "Found mesh: " << m.name << std::endl;
+			log->debug("Found mesh: {}", m.name);
 		}
 
 		v.indices.resize(v.header.index_count);

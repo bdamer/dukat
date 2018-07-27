@@ -13,7 +13,7 @@ namespace dukat
 
     std::unique_ptr<OctreeNode<SDL_Color>> OctreeBuilder::build_cube(int size)
     {
-        logger << "Building cube with side: " << size << std::endl;
+        log->info("Building cube with side: {}", size);
         size = next_pow_two(size);
         auto root = build_empty(size);
     	auto half_size = size / 2;
@@ -42,16 +42,16 @@ namespace dukat
             }
         }
 
-        logger << "Size before reduction: " << root->count() << std::endl;
+        log->debug("Size before reduction: {}", root->count());
         root->reduce();
-        logger << "Size after reduction: " << root->count() << std::endl;
-
+        log->debug("Size after reduction: {}", root->count());
+        
         return std::move(root);
     }
 
     std::unique_ptr<OctreeNode<SDL_Color>> OctreeBuilder::build_sphere(int radius)
     {
-        logger << "Building sphere with radius: " << radius << std::endl;
+        log->info("Building sphere with radius: {}", radius);
         auto size = next_pow_two(2 * radius);
         auto root = build_empty(size);
 

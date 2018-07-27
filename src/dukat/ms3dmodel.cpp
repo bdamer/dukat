@@ -135,12 +135,8 @@ namespace dukat
 			m.materials.push_back(material);
 		}
 
-		logger << "Loaded MS3D model: "
-			<< m.header.vertices << " vertices, "
-			<< m.header.polygons << " polygons, "
-			<< m.header.meshes << " meshes, "
-			<< m.header.materials << " materials."
-			<< std::endl;	
+		log->debug("Loaded MS3D model: {} vertices, {} polygons, {} meshes, {} materials.",
+			m.header.vertices, m.header.polygons, m.header.meshes, m.header.materials);
 
 		return is;
 	}

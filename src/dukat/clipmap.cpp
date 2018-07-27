@@ -38,7 +38,7 @@ namespace dukat
   		  texture_size(level_size + 1), min_level(0), stitching(true), 
 		  blending(true), culling(true), lighting(true)
     {
-        logger << "Creating new clipmap: " << level_size << "x" << level_size << "x" << num_levels << std::endl;
+        log->debug("Creating new clipmap: {}x{}x{}", level_size, level_size, num_levels);
         // TODO: validate that level_size is a power of 2 - 1
         assert(level_size >= 7); // minimum allowed level size
         assert(level_size < 1024); // using 16 bit indeces

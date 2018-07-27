@@ -8,10 +8,10 @@ namespace dukat
 {
 	AudioManager::AudioManager(int num_channels) : num_channels(num_channels), channel_volume(num_channels)
 	{
-		logger << "Initializating audio mixer..." << std::endl;
+		log->info("Initializating audio mixer.");
 		sdl_check_result(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096), "Open mixer");
 		auto res = Mix_AllocateChannels(num_channels);
-		logger << "Allocated " << res << " channels." << std::endl;
+		log->debug("Allocated {} channels.", res);
 		for (auto& c : channel_volume)
 			c = 1.0f;
 	}
@@ -34,7 +34,7 @@ namespace dukat
 	{
 		if (Mix_PlayMusic(music->music, loops) == -1)
 		{
-			logger << "Failed to play music: " << Mix_GetError() << std::endl;
+			log->warn("Failed to play music: {}", Mix_GetError());
 		}
 		Mix_VolumeMusic(static_cast<int>(music_volume * MIX_MAX_VOLUME));
 	}

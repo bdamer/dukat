@@ -191,7 +191,7 @@ namespace dukat
                 // compute a new value as a average of the two.
                 if (data != nullptr)
                 {
-                    logger << "Warning: node already contains data." << std::endl;
+                    log->warn("Warning: node already contains data.");
                 }
                 data = std::move(new_data);
             }

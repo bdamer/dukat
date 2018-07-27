@@ -10,7 +10,7 @@ namespace dukat
 	{
 		if (cache.count(id) > 0)
 		{
-			logger << "Overriding mesh cache entry: " << id << std::endl;
+			log->debug("Overriding mesh cache entry: {}", id);
 		}
 		cache[id] = std::move(get_mesh);
 		return cache[id].get();

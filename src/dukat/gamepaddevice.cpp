@@ -25,8 +25,8 @@ namespace dukat
 			ss << "Could not open joystick: " << SDL_GetError();
 			throw std::runtime_error(ss.str());
 		}
-		logger << "Gamepad connected: " << SDL_JoystickName(joystick) << " " <<
-			SDL_JoystickNumAxes(joystick) << " axes, " << SDL_JoystickNumButtons(joystick) << " buttons" << std::endl;
+		log->debug("Gamepad connected: {} {} axes, {} buttons", SDL_JoystickName(joystick), 
+			SDL_JoystickNumAxes(joystick), SDL_JoystickNumButtons(joystick));
 	}
 
 	GamepadDevice::~GamepadDevice(void)

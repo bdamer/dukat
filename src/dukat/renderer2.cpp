@@ -62,7 +62,7 @@ namespace dukat
 
 	void Renderer2::initialize_frame_buffer(void)
 	{
-		logger << "Initializing frame buffer" << std::endl;
+		log->debug("Initializing frame buffer.");
 		if (camera == nullptr)
 		{
 			frame_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false);
@@ -136,7 +136,7 @@ namespace dukat
 		auto layer = get_layer(id);
 		if (layer == nullptr)
 		{
-			logger << "Invalid layer: " << id << std::endl;
+			log->warn("Invalid layer: {}", id);
 		}
 		else
 		{
@@ -149,7 +149,7 @@ namespace dukat
 		auto layer = get_layer(id);
 		if (layer == nullptr)
 		{
-			logger << "Invalid layer: " << id << std::endl;
+			log->warn("Invalid layer: {}", id);
 		}
 		else
 		{

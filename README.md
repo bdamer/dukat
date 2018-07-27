@@ -8,7 +8,8 @@
 * SDL2 2.0.8
 * SDL2_image 2.0.3
 * SDL2_mixer 2.0.2
- 
+* spdlog 0.16
+
 # Installation
 
 ## Windows
@@ -18,6 +19,7 @@ Place header files for the following libraries in include/ directory:
 * SDL2/ SDL 2
 * SDL2/ SDL Image 2
 * SDL2/ SDL Mixer 2
+* spdlog/ spdlog
 
 Set BOOST_PATH environment variable to the top-level directory of your boost install (ex: c:\boost_1_58_0).
 

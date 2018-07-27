@@ -54,7 +54,7 @@ namespace dukat
 			type = surface->format->Bshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
 			break;
 		default:
-			logger << "Unsupported pixel format: " << SDL_GetPixelFormatName(surface->format->format) << std::endl;
+			log->warn("Unsupported pixel format: {}", SDL_GetPixelFormatName(surface->format->format));
 			format = 0;
 			type = 0;
 			break;

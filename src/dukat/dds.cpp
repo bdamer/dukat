@@ -159,7 +159,7 @@ namespace dukat
 		is.read(reinterpret_cast<char*>(&magic), sizeof(char) * 4);
 		if (strcmp(magic, "DDS ") != 0)
 		{
-			logger << "Failed to load texture - not a DDS file." << std::endl;
+			log->warn("Failed to load texture - not a DDS file.");
 			return false;
 		}
 
@@ -189,7 +189,7 @@ namespace dukat
 		// Check for DX10
 		if (header.ddspf.flags == DDPF_FOURCC && header.ddspf.four_cc == D3DFMT_DX10)
 		{
-			logger << "Failed to load texture - unsupported version." << std::endl;
+			log->warn("Failed to load texture - unsupported version.");
 			return false;
 		}
 
@@ -318,7 +318,7 @@ namespace dukat
 		}
 		else
 		{
-			logger << "Invalid pixel format." << std::endl;
+			log->warn("Invalid pixel format.");
 			return nullptr;
 		}
 

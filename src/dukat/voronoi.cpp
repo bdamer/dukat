@@ -98,11 +98,11 @@ namespace dukat
             {
                 if (edge->is_curved())
                 {
-                    logger << "Warning - found curved edge." << std::endl;
+                    log->warn("Warning - found curved edge.");
                 }
                 else if (!edge->is_primary())
                 {
-                    logger << "Skipping secondary edge." << std::endl;
+                    log->warn("Skipping secondary edge.");
                 }
                 else
                 {

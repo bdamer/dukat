@@ -32,12 +32,12 @@ namespace dukat
 				// 24 bit
 			case SDL_PIXELFORMAT_BGR24:
 			case SDL_PIXELFORMAT_BGR888:
-				logger << "Unexpected 24 bit pixel format, attempting to convert to RGB888." << std::endl;
+				log->warn("Unexpected 24 bit pixel format, attempting to convert to RGB888.");
 				surface->convert_format(SDL_PIXELFORMAT_RGB888);
 				break;
 				// 32 bit
 			case SDL_PIXELFORMAT_ARGB8888:
-				logger << "Unexpected 32 bit pixel format, attempting to convert to RGB888." << std::endl;
+				log->warn("Unexpected 32 bit pixel format, attempting to convert to RGB888.");
 				surface->convert_format(SDL_PIXELFORMAT_RGBA8888);
 				break;
 			}
@@ -57,10 +57,10 @@ namespace dukat
 
 	std::unique_ptr<Texture> TextureCache::load(const std::string& filename, TextureFilterProfile profile)
 	{
-		logger << "Loading texture [" << filename << "]: " << std::endl;
+		log->debug("Loading texture [{}]", filename);
 		auto surface = load_surface(filename, flip);
-		logger << "Created " << surface->get_width() << "x" << surface->get_height() << " " 
-			<< SDL_GetPixelFormatName(surface->get_surface()->format->format) << " surface." << std::endl;
+		log->debug("Created {}x{} {} surface.", surface->get_width(), surface->get_height(),
+			SDL_GetPixelFormatName(surface->get_surface()->format->format));
 		return std::make_unique<Texture>(*surface, profile);
 	}
 
@@ -117,7 +117,7 @@ namespace dukat
 
 	void TextureCache::free_all(void)
 	{
-		logger << "Freeing " << textures.size() << " texture(s)..." << std::endl;
+		log->debug("Freeing {} texture(s)...", textures.size());
 		textures.empty();
 	}
 }

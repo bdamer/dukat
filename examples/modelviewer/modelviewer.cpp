@@ -80,7 +80,7 @@ namespace dukat
 
 	void ModelviewerScene::save_model(const std::string& filename)
 	{
-		logger << "Saving model as: " << filename << std::endl;
+		log->info("Saving model as: {}", filename);
 		auto os = std::fstream(filename, std::fstream::out | std::fstream::binary);
 		if (!os)
 			throw std::runtime_error("Could not open file");
@@ -144,8 +144,7 @@ namespace dukat
 			selected_mesh++;
 			if (selected_mesh >= count)
 				selected_mesh = 0;
-			logger << "Showing mesh " << selected_mesh << ": " << 
-				object_meshes->get_instance(selected_mesh)->get_name() << std::endl;
+			log->info("Showing mesh {}: {}", selected_mesh, object_meshes->get_instance(selected_mesh)->get_name());
 			for (auto i = 0; i < count; i++)
 			{
 				object_meshes->get_instance(i)->visible = selected_mesh == i;
@@ -158,8 +157,7 @@ namespace dukat
 			selected_mesh--;
 			if (selected_mesh < 0)
 				selected_mesh = (int)count - 1;
-			logger << "Showing mesh " << selected_mesh << ": " << 
-				object_meshes->get_instance(selected_mesh)->get_name() << std::endl;
+			log->info("Showing mesh {}: {}", selected_mesh, object_meshes->get_instance(selected_mesh)->get_name());
 			for (auto i = 0; i < count; i++)
 			{
 				object_meshes->get_instance(i)->visible = selected_mesh == i;
@@ -235,7 +233,7 @@ int main(int argc, char** argv)
 	}
 	catch (const std::exception& e)
 	{
-		dukat::logger << "Application failed with error." << std::endl << e.what() << std::endl;
+		dukat::log->error("Application failed with error: {}", e.what());
 		return -1;
 	}
 	return 0;

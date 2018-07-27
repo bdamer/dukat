@@ -6,7 +6,7 @@ namespace dukat
 {
 	Settings::Settings(const std::string& filename)
 	{
-		logger << "Loading settings from: " << filename << std::endl;
+		log->info("Loading settings from: {}", filename);
 		std::fstream is(filename);
 		if (!is)
 		{
