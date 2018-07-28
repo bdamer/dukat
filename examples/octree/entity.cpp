@@ -10,13 +10,13 @@ namespace dukat
         mr_inv = transform.mat_rot.inverse();
     }
 
-    float Entity::intersects(const Ray3& ray, float near, float far) const
+    float Entity::intersects(const Ray3& ray, float near_z, float far_z) const
     {
         perfc.inc(PerformanceCounter::BB_CHECKS);
-        return bb_world->intersect_ray(ray, near, far);
+        return bb_world->intersect_ray(ray, near_z, far_z);
     }
 
-    SDL_Color* Entity::sample(const Ray3& ray, float near, float far) const
+    SDL_Color* Entity::sample(const Ray3& ray, float near_z, float far_z) const
     {
         perfc.inc(PerformanceCounter::SAMPLES);
 

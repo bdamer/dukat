@@ -38,7 +38,7 @@ namespace dukat
 		virtual ~Camera2(void);
 
 		void resize(int width, int height);
-		void set_clip(float near, float far) { near_clip = near; far_clip = far; }
+		void set_clip(float near_clip, float far_clip) { this->near_clip = near_clip; this->far_clip = far_clip; }
 		void refresh(void) { resize(window->get_width(), window->get_height()); }
 		float get_aspect_ratio(void) const { return aspect_ratio; }
 
