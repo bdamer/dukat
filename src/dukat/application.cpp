@@ -36,14 +36,15 @@ namespace dukat
 		audio_manager->set_music_volume(settings.get_float("audio.music.volume", 1.0f));
 		audio_manager->set_sample_volume(settings.get_float("audio.sample.volume", 1.0f));
 
-		device_manager = std::make_unique<DeviceManager>();
+		device_manager = std::make_unique<DeviceManager>(settings);
 		device_manager->add_keyboard(window.get());
-		device_manager->joystick_support = settings.get_bool("input.joystick.support", true);
 		gl_check_error();
 	}
 
 	Application::~Application(void)
 	{
+		// Force release of device manager before call to SDL_Quit
+		device_manager = nullptr;
 		SDL_Quit();
 	}
 

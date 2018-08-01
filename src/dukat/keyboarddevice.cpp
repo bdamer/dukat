@@ -3,23 +3,26 @@
 #include "window.h"
 #include "mathutil.h"
 #include "sysutil.h"
+#include "settings.h"
 
 namespace dukat
 {
-	KeyboardDevice::KeyboardDevice(Window* window) : InputDevice(window, keyboard_id, true), sensitivity(2)
+	KeyboardDevice::KeyboardDevice(Window* window, const Settings& settings) : InputDevice(window, keyboard_id, true)
 	{
-		mapping[VirtualButton::Button3] = SDL_SCANCODE_SPACE;
-		mapping[VirtualButton::Button4] = SDL_SCANCODE_T;
-		mapping[VirtualButton::Button5] = SDL_SCANCODE_Q;
-		mapping[VirtualButton::Button6] = SDL_SCANCODE_E;
-		mapping[VirtualButton::Button7] = -1;
-		mapping[VirtualButton::Button8] = -1;
-		mapping[VirtualButton::Menu] = SDL_SCANCODE_ESCAPE;
-		mapping[VirtualButton::Pause] = SDL_SCANCODE_P;
-		mapping[VirtualButton::Debug1] = SDL_SCANCODE_GRAVE;
-		mapping[VirtualButton::Debug2] = SDL_SCANCODE_2;
-		mapping[VirtualButton::Debug3] = SDL_SCANCODE_3;
-		mapping[VirtualButton::Debug4] = SDL_SCANCODE_4;
+		sensitivity = settings.get_int("input.mouse.sensitivity", 2);
+		// Initialize key mapping
+		mapping[VirtualButton::Button3] = settings.get_int("input.keyboard.button3", SDL_SCANCODE_SPACE);
+		mapping[VirtualButton::Button4] = settings.get_int("input.keyboard.button4", -1);
+		mapping[VirtualButton::Button5] = settings.get_int("input.keyboard.button5", -1);
+		mapping[VirtualButton::Button6] = settings.get_int("input.keyboard.button6", -1);
+		mapping[VirtualButton::Button7] = settings.get_int("input.keyboard.button7", -1);
+		mapping[VirtualButton::Button8] = settings.get_int("input.keyboard.button8", -1);
+		mapping[VirtualButton::Debug1] = settings.get_int("input.keyboard.debug1", SDL_SCANCODE_F1);
+		mapping[VirtualButton::Debug2] = settings.get_int("input.keyboard.debug2", SDL_SCANCODE_F2);
+		mapping[VirtualButton::Debug3] = settings.get_int("input.keyboard.debug3", SDL_SCANCODE_F3);
+		mapping[VirtualButton::Debug4] = settings.get_int("input.keyboard.debug4", SDL_SCANCODE_F4);
+		mapping[VirtualButton::Select] = SDL_SCANCODE_ESCAPE;
+		mapping[VirtualButton::Start] = SDL_SCANCODE_RETURN;
 		keystate = SDL_GetKeyboardState(&num_keys);
 	}
 

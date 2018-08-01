@@ -4,6 +4,7 @@
 
 namespace dukat
 {
+	class Settings;
 	class Window;
 
 	class KeyboardDevice : public InputDevice
@@ -18,7 +19,7 @@ namespace dukat
 	public:
 		static const int keyboard_id = -1;
 
-		KeyboardDevice(Window* window);
+		KeyboardDevice(Window* window, const Settings& settings);
 		~KeyboardDevice(void);
 		void update(void);
 

@@ -10,50 +10,62 @@ namespace dukat
 
 	GamepadDevice::GamepadDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
 	{
-		mapping[VirtualButton::Button1] = 1;
-        mapping[VirtualButton::Button2] = 2;
-		mapping[VirtualButton::Button3] = 3;
-		mapping[VirtualButton::Button4] = 4;
+		mapping[VirtualButton::Button1] = 9;
+        mapping[VirtualButton::Button2] = 10;
+		mapping[VirtualButton::Button3] = 0;
+		mapping[VirtualButton::Button4] = 1;
+		mapping[VirtualButton::Button5] = 2;
+		mapping[VirtualButton::Button6] = 3;
+		mapping[VirtualButton::Button7] = 7;
+		mapping[VirtualButton::Button8] = 8;
+		mapping[VirtualButton::Select] = 4;
+		mapping[VirtualButton::Start] = 6;
 		mapping[VirtualButton::Debug1] = -1;
 		mapping[VirtualButton::Debug2] = -1;
 		mapping[VirtualButton::Debug3] = -1;
 		mapping[VirtualButton::Debug4] = -1;
-		joystick = SDL_JoystickOpen(id);
-		if (joystick == nullptr)
+
+		if (!SDL_IsGameController(id))
+		{
+			log->warn("Attempting to use incompatible device as gamepad: {}", id);
+		}
+
+		device = SDL_GameControllerOpen(id);
+		if (device == nullptr)
 		{
 			std::ostringstream ss;
-			ss << "Could not open joystick: " << SDL_GetError();
+			ss << "Could not open gamepad: " << SDL_GetError();
 			throw std::runtime_error(ss.str());
 		}
-		log->debug("Gamepad connected: {} {} axes, {} buttons", SDL_JoystickName(joystick), 
-			SDL_JoystickNumAxes(joystick), SDL_JoystickNumButtons(joystick));
+		log->info("Gamepad connected: {}", SDL_GameControllerName(device));
 	}
 
 	GamepadDevice::~GamepadDevice(void)
 	{
-		if (joystick != nullptr)
+		if (device != nullptr)
 		{
-			SDL_JoystickClose(joystick);
-			joystick = nullptr;
+			SDL_GameControllerClose(device);
+			device = nullptr;
 		}
 	}
 
 	void GamepadDevice::update(void)
 	{
-		if (joystick == nullptr)
-		{
+		if (device == nullptr)
 			return;
-		}
-		// Read axis
-		lx = normalize(SDL_JoystickGetAxis(joystick, 0));
-		ly = normalize(SDL_JoystickGetAxis(joystick, 1));
-		lt = SDL_JoystickGetButton(joystick, 6);
-		rx = normalize(SDL_JoystickGetAxis(joystick, 2));
-		ry = normalize(SDL_JoystickGetAxis(joystick, 3));
-		rt = SDL_JoystickGetButton(joystick, 7);
+
+		lx = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTX));
+		ly = -normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTY));
+		lt = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_TRIGGERLEFT));
+		rx = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTX));
+		ry = -normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTY));
+		rt = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_TRIGGERRIGHT));
+
 		for (int i = 0; i < VirtualButton::_Count; i++)
 		{
-			update_button_state((VirtualButton)i, SDL_JoystickGetButton(joystick, mapping[i]) != 0);
+			if (mapping[i] < 0)
+				continue;
+			update_button_state((VirtualButton)i, SDL_GameControllerGetButton(device, static_cast<SDL_GameControllerButton>(mapping[i])) != 0);
 		}
 
 		// compute absolute positions
@@ -69,6 +81,6 @@ namespace dukat
 
 	bool GamepadDevice::is_pressed(VirtualButton button) const
 	{
-		return SDL_JoystickGetButton(joystick, mapping[button]) == SDL_PRESSED;
+		return SDL_GameControllerGetButton(device, static_cast<SDL_GameControllerButton>(mapping[button])) == SDL_PRESSED;
 	}
 }

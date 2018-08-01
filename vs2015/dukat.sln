@@ -90,6 +90,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "collision", "..\examples\co
 		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "input", "..\examples\input\input.vcxproj", "{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17} = {CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -242,6 +247,14 @@ Global
 		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Release|x64.Build.0 = Release|x64
 		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Release|x86.ActiveCfg = Release|Win32
 		{F172A060-0539-4853-A4A2-B4A1172A7ABD}.Release|x86.Build.0 = Release|Win32
+		{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}.Debug|x64.ActiveCfg = Debug|x64
+		{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}.Debug|x64.Build.0 = Debug|x64
+		{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}.Debug|x86.ActiveCfg = Debug|Win32
+		{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}.Debug|x86.Build.0 = Debug|Win32
+		{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}.Release|x64.ActiveCfg = Release|x64
+		{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}.Release|x64.Build.0 = Release|x64
+		{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}.Release|x86.ActiveCfg = Release|Win32
+		{ECE23F19-46EC-4548-AF25-EAC4AF241D6E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

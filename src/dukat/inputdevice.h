@@ -25,8 +25,8 @@ namespace dukat
 			Debug2,
 			Debug3,
 			Debug4,
-			Menu,
-			Pause,
+			Select,
+			Start,
 			_Count
 		};
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "xboxdevice.h"
+#include "log.h"
 #include "mathutil.h"
 #include "window.h"
 
@@ -11,19 +12,22 @@ namespace dukat
 
 	XBoxDevice::XBoxDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
 	{
+		log->debug("Initializing XInput device.");
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
-		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_A;
-        mapping[VirtualButton::Button2] = XINPUT_GAMEPAD_B;
-		mapping[VirtualButton::Button3] = XINPUT_GAMEPAD_X;
-		mapping[VirtualButton::Button4] = XINPUT_GAMEPAD_Y;
-		mapping[VirtualButton::Button5] = XINPUT_GAMEPAD_LEFT_SHOULDER;
-		mapping[VirtualButton::Button6] = XINPUT_GAMEPAD_RIGHT_SHOULDER;
-		mapping[VirtualButton::Menu] = XINPUT_GAMEPAD_START;
-		mapping[VirtualButton::Pause] = XINPUT_GAMEPAD_BACK;
-		mapping[VirtualButton::Debug1] = XINPUT_GAMEPAD_DPAD_UP;
+		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_LEFT_SHOULDER;
+        mapping[VirtualButton::Button2] = XINPUT_GAMEPAD_RIGHT_SHOULDER;
+		mapping[VirtualButton::Button3] = XINPUT_GAMEPAD_A;
+		mapping[VirtualButton::Button4] = XINPUT_GAMEPAD_B;
+		mapping[VirtualButton::Button5] = XINPUT_GAMEPAD_X;
+		mapping[VirtualButton::Button6] = XINPUT_GAMEPAD_Y;
+		mapping[VirtualButton::Button7] = XINPUT_GAMEPAD_LEFT_THUMB;
+		mapping[VirtualButton::Button8] = XINPUT_GAMEPAD_RIGHT_THUMB;
+		mapping[VirtualButton::Select] = XINPUT_GAMEPAD_BACK;
+		mapping[VirtualButton::Start] = XINPUT_GAMEPAD_START;
+		mapping[VirtualButton::Debug1] = XINPUT_GAMEPAD_DPAD_DOWN;
 		mapping[VirtualButton::Debug2] = XINPUT_GAMEPAD_DPAD_RIGHT;
-		mapping[VirtualButton::Debug3] = XINPUT_GAMEPAD_DPAD_DOWN;
-		mapping[VirtualButton::Debug4] = XINPUT_GAMEPAD_DPAD_LEFT;
+		mapping[VirtualButton::Debug3] = XINPUT_GAMEPAD_DPAD_LEFT;
+		mapping[VirtualButton::Debug4] = XINPUT_GAMEPAD_DPAD_UP;
 	}
 
 	XBoxDevice::~XBoxDevice(void)
@@ -92,5 +96,4 @@ namespace dukat
 		}
 	}
 }
-
 #endif

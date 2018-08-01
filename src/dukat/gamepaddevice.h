@@ -9,7 +9,7 @@ namespace dukat
 	{
 	private:
 		const static float sensitivity;
-		SDL_Joystick* joystick;
+		SDL_GameController* device;
 
 	public:
 		GamepadDevice(Window* window, SDL_JoystickID id);
