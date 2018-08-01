@@ -30,6 +30,12 @@ namespace dukat
 
 		const std::string name = SDL_JoystickNameForIndex(id);
 		log->info("Joystick device [{}] added: {}", id, name);
+		
+		if (active != nullptr && active->id != KeyboardDevice::keyboard_id)
+		{
+			log->warn("Already using joystick device, ignoring new device.");
+			return;
+		}
 
 		// TODO: figure out how we can detect this properly
 		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(id);
@@ -47,7 +53,7 @@ namespace dukat
 		else
 		{
 #endif
-			controllers.push_back(std::make_unique<GamepadDevice>(window, id));
+			controllers.push_back(std::make_unique<GamepadDevice>(window, id, settings));
 #ifdef XBOX_SUPPORT
 		}
 #endif

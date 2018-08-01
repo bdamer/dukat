@@ -2,28 +2,31 @@
 #include "gamepaddevice.h"
 #include "log.h"
 #include "mathutil.h"
+#include "settings.h"
 #include "window.h"
 
 namespace dukat
 {
 	const float GamepadDevice::sensitivity = 1.0f;
 
-	GamepadDevice::GamepadDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
+	GamepadDevice::GamepadDevice(Window* window, SDL_JoystickID id, const Settings& settings) : InputDevice(window, id, false)
 	{
-		mapping[VirtualButton::Button1] = 9;
-        mapping[VirtualButton::Button2] = 10;
-		mapping[VirtualButton::Button3] = 0;
-		mapping[VirtualButton::Button4] = 1;
-		mapping[VirtualButton::Button5] = 2;
-		mapping[VirtualButton::Button6] = 3;
-		mapping[VirtualButton::Button7] = 7;
-		mapping[VirtualButton::Button8] = 8;
-		mapping[VirtualButton::Select] = 4;
-		mapping[VirtualButton::Start] = 6;
-		mapping[VirtualButton::Debug1] = -1;
-		mapping[VirtualButton::Debug2] = -1;
-		mapping[VirtualButton::Debug3] = -1;
-		mapping[VirtualButton::Debug4] = -1;
+		invert_y = settings.get_bool("input.gamepad.inverty", true);
+
+		mapping[VirtualButton::Button1] = settings.get_int("input.gamepad.button1", 9);	// Left Button
+        mapping[VirtualButton::Button2] = settings.get_int("input.gamepad.button2", 10);// Right Button
+		mapping[VirtualButton::Button3] = settings.get_int("input.gamepad.button3", 0);	// A
+		mapping[VirtualButton::Button4] = settings.get_int("input.gamepad.button4", 1);	// B
+		mapping[VirtualButton::Button5] = settings.get_int("input.gamepad.button5", 2);	// X
+		mapping[VirtualButton::Button6] = settings.get_int("input.gamepad.button6", 3);	// Y
+		mapping[VirtualButton::Button7] = settings.get_int("input.gamepad.button7", 7); // Left Thumb
+		mapping[VirtualButton::Button8] = settings.get_int("input.gamepad.button8", 8); // Right Tumb
+		mapping[VirtualButton::Select] = settings.get_int("input.gamepad.select", 4); 	// Select Button
+		mapping[VirtualButton::Start] = settings.get_int("input.gamepad.start", 6);		// Start Button
+		mapping[VirtualButton::Debug1] = settings.get_int("input.gamepad.debug1", 12);	// DPAD Down
+		mapping[VirtualButton::Debug2] = settings.get_int("input.gamepad.debug2", 14);	// DPAD Right
+		mapping[VirtualButton::Debug3] = settings.get_int("input.gamepad.debug3", 13);	// DPAD Left
+		mapping[VirtualButton::Debug4] = settings.get_int("input.gamepad.debug4", 11);	// DPAD Up
 
 		if (!SDL_IsGameController(id))
 		{
@@ -55,11 +58,17 @@ namespace dukat
 			return;
 
 		lx = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTX));
-		ly = -normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTY));
+		ly = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTY));
 		lt = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_TRIGGERLEFT));
 		rx = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTX));
-		ry = -normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTY));
+		ry = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTY));
 		rt = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_TRIGGERRIGHT));
+
+		if (invert_y)
+		{
+			ly = -ly;
+			ry = -ry;
+		}
 
 		for (int i = 0; i < VirtualButton::_Count; i++)
 		{
