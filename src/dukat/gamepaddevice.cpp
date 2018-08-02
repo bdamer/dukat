@@ -40,7 +40,13 @@ namespace dukat
 			ss << "Could not open gamepad: " << SDL_GetError();
 			throw std::runtime_error(ss.str());
 		}
-		log->info("Gamepad connected: {}", SDL_GameControllerName(device));
+		name = SDL_GameControllerName(device);
+		log->info("Gamepad connected: {}", name);
+
+		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(id);
+		char buffer[33];
+		SDL_JoystickGetGUIDString(guid, buffer, 33);
+		log->debug("Device GUID: {}", buffer);
 	}
 
 	GamepadDevice::~GamepadDevice(void)

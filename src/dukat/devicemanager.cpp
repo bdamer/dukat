@@ -16,6 +16,7 @@ namespace dukat
 		log->info("Keyboard device added.");
 		controllers.push_back(std::make_unique<KeyboardDevice>(window, settings));
 		active = controllers.back().get();
+		trigger(Message{ Events::DeviceChanged });
 	}
 
 	void DeviceManager::remove_keyboard(void)
@@ -37,14 +38,8 @@ namespace dukat
 			return;
 		}
 
-		// TODO: figure out how we can detect this properly
-		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(id);
-		char buffer[33];
-		SDL_JoystickGetGUIDString(guid, buffer, 33);
-		log->debug("Device GUID: {}", buffer);
-		
 #ifdef XBOX_SUPPORT
-		std::string xinput = "XInput Controller";
+		const std::string xinput = "XInput Controller";
 		if (name.rfind(xinput, 0) == 0 || 
 			name == "Controller (Xbox 360 Wireless Receiver for Windows)")
 		{
@@ -58,6 +53,7 @@ namespace dukat
 		}
 #endif
 		active = controllers.back().get();
+		trigger(Message{ Events::DeviceChanged });
 	}
 
 	void DeviceManager::remove_joystick(SDL_JoystickID id)
@@ -76,6 +72,7 @@ namespace dukat
 			++i;
 		}
 		active = controllers.back().get();
+		trigger(Message{ Events::DeviceChanged });
 	}
 
 	void DeviceManager::update(void)

@@ -7,7 +7,7 @@ namespace dukat
 {
 	struct Sprite;
 
-	class InputScene : public Scene2, public Controller
+	class InputScene : public Scene2, public Controller, public Recipient
 	{
 	private:
 		std::unique_ptr<Sprite> mask_sprite;
@@ -23,14 +23,14 @@ namespace dukat
 		std::unique_ptr<TextMeshInstance> info_text;
 		std::unique_ptr<TextMeshInstance> debug_text;
 
-		Texture* button_on;
-		Texture* button_off;
+		void create_sprites(void);
 
 	public:
 		InputScene(Game2* game2);
-		~InputScene(void) { }
+		~InputScene(void);
 
 		void handle_keyboard(const SDL_Event& e);
 		void update(float delta);
+		void receive(const Message& msg);
 	};
 }

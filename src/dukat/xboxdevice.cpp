@@ -12,7 +12,9 @@ namespace dukat
 
 	XBoxDevice::XBoxDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
 	{
-		log->debug("Initializing XInput device.");
+		name = SDL_JoystickNameForIndex(id);
+		log->debug("Initializing XInput device: {}", name);
+		
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
 		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_LEFT_SHOULDER;
         mapping[VirtualButton::Button2] = XINPUT_GAMEPAD_RIGHT_SHOULDER;
@@ -28,6 +30,11 @@ namespace dukat
 		mapping[VirtualButton::Debug2] = XINPUT_GAMEPAD_DPAD_RIGHT;
 		mapping[VirtualButton::Debug3] = XINPUT_GAMEPAD_DPAD_LEFT;
 		mapping[VirtualButton::Debug4] = XINPUT_GAMEPAD_DPAD_UP;
+
+		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(id);
+		char buffer[33];
+		SDL_JoystickGetGUIDString(guid, buffer, 33);
+		log->debug("Device GUID: {}", buffer);
 	}
 
 	XBoxDevice::~XBoxDevice(void)

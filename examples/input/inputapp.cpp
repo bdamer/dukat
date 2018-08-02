@@ -9,13 +9,62 @@ namespace dukat
 	InputScene::InputScene(Game2* game2) : Scene2(game2)
 	{
 		auto settings = game->get_settings();
-		auto layer = game->get_renderer()->create_layer("main", 1.0f);
 
 		// Set up default camera centered around origin
 		auto camera = std::make_unique<Camera2>(game, Vector2(320, 180));
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));
+
+		create_sprites();
+
+		// Set up info text
+		auto info_layer = game->get_renderer()->create_layer("overlay", 25.0f);
+		info_layer->stage = RenderStage::OVERLAY;
+		info_text = game->create_text_mesh();
+		info_text->set_size(8.0f);
+		info_text->transform.position = Vector3(-0.5f * (float)320, 0.4f * (float)180, 0.0f);
+		info_text->transform.update();
+		std::stringstream ss;
+		ss << "Device: " << game->get_devices()->active->get_name() << std::endl;
+		info_text->set_text(ss.str());
+		info_layer->add(info_text.get());
+
+		// Set up debug layer
+		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		debug_layer->stage = RenderStage::OVERLAY;
+		debug_text = game->create_text_mesh();
+		debug_text->set_size(4.0f);
+		debug_text->transform.position = Vector3(-0.5f * (float)640, -0.5f * (float)360, 0.0f);
+		debug_text->transform.update();
+		debug_layer->add(debug_text.get());
+		debug_layer->hide();
+	
+		game->get<TimerManager>()->create_timer(1.0f, [&]() {
+			std::stringstream ss;
+			auto window = game->get_window();
+			auto cam = game->get_renderer()->get_camera();
+			ss << "WIN: " << window->get_width() << "x" << window->get_height()
+				<< " VIR: " << cam->transform.dimension.x << "x" << cam->transform.dimension.y
+				<< " FPS: " << game->get_fps()
+				<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
+				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
+			debug_text->set_text(ss.str());
+		}, true);
+
+		game->get_devices()->subscribe(Events::DeviceChanged, this);
+
+		game->set_controller(this);
+	}
+
+	InputScene::~InputScene(void)
+	{
+		game->get_devices()->unsubscribe(Events::DeviceChanged, this);
+	}
+
+	void InputScene::create_sprites(void)
+	{
+		auto layer = game->get_renderer()->create_layer("main", 1.0f);
 
 		// Mask
 		mask_sprite = std::make_unique<Sprite>(game->get_textures()->get("controller.png"));
@@ -137,30 +186,6 @@ namespace dukat
 		right_sprites[3]->p = Vector2{ 56, 30 };
 		right_sprites[3]->color = c;
 		layer->add(right_sprites[3].get());
-
-		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
-		debug_layer->stage = RenderStage::OVERLAY;
-		debug_text = game->create_text_mesh();
-		debug_text->set_size(4.0f);
-		debug_text->transform.position = Vector3(-0.5f * (float)640, -0.5f * (float)360, 0.0f);
-		debug_text->transform.update();
-		debug_layer->add(debug_text.get());
-		debug_layer->hide();
-	
-		game->get<TimerManager>()->create_timer(1.0f, [&]() {
-			std::stringstream ss;
-			auto window = game->get_window();
-			auto cam = game->get_renderer()->get_camera();
-			ss << "WIN: " << window->get_width() << "x" << window->get_height()
-				<< " VIR: " << cam->transform.dimension.x << "x" << cam->transform.dimension.y
-				<< " FPS: " << game->get_fps()
-				<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
-			debug_text->set_text(ss.str());
-		}, true);
-
-		game->set_controller(this);
 	}
 
 	void InputScene::handle_keyboard(const SDL_Event& e)
@@ -203,6 +228,20 @@ namespace dukat
 		right_sprites[3]->color.a = dev->ry > 0.0f ? std::abs(dev->ry) : 0.0f;
 		ltrigger_sprite->color.a = dev->lt;
 		rtrigger_sprite->color.a = dev->rt;
+	}
+
+	void InputScene::receive(const Message & msg)
+	{
+		switch (msg.event)
+		{
+		case Events::DeviceChanged:
+		{
+			std::stringstream ss;
+			ss << "Device: " << game->get_devices()->active->get_name() << std::endl;
+			info_text->set_text(ss.str());
+			break;
+		}
+		}
 	}
 }
 

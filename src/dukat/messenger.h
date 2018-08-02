@@ -13,6 +13,8 @@ namespace dukat
 		// System events
 		static constexpr Event ToggleDebug = 1;
 		static constexpr Event WindowResized = 2;
+		// Notification that controller device has changed.
+		static constexpr Event DeviceChanged = 3;
 		// Entity Events
 		static constexpr Event Created = 10;
 		static constexpr Event Destroyed = 11;

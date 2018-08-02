@@ -35,6 +35,7 @@ namespace dukat
 		bool buttons[VirtualButton::_Count];
 
 	protected:
+		std::string name;
 		Window* window;
 		int mapping[VirtualButton::_Count];
 		void update_button_state(VirtualButton button, bool pressed);
@@ -59,6 +60,7 @@ namespace dukat
 		virtual ~InputDevice(void) { }
 		virtual void update(void) = 0;
 		virtual bool is_pressed(VirtualButton button) const = 0;
+		const std::string& get_name(void) const { return name; }
 		void on_press(VirtualButton button, std::function<void(void)> handler) { handlers[button] = handler; }
 		void unbind(VirtualButton button) { handlers.erase(button); }
 	};

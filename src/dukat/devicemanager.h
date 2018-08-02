@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
+#include "messenger.h"
 
 namespace dukat
 {
@@ -10,7 +11,7 @@ namespace dukat
 	class Settings;
 	class Window;
 
-	class DeviceManager
+	class DeviceManager : public Messenger
 	{
 	private:
 		const Settings& settings;
