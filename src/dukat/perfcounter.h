@@ -30,7 +30,13 @@ namespace dukat
 			FRAME_BUFFERS,	// No# of frame buffer switches
 			SPRITES,		// No# of sprites rendered
 			SAMPLES,		// No# of sampling operations
-			BB_CHECKS		// No# of bounding-box checks
+			BB_CHECKS,		// No# of bounding-box checks
+			ENTITIES,		// No# of game entities
+			CUSTOM1,		// Custom counters
+			CUSTOM2,
+			CUSTOM3,
+			CUSTOM4,
+			CUSTOM5
 		};
 
 		PerformanceCounter(void);
