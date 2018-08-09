@@ -15,6 +15,13 @@ namespace dukat
 		static constexpr Event WindowResized = 2;
 		// Notification that controller device has changed.
 		static constexpr Event DeviceChanged = 3;
+		// Game events
+		// Reset all game state.
+		static constexpr Event GameReset = 5;
+		// Game state has been restored from file.
+		static constexpr Event GameLoad = 6;
+		// Game state has been saved to file.
+		static constexpr Event GameSave = 7;
 		// Entity Events
 		static constexpr Event Created = 10;
 		static constexpr Event Destroyed = 11;
