@@ -18,12 +18,13 @@ namespace dukat
 		struct Body
 		{
 			const uint16_t id;
-			bool dynamic; // dynamic bodies can be moved as part of collision resolution
-			bool solid; // if true, will cause this body to take part in collision resolution
+			bool dynamic;	// dynamic bodies can be moved as part of collision resolution
+			bool solid;		// if true, will cause this body to take part in collision resolution
+			bool active;	// if false, will cause this body to be ignored by collision manager
 			AABB2 bb;
 			Messenger* owner;
 
-			Body(uint16_t id) : id(id), dynamic(true), solid(true), owner(nullptr) { }
+			Body(uint16_t id) : id(id), dynamic(true), solid(true), active(true), owner(nullptr) { }
 		};
 
 		struct Contact

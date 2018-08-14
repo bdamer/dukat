@@ -62,7 +62,10 @@ namespace dukat
 		tree->clear();
 		for (const auto& b : bodies)
 		{
-			tree->insert(b.get());
+			if (b->active)
+			{
+				tree->insert(b.get());
+			}
 		}
 
 		// narrow phase - build up set of actual collisions
