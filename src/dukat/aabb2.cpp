@@ -50,10 +50,27 @@ namespace dukat
 			(p.y >= min.y) && (p.y <= max.y);
 	}
 
-	bool AABB2::intersect_circle(const Vector2 & center, float radius) const
+	bool AABB2::intersect_circle(const Vector2& p, float radius) const
 	{
-		// TODO: implement
-		return false;
+		const auto center = this->center();
+		auto v = center - p;
+		const auto dist2_centers = v.mag2();
+
+		// compute inner & outer radius of bounding box
+		auto outer_rad = (center - min).mag2();
+		auto inner_rad = (max - center).mag2();
+		if (outer_rad < inner_rad)
+			std::swap(outer_rad, inner_rad);
+
+		// Case #1 - bb definitely outside of bb
+		if (dist2_centers > outer_rad + radius)
+			return false;
+		// Case #2 - bb definitely inside of bb
+		if (dist2_centers < inner_rad + radius)
+			return true;
+		// Case #3 - test point on circle on vector between centers
+		v.normalize();
+		return contains(center + v * radius);
 	}
 
 	void AABB2::clear()
