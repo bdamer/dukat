@@ -63,10 +63,10 @@ namespace dukat
 			std::swap(outer_rad, inner_rad);
 
 		// Case #1 - bb definitely outside of bb
-		if (dist2_centers > outer_rad + radius)
+		if (dist2_centers > outer_rad + radius * radius)
 			return false;
 		// Case #2 - bb definitely inside of bb
-		if (dist2_centers < inner_rad + radius)
+		if (dist2_centers < inner_rad + radius * radius)
 			return true;
 		// Case #3 - test point on circle on vector between centers
 		v.normalize();
