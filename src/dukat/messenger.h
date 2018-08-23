@@ -22,6 +22,8 @@ namespace dukat
 		static constexpr Event GameLoad = 6;
 		// Game state has been saved to file.
 		static constexpr Event GameSave = 7;
+		// Game is about to end
+		static constexpr Event GameEnd = 8;
 		// Entity Events
 		static constexpr Event Created = 10;
 		static constexpr Event Destroyed = 11;
