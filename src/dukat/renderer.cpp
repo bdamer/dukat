@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "color.h"
 #include "log.h"
 #include "perfcounter.h"
 #include "renderer.h"
@@ -15,7 +16,7 @@ namespace dukat
 		test_capabilities();
 		uniform_buffers = std::make_unique<GenericBuffer>(UniformBuffer::_COUNT);
 		// Default settings
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		set_clear_color(Color{ 0.0f, 0.0f, 0.0f, 0.0f });
 		// Enable back-face culling
 		glFrontFace(GL_CCW);
 		set_backface_culling(true);
@@ -161,5 +162,10 @@ namespace dukat
 		{
 			glDisable(GL_BLEND);
 		}
+	}
+
+	void Renderer::set_clear_color(const Color & clr)
+	{
+		glClearColor(clr.r, clr.g, clr.b, clr.a);
 	}
 }

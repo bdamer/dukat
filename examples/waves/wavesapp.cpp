@@ -10,7 +10,7 @@ namespace dukat
 	{
 		MeshBuilder3 mb3;
 
-		glClearColor(0.0f, 0.1f, 0.5f, 1.0f );
+		game->get_renderer()->set_clear_color(Color{ 0.0f, 0.1f, 0.5f, 1.0f });
 
 		auto settings = game->get_settings();
 

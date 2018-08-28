@@ -14,6 +14,7 @@ namespace dukat
 	class ShaderCache;
 	class ShaderProgram;
 	struct GenericBuffer;
+	struct Color;
 
 	enum RenderStage
 	{
@@ -90,6 +91,7 @@ namespace dukat
 		void set_wireframe(bool wireframe);
 		void set_backface_culling(bool backface_culling);
 		void set_blending(bool blending);
+		void set_clear_color(const Color& clr);
 
 		// Changes active program.
 		void switch_shader(ShaderProgram* program);
