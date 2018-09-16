@@ -8,7 +8,7 @@ namespace dukat
 	static std::vector<CollisionManager2::Body*> candidates;
 
 	CollisionManager2::CollisionManager2(GameBase* game) : Manager(game), 
-		world_origin({ 0,0 }), world_size(1000.0f), world_depth(5)
+		world_origin({ 0,0 }), world_size(1000.0f), world_depth(5), generation(0)
 	{
 		create_tree();
 	}
@@ -54,10 +54,51 @@ namespace dukat
 		res.insert(res.end(), values.begin(), values.end());
 	}
 
+	void CollisionManager2::resolve_collisions(void)
+	{
+		for (auto it = contacts.begin(); it != contacts.end(); )
+		{
+			// clean up contacts which are no longer active
+			if (it->second.generation != generation)
+			{
+				if (it->second.body1->owner != nullptr)
+					it->second.body1->owner->trigger(Message{ Events::CollisionEnd, it->second.body2 });
+				if (it->second.body2->owner != nullptr)
+					it->second.body2->owner->trigger(Message{ Events::CollisionEnd, it->second.body1 });
+				it = contacts.erase(it);
+			}
+			// attempt to resolve active contacts
+			else
+			{
+				auto b1 = it->second.body1;
+				auto b2 = it->second.body2;
+				if (b1->solid && b2->solid)
+				{
+					auto shift = it->second.collision.delta;
+					if (b1->dynamic)
+					{
+						b1->bb.min += shift;
+						b1->bb.max += shift;
+						if (b1->owner != nullptr)
+							b1->owner->trigger(Message{ Events::CollisionResolve, &shift });
+					}
+					if (b2->dynamic)
+					{
+						shift = -shift;
+						b2->bb.min += shift;
+						b2->bb.max += shift;
+						if (b2->owner != nullptr)
+							b2->owner->trigger(Message{ Events::CollisionResolve, &shift });
+					}
+				}
+
+				++it;
+			}
+		}
+	}
+
 	void CollisionManager2::update(float delta)
 	{
-		contacts.clear();
-
 		// broad phase - determine all possible collisions
 		tree->clear();
 		for (const auto& b : bodies)
@@ -81,51 +122,40 @@ namespace dukat
 				if (!this_body->dynamic && !other_body->dynamic)
 					continue; // static bodies do not collide with one another
 
-				// Check if collision has already been detected during this frame
+				// Check if collision has already been detected this frame
 				auto id = hash(this_body, other_body);
-				if (contacts.count(id) > 0)
+				if (contacts.count(id) && contacts[id].generation == generation)
 					continue;
 
 				perfc.inc(PerformanceCounter::BB_CHECKS);
 				Contact c;
 				if (this_body->bb.intersect(other_body->bb, c.collision))
 				{
-					c.body1 = this_body;
-					c.body2 = other_body;
-					contacts[id] = c;
+					// Update generation if this is an existing collision
+					if (contacts.count(id))
+					{
+						contacts[id].generation = generation;
+					}
+					// Otherwise, create a new contact
+					else
+					{
+						c.body1 = this_body;
+						c.body2 = other_body;
+						c.generation = generation;
+						contacts[id] = c;
 
-					if (c.body1->owner != nullptr)
-						c.body1->owner->trigger(Message{ Events::CollisionBegin, c.body2, &c });
-					if (c.body2->owner != nullptr)
-						c.body2->owner->trigger(Message{ Events::CollisionBegin, c.body1, &c });
+						if (c.body1->owner != nullptr)
+							c.body1->owner->trigger(Message{ Events::CollisionBegin, c.body2, &c });
+						if (c.body2->owner != nullptr)
+							c.body2->owner->trigger(Message{ Events::CollisionBegin, c.body1, &c });
+					}
 				}
 			}
 		}
 
-		// attempt to resolve contacts
-		for (const auto& it : contacts)
-		{
-			auto b1 = it.second.body1;
-			auto b2 = it.second.body2;
-			if (!b1->solid || !b2->solid)
-				continue;
-			auto shift = it.second.collision.delta;
-			if (b1->dynamic)
-			{
-				b1->bb.min += shift;
-				b1->bb.max += shift;
-				if (b1->owner != nullptr)
-					b1->owner->trigger(Message{ Events::CollisionResolve, &shift });
-			}
-			if (b2->dynamic)
-			{
-				shift = -shift;
-				b2->bb.min += shift;
-				b2->bb.max += shift;
-				if (b2->owner != nullptr)
-					b2->owner->trigger(Message{ Events::CollisionResolve, &shift });
-			}
-		}
+		resolve_collisions();
+
+		generation++;
 	}
 
 	void CollisionManager2::create_tree(void)

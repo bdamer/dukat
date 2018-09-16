@@ -32,13 +32,15 @@ namespace dukat
 			Body* body1;
 			Body* body2;
 			Collision collision;
-			bool active;
+			uint8_t generation;
 		};
 
 	private:
 		Vector2 world_origin;
 		float world_size;
 		int world_depth;
+		// Used to determine which collisions have been resolved.
+		uint8_t generation;
 
 		std::unique_ptr<QuadTree<Body>> tree;
 		std::list<std::unique_ptr<Body>> bodies;
@@ -50,6 +52,9 @@ namespace dukat
 		void create_tree(void);
 		// Collect all entities which are at equal or higher level in the tree as a given body.
 		void find_collisions(const QuadTree<Body>& t, Body* body, std::vector<Body*>& res) const;
+		// Attempts to resolve active collisions and notifies at the end of collisions.
+		void resolve_collisions(void);
+
 		// Generate a hash for a contact between two bodies.
 		inline uint32_t hash(Body* b1, Body* b2) const { return 65536u * static_cast<uint32_t>(std::min(b1->id, b2->id)) + static_cast<uint32_t>(std::max(b1->id, b2->id)); }
 
