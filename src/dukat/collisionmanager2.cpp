@@ -122,19 +122,22 @@ namespace dukat
 				if (!this_body->dynamic && !other_body->dynamic)
 					continue; // static bodies do not collide with one another
 
-				// Check if collision has already been detected this frame
-				auto id = hash(this_body, other_body);
-				if (contacts.count(id) && contacts[id].generation == generation)
+				// Check if collision has already been detected during this frame
+				const auto id = hash(this_body, other_body);
+				const auto contact_exists = contacts.count(id) > 0;
+				if (contact_exists && contacts[id].generation == generation)
 					continue;
 
 				perfc.inc(PerformanceCounter::BB_CHECKS);
 				Contact c;
 				if (this_body->bb.intersect(other_body->bb, c.collision))
 				{
-					// Update generation if this is an existing collision
-					if (contacts.count(id))
+					// Update contact if this is an existing collision
+					if (contact_exists)
 					{
-						contacts[id].generation = generation;
+						auto& old_contact = contacts[id];
+						old_contact.generation = generation;
+						old_contact.collision = c.collision;
 					}
 					// Otherwise, create a new contact
 					else
