@@ -49,7 +49,7 @@ namespace dukat
 		Mix_HaltMusic();
 	}
 
-	void AudioManager::play_sample(Sample* sample, int channel, int loops)
+	int AudioManager::play_sample(Sample* sample, int channel, int loops)
 	{
 		auto res = Mix_PlayChannel(channel, sample->chunk, loops);
 		if (res > -1) 
@@ -60,8 +60,9 @@ namespace dukat
 		{
 			// Playback failed - no channel available
 		}
+		return res;
 	}
-
+	
 	void AudioManager::stop_sample(int channel)
 	{
 		Mix_HaltChannel(channel);

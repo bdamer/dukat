@@ -32,8 +32,9 @@ namespace dukat
 		void pause_music(void) const;
 		void stop_music(void) const;
 
-		// Plays a sample. If no channel specified, will use next available channel.
-		void play_sample(Sample* sample, int channel = -1, int loops = 0);
+		// Plays a sample. If no channel specified, will use next available channel. Will
+		// return the channel user or -1 in case of error.
+		int play_sample(Sample* sample, int channel = -1, int loops = 0);
 		void stop_sample(int channel);
 	};
 }
