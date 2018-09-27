@@ -77,4 +77,10 @@ namespace dukat
 		a = a / b;
 		return a;
 	}
+
+	// Returns linear interpolation between p and q.
+	inline Vector2 lerp(const Vector2& p, const Vector2& q, float t)
+	{
+		return p + (q - p) * t;
+	}
 }
