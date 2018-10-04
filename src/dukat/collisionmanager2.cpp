@@ -112,6 +112,9 @@ namespace dukat
 		// narrow phase - build up set of actual collisions
 		for (const auto& b : bodies)
 		{
+			if (!b->active)
+				continue;
+
 			candidates.clear();
 			auto this_body = b.get();
 			find_collisions(*tree, this_body, candidates);
