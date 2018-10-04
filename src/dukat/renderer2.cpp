@@ -14,8 +14,9 @@
 
 namespace dukat
 {
-	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), composite_binder(nullptr)
-	{ 
+	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), composite_binder(nullptr), 
+		render_effects(true), render_sprites(true), render_particles(true), render_text(true)
+	{
 		// Enable transparency
 		set_blending(true);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

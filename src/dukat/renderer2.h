@@ -40,6 +40,11 @@ namespace dukat
 		std::vector<std::unique_ptr<RenderLayer2>> layers;
 		// just a single light for now
 		Light light;
+		// Render flags
+		bool render_particles;
+		bool render_effects;
+		bool render_sprites;
+		bool render_text;
 
 		void initialize_sprite_buffers(void);
 		void initialize_particle_buffers(void);
@@ -51,7 +56,6 @@ namespace dukat
 #if OPENGL_VERSION <= 30
 		static constexpr const char* u_cam_dimension = "u_cam_dimension";
 #endif
-
 		Renderer2(Window* window, ShaderCache* shader_cache);
 		~Renderer2(void) { };
 
@@ -79,5 +83,14 @@ namespace dukat
 		// Sets the program used for composition.
 		void set_composite_program(ShaderProgram* program) { composite_program = program; }
 		void set_composite_binder(std::function<void(ShaderProgram*)> binder) { composite_binder = binder; }
+		// Gets / sets flags
+		void set_render_particles(bool val) { render_particles = val; }
+		bool is_render_particles(void) const { return render_particles; }
+		void set_render_effects(bool val) { render_effects = val; }
+		bool is_render_effects(void) const { return render_effects; }
+		void set_render_sprites(bool val) { render_sprites = val; }
+		bool is_render_sprites(void) const { return render_sprites; }
+		void set_render_text(bool val) { render_text = val; }
+		bool is_render_text(void) const { return render_text; }
 	};
 }

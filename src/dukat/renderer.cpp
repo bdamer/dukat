@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "color.h"
 #include "log.h"
 #include "perfcounter.h"
@@ -31,7 +31,10 @@ namespace dukat
 	void Renderer::test_capabilities(void)
 	{
 		GLint int_val;
-		log->debug("Testing rendering capabilities.");;
+		
+		auto vendor = std::string((char*)glGetString(GL_VENDOR));
+		auto model = std::string((char*)glGetString(GL_RENDERER));
+		log->debug("Testing rendering capabilities: {} - {}", vendor, model);
 
 		auto shader_version = std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 		log->debug("GL_SHADING_LANGUAGE_VERSION: {}", shader_version);

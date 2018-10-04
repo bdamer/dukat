@@ -88,21 +88,19 @@ namespace dukat
 		Vector2 camera_dim = camera->transform.dimension / 2.0f;
 		AABB2 camera_bb(camera_pos - camera_dim, camera_pos + camera_dim);
 
-		// TODO: set up per-layer lighting here
-
-		if (has_effects())
+		if (has_effects() && renderer->is_render_effects())
 		{
 			render_effects(renderer, camera_bb);
 		}
-		if (has_sprites())
+		if (has_sprites() && renderer->is_render_sprites())
 		{
 			render_sprites(renderer, camera_bb);
 		}
-		if (has_particles())
+		if (has_particles() && renderer->is_render_particles())
 		{
 			render_particles(renderer, camera_bb);
 		}
-		if (has_text())
+		if (has_text() && renderer->is_render_text())
 		{
 			render_text(renderer, camera_bb);
 		}
