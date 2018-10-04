@@ -60,7 +60,8 @@ namespace dukat
 		scene_stack.top()->update(delta);
 		for (auto& it : managers)
 		{
-			(it.second)->update(delta);
+			if (it.second->is_enabled())
+				(it.second)->update(delta);
 		}
 	}
 
