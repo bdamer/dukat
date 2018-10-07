@@ -39,6 +39,8 @@ namespace dukat
 		~Texture(void);
 
 		void load_data(const Surface& surface, TextureFilterProfile profile = ProfileNearest);
+		void load_data(int src_fmt, int src_width, int src_height, const GLvoid* src_data, GLenum format, GLenum type, TextureFilterProfile profile = ProfileNearest);
+
 		// Bind texture to current program.
 		void bind(GLenum texture, ShaderProgram* program = nullptr) const;
 		void unbind(void) const;

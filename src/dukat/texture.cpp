@@ -40,12 +40,21 @@ namespace dukat
 		GLenum format = 0, type = 0;
 		surface.query_pixel_format(format, type);
 
+		// Handle surface that is smaller than texture
+		auto min_width = std::min(w, surface.get_width());
+		auto min_height = std::min(h, surface.get_height());
+
+		load_data(GL_RGBA, min_width, min_height, surface.get_surface()->pixels, format, type, profile);
+	}
+
+	void Texture::load_data(int src_fmt, int src_width, int src_height, const GLvoid* src_data, GLenum format, GLenum type, TextureFilterProfile profile)
+	{
 		if (id == 0)
 		{
 			glGenTextures(1, &id);
 		}
 		glBindTexture(target, id);
-		
+
 		bool generate_map = false;
 		switch (profile)
 		{
@@ -79,11 +88,8 @@ namespace dukat
 			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			break;
 		}
-		
-		// Handle surface that is smaller than texture
-		auto min_width = std::min(w, surface.get_width());
-		auto min_height = std::min(h, surface.get_height());
-		glTexImage2D(target, 0, GL_RGBA, min_width, min_height, 0, format, type, surface.get_surface()->pixels);
+
+		glTexImage2D(target, 0, src_fmt, src_width, src_height, 0, format, type, src_data);
 
 		if (generate_map)
 		{
