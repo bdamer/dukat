@@ -112,6 +112,7 @@
 #include "meshdata.h"
 #include "meshgroup.h"
 #include "meshinstance.h"
+#include "mirroreffect2.h"
 #include "orbitallight.h"
 #include "orbitcamera3.h"
 #include "particle.h"

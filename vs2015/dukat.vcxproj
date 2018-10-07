@@ -170,6 +170,7 @@
     <ClInclude Include="..\src\dukat\mapgraph.h" />
     <ClInclude Include="..\src\dukat\mapshape.h" />
     <ClInclude Include="..\src\dukat\meshdata.h" />
+    <ClInclude Include="..\src\dukat\mirroreffect2.h" />
     <ClInclude Include="..\src\dukat\quadtree.h" />
     <ClInclude Include="..\src\dukat\scene.h" />
     <ClInclude Include="..\src\dukat\scene2.h" />
@@ -282,6 +283,7 @@
     <ClCompile Include="..\src\dukat\gridmesh.cpp" />
     <ClCompile Include="..\src\dukat\mapgraph.cpp" />
     <ClCompile Include="..\src\dukat\meshdata.cpp" />
+    <ClCompile Include="..\src\dukat\mirroreffect2.cpp" />
     <ClCompile Include="..\src\dukat\scene2.cpp" />
     <ClCompile Include="..\src\dukat\uimanager.cpp" />
     <ClCompile Include="..\src\dukat\voronoi.cpp" />

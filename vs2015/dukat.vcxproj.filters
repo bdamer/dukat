@@ -432,6 +432,9 @@
     <ClInclude Include="..\src\dukat\audiocache.h">
       <Filter>Header Files\audio</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\mirroreffect2.h">
+      <Filter>Header Files\video\effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -673,6 +676,9 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\audiocache.cpp">
       <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\mirroreffect2.cpp">
+      <Filter>Source Files\video\effects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
