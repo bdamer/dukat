@@ -33,6 +33,8 @@ namespace dukat
 		ShaderCache* shader_cache;
 		ShaderProgram* sprite_program;
 		ShaderProgram* particle_program;
+		ShaderProgram* composite_program;
+		std::function<void(ShaderProgram*)> composite_binder;
 		VertexBuffer* sprite_buffer;
 		VertexBuffer* particle_buffer;
 		std::vector<std::unique_ptr<Effect2>> effects;
@@ -40,11 +42,6 @@ namespace dukat
 		std::deque<Particle*> particles;
 		std::vector<TextMeshInstance*> texts;
 		bool is_visible;
-
-		void render_effects(Renderer2* renderer, const AABB2& camera_bb);
-		void render_sprites(Renderer2* renderer, const AABB2& camera_bb);
-		void render_particles(Renderer2* renderer, const AABB2& camera_bb);
-		void render_text(Renderer2* renderer, const AABB2& camera_bb);
 
 		// Fills up priority queue with visible sprites.
 		void fill_sprite_queue(const AABB2& camera_bb, 
@@ -82,6 +79,11 @@ namespace dukat
 		void remove(TextMeshInstance* text);
 		
 		void render(Renderer2* renderer);
+		void render_effects(Renderer2* renderer, const AABB2& camera_bb);
+		void render_sprites(Renderer2* renderer, const AABB2& camera_bb);
+		void render_particles(Renderer2* renderer, const AABB2& camera_bb);
+		void render_text(Renderer2* renderer, const AABB2& camera_bb);
+
 		void show(void) { is_visible = true; }
 		void hide(void) { is_visible = false; }
 		bool visible(void) const { return is_visible; }
@@ -92,5 +94,9 @@ namespace dukat
 		void set_sprite_program(ShaderProgram* sprite_program) { this->sprite_program = sprite_program; }
 		ShaderProgram* get_particle_program(void) const { return particle_program; }
 		void set_particle_program(ShaderProgram* particle_program) { this->particle_program = particle_program; }
+		ShaderProgram* get_composite_program(void) const { return composite_program; }
+		void set_composite_program(ShaderProgram* composite_program) { this->composite_program = composite_program; }
+		const std::function<void(ShaderProgram*)>& get_composite_binder(void) const { return composite_binder; }
+		void set_composite_binder(std::function<void(ShaderProgram*)> binder) { composite_binder = binder; }
 	};
 }

@@ -19,12 +19,12 @@ namespace dukat
 	static Vertex2PSC particle_data[Renderer2::max_particles];
 
 	RenderLayer2::RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
-		const std::string& id, float priority, float parallax)
-		: id(id), priority(priority), parallax(parallax), is_visible(true),
-		shader_cache(shader_cache), sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), stage(RenderStage::SCENE)
+		const std::string& id, float priority, float parallax) : id(id), priority(priority), parallax(parallax), is_visible(true),
+		shader_cache(shader_cache), sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), stage(RenderStage::SCENE), composite_binder(nullptr)
 	{
 		sprite_program = shader_cache->get_program("sc_sprite.vsh", "sc_sprite.fsh");
 		particle_program = shader_cache->get_program("sc_particle.vsh", "sc_particle.fsh");
+		composite_program = shader_cache->get_program("fx_default.vsh", "fx_default.fsh");
 	}
 
 	RenderLayer2::~RenderLayer2(void)

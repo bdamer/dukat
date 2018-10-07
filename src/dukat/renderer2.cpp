@@ -14,7 +14,7 @@
 
 namespace dukat
 {
-	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), composite_binder(nullptr), 
+	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), 
 		render_effects(true), render_sprites(true), render_particles(true), render_text(true)
 	{
 		// Enable transparency
@@ -31,8 +31,6 @@ namespace dukat
 
 		MeshBuilder2 builder;
 		quad = builder.build_textured_quad();
-		// Load default composite program
-		composite_program = shader_cache->get_program("fx_default.vsh", "fx_default.fsh");
 
 		light.position = Vector3(0.0f, 0.0f, 0.0f);
 		gl_check_error();
@@ -170,7 +168,6 @@ namespace dukat
 
 	void Renderer2::render(void)
 	{
-		frame_buffer->bind();
 		window->clear();
 
 #if OPENGL_VERSION >= 30
@@ -182,23 +179,37 @@ namespace dukat
 		// Scene pass
 		for (auto& layer : layers)
 		{
-			if (layer->visible() && layer->stage == RenderStage::SCENE)
+			if (!layer->visible() || layer->stage != RenderStage::SCENE)
+				continue;
+
+			// Each layer can either render directly to the global screen buffer,
+			// or alternatively render to a dedicated frame buffer followed by
+			// a composite pass to merge the frame buffer into the screen buffer
+			auto comp_program = layer->get_composite_program();
+			if (comp_program != nullptr)
 			{
-				layer->render(this);
+				frame_buffer->bind();
+				window->clear();
+			}
+
+			layer->render(this);
+			
+			// Composite pass
+			if (comp_program != nullptr)
+			{
+				frame_buffer->unbind();
+				switch_shader(comp_program);
+				auto id = comp_program->attr("u_aspect");
+				if (id != -1)
+					comp_program->set(id, camera->get_aspect_ratio());
+				frame_buffer->texture->bind(0, comp_program);
+				const auto& binder = layer->get_composite_binder();
+				if (binder)
+					binder(comp_program);
+
+				quad->render(comp_program);
 			}
 		}
-
-		frame_buffer->unbind();
-
-		// Composite pass
-		window->clear();
-		switch_shader(composite_program);
-		composite_program->set("u_aspect", camera->get_aspect_ratio());
-		frame_buffer->texture->bind(0, composite_program);
-		if (composite_binder)
-			composite_binder(composite_program);
-
-		quad->render(composite_program);
 
 		// Overlay pass
 		for (auto& layer : layers)

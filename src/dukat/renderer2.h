@@ -34,8 +34,6 @@ namespace dukat
 		std::unique_ptr<FrameBuffer> frame_buffer;
 		// Used to compose the layers into a single image.
 		std::unique_ptr<MeshData> quad;
-		ShaderProgram* composite_program;
-		std::function<void(ShaderProgram*)> composite_binder;
 		// list of layers ordered by priority
 		std::vector<std::unique_ptr<RenderLayer2>> layers;
 		// just a single light for now
@@ -80,9 +78,6 @@ namespace dukat
 		// Updates uniform buffers for camera and lighting.
 		void update_uniforms(void);
 		void set_light(const Light& light) { this->light = light; }
-		// Sets the program used for composition.
-		void set_composite_program(ShaderProgram* program) { composite_program = program; }
-		void set_composite_binder(std::function<void(ShaderProgram*)> binder) { composite_binder = binder; }
 		// Gets / sets flags
 		void set_render_particles(bool val) { render_particles = val; }
 		bool is_render_particles(void) const { return render_particles; }
