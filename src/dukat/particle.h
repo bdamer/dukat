@@ -8,6 +8,7 @@ namespace dukat
 	struct Particle
 	{
 		Vector2 pos;	// position in world space
+		float ry;		// Axis of reflection
 		Color color;	// particle color
 		float size;		// size
 		Vector2 dp;		// Change in position / velocity per second
@@ -16,6 +17,6 @@ namespace dukat
 		float ttl;		// time-to-live
 		bool rendered;	// true if this particle was rendered during last frame
 
-		Particle() : pos(), color(), size(1), dp(), dc(), dsize(0), ttl(0.0f), rendered(false) { }	
+		Particle() : pos(), ry(0.0f), color(), size(1), dp(), dc(), dsize(0), ttl(0.0f), rendered(false) { }	
 	};
 }

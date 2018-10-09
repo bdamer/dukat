@@ -15,10 +15,11 @@ namespace dukat
 	private:
 		std::string mirrored_layer;
 		ShaderProgram* sprite_program;
+		ShaderProgram* particle_program;
 
 	public:
-		MirrorEffect2(ShaderProgram* sprite_program, const std::string& mirrored_layer)
-			: sprite_program(sprite_program), mirrored_layer(mirrored_layer) { };
+		MirrorEffect2(ShaderProgram* sprite_program, ShaderProgram* particle_program, const std::string& mirrored_layer)
+			: sprite_program(sprite_program), particle_program(particle_program), mirrored_layer(mirrored_layer) { };
 		~MirrorEffect2(void) { };
 
 		void render(Renderer2* renderer, const AABB2& camera_bb);

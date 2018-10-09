@@ -15,8 +15,10 @@
 
 namespace dukat
 {
+	typedef Vertex2PSRC PVertex;
+
 	// module-global buffer for particle data used during rendering
-	static Vertex2PSC particle_data[Renderer2::max_particles];
+	static PVertex particle_data[Renderer2::max_particles];
 
 	RenderLayer2::RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
 		const std::string& id, float priority, float parallax) : id(id), priority(priority), parallax(parallax), is_visible(true),
@@ -314,7 +316,11 @@ namespace dukat
 
 	void RenderLayer2::render_particles(Renderer2* renderer, const AABB2& camera_bb)
 	{
-		int particle_count = 0;
+		// increase camera bb slightly to avoid culling particles with size > 1
+		// which fall just outside of screen rect; otherwise these will cause flickering
+		const Vector2 padding{ 4, 4 };
+		const auto bb = AABB2{ camera_bb.min - padding, camera_bb.max + padding };
+		auto particle_count = 0;
 		for (auto it = particles.begin(); it != particles.end(); )
 		{
 			Particle* p = (*it);
@@ -326,11 +332,12 @@ namespace dukat
 			}
 
 			// check if particle visible and store result in ->rendered
-			if (p->rendered = camera_bb.contains(p->pos))
+			if (p->rendered = bb.contains(p->pos))
 			{
 				particle_data[particle_count].px = p->pos.x;
 				particle_data[particle_count].py = p->pos.y;
 				particle_data[particle_count].size = p->size;
+				particle_data[particle_count].ry = p->ry;
 				particle_data[particle_count].cr = p->color.r;
 				particle_data[particle_count].cg = p->color.g;
 				particle_data[particle_count].cb = p->color.b;
@@ -356,33 +363,33 @@ namespace dukat
 		glBindVertexArray(particle_buffer->vao);
 		glBindBuffer(GL_ARRAY_BUFFER, particle_buffer->buffers[0]);
 		// Orphan buffer to improve streaming performance
-		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(Vertex2PSC), nullptr, GL_STREAM_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(Vertex2PSC), particle_data);
+		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(PVertex), nullptr, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(PVertex), particle_data);
 		// bind vertex position
 		auto pos_id = particle_program->attr(Renderer::at_pos);
 		glEnableVertexAttribArray(pos_id);
-		glVertexAttribPointer(pos_id, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex2PSC),
-			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PSC, px)));
+		glVertexAttribPointer(pos_id, 4, GL_FLOAT, GL_FALSE, sizeof(PVertex),
+			reinterpret_cast<const GLvoid*>(offsetof(PVertex, px)));
 		// bind color position
 		auto color_id = particle_program->attr(Renderer::at_color);
 		glEnableVertexAttribArray(color_id);
-		glVertexAttribPointer(color_id, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex2PSC),
-			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PSC, cr)));
+		glVertexAttribPointer(color_id, 4, GL_FLOAT, GL_FALSE, sizeof(PVertex),
+			reinterpret_cast<const GLvoid*>(offsetof(PVertex, cr)));
 #else
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, particle_buffer->buffers[0]);
 
 		// Orphan buffer to improve streaming performance
-		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(ParticleVertex2), NULL, GL_STREAM_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(ParticleVertex2), particle_data);
+		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(PVertex), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(PVertex), particle_data);
 
 		// bind vertex position
-		glVertexPointer(4, GL_FLOAT, sizeof(ParticleVertex2),
-			reinterpret_cast<const GLvoid*>(offsetof(ParticleVertex2, x)));
+		glVertexPointer(4, GL_FLOAT, sizeof(PVertex),
+			reinterpret_cast<const GLvoid*>(offsetof(PVertex, x)));
 		// bind color position
-		glColorPointer(4, GL_FLOAT, sizeof(ParticleVertex2),
-			reinterpret_cast<const GLvoid*>(offsetof(ParticleVertex2, r)));
+		glColorPointer(4, GL_FLOAT, sizeof(PVertex),
+			reinterpret_cast<const GLvoid*>(offsetof(PVertex, r)));
 #endif
 
 		glDrawArrays(GL_POINTS, 0, particle_count);

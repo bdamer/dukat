@@ -17,5 +17,11 @@ namespace dukat
 		layer->set_sprite_program(sprite_program);
 		layer->render_sprites(renderer, camera_bb);
 		layer->set_sprite_program(sp);
+
+		// do the same for particles
+		auto pp = layer->get_particle_program();
+		layer->set_particle_program(particle_program);
+		layer->render_particles(renderer, camera_bb);
+		layer->set_particle_program(pp);
 	}
 }

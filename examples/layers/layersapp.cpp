@@ -39,7 +39,8 @@ namespace dukat
 			mask_texture->bind(1, p);
 		});
 		auto sp = game->get_shaders()->get_program("sc_sprite_mirror.vsh", "sc_sprite.fsh");
-		scene_mirror->add(std::make_unique<MirrorEffect2>(sp, "scene"));
+		auto pp = game->get_shaders()->get_program("sc_particle_mirror.vsh", "sc_particle.fsh");
+		scene_mirror->add(std::make_unique<MirrorEffect2>(sp, pp, "scene"));
 
 		auto scene_layer = game->get_renderer()->create_layer("scene", 20.0f);
 
@@ -120,7 +121,8 @@ namespace dukat
 		// spawn particles
 		auto pm = game->get<ParticleManager>();
 		auto p = pm->create_particle();
-		p->pos = Vector2{ 16.0f + randf(-4.0f, 4.0f), -randf(16.0f, 24.0f) };
+		p->pos = Vector2{ randf(-4.0f, 4.0f), -randf(32.0f, 34.0f) };
+		p->ry = -32.0f;
 		p->dp = Vector2{ randf(-4.0f, 4.0f), -randf(12.0f, 16.0f) };
 		p->color = Color{ 1.0f, 1.0f, 1.0f, randf(0.75f, 1.0f) };
 		p->dc = Color{ 0.0f, 0.0f, 0.0f, -0.1f };

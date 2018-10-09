@@ -34,4 +34,12 @@ namespace dukat
 		GLfloat size;
 		GLfloat cr, cg, cb, ca;
 	};
+
+	struct Vertex2PSRC
+	{
+		GLfloat px, py;
+		GLfloat size;
+		GLfloat ry;
+		GLfloat cr, cg, cb, ca;
+	};
 }
