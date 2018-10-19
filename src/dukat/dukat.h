@@ -54,7 +54,9 @@
 #include "boundingbody2.h"
 #include "boundingbody3.h"
 #include "boundingsphere.h"
+#ifndef __ANDROID__
 #include "box2dmanager.h"
+#endif
 #include "collisionmanager2.h"
 #include "obb2.h"
 #include "quadtree.h"
@@ -63,6 +65,7 @@
 #include "animation.h"
 #include "animationmanager.h"
 #include "application.h"
+#include "assetloader.h"
 #include "bytestream.h"
 #include "log.h"
 #include "perfcounter.h"
@@ -72,6 +75,7 @@
 #include "window.h"
 
 // Util
+#ifndef __ANDROID__
 #include "dds.h"
 #include "diamondsquaregenerator.h"
 #include "heightmap.h"
@@ -82,17 +86,24 @@
 #include "modelconverter.h"
 #include "ms3dmodel.h"
 #include "octreenode.h"
+#endif
 #include "shape.h"
 #include "textureutil.h"
+#ifndef __ANDROID__
 #include "voxmodel.h"
+#endif
 
 // Video
 #include "blockbuilder.h"
+#ifndef __ANDROID__
 #include "box2deffect2.h"
+#endif
 #include "buffers.h"
 #include "camera2.h"
 #include "camera3.h"
+#ifndef __ANDROID__
 #include "clipmap.h"
+#endif
 #include "color.h"
 #include "debugeffect2.h"
 #include "effect2.h"
@@ -131,4 +142,6 @@
 #include "texturecache.h"
 #include "vertextypes2.h"
 #include "vertextypes3.h"
+#ifndef __ANDROID__
 #include "wavemesh.h"
+#endif

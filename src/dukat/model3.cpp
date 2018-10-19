@@ -234,6 +234,7 @@ namespace dukat
 		}
 
 		res->bb = model.create_aabb();
-		return std::move(res);
+		//return std::move(res);
+		return res;
 	}
 }

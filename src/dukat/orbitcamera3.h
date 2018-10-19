@@ -33,7 +33,7 @@ namespace dukat
 		float get_distance(void) const { return distance; }
 		void set_distance(float distance) { this->distance = distance; clamp(this->distance, min_distance, max_distance); }
 		float get_max_distance(void) const { return max_distance; }
-		void set_max_distance(float min_distance) { this->max_distance = max_distance; }
+		void set_max_distance(float max_distance) { this->max_distance = max_distance; }
 		float get_min_distance(void) const { return max_distance; }
 		void set_min_distance(float min_distance) { this->min_distance = min_distance; }
 		float get_latitude(void) const { return latitude; }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <SDL2/SDL.h>
 
 #ifndef OPENGL_VERSION
 #include "version.h"

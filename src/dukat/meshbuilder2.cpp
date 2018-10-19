@@ -17,10 +17,10 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(Vertex3PC, cr)));
 
 		Vertex3PC vertices[4] = {
-			0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f
+			{ 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f },
+			{ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f },
+			{ 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f },
+			{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f }
 		};
 
 		auto res = std::make_unique<MeshData>(GL_LINES, 4, 0, attr);
@@ -52,9 +52,9 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_color, 4, offsetof(Vertex3PC, cr)));
 
 		Vertex3PC vertices[3] = {
-			-1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
+			{ -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f },
+            { 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f },
+            { 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f }
 		};
 
 		auto res = std::make_unique<MeshData>(GL_TRIANGLES, 3, 0, attr);
@@ -68,10 +68,10 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3, offsetof(Vertex3P, px)));
 
 		Vertex3P vertices[4] = {
-			-1.0f, 1.0f, 0.0f,
-			-1.0f, -1.0f, 0.0f,
-			 1.0f, 1.0f, 0.0f,
-			 1.0f, -1.0f, 0.0f,
+			{ -1.0f, 1.0f, 0.0f },
+            { -1.0f, -1.0f, 0.0f },
+            { 1.0f, 1.0f, 0.0f },
+            { 1.0f, -1.0f, 0.0f },
 		};
 
 		auto res = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, 4, 0, attr);
@@ -86,10 +86,10 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2, offsetof(Vertex3PT, tu)));
 
 		Vertex3PT verts[4] = {
-			-1.0f,  1.0f, 0.0f, uv[0], uv[3], // top-left
-			-1.0f, -1.0f, 0.0f, uv[0], uv[1], // bottom-left
-			1.0f,  1.0f, 0.0f, uv[2], uv[3], // top-right
-			1.0f, -1.0f, 0.0f, uv[2], uv[1]  // bottom-right
+			{ -1.0f,  1.0f, 0.0f, uv[0], uv[3] }, // top-left
+            { -1.0f, -1.0f, 0.0f, uv[0], uv[1] }, // bottom-left
+            { 1.0f,  1.0f, 0.0f, uv[2], uv[3] }, // top-right
+            { 1.0f, -1.0f, 0.0f, uv[2], uv[1] }  // bottom-right
 		};
 
 		auto res = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, 4, 0, attr);

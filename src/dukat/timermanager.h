@@ -18,7 +18,7 @@ namespace dukat
 
         Timer(void) : id(0u), interval(0.0f), remaining(0.0f), recurring(false) { }
         Timer(uint32_t id, float interval, std::function<void(void)> callback, bool recurring = false)
-			: id(id), interval(interval), remaining(interval), callback(callback), recurring(recurring) { }
+			: id(id), interval(interval), remaining(interval), recurring(recurring), callback(callback) { }
     };
 
     class TimerManager : public Manager

@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <GL/glew.h>
 
 #ifndef OPENGL_VERSION
 #include "version.h"
@@ -24,7 +23,7 @@ namespace dukat
 		int offset;
 
 		VertexAttribute(const std::string& alias, int components, int offset = -1, GLenum type = GL_FLOAT)
-			: alias(alias), components(components), offset(offset), type(type) { };
+			: alias(alias), components(components), type(type), offset(offset) { };
 	};
 
 	class MeshData

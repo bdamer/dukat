@@ -31,23 +31,23 @@ namespace dukat
 	void Renderer::test_capabilities(void)
 	{
 		GLint int_val;
-		
-		auto vendor = std::string((char*)glGetString(GL_VENDOR));
-		auto model = std::string((char*)glGetString(GL_RENDERER));
+	
+		const auto vendor = glGetString(GL_VENDOR);
+		const auto model = glGetString(GL_RENDERER);
 		log->debug("Testing rendering capabilities: {} - {}", vendor, model);
 
-		auto shader_version = std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+		const auto shader_version = glGetString(GL_SHADING_LANGUAGE_VERSION);
 		log->debug("GL_SHADING_LANGUAGE_VERSION: {}", shader_version);
 		
 		// Check capabilities
-		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &int_val);
-		log->debug("GL_MAX_TEXTURE_UNITS: {}", int_val);
+		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &int_val);
+		log->debug("GL_MAX_TEXTURE_IMAGE_UNITS: {}", int_val);
 		assert(int_val >= Renderer::max_texture_units);
 		glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &int_val);
 		log->debug("GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS: {}", int_val);
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &int_val);
 		log->debug("GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: {}", int_val);
-		
+
 #if OPENGL_VERSION >= 30
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &int_val);
 		log->debug("GL_MAX_UNIFORM_BUFFER_BINDINGS: {}", int_val);
@@ -56,7 +56,7 @@ namespace dukat
 		log->debug("GL_MAX_UNIFORM_BLOCK_SIZE: {}", int_val);
 #endif
 
-#if OPENGL_VERSION >= 42
+#if OPENGL_CORE >= 42
 		// TODO: validate with ctx 4.x
 		glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_INTERNALFORMAT_PREFERRED, 1, &int_val);
 		log->debug("Preferred format for GL_RGBA8: {}", int_val);
@@ -68,20 +68,20 @@ namespace dukat
 		log->debug("Preferred format for GL_RGB16: {}", int_val);
 #endif
 
-#if OPENGL_VERSION >= 43
+#if OPENGL_CORE >= 43
 		glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &int_val);
 		log->debug("GL_MAX_UNIFORM_LOCATIONS: {}", int_val);
 #endif
 
 		// Check supported extensions
 		log->debug("GL_EXT_geometry_shader4: {}",
-			(glewIsExtensionSupported("GL_EXT_geometry_shader4") ? "yes" : "no"));
+			(SDL_GL_ExtensionSupported("GL_EXT_geometry_shader4") ? "yes" : "no"));
 		log->debug("GL_EXT_texture_filter_anisotropic: {}",
-			(glewIsExtensionSupported("GL_EXT_texture_filter_anisotropic") ? "yes" : "no"));
+			(SDL_GL_ExtensionSupported("GL_EXT_texture_filter_anisotropic") ? "yes" : "no"));
 		log->debug("GL_EXT_vertex_array_object: {}",
-			(glewIsExtensionSupported("GL_EXT_vertex_array_object") ? "yes" : "no"));
+			(SDL_GL_ExtensionSupported("GL_EXT_vertex_array_object") ? "yes" : "no"));
 		log->debug("GL_EXT_framebuffer_object: {}",
-			(glewIsExtensionSupported("GL_EXT_framebuffer_object") ? "yes" : "no"));
+			(SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object") ? "yes" : "no"));
 
 #ifdef _DEBUG
 		gl_check_error();
@@ -149,8 +149,10 @@ namespace dukat
 		else
 		{
 			glDisable(GL_CULL_FACE);
+#ifdef OPENGL_CORE
 			glPolygonMode(GL_BACK, GL_LINE);
 			glPolygonMode(GL_FRONT, GL_FILL);
+#endif
 		}
 	}
 

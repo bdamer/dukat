@@ -21,8 +21,8 @@ namespace dukat
 	public:
 		bool mouse_look;
 
-		FirstPersonCamera3(GameBase* game) : Camera3(game->get_window()), game(game), mouse_look(true), 
-			yaw(0.0f), pitch(0.0f), yaw_speed(1.0f), pitch_speed(1.0f), movement_speed(2.0f) { }
+		FirstPersonCamera3(GameBase* game) : Camera3(game->get_window()), yaw_speed(1.0f), pitch_speed(1.0f),
+			 movement_speed(2.0f), yaw(0.0f), pitch(0.0f), game(game), mouse_look(true) { }
 		virtual ~FirstPersonCamera3(void) { }
 
 		virtual void update(float delta);

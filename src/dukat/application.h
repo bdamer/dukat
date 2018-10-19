@@ -23,7 +23,9 @@ namespace dukat
 	protected:
 		Settings& settings;
 		std::unique_ptr<Window> window;
+#ifndef __ANDROID__
 		std::unique_ptr<AudioManager> audio_manager;
+#endif
 		std::unique_ptr<DeviceManager> device_manager;
 
 		// Called to process input events.
@@ -53,7 +55,9 @@ namespace dukat
 		float get_time(void) const { return runtime; }
 
 		Window* get_window(void) const { return window.get(); }
+#ifndef __ANDROID__
 		AudioManager* get_audio(void) const { return audio_manager.get(); }
+#endif
 		DeviceManager* get_devices(void) const { return device_manager.get(); }
 		const Settings& get_settings(void) const { return settings; }
 	};

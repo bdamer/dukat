@@ -38,7 +38,7 @@ namespace dukat
 
     public:
         HeightMap(int num_levels, float scale_factor = 1.0f) 
-            : num_levels(num_levels), scale_factor(scale_factor), level_size(0) { }
+            : num_levels(num_levels), level_size(0), scale_factor(scale_factor) { }
         ~HeightMap(void) { }
 
 		// Loads height data from a 16-bit grayscale PNG file.

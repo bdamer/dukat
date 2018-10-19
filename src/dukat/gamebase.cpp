@@ -20,7 +20,9 @@ namespace dukat
 {
 	GameBase::GameBase(Settings& settings) : Application(settings), controller(nullptr), debug(false)
 	{
+#ifndef __ANDROID__
 		audio_cache = std::make_unique<AudioCache>(settings.get_string("resources.samples"), settings.get_string("resources.music"));
+#endif
 		shader_cache = std::make_unique<ShaderCache>(settings.get_string("resources.shaders"));
 		texture_cache = std::make_unique<TextureCache>(settings.get_string("resources.textures"));
 		mesh_cache = std::make_unique<MeshCache>();

@@ -435,6 +435,9 @@
     <ClInclude Include="..\src\dukat\mirroreffect2.h">
       <Filter>Header Files\video\effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\dukat\assetloader.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dukat\stdafx.cpp">
@@ -679,6 +682,9 @@
     </ClCompile>
     <ClCompile Include="..\src\dukat\mirroreffect2.cpp">
       <Filter>Source Files\video\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dukat\assetloader.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

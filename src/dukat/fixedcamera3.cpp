@@ -4,7 +4,7 @@
 namespace dukat
 {    
     FixedCamera3::FixedCamera3(GameBase* game, const Vector3& eye, const Vector3& look_at, const Vector3& up)
-		: Camera3(game->get_window()), look_at(look_at), min_distance(0.0f), max_distance(1000.0f)
+		: Camera3(game->get_window()), min_distance(0.0f), max_distance(1000.0f), look_at(look_at)
     {
         transform.position = eye;
         transform.up = up;

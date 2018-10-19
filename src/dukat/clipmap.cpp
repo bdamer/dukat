@@ -34,9 +34,9 @@ namespace dukat
 	}
 
     ClipMap::ClipMap(Game3* game, int num_levels, int level_size, HeightMap* height_map)
-        : game(game), num_levels(num_levels), level_size(level_size), height_map(height_map),
-  		  texture_size(level_size + 1), min_level(0), stitching(true), 
-		  blending(true), culling(true), lighting(true)
+        : num_levels(num_levels), level_size(level_size), texture_size(level_size + 1), game(game),
+          height_map(height_map), min_level(0),
+		  culling(true), stitching(true), blending(true), lighting(true)
     {
         log->debug("Creating new clipmap: {}x{}x{}", level_size, level_size, num_levels);
         // TODO: validate that level_size is a power of 2 - 1
@@ -93,10 +93,10 @@ namespace dukat
 		attr.push_back(VertexAttribute(Renderer::at_pos, 3));
 		attr.push_back(VertexAttribute(Renderer::at_texcoord, 2));
 		Vertex3PT verts[4] = {
-			0.0f,  1.0f, 0.0f, 0.0f, 1.0f, // top-left
-			0.0f,  0.0f, 0.0f, 0.0f, 0.0f, // bottom-left
-			1.0f,  1.0f, 0.0f, 1.0f, 1.0f, // top-right
-			1.0f,  0.0f, 0.0f, 1.0f, 0.0f  // bottom-right
+			{ 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // top-left
+            { 0.0f,  0.0f, 0.0f, 0.0f, 0.0f }, // bottom-left
+            { 1.0f,  1.0f, 0.0f, 1.0f, 1.0f }, // top-right
+            { 1.0f,  0.0f, 0.0f, 1.0f, 0.0f }  // bottom-right
 		};
 		quad_update = std::make_unique<MeshData>(GL_TRIANGLE_STRIP, 4, 0, attr);
 		quad_update->set_vertices(reinterpret_cast<GLfloat*>(verts));

@@ -103,6 +103,6 @@ namespace dukat
 		void bind_uniform(UniformBuffer buffer, GLsizeiptr size, const GLvoid * data);
 
 		// Checks if a given extension is supported.
-		inline bool is_ext_supported(const std::string& extension) const { return glewIsExtensionSupported(extension.c_str()) == GL_TRUE; }
+		inline bool is_ext_supported(const std::string& extension) const { return SDL_GL_ExtensionSupported(extension.c_str()) == SDL_TRUE; }
 	};
 }

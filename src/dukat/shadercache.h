@@ -16,6 +16,17 @@ namespace dukat
 	{
 	private:
 		static constexpr const char* pre_include = "#include";
+
+#if OPENGL_CORE >= 30
+		static constexpr auto glsl = "150";
+#elif OPENGL_CORE > 0
+		static constexpr auto glsl = "120";
+#elif OPENGL_ES >= 30
+		static constexpr auto glsl = "300es";
+#else
+		static constexpr auto glsl = "100es";
+#endif
+
 		std::map<std::string,std::unique_ptr<ShaderProgram>> programs;
 		std::map<std::string, std::string> sources;
 		const std::string resource_dir;

@@ -5,7 +5,7 @@
 #include "sysutil.h"
 
 // Rebind EXT_framebuffer_object methods
-#if OPENGL_VERSION < 30
+#if defined(OPENGL_CORE) && (OPENGL_CORE < 30)
 
 #undef glGenFramebuffers
 #undef glGenRenderbuffers
@@ -43,7 +43,7 @@ namespace dukat
 	}
 
 	FrameBuffer::FrameBuffer(int width, int height, bool create_color_buffer, bool create_depth_buffer) 
-		: width(width), height(height), fbo(0), texture(nullptr), rbo(0)
+		: fbo(0), texture(nullptr), rbo(0), width(width), height(height)
 	{
 		glGenFramebuffers(1, &fbo);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);

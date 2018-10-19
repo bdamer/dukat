@@ -42,7 +42,7 @@ namespace dukat
         static constexpr int bb_block_idx = 4;
 		std::array<AABB3, 16> bounding_boxes;
 
-        ClipMapLevel(int index) : index(index), is_dirty(true), origin(0.0f, 0.0f), u(0), v(0), last_shift(0.0f, 0.0f) { }
+        ClipMapLevel(int index) : index(index), origin(0.0f, 0.0f), u(0), v(0), last_shift(0.0f, 0.0f), is_dirty(true) { }
         ~ClipMapLevel(void) { }
 
         // Shifts origin and attached bounding boxes

@@ -6,21 +6,21 @@
 
 namespace dukat
 {
-	Texture::Texture(void) : w(0), h(0), profile(ProfileNearest), target(GL_TEXTURE_2D)
+	Texture::Texture(void) : target(GL_TEXTURE_2D), profile(ProfileNearest), w(0), h(0)
 	{
 		glGenTextures(1, &id);
 	}
 
-	Texture::Texture(TextureId id) : id(id), w(0), h(0), profile(ProfileNearest), target(GL_TEXTURE_2D)
+	Texture::Texture(TextureId id) : target(GL_TEXTURE_2D), id(id), profile(ProfileNearest), w(0), h(0)
 	{
 	}
 
-	Texture::Texture(int w, int h, TextureFilterProfile profile) : w(w), h(h), profile(profile), target(GL_TEXTURE_2D)
+	Texture::Texture(int w, int h, TextureFilterProfile profile) : target(GL_TEXTURE_2D), profile(profile), w(w), h(h)
 	{
 		glGenTextures(1, &id);
 	}
 
-	Texture::Texture(const Surface& surface, TextureFilterProfile profile) : id(0), target(GL_TEXTURE_2D)
+	Texture::Texture(const Surface& surface, TextureFilterProfile profile) : target(GL_TEXTURE_2D), id(0)
 	{
 		w = surface.get_width();
 		h = surface.get_height();
@@ -68,6 +68,7 @@ namespace dukat
 			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			break;
 		case ProfileAnisotropic:
+#ifdef OPENGL_CORE // only supported via extension on ES
 #if OPENGL_VERSION < 30
 			glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
 #else
@@ -79,6 +80,7 @@ namespace dukat
 			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &float_val);
 			glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, float_val);
 			break;
+#endif
 		case ProfileLinear:
 			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -123,10 +125,15 @@ namespace dukat
 
 	GLint Texture::get_internal_format(void) const
 	{
-		bind(0);
+	    // Should be supported by ES31+, but fails...
+#ifdef OPENGL_CORE
+        bind(0);
 		GLint format;
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
 		unbind();
 		return format;
+#else
+		return 0;
+#endif
 	}
 }

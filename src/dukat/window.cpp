@@ -8,24 +8,36 @@ namespace dukat
 	Window::Window(int width, int height, bool fullscreen, bool vsync, bool msaa)
 		: width(width), height(height), fullscreen(fullscreen)
 	{
+#ifdef OPENGL_CORE
 		// Need to request MSAA buffers before creating window
-		if (msaa) 
+		if (msaa)
 		{
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
 		}
+#endif
 
 		// Create OpenGL context with desired profile version
-#if OPENGL_VERSION >= 30
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#else
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#endif
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
+#ifdef OPENGL_CORE
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#elif OPENGL_ES
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#endif
 
-		// Create the window
+#ifdef __ANDROID__
+		// Ignore provided width & height - reuse existing dimensions
+		SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeRight");
+		SDL_DisplayMode display_mode;
+		SDL_GetCurrentDisplayMode(0, &display_mode);
+		log->debug("Creating Android window.");
+		window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+			display_mode.w, display_mode.h, SDL_WINDOW_SHOWN);
+		this->width = display_mode.w;
+		this->height = display_mode.h;
+#else
+		// Create the window with the requested resoltion
 		if (fullscreen)
 		{
 			log->debug("Creating fullscreen window.");
@@ -38,9 +50,11 @@ namespace dukat
 			window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 				width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 		}
-
-		SDL_ShowCursor(SDL_DISABLE);
-		
+#endif
+		if (window == nullptr)
+        {
+            sdl_check_result(-1, "Create SDL Window");
+        }
 		context = SDL_GL_CreateContext(window);
 		if (context == nullptr)
 		{
@@ -54,6 +68,7 @@ namespace dukat
 		// Set vsync for current context 
 		set_vsync(vsync);
 
+#ifdef OPENGL_CORE
 		if (msaa)
 		{
 			// Check that MSAA buffers are available
@@ -63,7 +78,9 @@ namespace dukat
 			msaa_enabled = msaa_buffers > 0 && msaa_samples > 0;
 			glEnable(GL_MULTISAMPLE);
 		}
+#endif
 
+#ifndef __ANDROID__
 		// init glew
 		glewExperimental = GL_TRUE;
 		auto res = glewInit();
@@ -72,10 +89,13 @@ namespace dukat
 		// http://www.opengl.org/wiki/OpenGL_Loading_Library	
 		auto error = glGetError();
 		assert(error == GL_NO_ERROR || error == GL_INVALID_ENUM);
+#endif
 
 #ifdef _DEBUG
 		gl_check_error();
 #endif
+
+        SDL_ShowCursor(SDL_DISABLE);
 	}
 
 	Window::~Window()
@@ -113,15 +133,15 @@ namespace dukat
 	void Window::set_vsync(bool vsync)
 	{
 		this->vsync = vsync;
-#if SDL_VERSION_ATLEAST(1,3,0)
-		SDL_GL_SetSwapInterval(vsync);
-#else /* SDL_VERSION_ATLEAST(1,3,0) */
-#ifdef SDL_GL_SWAP_CONTROL
-		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, vsync);
-#else /* SDL_GL_SWAP_CONTROL */
-		DEBUG("VSync unsupported on old SDL versions (before 1.2.10).");
-#endif /* SDL_GL_SWAP_CONTROL */
-#endif /* SDL_VERSION_ATLEAST(1,3,0) */ 
+	#if SDL_VERSION_ATLEAST(1,3,0)
+			SDL_GL_SetSwapInterval(vsync);
+	#else /* SDL_VERSION_ATLEAST(1,3,0) */
+		#ifdef SDL_GL_SWAP_CONTROL
+				SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, vsync);
+		#else /* SDL_GL_SWAP_CONTROL */
+				DEBUG("VSync unsupported on old SDL versions (before 1.2.10).");
+		#endif /* SDL_GL_SWAP_CONTROL */
+	#endif /* SDL_VERSION_ATLEAST(1,3,0) */
 	}
 
 	void Window::on_resize(void)

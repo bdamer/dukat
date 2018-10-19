@@ -22,8 +22,10 @@ namespace dukat
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		// Disable depth test - we'll have to take care of rendering order ourselves
 		glDisable(GL_DEPTH_TEST);
-		// Enable gl_PointSize instruction in shader
+#ifdef OPENGL_CORE
+        // Enable gl_PointSize instruction in shader
 		glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+#endif
 
 		initialize_sprite_buffers();
 		initialize_particle_buffers();

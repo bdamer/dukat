@@ -2,17 +2,24 @@
 #include "log.h"
 #include "settings.h"
 
+#ifndef __ANDROID__
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/file_sinks.h>
 #include <spdlog/sinks/null_sink.h>
 #include <spdlog/sinks/stdout_sinks.h>
+#endif
 
 namespace dukat
 {
+#ifndef __ANDROID__
 	std::shared_ptr<spdlog::logger> log = spdlog::stdout_logger_st("default");
+#else
+	std::shared_ptr<Logger> log = std::shared_ptr<Logger>();
+#endif
 
 	void init_logging(const Settings& settings)
 	{
+#ifndef __ANDROID__
 		spdlog::set_pattern("[%Y-%m-%d %H-%M-%S.%e] [%l] %v");
 		// Enable async flush every 2 seconds
 		spdlog::set_async_mode(4096, spdlog::async_overflow_policy::block_retry,
@@ -53,5 +60,6 @@ namespace dukat
 			level = spdlog::level::debug;
 		}
 		log->set_level(level);
+#endif
 	}
 }

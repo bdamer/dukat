@@ -4,7 +4,9 @@
 #include <stack>
 #include <typeindex>
 
+#ifndef __ANDROID__
 #include "audiocache.h"
+#endif
 #include "animationmanager.h"
 #include "application.h"
 #include "meshcache.h"
@@ -26,7 +28,9 @@ namespace dukat
 	class GameBase : public Application
 	{
 	protected:
+#ifndef __ANDROID__
 		std::unique_ptr<AudioCache> audio_cache;
+#endif
 		std::unique_ptr<ShaderCache> shader_cache;
 		std::unique_ptr<TextureCache> texture_cache;
 		std::unique_ptr<MeshCache> mesh_cache;
@@ -71,7 +75,9 @@ namespace dukat
 		template <typename T>
 		void remove_manager(void);
 
+#ifndef __ANDROID__
 		AudioCache* get_samples(void) const { return audio_cache.get(); }
+#endif
 		ShaderCache* get_shaders(void) const { return shader_cache.get(); }
 		TextureCache* get_textures(void) const { return texture_cache.get(); }
 		MeshCache* get_meshes(void) const { return mesh_cache.get(); }

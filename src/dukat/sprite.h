@@ -47,8 +47,8 @@ namespace dukat
 		bool rendered;
 
 		// Default constructor
-		Sprite(void) : p(0, 0), z(0), w(0), h(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-			texture_id(0), normal_id(0), index(0), COLS(1), ROWS(1), pixel_aligned(false), relative(false) { }
+		Sprite(void) : COLS(1), ROWS(1), p(0, 0), z(0), w(0), h(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+			texture_id(0), normal_id(0), index(0), pixel_aligned(false), relative(false) { }
 		// Creates a sprite with the full size of the texture
 		Sprite(Texture* texture);
 		// Creates a sprite from a texture with the dimensions specified by r (in pixels)

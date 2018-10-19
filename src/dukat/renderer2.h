@@ -39,9 +39,9 @@ namespace dukat
 		// just a single light for now
 		Light light;
 		// Render flags
-		bool render_particles;
 		bool render_effects;
 		bool render_sprites;
+		bool render_particles;
 		bool render_text;
 
 		void initialize_sprite_buffers(void);

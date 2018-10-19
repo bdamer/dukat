@@ -55,8 +55,8 @@ namespace dukat
 		// Flag indicating that this is a digital controller
 		const bool digital;
 
-		InputDevice(Window* window, int id, bool digital) : window(window), id(id), digital(digital),
-			lx(0.0f), ly(0.0f), rx(0.0f), ry(0.0f), lxa(0.0f), lya(0.0f), rxa(0.0f), rya(0.0f), lt(0.0f), rt(0.0f) { }
+		InputDevice(Window* window, int id, bool digital) : window(window), id(id),
+			lx(0.0f), ly(0.0f), rx(0.0f), ry(0.0f), lxa(0.0f), lya(0.0f), rxa(0.0f), rya(0.0f), lt(0.0f), rt(0.0f), digital(digital) { }
 		virtual ~InputDevice(void) { }
 		virtual void update(void) = 0;
 		virtual bool is_pressed(VirtualButton button) const = 0;

@@ -73,7 +73,11 @@ namespace dukat
 			// TODO: base this on file header not extension (use streams if possible)
 			if (ext == "dds" || ext == "tga" || ext == "TGA")
 			{
+#ifdef __ANDROID__
+				throw std::runtime_error("Unsupported texture format.");
+#else
 				textures[id] = load_dds(resource_dir + "/" + filename);
+#endif
 			}
 			else
 			{

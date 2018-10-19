@@ -30,7 +30,6 @@ namespace dukat
 	class RenderLayer2
 	{
 	private:
-		ShaderCache* shader_cache;
 		ShaderProgram* sprite_program;
 		ShaderProgram* particle_program;
 		ShaderProgram* composite_program;

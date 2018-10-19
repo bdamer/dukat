@@ -40,10 +40,10 @@
 #define DDSCAPS2_CUBEMAP_NEGATIVEZ  0x00008000 
 #define DDSCAPS2_VOLUME             0x00200000 
 
-constexpr uint32_t D3DFMT_DXT1 = dukat::mc_const('1', 'T', 'X', 'D');	//  DXT1 compression texture format 
-constexpr uint32_t D3DFMT_DXT2 = dukat::mc_const('2', 'T', 'X', 'D');	//  DXT2 compression texture format 
+constexpr uint32_t D3DFMT_DXT1 = dukat::mc_const('1', 'T', 'X', 'D');	//  DXT1 compression texture format
+constexpr uint32_t D3DFMT_DXT2 = dukat::mc_const('2', 'T', 'X', 'D');	//  DXT2 compression texture format
 constexpr uint32_t D3DFMT_DXT3 = dukat::mc_const('3', 'T', 'X', 'D');	//  DXT3 compression texture format 
-constexpr uint32_t D3DFMT_DXT4 = dukat::mc_const('4', 'T', 'X', 'D');	//  DXT4 compression texture format 
+constexpr uint32_t D3DFMT_DXT4 = dukat::mc_const('4', 'T', 'X', 'D');	//  DXT4 compression texture format
 constexpr uint32_t D3DFMT_DXT5 = dukat::mc_const('5', 'T', 'X', 'D');	//  DXT5 compression texture format
 constexpr uint32_t D3DFMT_DX10 = dukat::mc_const('D', 'X', '1', '0');	//  Extended DX10 header
 
@@ -408,6 +408,6 @@ namespace dukat
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
-		return std::move(texture);
+		return texture;
 	}
 }

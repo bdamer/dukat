@@ -30,6 +30,7 @@ namespace dukat
 	{
 		switch (surface->format->format)
 		{
+#ifdef OPENGL_CORE
 		// 24 bit
 		case SDL_PIXELFORMAT_BGR24:
 		case SDL_PIXELFORMAT_BGR888:
@@ -53,6 +54,23 @@ namespace dukat
 			format = GL_BGRA;
 			type = surface->format->Bshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
 			break;
+#else
+		// 24 bit
+		case SDL_PIXELFORMAT_RGB24:
+		case SDL_PIXELFORMAT_RGB888:
+			format = GL_RGB;
+			type = GL_UNSIGNED_BYTE;
+			break;
+		// 32 bit
+		case SDL_PIXELFORMAT_ABGR8888:
+			format = GL_RGBA;
+			type = surface->format->Rshift == 0xff ? GL_UNSIGNED_BYTE : GL_UNSIGNED_BYTE;
+			break;
+		case SDL_PIXELFORMAT_RGBA8888:
+			format = GL_RGBA;
+			type = surface->format->Rshift == 0xff ? GL_UNSIGNED_BYTE : GL_UNSIGNED_BYTE;
+			break;
+#endif
 		default:
 			log->warn("Unsupported pixel format: {}", SDL_GetPixelFormatName(surface->format->format));
 			format = 0;

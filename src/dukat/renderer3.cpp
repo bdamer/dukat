@@ -25,22 +25,27 @@ namespace dukat
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 
-#if OPENGL_VERSION >= 30
-        // Enable primitive restart - only available in OpenGL >= 3.1 
-        glEnable(GL_PRIMITIVE_RESTART);
-        glPrimitiveRestartIndex(primitive_restart);
+#if OPENGL_CORE >= 31
+		// Enable primitive restart - only available in OpenGL >= 3.1
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex(primitive_restart);
+#elif OPENGL_ES >= 30
+		// Enable primitive restart using -1 as fixed index. 
+		// More specifically, the restart index will be:
+		// GL_UNSIGNED_BYTE (2^8-1), GL_UNSIGNED_SHORT (2^16-1), GL_UNSIGNED_INT (2^32-1)
+		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+#endif
 
+#if OPENGL_VERSION >= 30
 		fb0 = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, true);
 		fb1 = std::make_unique<FrameBuffer>(fbo_size, fbo_size, true, false);
 		fb2 = std::make_unique<FrameBuffer>(fbo_size, fbo_size, true, false);
-
 		MeshBuilder2 builder;
 		quad = builder.build_textured_quad();
-		
 		composite_program = shader_cache->get_program("fx_default.vsh", "fx_composite.fsh");
 #endif
+
 		gl_check_error();
-	
 		init_lights();
 	}
 
@@ -92,10 +97,10 @@ namespace dukat
 #endif
 
 		window->clear();
-
+#ifdef OPENGL_CORE
 		if (show_wireframe)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+#endif
 		// Scene pass
 		glEnable(GL_DEPTH_TEST);
 
@@ -107,8 +112,10 @@ namespace dukat
 			}
 		}
 
+#ifdef OPENGL_CORE
 		if (show_wireframe)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
 
 		// Effects pass		
 		glDisable(GL_DEPTH_TEST);

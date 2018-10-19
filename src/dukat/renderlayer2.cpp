@@ -21,8 +21,9 @@ namespace dukat
 	static PVertex particle_data[Renderer2::max_particles];
 
 	RenderLayer2::RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
-		const std::string& id, float priority, float parallax) : id(id), priority(priority), parallax(parallax), is_visible(true),
-		shader_cache(shader_cache), sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), stage(RenderStage::SCENE), composite_binder(nullptr)
+	    const std::string& id, float priority, float parallax) : composite_binder(nullptr),
+		 sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), is_visible(true),
+		id(id), parallax(parallax), priority(priority), stage(RenderStage::SCENE)
 	{
 		sprite_program = shader_cache->get_program("sc_sprite.vsh", "sc_sprite.fsh");
 		particle_program = shader_cache->get_program("sc_particle.vsh", "sc_particle.fsh");
@@ -207,11 +208,11 @@ namespace dukat
 		glBindBuffer(GL_ARRAY_BUFFER, sprite_buffer->buffers[0]);
 
 		// bind vertex position
-		glVertexPointer(2, GL_FLOAT, sizeof(TexturedVertex2),
-			reinterpret_cast<const GLvoid*>(offsetof(TexturedVertex2, x)));
+		glVertexPointer(2, GL_FLOAT, sizeof(Vertex2PT),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, px)));
 		// bind texture position
-		glTexCoordPointer(2, GL_FLOAT, sizeof(TexturedVertex2),
-			reinterpret_cast<const GLvoid*>(offsetof(TexturedVertex2, u)));
+		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex2PT),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, tu)));
 #endif
 
 		// set texture unit 0 
@@ -236,7 +237,8 @@ namespace dukat
 			{
 				perfc.inc(PerformanceCounter::TEXTURES);
 
-				glActiveTextureARB(GL_TEXTURE0);
+				// glActiveTextureARB(GL_TEXTURE0);
+				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, sprite->texture_id);
 				last_texture = sprite->texture_id;
 			}
@@ -332,7 +334,7 @@ namespace dukat
 			}
 
 			// check if particle visible and store result in ->rendered
-			if (p->rendered = bb.contains(p->pos))
+			if ((p->rendered = bb.contains(p->pos)))
 			{
 				particle_data[particle_count].px = p->pos.x;
 				particle_data[particle_count].py = p->pos.y;
@@ -386,10 +388,10 @@ namespace dukat
 
 		// bind vertex position
 		glVertexPointer(4, GL_FLOAT, sizeof(PVertex),
-			reinterpret_cast<const GLvoid*>(offsetof(PVertex, x)));
+			reinterpret_cast<const GLvoid*>(offsetof(PVertex, px)));
 		// bind color position
 		glColorPointer(4, GL_FLOAT, sizeof(PVertex),
-			reinterpret_cast<const GLvoid*>(offsetof(PVertex, r)));
+			reinterpret_cast<const GLvoid*>(offsetof(PVertex, cr)));
 #endif
 
 		glDrawArrays(GL_POINTS, 0, particle_count);

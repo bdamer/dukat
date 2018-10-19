@@ -21,7 +21,7 @@ namespace dukat
 		const Vector2 center;
 
 		QuadTree(const Vector2& min, const Vector2& max, int max_depth, int depth = 0)
-			: min(min), max(max), max_depth(max_depth), depth(depth), center(min + (max - min) * 0.5f)
+			: max_depth(max_depth), depth(depth), min(min), max(max), center(min + (max - min) * 0.5f)
 		{
 			children[0] = nullptr;
 			children[1] = nullptr;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
 #include "color.h"
 #include "vector3.h"
 

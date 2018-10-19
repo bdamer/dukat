@@ -8,7 +8,7 @@ namespace dukat
 {
 	static std::vector<Vertex2P> buffer;
 
-	DebugEffect2::DebugEffect2(Game2* game, float scale) : game(game), scale(scale), flags(static_cast<Flags>(Flags::BODIES | Flags::GRID))
+	DebugEffect2::DebugEffect2(Game2* game, float scale) : scale(scale), game(game), flags(static_cast<Flags>(Flags::BODIES | Flags::GRID))
 	{
 		program = game->get_shaders()->get_program("fx_debug.vsh", "fx_debug.fsh");
 		std::vector<VertexAttribute> attr;

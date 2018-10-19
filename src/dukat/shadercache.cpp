@@ -3,6 +3,7 @@
 #include "shaderprogram.h"
 #include "log.h"
 #include "sysutil.h"
+#include "assetloader.h"
 
 namespace dukat
 {
@@ -11,17 +12,10 @@ namespace dukat
 		if (sources.count(filename) == 0)
 		{
 			// Load shader from file
-#if OPENGL_VERSION >= 30
-			auto fqn = resource_dir + "/150/" + filename;
-#else
-			auto fqn = resource_dir + "/120/" + filename;
-#endif
-			std::ifstream in(fqn);
-			if (!in)
-			{
-				auto err = "Could not load file: " + fqn;
-				throw std::runtime_error(err);
-			}
+			auto fqn = resource_dir + "/" + glsl + "/" + filename;
+			AssetLoader loader;
+			std::stringstream in;
+			loader.load_text(fqn, in);
 
 			std::stringstream ss;
 			std::string line;
@@ -90,7 +84,7 @@ namespace dukat
 		auto vertex_shader = build_shader(GL_VERTEX_SHADER, vertex_file);
 		glAttachShader(program, vertex_shader);
 
-#if OPENGL_VERSION >= 30
+#if (OPENGL_CORE >= 30) || (OPENGL_ES >= 32)
 		// Geometry shader is optional
 		auto geometry_shader = 0;
 		if (geometry_file != "")
@@ -103,7 +97,7 @@ namespace dukat
 		auto fragment_shader = build_shader(GL_FRAGMENT_SHADER, fragment_file);
 		glAttachShader(program, fragment_shader);
 
-#if OPENGL_VERSION >= 30
+#if (OPENGL_CORE >= 30)
 		// tell opengl the name of the output variable of the fragment shader
 		// 0 means buffer 0, see http://www.opengl.org/wiki/GLAPI/glDrawBuffers
 		glBindFragDataLocation(program, 0, "outColor");
@@ -120,7 +114,7 @@ namespace dukat
 			glDetachShader(program, fragment_shader);
 			glDeleteShader(fragment_shader);
 		}
-#if OPENGL_VERSION >= 30
+#if (OPENGL_CORE >= 30) || (OPENGL_ES >= 32)
 		if (geometry_shader > 0)
 		{
 			glDetachShader(program, geometry_shader);

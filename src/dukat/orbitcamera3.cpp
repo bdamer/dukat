@@ -8,8 +8,8 @@
 namespace dukat
 {
 	OrbitCamera3::OrbitCamera3(GameBase* game, const Vector3& target, float distance, float longitude, float latitude)
-		: Camera3(game->get_window()), game(game), look_at(target), distance(distance), min_distance(0.0f), max_distance(1000.0f),
-		longitude(longitude), latitude(latitude)
+		: Camera3(game->get_window()), distance(distance), min_distance(0.0f), max_distance(1000.0f),
+		longitude(longitude), latitude(latitude), game(game), look_at(target)
 	{
 	}
 

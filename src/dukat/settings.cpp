@@ -1,19 +1,18 @@
 #include "stdafx.h"
 #include "settings.h"
 #include "log.h"
+#include "assetloader.h"
 
 namespace dukat
 {
 	Settings::Settings(const std::string& filename)
 	{
 		log->info("Loading settings from: {}", filename);
-		std::fstream is(filename);
-		if (!is)
-		{
-			throw std::runtime_error("Could not load file: " + filename);
-		}
+		std::stringstream ss;
+		AssetLoader loader;
+		loader.load_text(filename, ss);
 		std::string line;
-		while (std::getline(is, line))
+		while (std::getline(ss, line))
 		{
 			if (line.size() == 0 || line[0] == ';')
 				continue;
@@ -27,7 +26,6 @@ namespace dukat
 				map[key] = val;
 			}
 		}
-		is.close();
 	}
 
 	Settings::Settings(const Settings& settings)

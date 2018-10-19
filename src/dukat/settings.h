@@ -11,6 +11,7 @@ namespace dukat
 		std::map<std::string, std::string> map;
 
 	public:
+		Settings(void) { }
 		Settings(const std::string& filename);
 		Settings(const Settings& settings);
 		~Settings(void) { }

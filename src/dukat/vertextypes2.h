@@ -1,7 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
-
 namespace dukat
 {
 	struct Vertex2P

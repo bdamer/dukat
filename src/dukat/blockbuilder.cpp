@@ -77,7 +77,7 @@ namespace dukat
             get_index_count(), attributes);
         mesh->set_vertices(vertex_data.data());
         mesh->set_indices(index_data.data());
-        return std::move(mesh);
+        return mesh;
     }
 
     void BlockBuilder::clear(void)

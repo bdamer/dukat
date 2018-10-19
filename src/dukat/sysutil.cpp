@@ -2,7 +2,6 @@
 #include "sysutil.h"
 #include "log.h"
 #include "surface.h"
-#include <GL/glew.h>
 
 namespace dukat
 {
@@ -39,14 +38,16 @@ namespace dukat
 				case GL_OUT_OF_MEMORY:
 					error = "GL_OUT_OF_MEMORY";
 					break;
+#ifndef __ANDROID__
 				case GL_STACK_UNDERFLOW:
 					error = "GL_STACK_UNDERFLOW";
 					break;
 				case GL_STACK_OVERFLOW:
 					error = "GL_STACK_OVERFLOW";
 					break;
+#endif
 				default:
-					error = "unkown";
+					error = "unknown";
 					break;
 			}
 			log->error("glError: {}", error);
@@ -111,7 +112,7 @@ namespace dukat
 		uint32_t res = 0;
 		for (int i = 0; i < size; i += 4)
 		{
-			res = _rotl(res, 1); // rotate left by 1
+			res = (res << 1) | (res >> 31); // rotate left by 1
 			res += (buffer[i+3] << 24) + (buffer[i+2] << 16) + (buffer[i+1] << 8) + buffer[i]; // accumulate
 		}
 		return res;

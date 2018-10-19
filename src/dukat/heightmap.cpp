@@ -213,7 +213,6 @@ namespace dukat
 	float HeightMap::sample(int level, float x, float y) const
 	{
 		assert(level < num_levels);
-		const auto stride = levels[level].size;
 		// sample 4 surrounding elevations
 		auto min_x = (int)std::floor(x);
 		auto min_y = (int)std::floor(y);

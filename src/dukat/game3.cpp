@@ -40,7 +40,6 @@ namespace dukat
 	void Game3::update_debug_text(void)
 	{
 		std::stringstream ss;
-		auto cam = renderer->get_camera();
 		ss << "<#yellow>"
 			<< "WIN: " << window->get_width() << "x" << window->get_height()
 			<< " FPS: " << get_fps()

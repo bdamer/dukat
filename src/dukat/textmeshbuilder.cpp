@@ -53,7 +53,7 @@ namespace dukat
 		auto mesh = std::make_unique<MeshData>(GL_TRIANGLES, max_length * 6, 0, attr);
 		float width, height;
 		rebuild_text_mesh(mesh.get(), text, width, height);
-		return std::move(mesh);
+		return mesh;
 	}
 
 	bool TextMeshBuilder::parse_color(size_t& i, const std::string& text, Color& color) const

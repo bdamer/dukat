@@ -13,9 +13,9 @@ namespace dukat
 	class MirrorEffect2 : public Effect2
 	{
 	private:
-		std::string mirrored_layer;
 		ShaderProgram* sprite_program;
 		ShaderProgram* particle_program;
+		std::string mirrored_layer;
 
 	public:
 		MirrorEffect2(ShaderProgram* sprite_program, ShaderProgram* particle_program, const std::string& mirrored_layer)
