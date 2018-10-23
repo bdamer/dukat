@@ -55,12 +55,6 @@ namespace dukat
 			type = surface->format->Bshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
 			break;
 #else
-		// 24 bit
-		case SDL_PIXELFORMAT_RGB24:
-		case SDL_PIXELFORMAT_RGB888:
-			format = GL_RGB;
-			type = GL_UNSIGNED_BYTE;
-			break;
 		// 32 bit
 		case SDL_PIXELFORMAT_ABGR8888:
 			format = GL_RGBA;

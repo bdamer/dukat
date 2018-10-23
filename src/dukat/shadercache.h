@@ -17,7 +17,9 @@ namespace dukat
 	private:
 		static constexpr const char* pre_include = "#include";
 
-#if OPENGL_CORE >= 30
+#if OPENGL_CORE >= 33
+		static constexpr auto glsl = "330";
+#elif OPENGL_CORE >= 30
 		static constexpr auto glsl = "150";
 #elif OPENGL_CORE > 0
 		static constexpr auto glsl = "120";

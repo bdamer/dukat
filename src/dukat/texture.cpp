@@ -44,7 +44,8 @@ namespace dukat
 		auto min_width = std::min(w, surface.get_width());
 		auto min_height = std::min(h, surface.get_height());
 
-		load_data(GL_RGBA, min_width, min_height, surface.get_surface()->pixels, format, type, profile);
+		load_data(GL_RGBA8, min_width, min_height, surface.get_surface()->pixels, format, type, profile);
+		gl_check_error();
 	}
 
 	void Texture::load_data(int src_fmt, int src_width, int src_height, const GLvoid* src_data, GLenum format, GLenum type, TextureFilterProfile profile)

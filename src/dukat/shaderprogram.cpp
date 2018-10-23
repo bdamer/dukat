@@ -20,7 +20,8 @@ namespace dukat
 
 	void ShaderProgram::index_attributes(void)
 	{
-		GLchar buffer[256];
+	    const auto buffer_size = 256;
+		GLchar buffer[buffer_size];
 		// query and index uniforms
 		GLint count;
 		glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &count);
@@ -29,9 +30,9 @@ namespace dukat
 			GLint size;
 			GLenum type;
 			GLsizei length;
-			glGetActiveUniform(id, i, 256, &length, &size, &type, buffer);
+			glGetActiveUniform(id, i, buffer_size, &length, &size, &type, buffer);
 			auto location = glGetUniformLocation(id, buffer);
-			if (location >= 0)
+			if (location >= 0) 
 			{
 				attributes[buffer] = location;
 			}
@@ -44,7 +45,7 @@ namespace dukat
 			GLint size;
 			GLenum type;
 			GLsizei length;
-			glGetActiveAttrib(id, i, 256, &length, &size, &type, buffer);
+			glGetActiveAttrib(id, i, buffer_size, &length, &size, &type, buffer);
 			auto location = glGetAttribLocation(id, buffer);
 			if (location >= 0)
 			{

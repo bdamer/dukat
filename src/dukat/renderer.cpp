@@ -54,6 +54,8 @@ namespace dukat
 		assert(int_val >= UniformBuffer::_COUNT);
 		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &int_val);
 		log->debug("GL_MAX_UNIFORM_BLOCK_SIZE: {}", int_val);
+        glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, &int_val);
+        log->debug("GL_MAX_VERTEX_UNIFORM_BLOCKS: {}", int_val);
 #endif
 
 #if OPENGL_CORE >= 42

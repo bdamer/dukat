@@ -1,4 +1,5 @@
-#version 150
+#version 300 es
+precision mediump float;
 ///
 // Particle fragment shader.
 ///
