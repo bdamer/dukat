@@ -25,7 +25,14 @@
 *.app
 
 # Externals
-include/*
+# include/*
+include/GL/*
+include/SDL2/*
+include/spdlog/*
+include/json/*
+include/*.h
+include/*.cpp
+
 
 # Visual Studio Files
 *.pdb
