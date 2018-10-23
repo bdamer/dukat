@@ -1,4 +1,4 @@
-include_directories(../../src)
+include_directories(../../include)
 
 add_executable(modelviewer stdafx.cpp modelviewer.cpp)
 target_link_libraries(modelviewer dukat ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${PNG_LIBRARY}

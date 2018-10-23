@@ -1,4 +1,4 @@
-include_directories(../../src)
+include_directories(../../include)
 
 add_executable(heatmap stdafx.cpp heatmapapp.cpp heatmap.cpp)
 target_link_libraries(heatmap dukat ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${PNG_LIBRARY}

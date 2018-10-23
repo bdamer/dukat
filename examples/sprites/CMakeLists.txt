@@ -1,4 +1,4 @@
-include_directories(../../src)
+include_directories(../../include)
 
 add_executable(sprites stdafx.cpp spritesapp.cpp)
 target_link_libraries(sprites dukat ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES}

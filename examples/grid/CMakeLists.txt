@@ -1,4 +1,4 @@
-include_directories(../../src)
+include_directories(../../include)
 
 add_executable(grid stdafx.cpp gridapp.cpp)
 target_link_libraries(grid dukat ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${PNG_LIBRARY}

@@ -1,4 +1,4 @@
-include_directories(../../src)
+include_directories(../../include)
 
 option(NOISE_ENABLED "Enables use of libnoise" OFF)
 

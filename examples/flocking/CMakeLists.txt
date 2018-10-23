@@ -1,4 +1,4 @@
-include_directories(../../src)
+include_directories(../../include)
 
 add_executable(flocking stdafx.cpp flockingapp.cpp boid.cpp)
 target_link_libraries(flocking dukat ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES}
