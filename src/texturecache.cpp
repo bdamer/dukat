@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "log.h"
-#include "surface.h"
-#include "texturecache.h"
-#include "dds.h"
+#include <dukat/log.h>
+#include <dukat/surface.h>
+#include <dukat/texturecache.h>
+#include <dukat/dds.h>
 
 namespace dukat
 {

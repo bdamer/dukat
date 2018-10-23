@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "camera3.h"
-#include "plane.h"
-#include "ray3.h"
-#include "mathutil.h"
+#include <dukat/camera3.h>
+#include <dukat/plane.h>
+#include <dukat/ray3.h>
+#include <dukat/mathutil.h>
 
 namespace dukat
 {

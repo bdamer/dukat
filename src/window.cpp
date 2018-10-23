@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "log.h"
-#include "sysutil.h"
-#include "window.h"
+#include <dukat/log.h>
+#include <dukat/sysutil.h>
+#include <dukat/window.h>
 
 namespace dukat
 {

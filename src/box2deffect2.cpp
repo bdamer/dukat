@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "box2deffect2.h"
-#include "box2dmanager.h"
-#include "vertextypes2.h"
-#include "mathutil.h"
+#include <dukat/box2deffect2.h>
+#include <dukat/box2dmanager.h>
+#include <dukat/vertextypes2.h>
+#include <dukat/mathutil.h>
 
 #ifdef BOX2D_SUPPORT
 

@@ -1,16 +1,16 @@
 #include "stdafx.h"
-#include "clipmap.h"
-#include "blockbuilder.h"
-#include "heightmap.h"
-#include "log.h"
-#include "mathutil.h"
-#include "meshdata.h"
-#include "meshbuilder2.h"
-#include "perfcounter.h"
-#include "plane.h"
-#include "renderer.h"
-#include "shadercache.h"
-#include "vertextypes3.h"
+#include <dukat/clipmap.h>
+#include <dukat/blockbuilder.h>
+#include <dukat/heightmap.h>
+#include <dukat/log.h>
+#include <dukat/mathutil.h>
+#include <dukat/meshdata.h>
+#include <dukat/meshbuilder2.h>
+#include <dukat/perfcounter.h>
+#include <dukat/plane.h>
+#include <dukat/renderer.h>
+#include <dukat/shadercache.h>
+#include <dukat/vertextypes3.h>
 
 namespace dukat
 {

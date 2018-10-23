@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "xboxdevice.h"
-#include "log.h"
-#include "mathutil.h"
-#include "window.h"
+#include <dukat/xboxdevice.h>
+#include <dukat/log.h>
+#include <dukat/mathutil.h>
+#include <dukat/window.h>
 
 #ifdef XBOX_SUPPORT
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "voxmodel.h"
-#include "log.h"
+#include <dukat/voxmodel.h>
+#include <dukat/log.h>
 #include <queue>
 
 namespace dukat

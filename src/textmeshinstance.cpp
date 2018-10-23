@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "textmeshinstance.h"
-#include "textmeshbuilder.h"
+#include <dukat/textmeshinstance.h>
+#include <dukat/textmeshbuilder.h>
 
 namespace dukat
 {

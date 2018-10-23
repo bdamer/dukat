@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "geometry.h"
-#include "mathutil.h"
+#include <dukat/geometry.h>
+#include <dukat/mathutil.h>
 
 namespace dukat
 {

@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "eulerangles.h"
-#include "mathutil.h"
-#include "quaternion.h"
-#include "vector3.h"
+#include <dukat/eulerangles.h>
+#include <dukat/mathutil.h>
+#include <dukat/quaternion.h>
+#include <dukat/vector3.h>
 
 namespace dukat
 {

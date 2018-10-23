@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "environment.h"
-#include "transition.h"
-#include "game3.h"
-#include "log.h"
+#include <dukat/environment.h>
+#include <dukat/transition.h>
+#include <dukat/game3.h>
+#include <dukat/log.h>
 
 namespace dukat
 {

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "timermanager.h"
+#include <dukat/timermanager.h>
 
 namespace dukat
 {

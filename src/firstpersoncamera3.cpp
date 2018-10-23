@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "firstpersoncamera3.h"
-#include "devicemanager.h"
-#include "inputdevice.h"
-#include "mathutil.h"
-#include "gamebase.h"
+#include <dukat/firstpersoncamera3.h>
+#include <dukat/devicemanager.h>
+#include <dukat/inputdevice.h>
+#include <dukat/mathutil.h>
+#include <dukat/gamebase.h>
 
 namespace dukat
 {

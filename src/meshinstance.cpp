@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "meshinstance.h"
-#include "buffers.h"
-#include "shaderprogram.h"
-#include "perfcounter.h"
-#include "renderer.h"
+#include <dukat/meshinstance.h>
+#include <dukat/buffers.h>
+#include <dukat/shaderprogram.h>
+#include <dukat/perfcounter.h>
+#include <dukat/renderer.h>
 
 namespace dukat
 {

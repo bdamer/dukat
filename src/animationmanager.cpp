@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "animationmanager.h"
+#include <dukat/animationmanager.h>
 
 namespace dukat
 {

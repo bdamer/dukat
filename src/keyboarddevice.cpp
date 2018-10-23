@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "keyboarddevice.h"
-#include "window.h"
-#include "mathutil.h"
-#include "sysutil.h"
-#include "settings.h"
+#include <dukat/keyboarddevice.h>
+#include <dukat/window.h>
+#include <dukat/mathutil.h>
+#include <dukat/sysutil.h>
+#include <dukat/settings.h>
 
 namespace dukat
 {

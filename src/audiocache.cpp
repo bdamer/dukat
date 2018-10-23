@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "audiocache.h"
-#include "log.h"
-#include "sysutil.h"
+#include <dukat/audiocache.h>
+#include <dukat/log.h>
+#include <dukat/sysutil.h>
 
 namespace dukat
 {

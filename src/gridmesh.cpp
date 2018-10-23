@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#include "gridmesh.h"
-
-#include "blockbuilder.h"
+#include <dukat/gridmesh.h>
+#include <dukat/blockbuilder.h>
 
 namespace dukat
 {

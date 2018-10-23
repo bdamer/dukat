@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "devicemanager.h"
-#include "log.h"
-#include "keyboarddevice.h"
-#include "gamepaddevice.h"
-#include "settings.h"
+#include <dukat/devicemanager.h>
+#include <dukat/log.h>
+#include <dukat/keyboarddevice.h>
+#include <dukat/gamepaddevice.h>
+#include <dukat/settings.h>
 
 #ifdef XBOX_SUPPORT
-#include "xboxdevice.h"
+#include <dukat/xboxdevice.h>
 #endif
 
 namespace dukat

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "scene2.h"
-#include "game2.h"
+#include <dukat/scene2.h>
+#include <dukat/game2.h>
 
 namespace dukat
 {

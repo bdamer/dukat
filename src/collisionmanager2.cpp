@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "collisionmanager2.h"
-#include "debugeffect2.h"
-#include "log.h"
+#include <dukat/collisionmanager2.h>
+#include <dukat/debugeffect2.h>
+#include <dukat/log.h>
 
 namespace dukat
 {

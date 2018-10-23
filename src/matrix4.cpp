@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "matrix4.h"
-#include "mathutil.h"
-#include "vector3.h"
-#include "quaternion.h"
+#include <dukat/matrix4.h>
+#include <dukat/mathutil.h>
+#include <dukat/vector3.h>
+#include <dukat/quaternion.h>
 
 namespace dukat
 {

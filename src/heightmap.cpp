@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "heightmap.h"
-#include "heightmapgenerator.h"
-#include "log.h"
-#include "mathutil.h"
-#include "rect.h"
-#include "surface.h"
-#include "ray3.h"
+#include <dukat/heightmap.h>
+#include <dukat/heightmapgenerator.h>
+#include <dukat/log.h>
+#include <dukat/mathutil.h>
+#include <dukat/rect.h>
+#include <dukat/surface.h>
+#include <dukat/ray3.h>
 #include <png.h>
 
 namespace dukat

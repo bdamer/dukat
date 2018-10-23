@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "renderer3.h"
-#include "buffers.h"
-#include "log.h"
-#include "meshdata.h"
-#include "meshbuilder2.h"
-#include "meshgroup.h"
-#include "perfcounter.h"
-#include "shadercache.h"
-#include "shaderprogram.h"
-#include "sysutil.h"
+#include <dukat/renderer3.h>
+#include <dukat/buffers.h>
+#include <dukat/log.h>
+#include <dukat/meshdata.h>
+#include <dukat/meshbuilder2.h>
+#include <dukat/meshgroup.h>
+#include <dukat/perfcounter.h>
+#include <dukat/shadercache.h>
+#include <dukat/shaderprogram.h>
+#include <dukat/sysutil.h>
 
 namespace dukat
 {

@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "orbitcamera3.h"
-#include "gamebase.h"
-#include "devicemanager.h"
-#include "inputdevice.h"
-#include "quaternion.h"
+#include <dukat/orbitcamera3.h>
+#include <dukat/gamebase.h>
+#include <dukat/devicemanager.h>
+#include <dukat/inputdevice.h>
+#include <dukat/quaternion.h>
 
 namespace dukat
 {

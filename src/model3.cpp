@@ -1,13 +1,11 @@
 #include "stdafx.h"
-
-#include "model3.h"
-
-#include "gamebase.h"
-#include "log.h"
-#include "meshcache.h"
-#include "meshgroup.h"
-#include "sysutil.h"
-#include "vertextypes3.h"
+#include <dukat/model3.h>
+#include <dukat/gamebase.h>
+#include <dukat/log.h>
+#include <dukat/meshcache.h>
+#include <dukat/meshgroup.h>
+#include <dukat/sysutil.h>
+#include <dukat/vertextypes3.h>
 
 namespace dukat
 {

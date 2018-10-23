@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "camera2.h"
-#include "log.h"
-#include "vector3.h"
-#include "gamebase.h"
+#include <dukat/camera2.h>
+#include <dukat/log.h>
+#include <dukat/vector3.h>
+#include <dukat/gamebase.h>
 
 namespace dukat
 {

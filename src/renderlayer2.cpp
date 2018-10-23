@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "renderlayer2.h"
-#include "aabb2.h"
-#include "buffers.h"
-#include "camera2.h"
-#include "effect2.h"
-#include "matrix4.h"
-#include "particle.h"
-#include "perfcounter.h"
-#include "shadercache.h"
-#include "sprite.h"
-#include "textmeshinstance.h"
-#include "renderer2.h"
-#include "vertextypes2.h"
+#include <dukat/renderlayer2.h>
+#include <dukat/aabb2.h>
+#include <dukat/buffers.h>
+#include <dukat/camera2.h>
+#include <dukat/effect2.h>
+#include <dukat/matrix4.h>
+#include <dukat/particle.h>
+#include <dukat/perfcounter.h>
+#include <dukat/shadercache.h>
+#include <dukat/sprite.h>
+#include <dukat/textmeshinstance.h>
+#include <dukat/renderer2.h>
+#include <dukat/vertextypes2.h>
 
 namespace dukat
 {

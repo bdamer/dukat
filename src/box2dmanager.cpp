@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "box2dmanager.h"
-#include "game2.h"
-#include "recipient.h"
+#include <dukat/box2dmanager.h>
+#include <dukat/game2.h>
+#include <dukat/recipient.h>
 
 #ifdef BOX2D_SUPPORT
 

@@ -1,11 +1,11 @@
 ﻿#include "stdafx.h"
-#include "color.h"
-#include "log.h"
-#include "perfcounter.h"
-#include "renderer.h"
-#include "shadercache.h"
-#include "sysutil.h"
-#include "buffers.h"
+#include <dukat/color.h>
+#include <dukat/log.h>
+#include <dukat/perfcounter.h>
+#include <dukat/renderer.h>
+#include <dukat/shadercache.h>
+#include <dukat/sysutil.h>
+#include <dukat/buffers.h>
 
 namespace dukat
 {

@@ -36,7 +36,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "version.h"
+#include <dukat/version.h>
 
 // SDL
 #include <SDL2/SDL.h>

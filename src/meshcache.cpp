@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "meshcache.h"
-#include "meshdata.h"
-#include "buffers.h"
-#include "log.h"
+#include <dukat/meshcache.h>
+#include <dukat/meshdata.h>
+#include <dukat/buffers.h>
+#include <dukat/log.h>
 
 namespace dukat
 {

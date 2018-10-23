@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "game3.h"
-#include "renderer3.h"
-#include "settings.h"
+#include <dukat/game3.h>
+#include <dukat/renderer3.h>
+#include <dukat/settings.h>
 
 namespace dukat
 {

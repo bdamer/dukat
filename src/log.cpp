@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "log.h"
-#include "settings.h"
+#include <dukat/log.h>
+#include <dukat/settings.h>
 
 #ifndef __ANDROID__
 #include <spdlog/spdlog.h>

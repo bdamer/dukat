@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "fixedcamera3.h"
+#include <dukat/fixedcamera3.h>
 
 namespace dukat
 {    

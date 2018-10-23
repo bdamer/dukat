@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "textmeshbuilder.h"
-#include "buffers.h"
-#include "meshdata.h"
-#include "renderer.h"
-#include "vertextypes2.h"
-#include "vertextypes3.h"
+#include <dukat/textmeshbuilder.h>
+#include <dukat/buffers.h>
+#include <dukat/meshdata.h>
+#include <dukat/renderer.h>
+#include <dukat/vertextypes2.h>
+#include <dukat/vertextypes3.h>
 #include <map>
 
 namespace dukat

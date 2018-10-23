@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "audiomanager.h"
-#include "audiocache.h"
-#include "sysutil.h"
-#include "log.h"
+#include <dukat/audiomanager.h>
+#include <dukat/audiocache.h>
+#include <dukat/sysutil.h>
+#include <dukat/log.h>
 
 namespace dukat
 {

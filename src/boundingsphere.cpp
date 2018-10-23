@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "boundingsphere.h"
-#include "mathutil.h"
-#include "matrix4.h"
-#include "ray3.h"
+#include <dukat/boundingsphere.h>
+#include <dukat/mathutil.h>
+#include <dukat/matrix4.h>
+#include <dukat/ray3.h>
 
 namespace dukat
 {

@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "meshbuilder3.h"
-#include "meshdata.h"
-#include "vertextypes3.h"
-#include "geometry.h"
-#include "buffers.h"
-#include "renderer.h"
-#include "mathutil.h"
-#include "vector3.h"
+#include <dukat/meshbuilder3.h>
+#include <dukat/meshdata.h>
+#include <dukat/vertextypes3.h>
+#include <dukat/geometry.h>
+#include <dukat/buffers.h>
+#include <dukat/renderer.h>
+#include <dukat/mathutil.h>
+#include <dukat/vector3.h>
 
 namespace dukat
 {

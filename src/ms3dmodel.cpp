@@ -1,12 +1,10 @@
 #include "stdafx.h"
-
 #include <cassert>
-
-#include "log.h"
-#include "material.h"
-#include "mathutil.h"
-#include "model3.h"
-#include "ms3dmodel.h"
+#include <dukat/log.h>
+#include <dukat/material.h>
+#include <dukat/mathutil.h>
+#include <dukat/model3.h>
+#include <dukat/ms3dmodel.h>
 
 namespace dukat
 {

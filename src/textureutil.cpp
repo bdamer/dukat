@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "textureutil.h"
-#include "texture.h"
+#include <dukat/textureutil.h>
+#include <dukat/texture.h>
 
 namespace dukat
 {

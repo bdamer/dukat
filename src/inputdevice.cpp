@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "inputdevice.h"
+#include <dukat/inputdevice.h>
 
 namespace dukat
 {

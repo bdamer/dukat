@@ -1,15 +1,15 @@
 #include "stdafx.h"
 
-#include "blockbuilder.h"
-#include "game3.h"
-#include "log.h"
-#include "mathutil.h"
-#include "meshbuilder2.h"
-#include "meshinstance.h"
-#include "textureutil.h"
-#include "renderer3.h"
-#include "vertextypes3.h"
-#include "wavemesh.h"
+#include <dukat/blockbuilder.h>
+#include <dukat/game3.h>
+#include <dukat/log.h>
+#include <dukat/mathutil.h>
+#include <dukat/meshbuilder2.h>
+#include <dukat/meshinstance.h>
+#include <dukat/textureutil.h>
+#include <dukat/renderer3.h>
+#include <dukat/vertextypes3.h>
+#include <dukat/wavemesh.h>
 
 namespace dukat
 {

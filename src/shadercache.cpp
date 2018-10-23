@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "shadercache.h"
-#include "shaderprogram.h"
-#include "log.h"
-#include "sysutil.h"
-#include "assetloader.h"
+#include <dukat/shadercache.h>
+#include <dukat/shaderprogram.h>
+#include <dukat/log.h>
+#include <dukat/sysutil.h>
+#include <dukat/assetloader.h>
 
 namespace dukat
 {

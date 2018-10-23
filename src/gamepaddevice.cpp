@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "gamepaddevice.h"
-#include "log.h"
-#include "mathutil.h"
-#include "settings.h"
-#include "window.h"
+#include <dukat/gamepaddevice.h>
+#include <dukat/log.h>
+#include <dukat/mathutil.h>
+#include <dukat/settings.h>
+#include <dukat/window.h>
 
 namespace dukat
 {

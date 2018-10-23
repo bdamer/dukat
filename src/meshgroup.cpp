@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "meshgroup.h"
-#include "renderer.h"
+#include <dukat/meshgroup.h>
+#include <dukat/renderer.h>
 
 namespace dukat
 {

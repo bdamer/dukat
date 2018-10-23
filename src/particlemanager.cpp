@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "particlemanager.h"
+#include <dukat/particlemanager.h>
 
 namespace dukat
 {

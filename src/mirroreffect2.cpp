@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "mirroreffect2.h"
-#include "renderlayer2.h"
-#include "renderer2.h"
-#include "game2.h"
+#include <dukat/mirroreffect2.h>
+#include <dukat/renderlayer2.h>
+#include <dukat/renderer2.h>
+#include <dukat/game2.h>
 
 namespace dukat
 {

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "messenger.h"
+#include <dukat/messenger.h>
 
 namespace dukat
 {

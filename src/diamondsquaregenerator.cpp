@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "diamondsquaregenerator.h"
-#include "mathutil.h"
+#include <dukat/diamondsquaregenerator.h>
+#include <dukat/mathutil.h>
 
 namespace dukat
 {

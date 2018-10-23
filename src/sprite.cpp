@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "log.h"
-#include "sprite.h"
-#include "texturecache.h"
-#include "rect.h"
-#include "matrix4.h"
-#include "vector3.h"
-#include "meshdata.h"
-#include "renderer2.h"
+#include <dukat/log.h>
+#include <dukat/sprite.h>
+#include <dukat/texturecache.h>
+#include <dukat/rect.h>
+#include <dukat/matrix4.h>
+#include <dukat/vector3.h>
+#include <dukat/meshdata.h>
+#include <dukat/renderer2.h>
 
 namespace dukat
 {

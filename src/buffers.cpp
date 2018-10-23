@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "buffers.h"
-#include "log.h"
-#include "perfcounter.h"
-#include "sysutil.h"
+#include <dukat/buffers.h>
+#include <dukat/log.h>
+#include <dukat/perfcounter.h>
+#include <dukat/sysutil.h>
 
 // Rebind EXT_framebuffer_object methods
 #if defined(OPENGL_CORE) && (OPENGL_CORE < 30)

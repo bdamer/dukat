@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "shaderprogram.h"
-#include "perfcounter.h"
-#include "sysutil.h"
+#include <dukat/shaderprogram.h>
+#include <dukat/perfcounter.h>
+#include <dukat/sysutil.h>
 
 namespace dukat
 {

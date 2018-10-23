@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "effectpass.h"
-#include "buffers.h"
-#include "meshbuilder2.h"
-#include "meshdata.h"
-#include "shaderprogram.h"
+#include <dukat/effectpass.h>
+#include <dukat/buffers.h>
+#include <dukat/meshbuilder2.h>
+#include <dukat/meshdata.h>
+#include <dukat/shaderprogram.h>
 
 namespace dukat
 {

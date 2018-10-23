@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "matrix2.h"
-#include "vector2.h"
+#include <dukat/matrix2.h>
+#include <dukat/vector2.h>
 
 namespace dukat
 {

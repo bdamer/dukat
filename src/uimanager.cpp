@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "uimanager.h"
+#include <dukat/uimanager.h>
 
 namespace dukat
 {

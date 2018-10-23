@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "dds.h"
-#include "log.h"
-#include "sysutil.h"
-#include "texturecache.h"
+#include <dukat/dds.h>
+#include <dukat/log.h>
+#include <dukat/sysutil.h>
+#include <dukat/texturecache.h>
 
 // Formats
 #define GL_COMPRESSED_RGBA_S3TC_DXT1 0x83F1

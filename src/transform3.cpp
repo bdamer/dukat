@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "transform3.h"
-#include "mathutil.h"
+#include <dukat/transform3.h>
+#include <dukat/mathutil.h>
 
 namespace dukat
 {

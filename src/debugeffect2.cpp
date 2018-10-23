@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "debugeffect2.h"
-#include "vertextypes2.h"
-#include "mathutil.h"
-#include "collisionmanager2.h"
+#include <dukat/debugeffect2.h>
+#include <dukat/vertextypes2.h>
+#include <dukat/mathutil.h>
+#include <dukat/collisionmanager2.h>
 
 namespace dukat
 {

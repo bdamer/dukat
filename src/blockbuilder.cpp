@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "blockbuilder.h"
-#include "buffers.h"
-#include "renderer3.h"
+#include <dukat/blockbuilder.h>
+#include <dukat/buffers.h>
+#include <dukat/renderer3.h>
 
 namespace dukat
 {

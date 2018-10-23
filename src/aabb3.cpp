@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "aabb3.h"
-#include "mathutil.h"
-#include "matrix4.h"
-#include "plane.h"
-#include "ray3.h"
+#include <dukat/aabb3.h>
+#include <dukat/mathutil.h>
+#include <dukat/matrix4.h>
+#include <dukat/plane.h>
+#include <dukat/ray3.h>
 
 namespace dukat
 {

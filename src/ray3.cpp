@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "ray3.h"
-#include "plane.h"
+#include <dukat/ray3.h>
+#include <dukat/plane.h>
 
 namespace dukat
 {

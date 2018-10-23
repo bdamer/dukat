@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "assetloader.h"
+#include <dukat/assetloader.h>
 
 #ifdef __ANDROID__
 #include <android/asset_manager.h>

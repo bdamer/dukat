@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "aabb2.h"
-#include "mathutil.h"
-#include "matrix2.h"
+#include <dukat/aabb2.h>
+#include <dukat/mathutil.h>
+#include <dukat/matrix2.h>
 
 namespace dukat
 {

@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "texture.h"
-#include "surface.h"
-#include "shaderprogram.h"
-#include "sysutil.h"
+#include <dukat/texture.h>
+#include <dukat/surface.h>
+#include <dukat/shaderprogram.h>
+#include <dukat/sysutil.h>
 
 namespace dukat
 {

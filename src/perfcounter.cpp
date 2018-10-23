@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "perfcounter.h"
+#include <dukat/perfcounter.h>
 
 namespace dukat
 {

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "mathutil.h"
+#include <dukat/mathutil.h>
 
 namespace dukat
 {

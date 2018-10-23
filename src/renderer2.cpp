@@ -1,16 +1,15 @@
 #include "stdafx.h"
-#include "camera2.h"
-#include "log.h"
-#include "renderer2.h"
-#include "renderlayer2.h"
-#include "shadercache.h"
-#include "sprite.h"
-#include "vertextypes2.h"
-#include "sysutil.h"
-
-#include "meshbuilder2.h"
-#include "meshdata.h"
-#include "textureutil.h"
+#include <dukat/camera2.h>
+#include <dukat/log.h>
+#include <dukat/renderer2.h>
+#include <dukat/renderlayer2.h>
+#include <dukat/shadercache.h>
+#include <dukat/sprite.h>
+#include <dukat/vertextypes2.h>
+#include <dukat/sysutil.h>
+#include <dukat/meshbuilder2.h>
+#include <dukat/meshdata.h>
+#include <dukat/textureutil.h>
 
 namespace dukat
 {

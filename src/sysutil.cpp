@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "sysutil.h"
-#include "log.h"
-#include "surface.h"
+#include <dukat/sysutil.h>
+#include <dukat/log.h>
+#include <dukat/surface.h>
 
 namespace dukat
 {

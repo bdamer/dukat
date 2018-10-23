@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "log.h"
-#include "mapgraph.h"
-#include "mapshape.h"
-#include "mathutil.h"
-#include "vertextypes3.h"
-#include "voronoi.h"
+#include <dukat/log.h>
+#include <dukat/mapgraph.h>
+#include <dukat/mapshape.h>
+#include <dukat/mathutil.h>
+#include <dukat/vertextypes3.h>
+#include <dukat/voronoi.h>
 
 #include <map>
 

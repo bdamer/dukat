@@ -1,20 +1,20 @@
 #include "stdafx.h"
-#include "gamebase.h"
-#include "controller.h"
-#include "devicemanager.h"
-#include "keyboarddevice.h"
-#include "log.h"
-#include "manager.h"
-#include "meshcache.h"
-#include "particlemanager.h"
-#include "scene.h"
-#include "settings.h"
-#include "shadercache.h"
-#include "textmeshinstance.h"
-#include "textmeshbuilder.h"
-#include "texturecache.h"
-#include "timermanager.h"
-#include "window.h"
+#include <dukat/gamebase.h>
+#include <dukat/controller.h>
+#include <dukat/devicemanager.h>
+#include <dukat/keyboarddevice.h>
+#include <dukat/log.h>
+#include <dukat/manager.h>
+#include <dukat/meshcache.h>
+#include <dukat/particlemanager.h>
+#include <dukat/scene.h>
+#include <dukat/settings.h>
+#include <dukat/shadercache.h>
+#include <dukat/textmeshinstance.h>
+#include <dukat/textmeshbuilder.h>
+#include <dukat/texturecache.h>
+#include <dukat/timermanager.h>
+#include <dukat/window.h>
 
 namespace dukat
 {

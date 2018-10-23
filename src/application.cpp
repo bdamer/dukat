@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "application.h"
-#include "audiomanager.h"
-#include "log.h"
-#include "perfcounter.h"
-#include "sysutil.h"
-#include "window.h"
-#include "devicemanager.h"
-#include "keyboarddevice.h"
-#include "settings.h"
+#include <dukat/application.h>
+#include <dukat/audiomanager.h>
+#include <dukat/log.h>
+#include <dukat/perfcounter.h>
+#include <dukat/sysutil.h>
+#include <dukat/window.h>
+#include <dukat/devicemanager.h>
+#include <dukat/keyboarddevice.h>
+#include <dukat/settings.h>
 #include <ctime>
 
 namespace dukat

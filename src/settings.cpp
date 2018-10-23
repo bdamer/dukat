@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "settings.h"
-#include "log.h"
-#include "assetloader.h"
+#include <dukat/settings.h>
+#include <dukat/log.h>
+#include <dukat/assetloader.h>
 
 namespace dukat
 {
