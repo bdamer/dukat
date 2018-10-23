@@ -22,13 +22,13 @@ endif()
 add_library(dukat STATIC ${SOURCE_FILES})
 
 # Define archive dir
-set(archive_dir "${CMAKE_CURRENT_SOURCE_DIR}/../../lib")
+set(archive_dir "${CMAKE_CURRENT_SOURCE_DIR}/../lib")
 if(ANDROID)
-	set(target_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../..)
+	set(target_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../..)
 	set(archive_dir "${target_dir}/distribution/lib/${ANDROID_ABI}")
 	target_include_directories(dukat PRIVATE "${target_dir}/distribution/include")
 	# copy out public headers
-	file(GLOB MY_PUBLIC_HEADERS "*.h")
+	file(GLOB MY_PUBLIC_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/../include/dukat/*.h")
 	file(COPY ${MY_PUBLIC_HEADERS} DESTINATION "${target_dir}/distribution/include/dukat")
 endif()
 set_target_properties(dukat PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${archive_dir})

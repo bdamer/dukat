@@ -18,8 +18,10 @@
 #include "uimanager.h"
 
 // Audio
+#ifndef __ANDROID__
 #include "audiocache.h"
 #include "audiomanager.h"
+#endif
 
 // Input
 #include "controller.h"
