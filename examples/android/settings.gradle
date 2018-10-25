@@ -1,0 +1,4 @@
+include ':app'
+include ':external:dukat'
+include ':external:SDL2'
+include ':external:SDL2_image'
