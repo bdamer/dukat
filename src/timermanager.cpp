@@ -24,8 +24,13 @@ namespace dukat
 
     void TimerManager::update(float delta)
     {
+		const auto max_id = last_id;
         for (auto it = timers.begin(); it != timers.end(); )
         {
+			// only process timers up to current max during this frame
+			if ((*it)->id > max_id)
+				break;
+
             (*it)->remaining -= delta;
             // check if timer has expired
             if ((*it)->remaining <= 0.0f)
