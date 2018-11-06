@@ -21,6 +21,6 @@ namespace dukat
         // Checks if body intersects sphere.
         bool intersect_sphere(const Vector3& center, float radius) const;
         // Checkfs if body intersects ray. Will return the distance along intersection ray or no_intersection.
-        float intersect_ray(const Ray3& ray, float near, float far, Vector3* return_normal = nullptr) const;
+        float intersect_ray(const Ray3& ray, float near_z, float far_z, Vector3* return_normal = nullptr) const;
     };
 }

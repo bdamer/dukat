@@ -17,7 +17,7 @@ namespace dukat
         return dist > (radius + this->radius);
     }
 
-    float BoundingSphere::intersect_ray(const Ray3& ray, float near, float far, Vector3* return_normal) const
+    float BoundingSphere::intersect_ray(const Ray3& ray, float near_z, float far_z, Vector3* return_normal) const
     {
         auto a = ray.dir.mag2();
         auto b = 2.0f * (ray.dir.x * (ray.origin.x - center.x) + ray.dir.y * (ray.origin.y - center.y) + ray.dir.z * (ray.origin.z - center.z));
@@ -32,8 +32,8 @@ namespace dukat
         }
 
         // return point of intersection along ray.
-        auto t = (-b - sqrt(d)) / (2 * a);
-        if (t < near || t > far) 
+        auto t = (-b - std::sqrt(d)) / (2 * a);
+        if (t < near_z || t > far_z)
         {
             return no_intersection;
         }

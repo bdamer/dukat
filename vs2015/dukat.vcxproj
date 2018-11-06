@@ -149,6 +149,7 @@
     <ClInclude Include="..\include\dukat\assetloader.h" />
     <ClInclude Include="..\include\dukat\audiocache.h" />
     <ClInclude Include="..\include\dukat\audiomanager.h" />
+    <ClInclude Include="..\include\dukat\boundingcircle.h" />
     <ClInclude Include="..\include\dukat\box2dmanager.h" />
     <ClInclude Include="..\include\dukat\collision.h" />
     <ClInclude Include="..\include\dukat\collisionmanager2.h" />
@@ -274,6 +275,7 @@
     <ClCompile Include="..\src\assetloader.cpp" />
     <ClCompile Include="..\src\audiocache.cpp" />
     <ClCompile Include="..\src\audiomanager.cpp" />
+    <ClCompile Include="..\src\boundingcircle.cpp" />
     <ClCompile Include="..\src\box2dmanager.cpp" />
     <ClCompile Include="..\src\box2deffect2.cpp" />
     <ClCompile Include="..\src\collisionmanager2.cpp" />

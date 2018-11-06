@@ -5,6 +5,7 @@
 #include "transform2.h"
 #include "ray2.h"
 #include "collision.h"
+#include "boundingcircle.h"
 
 namespace dukat
 {
@@ -36,10 +37,12 @@ namespace dukat
 		// Containment / Intersection tests
 		bool empty(void) const;
 		bool overlaps(const AABB2& another) const;
+		bool overlaps(const BoundingBody2& another) const;
 		bool intersect(const AABB2& another, Collision& collision) const;
 		bool contains(const Vector2& p) const;
-		bool intersect_circle(const Vector2& center, float radius) const;
-		float intersect_ray(const Ray2& ray, float near, float far) const;
+		bool intersect_circle(const BoundingCircle& bc) const;
+		bool intersect_circle(const Vector2& center, float radius) const { return intersect_circle(BoundingCircle{ center, radius }); }
+		float intersect_ray(const Ray2& ray, float near_z, float far_z) const;
 		// Classifies box as being on one side or other other of a ray. 
 		// Will return < 0 if box is completely on the left side of the ray
 		// Will return > 0 if box is completely on the right side of the ray

@@ -55,6 +55,7 @@
 #include "aabb3.h"
 #include "boundingbody2.h"
 #include "boundingbody3.h"
+#include "boundingcircle.h"
 #include "boundingsphere.h"
 #ifndef __ANDROID__
 #include "box2dmanager.h"

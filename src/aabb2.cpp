@@ -14,6 +14,22 @@ namespace dukat
 		return true; // boxes overlap
 	}
 
+	bool AABB2::overlaps(const BoundingBody2& another) const
+	{
+		if (auto ptr = dynamic_cast<const AABB2*>(&another))
+		{
+			return overlaps(*ptr);
+		}
+		else if (auto ptr = dynamic_cast<const BoundingCircle*>(&another))
+		{
+			return intersect_circle(*ptr);
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
 	bool AABB2::intersect(const AABB2& another, Collision& collision) const
 	{
 		auto this_c = center();
@@ -50,10 +66,10 @@ namespace dukat
 			(p.y >= min.y) && (p.y <= max.y);
 	}
 
-	bool AABB2::intersect_circle(const Vector2& p, float radius) const
+	bool AABB2::intersect_circle(const BoundingCircle& bc) const
 	{
 		const auto center = this->center();
-		auto v = center - p;
+		auto v = center - bc.center;
 		const auto dist2_centers = v.mag2();
 
 		// compute inner & outer radius of bounding box
@@ -63,14 +79,14 @@ namespace dukat
 			std::swap(outer_rad, inner_rad);
 
 		// Case #1 - bb definitely outside of bb
-		if (dist2_centers > outer_rad + radius * radius)
+		if (dist2_centers > outer_rad + bc.radius * bc.radius)
 			return false;
 		// Case #2 - bb definitely inside of bb
-		if (dist2_centers < inner_rad + radius * radius)
+		if (dist2_centers < inner_rad + bc.radius * bc.radius)
 			return true;
 		// Case #3 - test point on circle on vector between centers
 		v.normalize();
-		return contains(center + v * radius);
+		return contains(center + v * bc.radius);
 	}
 
 	void AABB2::clear()
@@ -118,7 +134,7 @@ namespace dukat
 		add(t.pos + box.max.rotate(t.rot));
 	}
 
-	float AABB2::intersect_ray(const Ray2& ray, float near, float far) const 
+	float AABB2::intersect_ray(const Ray2& ray, float near_z, float far_z) const 
 	{
 		auto tmin = (min.x - ray.origin.x) / ray.dir.x;
 		auto tmax = (max.x - ray.origin.x) / ray.dir.x;
@@ -134,7 +150,7 @@ namespace dukat
 			tmin = tymin;
 		if (tymax < tmax)
 			tmax = tymax;
-		if ((tmin > far) || (tmax < near)) 
+		if ((tmin > far_z) || (tmax < near_z))
 			return no_intersection;
 		return tmin;
 	}

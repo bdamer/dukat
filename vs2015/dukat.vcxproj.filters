@@ -435,6 +435,9 @@
     <ClInclude Include="..\include\dukat\assetloader.h">
       <Filter>Header Files\system</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\boundingcircle.h">
+      <Filter>Header Files\collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -682,6 +685,9 @@
     </ClCompile>
     <ClCompile Include="..\src\assetloader.cpp">
       <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\boundingcircle.cpp">
+      <Filter>Source Files\collision</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
