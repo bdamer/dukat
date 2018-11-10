@@ -17,8 +17,8 @@ void main()
 {
 	// adjust view matrix for parallax:
 	mat4 view = u_cam_view;
-	view[3][0] *= u_parallax;
-	view[3][1] *= u_parallax;	
+	view[3][0] = floor(view[3][0] * u_parallax);
+	view[3][1] = floor(view[3][1] * u_parallax);
     gl_Position = u_cam_proj_orth * view * u_model * gl_Vertex;
 	gl_TexCoord[0].st = u_uvwh.xy + u_uvwh.zw * gl_MultiTexCoord0.st;
 }
