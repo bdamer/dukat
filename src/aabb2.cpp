@@ -7,10 +7,11 @@ namespace dukat
 {
 	bool AABB2::overlaps(const AABB2& another) const
 	{
-		if (max.x < another.min.x) return false; // a is left of b
-		if (min.x > another.max.x) return false; // a is right of b
-		if (max.y < another.min.y) return false; // a is above b
-		if (min.y > another.max.y) return false; // a is below b
+		// Using exclusive check so adjacent BBs don't overlap
+		if (max.x <= another.min.x) return false; // a is left of b
+		if (min.x >= another.max.x) return false; // a is right of b
+		if (max.y <= another.min.y) return false; // a is above b
+		if (min.y >= another.max.y) return false; // a is below b
 		return true; // boxes overlap
 	}
 
