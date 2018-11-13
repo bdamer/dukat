@@ -6,13 +6,14 @@
 
 #include "game2.h"
 #include "manager.h"
+#include "messenger.h"
 #include "quadtree.h"
 
 namespace dukat
 {
 	class DebugEffect2;
 
-	class CollisionManager2 : public Manager
+	class CollisionManager2 : public Manager, public Messenger
 	{
 	public:	
 		struct Body

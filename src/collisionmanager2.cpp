@@ -19,7 +19,9 @@ namespace dukat
 		auto body = std::make_unique<Body>(last_id++);
 		body->dynamic = dynamic;
 		bodies.push_back(std::move(body));
-		return bodies.back().get();
+		auto ptr = bodies.back().get();
+		trigger(Message{ Events::BodyCreated, ptr, nullptr });
+		return ptr;
 	}
 
 	void CollisionManager2::destroy_body(Body* body)
@@ -39,6 +41,7 @@ namespace dukat
 			[body](const std::unique_ptr<Body>& b) { return body == b.get(); });
 		if (it != bodies.end())
 		{
+			trigger(Message{ Events::BodyDestroyed, (*it).get(), nullptr });
 			bodies.erase(it);
 		}
 	}

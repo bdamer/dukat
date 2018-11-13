@@ -44,6 +44,12 @@ namespace dukat
 		// Indicates that a collision was resolved.
 		// param1: Vector2* direction of resolution.
 		static constexpr Event CollisionResolve = 22; 
+		// Indicates that a collision body was created.
+		// param1: Body* collision body
+		static constexpr Event BodyCreated = 23;
+		// Indicates that a collision body was destroyed.
+		// param1: Body* collision body
+		static constexpr Event BodyDestroyed = 24;
 		// catch-all to allow subscription to all supported events
 		// TODO: review - I don't like the hard-coded max ID here
 		static constexpr Event Any = 64;
