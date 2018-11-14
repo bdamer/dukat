@@ -24,6 +24,13 @@ namespace dukat
 		mapping[VirtualButton::Debug4] = settings.get_int("input.keyboard.debug4", SDL_SCANCODE_F4);
 		mapping[VirtualButton::Select] = SDL_SCANCODE_ESCAPE;
 		mapping[VirtualButton::Start] = SDL_SCANCODE_RETURN;
+		// Initialize default key bindings
+		key_left = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.left", SDL_SCANCODE_A));
+		key_right = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.right", SDL_SCANCODE_D));
+		key_up = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.up", SDL_SCANCODE_W));
+		key_down = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.down", SDL_SCANCODE_S));
+		key_lt = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.lt", SDL_SCANCODE_TAB));
+		key_rt = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.rt", SDL_SCANCODE_SPACE));
 		keystate = SDL_GetKeyboardState(&num_keys);
 	}
 
@@ -38,13 +45,14 @@ namespace dukat
 		SDL_PumpEvents();
 
 		// Handle direction keys
-		lx = keystate[SDL_SCANCODE_A] ? -1.0f :
-			(keystate[SDL_SCANCODE_D] ? 1.0f : 0.0f);
-		ly = keystate[SDL_SCANCODE_W] ? 1.0f :
-			(keystate[SDL_SCANCODE_S] ? -1.0f : 0.0f);
+		lx = keystate[key_left] ? -1.0f :
+			(keystate[key_right] ? 1.0f : 0.0f);
+		ly = keystate[key_up] ? 1.0f :
+			(keystate[key_down] ? -1.0f : 0.0f);
 
 		// Handle trigger keys
-		lt = keystate[SDL_SCANCODE_TAB] ? 1.0f : 0.0f;
+		lt = keystate[key_lt] ? 1.0f : 0.0f;
+		rt = keystate[key_rt] ? 1.0f : 0.0f;
 
 		// Right axis comes from mouse cursor
 		int rel_x, rel_y;
