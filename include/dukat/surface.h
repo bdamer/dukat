@@ -7,6 +7,8 @@ namespace dukat
 {
 	class Vector2;
 
+	extern SDL_Color SDL_MapColor(SDL_PixelFormat* fmt, Uint32 p);
+
 	/**
 	 * Wrapper for a 32-bit SDL surface.
 	 */
@@ -40,10 +42,9 @@ namespace dukat
 		inline void set_pixel(int x, int y, Uint32 color) { if (y < 0 || y >= surface->h || x < 0 || x >= surface->w) return; ((Uint32*)surface->pixels)[y * surface->w + x] = color; }
 		inline void set_pixel(int x, int y, const SDL_Color& color) { if (y < 0 || y >= surface->h || x < 0 || x >= surface->w) return; ((Uint32*)surface->pixels)[y * surface->w + x] = SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a); }
 		inline void set_pixel(int x, int y, const Color& color) { if (y < 0 || y >= surface->h || x < 0 || x >= surface->w) return; ((Uint32*)surface->pixels)[y * surface->w + x] = SDL_MapRGBA(surface->format, (Uint8)(255.0f * color.r), (Uint8)(255.0f * color.g), (Uint8)(255.0f * color.b), (Uint8)(255.0f * color.a)); }
-
 		// Gets a color for a pixel.
 		Uint32 get_pixel(int x, int y) const;
-		SDL_Color get_color_at(int x, int y) const;
+		SDL_Color get_color_at(int x, int y) const { return SDL_MapColor(surface->format, get_pixel(x, y)); }
 		inline Uint32 color(Uint8 r, Uint8 g, Uint8 b, Uint8 a=0xff) const { return SDL_MapRGBA(surface->format, r, g, b, a); }
 		inline Uint32 color(const SDL_Color& color) const { return SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a); }
 
@@ -62,5 +63,7 @@ namespace dukat
 		void fill_circle(int x0, int y0, int radius, Uint32 color);
 		void fill_rect(int x, int y, int width, int height, Uint32 color);
 		void fill(Uint32 color);
+		// Applies a transformation to each pixel of the surface. Only supports 32 bit surfaces.
+		void apply(const std::function<void(int x, int y, SDL_Surface* s, uint32_t* p)>& f);
 	};
 }

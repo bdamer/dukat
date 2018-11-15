@@ -5,6 +5,37 @@
 
 namespace dukat
 {
+	SDL_Color SDL_MapColor(SDL_PixelFormat* fmt, Uint32 pixel)
+	{
+		Uint32 temp;
+		SDL_Color result;
+
+		// Get Red component
+		temp = pixel & fmt->Rmask;	// Isolate red component
+		temp = temp >> fmt->Rshift;	// Shift it down to 8-bit
+		temp = temp << fmt->Rloss;	// Expand to a full 8-bit number
+		result.r = (Uint8)temp;
+
+		// Get Green component
+		temp = pixel & fmt->Gmask;	// Isolate green component
+		temp = temp >> fmt->Gshift;	// Shift it down to 8-bit
+		temp = temp << fmt->Gloss;	// Expand to a full 8-bit number
+		result.g = (Uint8)temp;
+
+		// Get Blue component
+		temp = pixel & fmt->Bmask;	// Isolate blue component
+		temp = temp >> fmt->Bshift;	// Shift it down to 8-bit
+		temp = temp << fmt->Bloss;	// Expand to a full 8-bit number
+		result.b = (Uint8)temp;
+
+		// Get Alpha component
+		temp = pixel & fmt->Amask;	// Isolate alpha component
+		temp = temp >> fmt->Ashift;	// Shift it down to 8-bit 
+		temp = temp << fmt->Aloss;	// Expand to a full 8-bit number 
+		result.a = (Uint8)temp;
+		return result;
+	}
+
 	Surface::Surface(int width, int height, Uint32 format)
 	{
 		int bpp;
@@ -93,39 +124,6 @@ namespace dukat
 		default:
 			return 0;       // shouldn't happen, but avoids warnings
 		}
-	}
-
-	SDL_Color Surface::get_color_at(int x, int y) const
-	{
-		Uint32 temp;
-		SDL_Color result;
-		SDL_PixelFormat *fmt = surface->format;
-		Uint32 pixel = get_pixel(x, y);
-
-		// Get Red component
-		temp = pixel & fmt->Rmask;	// Isolate red component
-		temp = temp >> fmt->Rshift;	// Shift it down to 8-bit
-		temp = temp << fmt->Rloss;	// Expand to a full 8-bit number
-		result.r = (Uint8)temp;
-
-		// Get Green component
-		temp = pixel & fmt->Gmask;	// Isolate green component
-		temp = temp >> fmt->Gshift;	// Shift it down to 8-bit
-		temp = temp << fmt->Gloss;	// Expand to a full 8-bit number
-		result.g = (Uint8)temp;
-
-		// Get Blue component
-		temp = pixel & fmt->Bmask;	// Isolate blue component
-		temp = temp >> fmt->Bshift;	// Shift it down to 8-bit
-		temp = temp << fmt->Bloss;	// Expand to a full 8-bit number
-		result.b = (Uint8)temp;
-
-		// Get Alpha component
-		temp = pixel & fmt->Amask;	// Isolate alpha component
-		temp = temp >> fmt->Ashift;	// Shift it down to 8-bit 
-		temp = temp << fmt->Aloss;	// Expand to a full 8-bit number 
-		result.a = (Uint8)temp;
-		return result;
 	}
 
 	void Surface::draw_line(int x0, int y0, int x1, int y1, Uint32 color)
@@ -320,5 +318,17 @@ namespace dukat
 	{
 		auto res = IMG_SavePNG(surface, filename.c_str());
 		sdl_check_result(res, "Save surface");
+	}
+
+	void Surface::apply(const std::function<void(int x, int y, SDL_Surface* s, uint32_t* p)>& f)
+	{
+		auto ptr = static_cast<uint32_t*>(surface->pixels);
+		for (auto y = 0; y < surface->h; y++)
+		{
+			for (auto x = 0; x < surface->w; x++)
+			{
+				f(x, y, surface, ptr++);
+			}
+		}
 	}
 }
