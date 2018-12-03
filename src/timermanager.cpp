@@ -3,55 +3,92 @@
 
 namespace dukat
 {
-    Timer* TimerManager::create_timer(float interval, std::function<void(void)> callback, bool recurring)
+	void TimerManager::allocate_timers(void)
+	{
+		auto old_size = timers.size();
+		auto new_size = old_size + allocation_count;
+		timers.resize(new_size);
+		for (auto i = old_size; i < new_size; i++)
+		{
+			auto timer = std::make_unique<Timer>();
+			timer->id = i;
+			timer->generation = generation;
+			timers[i] = std::move(timer);
+		}
+	}
+
+	Timer* TimerManager::create_timer(float interval, std::function<void(void)> callback, bool recurring)
     {
-        auto timer = std::make_unique<Timer>(++last_id, interval, callback, recurring);
-        auto res = timer.get();
-        timers.push_back(std::move(timer));
-		return res;
+		// Find unused timer
+		Timer* t = nullptr;
+		for (auto it = timers.begin(); it != timers.end(); ++it)
+		{
+			if (!(*it)->alive)
+			{
+				t = (*it).get();
+				break;
+			}
+		}
+
+		// no timers available, so allocate more
+		if (t == nullptr)
+		{
+			auto offset = timers.size();
+			allocate_timers();
+			t = timers[offset].get();
+		}
+
+		// initialize timer
+		t->alive = true;
+		t->callback = callback;
+		t->generation = generation;
+		t->interval = interval;
+		t->recurring = recurring;
+		t->runtime = 0.0f;
+		return t;
     }
     
     void TimerManager::cancel_timer(Timer* timer)
     {
-        auto it = std::find_if(timers.begin(), timers.end(), [timer](const std::unique_ptr<Timer>& ptr) {
-            return ptr.get() == timer;
-        });
-        if (it != timers.end())
-        {
-            timers.erase(it);
-        }
+		if (timer != nullptr)
+		{
+			timer->alive = false;
+		}
     }
 
     void TimerManager::update(float delta)
     {
-		const auto max_id = last_id;
-        for (auto it = timers.begin(); it != timers.end(); )
-        {
-			// only process timers up to current max during this frame
-			if ((*it)->id > max_id)
-				break;
+		generation++;
 
-            (*it)->remaining -= delta;
+		for (auto it = timers.begin(); it != timers.end(); ++it)
+		{
+			auto& t = (*it);
+			// only process live timers
+			if (!t->alive)
+				continue;
+			// only process timers that have been created before this frame
+			if (t->generation == generation)
+				continue;
+
+            t->runtime += delta;
             // check if timer has expired
-            if ((*it)->remaining <= 0.0f)
+            if (t->runtime >= t->interval)
             {
-                if ((*it)->callback)
+                if (t->callback)
                 {
-                    (*it)->callback();
+                    t->callback();
                 }
 
-                if ((*it)->recurring)
+                if (t->recurring)
                 {
-                    (*it)->remaining = (*it)->interval;
+					// reset timer, accounting for any time over interval
+                    t->runtime = t->runtime - t->interval;
                 }
                 else
                 {
-                    it = timers.erase(it);
-                    continue;
+					t->alive = false;
                 }
             }
-
-            ++it;
         }
     }
 }
