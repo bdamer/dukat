@@ -40,19 +40,21 @@ namespace dukat
 	inline Color color_rgb(int rgb)
 	{
 		return Color { 
-			(float)((rgb >> 16) % 256) / 255.0f, 
-			(float)((rgb >> 8) % 256) / 255.0f, 
-			(float)(rgb % 256) / 255.0f, 
-			1.0f };
+			static_cast<float>((rgb >> 24) & 0xff) / 255.0f,
+			static_cast<float>((rgb >> 16) & 0xff) / 255.0f,
+			static_cast<float>((rgb >> 8) & 0xff) / 255.0f,
+			1.0f 
+		};
 	}
 
 	// Creates color from RGBA hex representation.
-	inline Color color_rgba(int rgba) 
+	inline Color color_rgba(uint32_t rgba) 
 	{
-		return Color { 
-			(float)((rgba >> 24) % 256) / 255.0f, 
-			(float)((rgba >> 16) % 256) / 255.0f, 
-			(float)((rgba >> 8) % 256) / 255.0f, 
-			(float)(rgba % 256) / 255.0f };
+		return Color{
+			static_cast<float>((rgba >> 24) & 0xff) / 255.0f,
+			static_cast<float>((rgba >> 16) & 0xff) / 255.0f,
+			static_cast<float>((rgba >> 8) & 0xff) / 255.0f,
+			static_cast<float>((rgba) & 0xff) / 255.0f
+		};
 	}
 }
