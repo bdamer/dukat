@@ -97,7 +97,7 @@ namespace dukat
 		glGetIntegerv(GL_VIEWPORT, viewport);
 		Surface surface(viewport[2], viewport[3], SDL_PIXELFORMAT_RGB24);
 		glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, surface.get_surface()->pixels);
-		surface.flip_horizontal();
+		surface.flip_vertical();
 		surface.save_to_file(filename);
 	}
 
