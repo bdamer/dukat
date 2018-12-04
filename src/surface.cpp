@@ -255,7 +255,7 @@ namespace dukat
 		surface = tmp;
 	}
 
-	void Surface::flip_horizontal(void)
+	void Surface::flip_vertical(void)
 	{
 		Uint8* top = (Uint8*)surface->pixels;
 		Uint8* bottom = ((Uint8*)surface->pixels) + surface->pitch * (surface->h - 1);
@@ -271,7 +271,7 @@ namespace dukat
 		}
 	}
 
-	void Surface::flip_vertical(void)
+	void Surface::flip_horizontal(void)
 	{
 		Uint8 bpp = surface->format->BytesPerPixel;
 		for (int row = 0; row < surface->h; row++)
