@@ -20,9 +20,10 @@ namespace dukat
 	class CollisionScene : public Scene2, public Controller
 	{
 	private:
-		static constexpr int window_width = 1280;
-		static constexpr int window_height = 720;
-		static constexpr float max_speed = 50.0f;
+		static constexpr auto window_width = 1280;
+		static constexpr auto window_height = 720;
+		static constexpr auto max_speed = 50.0f;
+		static constexpr auto wall_size = 16.0f;
 		Vector2 screen_dim;
 
 		RenderLayer2* main_layer;
@@ -36,6 +37,7 @@ namespace dukat
 
 		void remove_object(void);
 		void add_object(void);
+		void update_objects(float delta);
 
 	public:
 		CollisionScene(Game2* game);

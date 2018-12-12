@@ -32,13 +32,13 @@ namespace dukat
 
 		// Add walls:
 		auto wall = cm->create_body(false); // north
-		wall->bb = AABB2{ -screen_dim, Vector2{ screen_dim.x, -screen_dim.y + 16.0f } };
+		wall->bb = AABB2{ -screen_dim, Vector2{ screen_dim.x, -screen_dim.y + wall_size } };
 		wall = cm->create_body(false); // east
-		wall->bb = AABB2{ Vector2{ screen_dim.x - 16.0f, -screen_dim.y + 16.0f }, Vector2{ screen_dim.x, screen_dim.y - 16.0f } };
+		wall->bb = AABB2{ Vector2{ screen_dim.x - wall_size, -screen_dim.y + wall_size }, Vector2{ screen_dim.x, screen_dim.y - wall_size } };
 		wall = cm->create_body(false); // south
-		wall->bb = AABB2{ Vector2{ -screen_dim.x, screen_dim.y - 16.0f }, Vector2{ screen_dim.x, screen_dim.y } };
+		wall->bb = AABB2{ Vector2{ -screen_dim.x, screen_dim.y - wall_size }, Vector2{ screen_dim.x, screen_dim.y } };
 		wall = cm->create_body(false); // west
-		wall->bb = AABB2{ Vector2{ -screen_dim.x, -screen_dim.y + 16.0f }, Vector2{ -screen_dim.x + 16.0f, screen_dim.y - 16.0f } };
+		wall->bb = AABB2{ Vector2{ -screen_dim.x, -screen_dim.y + wall_size }, Vector2{ -screen_dim.x + wall_size, screen_dim.y - wall_size } };
 
 		// Add some objects
 		for (auto i = 0; i < 50; i++)
@@ -116,6 +116,12 @@ namespace dukat
 		case SDLK_SPACE:
 			animate = !animate;
 			break;
+		case SDLK_COMMA:
+			update_objects(-1.0f / 60.0f);
+			break;
+		case SDLK_PERIOD:
+			update_objects(1.0f / 60.0f);
+			break;
 
 		case SDLK_g:
 			show_grid = !show_grid;
@@ -143,12 +149,22 @@ namespace dukat
 	void CollisionScene::add_object(void)
 	{
 		auto dir = Vector2{ randf(-max_speed, max_speed), randf(-max_speed, max_speed) };
-		auto pos = Vector2::random(-screen_dim, screen_dim);
 		auto size = randf(10.0f, 20.0f);
+		auto seed_pos = screen_dim - Vector2{ wall_size + 0.5f * size, wall_size + 0.5f * size };
+		auto pos = Vector2::random(-seed_pos, seed_pos);
 		auto body = game->get<CollisionManager2>()->create_body();
 		body->bb.min = pos - Vector2{ size, size };
 		body->bb.max = pos + Vector2{ size, size };
 		objects.push_back(std::make_unique<GameObject>(dir, body));
+	}
+
+	void CollisionScene::update_objects(float delta)
+	{
+		for (auto& o : objects)
+		{
+			o->body->bb.min += o->dir * delta;
+			o->body->bb.max += o->dir * delta;
+		}
 	}
 
 	void CollisionScene::update(float delta)
@@ -158,13 +174,7 @@ namespace dukat
 		cursor->p.y = dev->rya - screen_dim.y;
 
 		if (animate)
-		{
-			for (auto& o : objects)
-			{
-				o->body->bb.min += o->dir * delta;
-				o->body->bb.max += o->dir * delta;
-			}
-		}
+			update_objects(delta);
 
 		Scene2::update(delta);
 	}
@@ -185,11 +195,14 @@ namespace dukat
 		switch (msg.event)
 		{
 		case Events::CollisionBegin:
+		{
 			auto other_body = static_cast<const CollisionManager2::Body*>(msg.param1);
 			auto collision = static_cast<const Collision*>(msg.param2);
 			if (body->dynamic && body->solid && other_body->solid)
 			{
-				if (collision->normal.x != 0.0f)
+				auto nx = std::abs(collision->normal.x);
+				auto ny = std::abs(collision->normal.y);
+				if (nx > ny)
 				{
 					dir.x = -dir.x;
 				}
@@ -199,6 +212,7 @@ namespace dukat
 				}
 			}
 			break;
+		}
 		}
 	}
 }
