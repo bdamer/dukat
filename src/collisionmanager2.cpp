@@ -144,6 +144,7 @@ namespace dukat
 						auto& old_contact = contacts[id];
 						old_contact.generation = generation;
 						old_contact.collision = c.collision;
+						old_contact.age++;
 					}
 					// Otherwise, create a new contact
 					else
@@ -151,6 +152,7 @@ namespace dukat
 						c.body1 = this_body;
 						c.body2 = other_body;
 						c.generation = generation;
+						c.age = 0;
 						contacts[id] = c;
 
 						if (c.body1->owner != nullptr)

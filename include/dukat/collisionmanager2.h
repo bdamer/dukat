@@ -34,6 +34,7 @@ namespace dukat
 			Body* body2;
 			Collision collision;
 			uint8_t generation;
+			uint32_t age;
 		};
 
 	private:
