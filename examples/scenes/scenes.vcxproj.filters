@@ -16,9 +16,6 @@
     <ClCompile Include="titlescene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textbutton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dialogscene.h">
@@ -34,9 +31,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="textbutton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

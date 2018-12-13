@@ -13,7 +13,7 @@
 namespace dukat
 {
 	Application::Application(Settings& settings)
-		: title(settings.get_string("window.title")), runtime(0.0f), paused(false), done(false), settings(settings)
+		: title(settings.get_string("window.title")), runtime(0.0f), paused(false), done(false), last_update(0), settings(settings)
 	{
 		init_logging(settings);
 		log->info("Initializing application.");
@@ -52,7 +52,7 @@ namespace dukat
 	int Application::run(void)
 	{
 		log->debug("Entering application loop.");
-		Uint32 ticks, last_update = 0, last_frame = 0;
+		uint32_t ticks, last_frame = 0;
 		SDL_Event e;
 		while (!done)
 		{
@@ -61,7 +61,7 @@ namespace dukat
 			device_manager->update();
 			if (!paused)
 			{
-				auto delta = ((float)(ticks - last_update)) / 1000.0f;
+				auto delta = static_cast<float>(ticks - last_update) / 1000.0f;
 				runtime += delta;
 				update(delta);
 			}

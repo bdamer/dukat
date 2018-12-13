@@ -14,13 +14,20 @@ namespace dukat
 	class Application : public Messenger
 	{
 	private:
+		// Window title
 		const std::string title;
+		// Most recent FPS value
 		int last_fps;
-		float runtime; // time since program start in seconds
+		// time since program start in seconds
+		float runtime;
+		// If true, will not execute updates
 		bool paused;
+		// If true, will exit application
 		bool done;
 
 	protected:
+		// Ticks of last update
+		uint32_t last_update;
 		Settings& settings;
 		std::unique_ptr<Window> window;
 #ifndef __ANDROID__

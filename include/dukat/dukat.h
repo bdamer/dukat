@@ -14,6 +14,9 @@
 #include "recipient.h"
 #include "scene.h"
 #include "scene2.h"
+
+// UI
+#include "textbutton.h"
 #include "uicontrol.h"
 #include "uimanager.h"
 

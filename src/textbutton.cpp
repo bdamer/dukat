@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "textbutton.h"
+#include <dukat/textbutton.h>
+#include <dukat/textmeshinstance.h>
 
 namespace dukat
 {

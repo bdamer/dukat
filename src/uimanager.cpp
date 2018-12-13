@@ -43,9 +43,28 @@ namespace dukat
 		return false;
 	}
 
+	void UIManager::first_control(void)
+	{
+		if (controls.empty())
+			return;
+		auto it = std::find_if(controls.begin(), controls.end(),
+			[](UIControl* c) { return c->is_enabled() && c->get_index() >= 0; });
+		if (it != controls.end())
+		{
+			if (focus != nullptr)
+			{
+				focus->set_focus(false);
+			}
+			focus = *it;
+			focus->set_focus(true);
+		}
+	}
+
 	// search for previous element starting from current focus
 	void UIManager::prev_control(void)
 	{
+		if (controls.empty())
+			return;
 		auto it = (focus == nullptr) ? controls.rbegin() :
 			std::find(controls.rbegin(), controls.rend(), focus);
 		if (*it == focus)
@@ -68,6 +87,8 @@ namespace dukat
 	// search for next element starting from current focus
 	void UIManager::next_control(void)
 	{
+		if (controls.empty())
+			return;
 		auto it = (focus == nullptr) ? controls.begin() : 
 			std::find(controls.begin(), controls.end(), focus);
 		if (*it == focus)

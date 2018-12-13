@@ -18,6 +18,9 @@ namespace dukat
     class Recipient
     {
     public:
+		Recipient(void) { }
+		virtual ~Recipient(void) { }
+
         virtual void receive(const Message& msg) = 0;
     };
 }

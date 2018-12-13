@@ -26,6 +26,7 @@ namespace dukat
 		// a control was triggered.
 		bool handle_click(const Vector2& pos);
 		// Changes control in focus.
+		void first_control(void);
 		void prev_control(void);
 		void next_control(void);
 		// Triggers click on control in focus, if any.

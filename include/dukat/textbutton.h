@@ -1,10 +1,12 @@
 #pragma once
 
 #include <functional>
-#include <dukat/dukat.h>
+#include "uicontrol.h"
 
 namespace dukat
 {
+	class TextMeshInstance;
+
 	class TextButton : public UIControl
 	{
 	private:

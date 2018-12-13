@@ -109,6 +109,8 @@ namespace dukat
 		auto scene = scenes.at(id).get();
 		scene_stack.push(scene);
 		scene->activate();
+		// Reset last update whenever scene changes.
+		last_update = SDL_GetTicks();
 	}
 
 	void GameBase::pop_scene(void)
@@ -120,6 +122,8 @@ namespace dukat
 			if (!scene_stack.empty())
 			{
 				scene_stack.top()->activate();
+				// Reset last update whenever scene changes.
+				last_update = SDL_GetTicks();
 			}
 		}
 	}

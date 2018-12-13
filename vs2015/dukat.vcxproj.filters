@@ -79,6 +79,12 @@
     <Filter Include="Source Files\audio">
       <UniqueIdentifier>{75f21753-fa1e-4e69-b8f4-bdef6a1954d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ui">
+      <UniqueIdentifier>{84d6480c-45c2-4b29-9828-09c64f8a6be3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui">
+      <UniqueIdentifier>{51c3a3f8-28e6-4964-94fe-d679234b383e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\dukat\stdafx.h">
@@ -315,12 +321,6 @@
     <ClInclude Include="..\include\dukat\scene2.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\dukat\uicontrol.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\dukat\uimanager.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\dukat\effectpass.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
@@ -437,6 +437,15 @@
     </ClInclude>
     <ClInclude Include="..\include\dukat\boundingcircle.h">
       <Filter>Header Files\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\uimanager.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\uicontrol.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\textbutton.h">
+      <Filter>Header Files\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -602,9 +611,6 @@
     <ClCompile Include="..\src\scene2.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\uimanager.cpp">
-      <Filter>Source Files\engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\effectpass.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
@@ -688,6 +694,12 @@
     </ClCompile>
     <ClCompile Include="..\src\boundingcircle.cpp">
       <Filter>Source Files\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\uimanager.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textbutton.cpp">
+      <Filter>Source Files\ui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

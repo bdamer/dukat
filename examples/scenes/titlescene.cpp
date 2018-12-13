@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "titlescene.h"
-#include "textbutton.h"
 #include <dukat/dukat.h>
 
 namespace dukat
@@ -64,6 +63,7 @@ namespace dukat
 		game->get<UIManager>()->add_control(start_button.get());
 		game->get<UIManager>()->add_control(options_button.get());
 		game->get<UIManager>()->add_control(quit_button.get());
+		game->get<UIManager>()->first_control();
 	}
 
 	void TitleScene::deactivate(void)
