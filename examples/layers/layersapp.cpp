@@ -46,7 +46,6 @@ namespace dukat
 
 		// Load sprites
 		water_sprite = std::make_unique<Sprite>(game->get_textures()->get("white.png"));
-		water_sprite->center = Sprite::align_center;
 		water_sprite->w = 60;
 		water_sprite->h = 60;
 		water_sprite->z = 20;
@@ -54,11 +53,11 @@ namespace dukat
 		bg_layer->add(water_sprite.get());
 
 		player_sprite = std::make_unique<Sprite>(game->get_textures()->get("lobber.png"));
-		player_sprite->center = Sprite::align_bottom;
+		player_sprite->flags |= Sprite::align_bottom;
 		scene_layer->add(player_sprite.get());
 
 		barrel_sprite = std::make_unique<Sprite>(game->get_textures()->get("barrel16.png"));
-		barrel_sprite->center = Sprite::align_bottom;
+		barrel_sprite->flags |= Sprite::align_bottom;
 		scene_layer->add(barrel_sprite.get());
 
 		// Set up info text

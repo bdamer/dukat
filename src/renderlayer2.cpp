@@ -123,10 +123,10 @@ namespace dukat
 		// Fill queue with sprites ordered by priority from low to high
 		for (auto sprite : sprites)
 		{
-			if (sprite->relative)
+			if (Sprite::relative == (sprite->flags & Sprite::relative))
 			{
 				// TODO: perform occlusion check against untranslated camera bounding box
-				sprite->rendered = true;
+				sprite->flags |= Sprite::rendered;
 				queue.push(sprite);
 				perfc.inc(PerformanceCounter::SPRITES);
 			}
@@ -136,24 +136,25 @@ namespace dukat
 				auto min_p = sprite->p - half_dim;
 				auto max_p = sprite->p + half_dim;
 
-				if (sprite->center > 0)
+				const auto center = sprite->flags & (Sprite::align_bottom | Sprite::align_left | Sprite::align_right | Sprite::align_top);
+				if (center > 0)
 				{
-					if ((sprite->center & Sprite::align_bottom) == Sprite::align_bottom)
+					if ((center & Sprite::align_bottom) == Sprite::align_bottom)
 					{
 						min_p.y -= (sprite->h / 2) * sprite->scale;
 						max_p.y -= (sprite->h / 2) * sprite->scale;
 					}
-					else if ((sprite->center & Sprite::align_top) == Sprite::align_top)
+					else if ((center & Sprite::align_top) == Sprite::align_top)
 					{
 						min_p.y += (sprite->h / 2) * sprite->scale;
 						max_p.y += (sprite->h / 2) * sprite->scale;
 					}
-					if ((sprite->center & Sprite::align_right) == Sprite::align_right)
+					if ((center & Sprite::align_right) == Sprite::align_right)
 					{
 						min_p.x -= (sprite->w / 2) * sprite->scale;
 						max_p.x -= (sprite->w / 2) * sprite->scale;
 					}
-					else if ((sprite->center & Sprite::align_left) == Sprite::align_left)
+					else if ((center & Sprite::align_left) == Sprite::align_left)
 					{
 						min_p.x += (sprite->w / 2) * sprite->scale;
 						max_p.x += (sprite->w / 2) * sprite->scale;
@@ -163,11 +164,11 @@ namespace dukat
 				AABB2 sprite_bb(min_p, max_p);
 				if (!camera_bb.overlaps(sprite_bb))
 				{
-					sprite->rendered = false;
+					sprite->flags &= ~Sprite::rendered;
 				}
 				else
 				{
-					sprite->rendered = true;
+					sprite->flags |= Sprite::rendered;
 					queue.push(sprite);
 					perfc.inc(PerformanceCounter::SPRITES);
 				}
@@ -271,21 +272,22 @@ namespace dukat
 		Vector2 pos = sprite.p;
 
 		// adjust position based on alignment
-		if (sprite.center > 0)
+		const auto center = sprite.flags & (Sprite::align_bottom | Sprite::align_left | Sprite::align_right | Sprite::align_top);
+		if (center > 0)
 		{
-			if ((sprite.center & Sprite::align_bottom) == Sprite::align_bottom)
+			if ((center & Sprite::align_bottom) == Sprite::align_bottom)
 			{
 				pos.y -= (sprite.h / 2) * sprite.scale;
 			}
-			else if ((sprite.center & Sprite::align_top) == Sprite::align_top)
+			else if ((center & Sprite::align_top) == Sprite::align_top)
 			{
 				pos.y += (sprite.h / 2) * sprite.scale;
 			}
-			if ((sprite.center & Sprite::align_right) == Sprite::align_right)
+			if ((center & Sprite::align_right) == Sprite::align_right)
 			{
 				pos.x -= (sprite.w / 2) * sprite.scale;
 			}
-			else if ((sprite.center & Sprite::align_left) == Sprite::align_left)
+			else if ((center & Sprite::align_left) == Sprite::align_left)
 			{
 				pos.x += (sprite.w / 2) * sprite.scale;
 			}
@@ -293,12 +295,12 @@ namespace dukat
 
 		// if we're in relative addressing mode, transpose sprite
 		// position by camera position.
-		if (sprite.relative)
+		if (Sprite::relative == (sprite.flags & Sprite::relative))
 		{
 			pos += camera_position;
 		}
 
-		if (sprite.pixel_aligned)
+		if (Sprite::pixel_perfect == (sprite.flags & Sprite::pixel_perfect))
 		{
 			pos.x = std::round(pos.x);
 			pos.y = std::round(pos.y);

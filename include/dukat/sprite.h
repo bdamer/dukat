@@ -12,15 +12,20 @@ namespace dukat
 
 	struct Sprite
 	{
-		typedef Uint8 Alignment;
-		static constexpr Alignment align_center = 0;
-		static constexpr Alignment align_bottom = 1;
-		static constexpr Alignment align_right = 2;
-		static constexpr Alignment align_top = 4;
-		static constexpr Alignment align_left = 8;
+		enum Flags
+		{
+			align_bottom = 1,	// alignment
+			align_right = 2,
+			align_top = 4,
+			align_left = 8,
+			pixel_perfect = 16, // if set, will round position to nearest pixel
+			relative = 32,		// if set, will interpret position relative to camera
+			rendered = 64		// set if sprite was rendered during last frame
+		};
 
-		const int COLS, ROWS;
-		// Position
+		// Number of columns and rows in this sprite
+		const int cols, rows;
+		// Position on screen
 		Vector2 p;
 		// Rendering priority
 		GLfloat z;
@@ -28,8 +33,6 @@ namespace dukat
 		int w, h;
 		// Texture coordinates
 		GLfloat tex[4];
-		// Sprite Alignment
-		Alignment center;
 		// Scaling factor
 		GLfloat scale;
 		GLfloat rot;
@@ -39,16 +42,12 @@ namespace dukat
 		TextureId normal_id;
 		// current index for sprite map.
 		int index;
-		// If true will align sprite to pixel boundaries.
-		bool pixel_aligned;
-		// If true will interpret position relative to camera.
-		bool relative;
-		// True if sprite was rendered during last frame
-		bool rendered;
+		// Sprite flags
+		uint8_t flags;
 
 		// Default constructor
-		Sprite(void) : COLS(1), ROWS(1), p(0, 0), z(0), w(0), h(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-			texture_id(0), normal_id(0), index(0), pixel_aligned(false), relative(false) { }
+		Sprite(void) : cols(1), rows(1), p(0, 0), z(0), w(0), h(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+			texture_id(0), normal_id(0), index(0), flags(0) { }
 		// Creates a sprite with the full size of the texture
 		Sprite(Texture* texture);
 		// Creates a sprite from a texture with the dimensions specified by r (in pixels)

@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-	const int num_boids = 500;
+	const int num_boids = 1;
 
 	FlockingScene::FlockingScene(Game2* game2) : Scene2(game2)
 	{
@@ -24,7 +24,7 @@ namespace dukat
 		// Add cursor
 		auto texture = game->get_textures()->get("cursor32.png");
 		cursor = std::make_unique<Sprite>(texture);
-		cursor->center = Sprite::align_left | Sprite::align_top;
+		cursor->flags = Sprite::align_left | Sprite::align_top | Sprite::relative;
 		main_layer->add(cursor.get());
 
 		// Create some boids
@@ -118,8 +118,8 @@ namespace dukat
 		auto dev = game->get_devices()->active;
 		Vector2 input(dev->lx, -dev->ly);
 
-		cursor->p.x = dev->rxa;
-		cursor->p.y = dev->rya;
+		cursor->p.x = dev->rxa - 0.5f * window_width;
+		cursor->p.y = dev->rya - 0.5f * window_height;
 
 		std::for_each(boids.begin(), boids.end(), [&](Boid& b) { b.update(boids);  });
 		

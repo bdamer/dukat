@@ -10,8 +10,8 @@
 
 namespace dukat
 {
-	Sprite::Sprite(Texture* texture) : COLS(1), ROWS(1), p(0, 0), z(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-		normal_id(0), index(0), pixel_aligned(false), relative(false), rendered(true)
+	Sprite::Sprite(Texture* texture) : cols(1), rows(1), p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+		normal_id(0), index(0), flags(0)
 	{
 		w = texture->w;
 		h = texture->h;
@@ -22,8 +22,8 @@ namespace dukat
 		tex[3] = 1.0f;
 	}
 
-	Sprite::Sprite(Texture* texture, Rect rect) : COLS(1), ROWS(1), p(0, 0), z(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-		normal_id(0), index(0), pixel_aligned(false), relative(false), rendered(true)
+	Sprite::Sprite(Texture* texture, Rect rect) : cols(1), rows(1), p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+		normal_id(0), index(0), flags(0)
 	{
 		w = rect.w;
 		h = rect.h;
@@ -35,8 +35,8 @@ namespace dukat
 		tex[3] = (float)(rect.h) / (float)texture->h;
 	}
 
-	Sprite::Sprite(Texture* texture, int cols, int rows) : COLS(cols), ROWS(rows), p(0, 0), z(0), center(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-		normal_id(0), index(0), pixel_aligned(false), relative(false), rendered(true)
+	Sprite::Sprite(Texture* texture, int cols, int rows) : cols(cols), rows(rows), p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
+		normal_id(0), index(0), flags(0)
 	{
 		// determine the dimensions of each map entry
 		Rect rect = { 0, 0, (int)texture->w / cols, (int)texture->h / rows };
@@ -54,27 +54,27 @@ namespace dukat
 	{
 		this->index = index;
 		// change texture offset to match new index
-		tex[0] = (index % COLS) * tex[2];
-		tex[1] = (index / COLS) * tex[3];
+		tex[0] = (index % cols) * tex[2];
+		tex[1] = (index / cols) * tex[3];
 	}
 
 	Sprite& Sprite::operator++(void)
 	{
-		if (++index > (COLS * ROWS - 1))
+		if (++index > (cols * rows - 1))
 			index = 0;
 		// change texture offset to match new index
-		tex[0] = (index % COLS) * tex[2];
-		tex[1] = (index / COLS) * tex[3];
+		tex[0] = (index % cols) * tex[2];
+		tex[1] = (index / cols) * tex[3];
 		return *this;
 	}
 
 	Sprite& Sprite::operator--(void)
 	{
 		if (--index < 0)
-			index = COLS * ROWS - 1;
+			index = cols * rows - 1;
 		// change texture offset to match new index
-		tex[0] = (index % COLS) * tex[2];
-		tex[1] = (index / COLS) * tex[3];
+		tex[0] = (index % cols) * tex[2];
+		tex[1] = (index / cols) * tex[3];
 		return *this;
 	}
 }

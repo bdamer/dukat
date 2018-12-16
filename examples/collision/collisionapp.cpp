@@ -27,7 +27,7 @@ namespace dukat
 		// Add cursor
 		auto texture = game->get_textures()->get("cursor32.png");
 		cursor = std::make_unique<Sprite>(texture);
-		cursor->center = Sprite::align_left | Sprite::align_top;
+		cursor->flags = Sprite::align_left | Sprite::align_top;
 		main_layer->add(cursor.get());
 
 		// Add walls:
