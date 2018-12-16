@@ -25,7 +25,7 @@ namespace dukat
 		int sensitivity;
 
 	public:
-		static const int keyboard_id = -1;
+		static constexpr auto keyboard_id = -1;
 
 		KeyboardDevice(Window* window, const Settings& settings);
 		~KeyboardDevice(void);
