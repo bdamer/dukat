@@ -45,7 +45,7 @@ namespace dukat
 		// target attribute
 		T* attribute;
 		// change to attribute per second
-		float value_delta;
+		T value_delta;
 		// if true will loop animation
 		bool loop;
 		// called when animation is done
