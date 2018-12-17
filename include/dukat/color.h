@@ -59,9 +59,9 @@ namespace dukat
 	inline Color color_rgb(int rgb)
 	{
 		return Color { 
-			static_cast<float>((rgb >> 24) & 0xff) / 255.0f,
 			static_cast<float>((rgb >> 16) & 0xff) / 255.0f,
 			static_cast<float>((rgb >> 8) & 0xff) / 255.0f,
+			static_cast<float>((rgb) & 0xff) / 255.0f,
 			1.0f 
 		};
 	}
