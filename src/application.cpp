@@ -31,6 +31,12 @@ namespace dukat
 			settings.get_bool("window.fullscreen"), settings.get_bool("window.vsync", true), settings.get_bool("window.msaa"));
 		window->set_title(title);
 
+		auto show_cursor = settings.get_bool("input.mouse.cursor", false);
+		if (!show_cursor)
+		{
+			SDL_ShowCursor(SDL_DISABLE);
+		}
+
 #ifndef __ANDROID__
 		audio_manager = std::make_unique<AudioManager>(settings.get_int("audio.channels", 16));
 		audio_manager->set_music_volume(settings.get_float("audio.music.volume", 1.0f));
@@ -46,6 +52,8 @@ namespace dukat
 	{
 		// Force release of device manager before call to SDL_Quit
 		device_manager = nullptr;
+		// Always show cursor before exiting
+		SDL_ShowCursor(SDL_ENABLE);
 		SDL_Quit();
 	}
 

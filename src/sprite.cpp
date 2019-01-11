@@ -28,26 +28,27 @@ namespace dukat
 		w = rect.w;
 		h = rect.h;
 		texture_id = texture->id;
+
 		// Calculate texture coordinates based on size of sprite and texture atlas
-		tex[0] = (float)rect.x / (float)texture->w;
-		tex[1] = (float)rect.y / (float)texture->h;
-		tex[2] = (float)(rect.w) / (float)texture->w;
-		tex[3] = (float)(rect.h) / (float)texture->h;
+		tex[0] = static_cast<float>(rect.x) / static_cast<float>(texture->w);
+		tex[1] = static_cast<float>(rect.y) / static_cast<float>(texture->h);
+		tex[2] = static_cast<float>(rect.w) / static_cast<float>(texture->w);
+		tex[3] = static_cast<float>(rect.h) / static_cast<float>(texture->h);
 	}
 
 	Sprite::Sprite(Texture* texture, int cols, int rows) : cols(cols), rows(rows), p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
 		normal_id(0), index(0), flags(0)
 	{
 		// determine the dimensions of each map entry
-		Rect rect = { 0, 0, (int)texture->w / cols, (int)texture->h / rows };
+		Rect rect = { 0, 0, static_cast<int>(texture->w) / cols, static_cast<int>(texture->h) / rows };
 		w = rect.w;
 		h = rect.h;
 		texture_id = texture->id;
 		// Calculate texture coordinates based on size of sprite and texture atlas
 		tex[0] = 0.0f;
 		tex[1] = 0.0f;
-		tex[2] = (float)(rect.w) / (float)texture->w;
-		tex[3] = (float)(rect.h) / (float)texture->h;
+		tex[2] = static_cast<float>(rect.w) / static_cast<float>(texture->w);
+		tex[3] = static_cast<float>(rect.h) / static_cast<float>(texture->h);
 	}
 
 	void Sprite::set_index(int index)

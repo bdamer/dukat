@@ -21,7 +21,13 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="framebufferapp.h">
+    <ClInclude Include="ripplepondscene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fractalscene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="titlescene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -30,6 +36,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="framebufferapp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ripplepondscene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fractalscene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="titlescene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

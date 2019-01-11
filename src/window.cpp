@@ -94,8 +94,6 @@ namespace dukat
 #ifdef _DEBUG
 		gl_check_error();
 #endif
-
-        SDL_ShowCursor(SDL_DISABLE);
 	}
 
 	Window::~Window()
@@ -110,7 +108,6 @@ namespace dukat
 			SDL_DestroyWindow(window);
 			window = nullptr;
 		}
-		SDL_ShowCursor(SDL_ENABLE);
 	}
 
 	void Window::resize(int width, int height)

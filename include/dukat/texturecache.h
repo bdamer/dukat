@@ -11,16 +11,19 @@ namespace dukat
 	{
 	private:
 		const std::string resource_dir;
-		const bool flip;
+		// Flip surfaces vertically / horizontally by default. False by default.
+		// Set vflip to true to change images from natural orientation (y-axis points down)
+		// to OpenGL standard (y-axis points up). 
+		bool hflip;
+		bool vflip;
 		uint32_t last_id;
 		std::unordered_map<uint32_t, std::unique_ptr<Texture>> textures;
 		std::unordered_map<std::string, std::unique_ptr<Surface>> surfaces;
 		std::unique_ptr<Texture> load(const std::string& filename, TextureFilterProfile profile);
 
 	public:
-		// Creates a new texture cache. Set flip to true to change images from 
-		// natural orientation (y-axis points down) to OpenGL standard (y-axis points up). 
-		TextureCache(const std::string& resource_dir, bool flip = false);
+		// Creates a new texture cache.
+		TextureCache(const std::string& resource_dir);
 		~TextureCache(void);
 
 		// Helper method to load a surface from a file.
@@ -43,5 +46,8 @@ namespace dukat
 		// Frees the texture corresponding to the image file.
 		void free(const std::string& filename) { free(compute_hash(filename)); }
 		void free(uint32_t id);
+
+		void set_hflip(bool hflip) { this->hflip = hflip; }
+		void set_vflip(bool vflip) { this->vflip = vflip; }
 	};
 }

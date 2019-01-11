@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-	TextureCache::TextureCache(const std::string& resource_dir, bool flip) : resource_dir(resource_dir), flip(flip), last_id(0)
+	TextureCache::TextureCache(const std::string& resource_dir) : resource_dir(resource_dir), hflip(false), vflip(false), last_id(0)
 	{
 	}
 
@@ -58,7 +58,7 @@ namespace dukat
 	std::unique_ptr<Texture> TextureCache::load(const std::string& filename, TextureFilterProfile profile)
 	{
 		log->debug("Loading texture [{}]", filename);
-		auto surface = load_surface(filename, flip);
+		auto surface = load_surface(filename, hflip, vflip);
 		log->debug("Created {}x{} {} surface.", surface->get_width(), surface->get_height(),
 			SDL_GetPixelFormatName(surface->get_surface()->format->format));
 		return std::make_unique<Texture>(*surface, profile);

@@ -13,5 +13,5 @@ out vec2 v_tex_coord;
 void main()
 {
     gl_Position = a_position;
-    v_tex_coord = a_tex_coord - gl_Position.xy * u_scale;
+    v_tex_coord = a_tex_coord;
 }

@@ -40,13 +40,13 @@ namespace dukat
 	void Renderer2::initialize_sprite_buffers(void)
 	{
 		// Vertex order:
-		//	0 2 / 3
-		//	1 /	4 5
+		//	0 2
+		//	1 3
 		Vertex2PT vertices[] = {
-			{ -0.5f, -0.5f, 0.0f, 0.0f },
-			{ -0.5f,  0.5f, 0.0f, 1.0f },
-			{ 0.5f, -0.5f, 1.0f, 0.0f },
-			{ 0.5f,  0.5f, 1.0f, 1.0f }
+			{ -0.5f, -0.5f, 0.0f, 0.0f },	// top-left
+			{ -0.5f,  0.5f, 0.0f, 1.0f },	// bottom-left
+			{  0.5f, -0.5f, 1.0f, 0.0f },	// top-right
+			{  0.5f,  0.5f, 1.0f, 1.0f }	// bottom-right
 		};
 		// Create buffer for sprite rendering
 		sprite_buffer = std::make_unique<VertexBuffer>(1);

@@ -7,6 +7,9 @@ namespace dukat
 {
 	Game3::Game3(Settings& settings) : GameBase(settings)
 	{
+		// Change origin for textures to match OpenGL default (bottom-left).
+		texture_cache->set_vflip(true);
+
 		renderer = std::make_unique<dukat::Renderer3>(window.get(), shader_cache.get(), texture_cache.get());
 		if (settings.get_bool("rendere.effects.enabled")) 
 		{
@@ -56,7 +59,10 @@ namespace dukat
 
 	std::unique_ptr<TextMeshInstance> Game3::create_text_mesh(void)
 	{
+		// Temporarily disable flip for textures - font mesh is using top-left as origin
+		texture_cache->set_vflip(false);
 		auto tex = texture_cache->get("font_256.png", ProfileMipMapped);
+		texture_cache->set_vflip(true);
 		auto sp = shader_cache->get_program("sc_text.vsh", "sc_text.fsh");
 		return build_text_mesh(tex, sp, 1.0f);
 	}
