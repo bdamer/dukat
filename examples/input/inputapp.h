@@ -12,7 +12,7 @@ namespace dukat
 	private:
 		std::unique_ptr<Sprite> mask_sprite;
 		std::array<std::unique_ptr<Sprite>, 8> button_sprites;
-		std::array<std::unique_ptr<Sprite>, 4> debug_sprites;
+		std::array<std::unique_ptr<Sprite>, 4> dir_sprites;
 		std::array<std::unique_ptr<Sprite>, 4> left_sprites;
 		std::array<std::unique_ptr<Sprite>, 4> right_sprites;
 		std::unique_ptr<Sprite> select_sprite;

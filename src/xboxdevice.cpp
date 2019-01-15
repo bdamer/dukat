@@ -26,10 +26,10 @@ namespace dukat
 		mapping[VirtualButton::Button8] = XINPUT_GAMEPAD_RIGHT_THUMB;
 		mapping[VirtualButton::Select] = XINPUT_GAMEPAD_BACK;
 		mapping[VirtualButton::Start] = XINPUT_GAMEPAD_START;
-		mapping[VirtualButton::Debug1] = XINPUT_GAMEPAD_DPAD_DOWN;
-		mapping[VirtualButton::Debug2] = XINPUT_GAMEPAD_DPAD_RIGHT;
-		mapping[VirtualButton::Debug3] = XINPUT_GAMEPAD_DPAD_LEFT;
-		mapping[VirtualButton::Debug4] = XINPUT_GAMEPAD_DPAD_UP;
+		mapping[VirtualButton::Down] = XINPUT_GAMEPAD_DPAD_DOWN;
+		mapping[VirtualButton::Right] = XINPUT_GAMEPAD_DPAD_RIGHT;
+		mapping[VirtualButton::Left] = XINPUT_GAMEPAD_DPAD_LEFT;
+		mapping[VirtualButton::Up] = XINPUT_GAMEPAD_DPAD_UP;
 
 		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(id);
 		char buffer[33];
@@ -54,10 +54,12 @@ namespace dukat
 			normalize_axis(state.Gamepad.sThumbRX, state.Gamepad.sThumbRY, rx, ry, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
 			normalize_trigger(state.Gamepad.bLeftTrigger, lt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 			normalize_trigger(state.Gamepad.bRightTrigger, rt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-			for (int i = 0; i < VirtualButton::_Count; i++)
+			for (auto i = 0; i < VirtualButton::LeftTrigger; i++)
 			{
-				update_button_state((VirtualButton)i, (state.Gamepad.wButtons & mapping[i]) != 0);
+				update_button_state(static_cast<VirtualButton>(i), (state.Gamepad.wButtons & mapping[i]) != 0);
 			}
+			update_button_state(VirtualButton::LeftTrigger, state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+			update_button_state(VirtualButton::RightTrigger, state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 		}
 		// compute absolute positions
 		lxa += lx * sensitivity;

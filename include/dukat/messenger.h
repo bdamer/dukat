@@ -13,8 +13,10 @@ namespace dukat
 		// System events
 		static constexpr Event ToggleDebug = 1;
 		static constexpr Event WindowResized = 2;
-		// Notification that controller device has changed.
-		static constexpr Event DeviceChanged = 3;
+		// Notification that controller has been added.
+		static constexpr Event DeviceBound = 3;
+		// Notification that controller ha been removed.
+		static constexpr Event DeviceUnbound = 4;
 		// Game events
 		// Reset all game state.
 		static constexpr Event GameReset = 5;

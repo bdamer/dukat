@@ -18,19 +18,16 @@ namespace dukat
 		mapping[VirtualButton::Button6] = settings.get_int("input.keyboard.button6", -1);
 		mapping[VirtualButton::Button7] = settings.get_int("input.keyboard.button7", -1);
 		mapping[VirtualButton::Button8] = settings.get_int("input.keyboard.button8", -1);
-		mapping[VirtualButton::Debug1] = settings.get_int("input.keyboard.debug1", SDL_SCANCODE_F1);
-		mapping[VirtualButton::Debug2] = settings.get_int("input.keyboard.debug2", SDL_SCANCODE_F2);
-		mapping[VirtualButton::Debug3] = settings.get_int("input.keyboard.debug3", SDL_SCANCODE_F3);
-		mapping[VirtualButton::Debug4] = settings.get_int("input.keyboard.debug4", SDL_SCANCODE_F4);
+		mapping[VirtualButton::Down] = settings.get_int("input.keyboard.down", SDL_SCANCODE_S);
+		mapping[VirtualButton::Right] = settings.get_int("input.keyboard.right", SDL_SCANCODE_D);
+		mapping[VirtualButton::Left] = settings.get_int("input.keyboard.left", SDL_SCANCODE_A);
+		mapping[VirtualButton::Up] = settings.get_int("input.keyboard.up", SDL_SCANCODE_W);
+		mapping[VirtualButton::LeftTrigger] = settings.get_int("input.keyboard.lt", SDL_SCANCODE_TAB);
+		mapping[VirtualButton::RightTrigger] = settings.get_int("input.keyboard.rt", SDL_SCANCODE_SPACE);
 		mapping[VirtualButton::Select] = SDL_SCANCODE_ESCAPE;
 		mapping[VirtualButton::Start] = SDL_SCANCODE_RETURN;
+		mapping[VirtualButton::Debug] = settings.get_int("input.keyboard.debug", SDL_SCANCODE_F1);
 		// Initialize default key bindings
-		key_left = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.left", SDL_SCANCODE_A));
-		key_right = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.right", SDL_SCANCODE_D));
-		key_up = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.up", SDL_SCANCODE_W));
-		key_down = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.down", SDL_SCANCODE_S));
-		key_lt = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.lt", SDL_SCANCODE_TAB));
-		key_rt = static_cast<SDL_Scancode>(settings.get_int("input.keyboard.rt", SDL_SCANCODE_SPACE));
 		keystate = SDL_GetKeyboardState(&num_keys);
 	}
 
@@ -45,14 +42,24 @@ namespace dukat
 		SDL_PumpEvents();
 
 		// Handle direction keys
-		lx = keystate[key_left] ? -1.0f :
-			(keystate[key_right] ? 1.0f : 0.0f);
-		ly = keystate[key_up] ? 1.0f :
-			(keystate[key_down] ? -1.0f : 0.0f);
+		const auto key_left = mapping[VirtualButton::Left];
+		const auto key_right = mapping[VirtualButton::Right];
+		if (key_left > -1 && key_right > -1)
+		{
+			lx = keystate[key_left] ? -1.0f : (keystate[key_right] ? 1.0f : 0.0f);
+		}
+		const auto key_up = mapping[VirtualButton::Up];
+		const auto key_down = mapping[VirtualButton::Down];
+		if (mapping[key_up] > -1 && mapping[key_down] > -1)
+		{
+			ly = keystate[key_up] ? 1.0f : (keystate[key_down] ? -1.0f : 0.0f);
+		}
 
 		// Handle trigger keys
-		lt = keystate[key_lt] ? 1.0f : 0.0f;
-		rt = keystate[key_rt] ? 1.0f : 0.0f;
+		const auto key_lt = mapping[VirtualButton::LeftTrigger];
+		lt = key_lt > -1 && keystate[key_lt] ? 1.0f : 0.0f;
+		const auto key_rt = mapping[VirtualButton::LeftTrigger];
+		rt = key_rt > -1 && keystate[key_rt] ? 1.0f : 0.0f;
 
 		// Right axis comes from mouse cursor
 		int rel_x, rel_y;

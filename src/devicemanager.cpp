@@ -16,12 +16,12 @@ namespace dukat
 		log->info("Keyboard device added.");
 		controllers.push_back(std::make_unique<KeyboardDevice>(window, settings));
 		active = controllers.back().get();
-		trigger(Message{ Events::DeviceChanged });
+		trigger(Message{ Events::DeviceBound });
 	}
 
 	void DeviceManager::remove_keyboard(void)
 	{
-		// TODO: implement	
+		trigger(Message{ Events::DeviceUnbound });
 	}
 
 	void DeviceManager::add_joystick(Window* window, SDL_JoystickID id)
@@ -51,9 +51,10 @@ namespace dukat
 			controllers.push_back(std::make_unique<GamepadDevice>(window, id, settings));
 #ifdef XBOX_SUPPORT
 		}
-#endif
+#endif		
+		trigger(Message{ Events::DeviceUnbound });
 		active = controllers.back().get();
-		trigger(Message{ Events::DeviceChanged });
+		trigger(Message{ Events::DeviceBound });
 	}
 
 	void DeviceManager::remove_joystick(SDL_JoystickID id)
@@ -71,8 +72,9 @@ namespace dukat
 			}
 			++i;
 		}
+		trigger(Message{ Events::DeviceUnbound });
 		active = controllers.back().get();
-		trigger(Message{ Events::DeviceChanged });
+		trigger(Message{ Events::DeviceBound });
 	}
 
 	void DeviceManager::update(void)

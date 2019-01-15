@@ -10,13 +10,6 @@ namespace dukat
 	class KeyboardDevice : public InputDevice
 	{
 	private:
-		// key mappings
-		SDL_Scancode key_left;
-		SDL_Scancode key_right;
-		SDL_Scancode key_up;
-		SDL_Scancode key_down;
-		SDL_Scancode key_lt;
-		SDL_Scancode key_rt;
 		// state
 		int num_keys;
 		const Uint8* keystate;

@@ -21,12 +21,15 @@ namespace dukat
 			Button6,
 			Button7,
 			Button8,
-			Debug1,
-			Debug2,
-			Debug3,
-			Debug4,
 			Select,
 			Start,
+			Down,
+			Right,
+			Left,
+			Up,
+			LeftTrigger,
+			RightTrigger,
+			Debug,
 			_Count
 		};
 

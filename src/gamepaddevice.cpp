@@ -23,10 +23,10 @@ namespace dukat
 		mapping[VirtualButton::Button8] = settings.get_int("input.gamepad.button8", 8); // Right Tumb
 		mapping[VirtualButton::Select] = settings.get_int("input.gamepad.select", 4); 	// Select Button
 		mapping[VirtualButton::Start] = settings.get_int("input.gamepad.start", 6);		// Start Button
-		mapping[VirtualButton::Debug1] = settings.get_int("input.gamepad.debug1", 12);	// DPAD Down
-		mapping[VirtualButton::Debug2] = settings.get_int("input.gamepad.debug2", 14);	// DPAD Right
-		mapping[VirtualButton::Debug3] = settings.get_int("input.gamepad.debug3", 13);	// DPAD Left
-		mapping[VirtualButton::Debug4] = settings.get_int("input.gamepad.debug4", 11);	// DPAD Up
+		mapping[VirtualButton::Down] = settings.get_int("input.gamepad.down", 12);		// DPAD Down
+		mapping[VirtualButton::Right] = settings.get_int("input.gamepad.right", 14);	// DPAD Right
+		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", 13);		// DPAD Left
+		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", 11);			// DPAD Up
 
 		if (!SDL_IsGameController(id))
 		{
@@ -76,12 +76,15 @@ namespace dukat
 			ry = -ry;
 		}
 
-		for (int i = 0; i < VirtualButton::_Count; i++)
+		for (auto i = 0; i < VirtualButton::LeftTrigger; i++)
 		{
 			if (mapping[i] < 0)
 				continue;
-			update_button_state((VirtualButton)i, SDL_GameControllerGetButton(device, static_cast<SDL_GameControllerButton>(mapping[i])) != 0);
+			update_button_state(static_cast<VirtualButton>(i), 
+				SDL_GameControllerGetButton(device, static_cast<SDL_GameControllerButton>(mapping[i])) != 0);
 		}
+		update_button_state(VirtualButton::LeftTrigger, lt > 0.0f);
+		update_button_state(VirtualButton::RightTrigger, rt > 0.0f);
 
 		// compute absolute positions
 		lxa += lx * sensitivity;

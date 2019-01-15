@@ -29,15 +29,14 @@ namespace dukat
 		add_manager<ParticleManager>();
 		add_manager<TimerManager>();
 		add_manager<AnimationManager>();
-		add_manager<UIManager>();
-		// TODO: need to rebind when devices change
-		device_manager->active->on_press(InputDevice::VirtualButton::Debug1, std::bind(&GameBase::toggle_debug, this));
+		add_manager<UIManager>();		
+		device_manager->active->on_press(InputDevice::VirtualButton::Debug, std::bind(&GameBase::toggle_debug, this));
 		get<TimerManager>()->create_timer(1.0f, std::bind(&GameBase::update_debug_text, this), true);
 	}
 
 	GameBase::~GameBase(void)
 	{
-		device_manager->active->unbind(InputDevice::VirtualButton::Debug1);
+		device_manager->active->unbind(InputDevice::VirtualButton::Debug);
 	}
 
 	void GameBase::handle_event(const SDL_Event& e)

@@ -52,14 +52,14 @@ namespace dukat
 			debug_text->set_text(ss.str());
 		}, true);
 
-		game->get_devices()->subscribe(Events::DeviceChanged, this);
+		game->get_devices()->subscribe(Events::DeviceBound, this);
 
 		game->set_controller(this);
 	}
 
 	InputScene::~InputScene(void)
 	{
-		game->get_devices()->unsubscribe(Events::DeviceChanged, this);
+		game->get_devices()->unsubscribe(Events::DeviceBound, this);
 	}
 
 	void InputScene::create_sprites(void)
@@ -96,22 +96,22 @@ namespace dukat
 		layer->add(rtrigger_sprite.get());
 
 		// Left cluster
-		debug_sprites[0] = std::make_unique<Sprite>(texture, r);
-		debug_sprites[0]->p = Vector2{ -104, 14 };
-		debug_sprites[0]->color = c;
-		layer->add(debug_sprites[0].get());
-		debug_sprites[1] = std::make_unique<Sprite>(texture, r);
-		debug_sprites[1]->p = Vector2{ -88, -2 };
-		debug_sprites[1]->color = c;
-		layer->add(debug_sprites[1].get());
-		debug_sprites[2] = std::make_unique<Sprite>(texture, r);
-		debug_sprites[2]->p = Vector2{ -120, -2 };
-		debug_sprites[2]->color = c;
-		layer->add(debug_sprites[2].get());
-		debug_sprites[3] = std::make_unique<Sprite>(texture, r);
-		debug_sprites[3]->p = Vector2{ -104, -18 };
-		debug_sprites[3]->color = c;
-		layer->add(debug_sprites[3].get());
+		dir_sprites[0] = std::make_unique<Sprite>(texture, r);
+		dir_sprites[0]->p = Vector2{ -104, 14 };
+		dir_sprites[0]->color = c;
+		layer->add(dir_sprites[0].get());
+		dir_sprites[1] = std::make_unique<Sprite>(texture, r);
+		dir_sprites[1]->p = Vector2{ -88, -2 };
+		dir_sprites[1]->color = c;
+		layer->add(dir_sprites[1].get());
+		dir_sprites[2] = std::make_unique<Sprite>(texture, r);
+		dir_sprites[2]->p = Vector2{ -120, -2 };
+		dir_sprites[2]->color = c;
+		layer->add(dir_sprites[2].get());
+		dir_sprites[3] = std::make_unique<Sprite>(texture, r);
+		dir_sprites[3]->p = Vector2{ -104, -18 };
+		dir_sprites[3]->color = c;
+		layer->add(dir_sprites[3].get());
 
 		// Right cluster
 		button_sprites[2] = std::make_unique<Sprite>(texture, r);
@@ -206,7 +206,7 @@ namespace dukat
 
 		button_sprites[0]->color.a = dev->is_pressed(InputDevice::Button1) ? 1.0f : 0.0f;
 		button_sprites[1]->color.a = dev->is_pressed(InputDevice::Button2) ? 1.0f : 0.0f;
-		button_sprites[2]->color.a = dev->is_pressed(InputDevice::Button3) ? 1.0f : 0.0f;
+		button_sprites[2]->color.a = dev->is_pressed(InputDevice::Button3) ? 1.0f : 0.0f; 
 		button_sprites[3]->color.a = dev->is_pressed(InputDevice::Button4) ? 1.0f : 0.0f;
 		button_sprites[4]->color.a = dev->is_pressed(InputDevice::Button5) ? 1.0f : 0.0f;
 		button_sprites[5]->color.a = dev->is_pressed(InputDevice::Button6) ? 1.0f : 0.0f;
@@ -214,10 +214,10 @@ namespace dukat
 		button_sprites[7]->color.a = dev->is_pressed(InputDevice::Button8) ? 1.0f : 0.0f;
 		select_sprite->color.a = dev->is_pressed(InputDevice::Select) ? 1.0f : 0.0f;
 		start_sprite->color.a = dev->is_pressed(InputDevice::Start) ? 1.0f : 0.0f;
-		debug_sprites[0]->color.a = dev->is_pressed(InputDevice::Debug1) ? 1.0f : 0.0f;
-		debug_sprites[1]->color.a = dev->is_pressed(InputDevice::Debug2) ? 1.0f : 0.0f;
-		debug_sprites[2]->color.a = dev->is_pressed(InputDevice::Debug3) ? 1.0f : 0.0f;
-		debug_sprites[3]->color.a = dev->is_pressed(InputDevice::Debug4) ? 1.0f : 0.0f;
+		dir_sprites[0]->color.a = dev->is_pressed(InputDevice::Down) ? 1.0f : 0.0f;
+		dir_sprites[1]->color.a = dev->is_pressed(InputDevice::Right) ? 1.0f : 0.0f;
+		dir_sprites[2]->color.a = dev->is_pressed(InputDevice::Left) ? 1.0f : 0.0f;
+		dir_sprites[3]->color.a = dev->is_pressed(InputDevice::Up) ? 1.0f : 0.0f;
 		left_sprites[0]->color.a = dev->ly < 0.0f ? std::abs(dev->ly) : 0.0f;
 		left_sprites[1]->color.a = dev->lx > 0.0f ? std::abs(dev->lx) : 0.0f;
 		left_sprites[2]->color.a = dev->lx < 0.0f ? std::abs(dev->lx) : 0.0f;
@@ -234,7 +234,7 @@ namespace dukat
 	{
 		switch (msg.event)
 		{
-		case Events::DeviceChanged:
+		case Events::DeviceBound:
 		{
 			std::stringstream ss;
 			ss << "Device: " << game->get_devices()->active->get_name() << std::endl;
