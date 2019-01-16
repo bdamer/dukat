@@ -66,7 +66,6 @@ namespace dukat
 		{
 			ticks = SDL_GetTicks();
 
-			device_manager->update();
 			if (!paused)
 			{
 				auto delta = static_cast<float>(ticks - last_update) / 1000.0f;
@@ -88,7 +87,9 @@ namespace dukat
 			{
 				handle_event(e);
 			}
-			
+
+			device_manager->update();
+
 			// render to screen
 			render();
 			perfc.inc(PerformanceCounter::FRAMES);
