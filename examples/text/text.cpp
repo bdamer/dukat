@@ -22,6 +22,7 @@ namespace dukat
 
 		// Set up info text
 		info_text = game->create_text_mesh();
+		info_text->align = TextMeshInstance::Center;
 		info_text->set_size(10.0f);
 		std::stringstream ss;
 		ss << "I sing the <#red>body electric</>," << std::endl
@@ -33,8 +34,8 @@ namespace dukat
 			<< "And if the body does not do <#lightgrey>fully</> as much as the <#mediumgrey>soul</> ?" << std::endl
 			<< "And if the body were not the <#darkgreen>soul</>, what is the <#darkgrey>soul</> ?" << std::endl;
 		info_text->set_text(ss.str());
-		info_text->transform.position = Vector3(-0.5f * (float)info_text->get_width(), -0.5f * (float)info_text->get_height(), 0.0f);
-		info_text->transform.update();
+		info_text->transform.position = Vector3(0.0f, -0.5f * (float)info_text->get_height(), 0.0f);
+		info_text->update(0.0f);
 		layer->add(info_text.get());
 
 		// Set up debug layer
