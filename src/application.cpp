@@ -165,6 +165,12 @@ namespace dukat
 			break;
 		case SDL_WINDOWEVENT_SIZE_CHANGED:
 			break;
+		case SDL_WINDOWEVENT_SHOWN:
+			paused = false;
+			break;
+		case SDL_WINDOWEVENT_HIDDEN:
+			paused = true;
+			break;
 		}
 	}
 }
