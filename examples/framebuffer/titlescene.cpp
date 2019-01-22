@@ -13,7 +13,7 @@ namespace dukat
 		title_text->set_size(1.0f / 10.0f);
 		title_text->transform.position = { 0.0f, 0.25f, 0.0f };
 		title_text->set_text("<#red>Framebuffer Effects</>");
-		title_text->align = TextMeshInstance::Align::Center;
+		title_text->halign = TextMeshInstance::Align::Center;
 		overlay_meshes.add_instance(std::move(title_text));
 
 		auto fractals_text = game->create_text_mesh();
