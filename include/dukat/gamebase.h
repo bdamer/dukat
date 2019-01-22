@@ -49,7 +49,7 @@ namespace dukat
 		// Called on a timer to output debug information.
 		virtual void update_debug_text(void) { }
 
-		std::unique_ptr<TextMeshInstance> build_text_mesh(Texture* texture, ShaderProgram* sp, float size);
+		std::unique_ptr<TextMeshInstance> build_text_mesh(Texture* texture, ShaderProgram* sp, float size, float yorientation);
 
 	public:
 		GameBase(Settings& settings);

@@ -21,7 +21,7 @@ namespace dukat
 
 		auto debug_text = create_text_mesh();
 		debug_text->set_size(1.0f / 30.0f);
-		debug_text->align = TextMeshInstance::Align::Center;
+		debug_text->halign = TextMeshInstance::Align::Center;
 		debug_text->transform.position.y = 0.75f;
 		debug_text->transform.update();
 		debug_meshes.add_instance(std::move(debug_text));
@@ -64,6 +64,6 @@ namespace dukat
 		auto tex = texture_cache->get("font_256.png", ProfileMipMapped);
 		texture_cache->set_vflip(true);
 		auto sp = shader_cache->get_program("sc_text.vsh", "sc_text.fsh");
-		return build_text_mesh(tex, sp, 1.0f);
+		return build_text_mesh(tex, sp, 1.0f, 1.0f);
 	}
 }

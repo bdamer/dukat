@@ -36,6 +36,6 @@ namespace dukat
 	{
 		auto tex = texture_cache->get("font_256.png", ProfileNearest);
 		auto sp = shader_cache->get_program("sc_text.vsh", "sc_text.fsh");
-		return build_text_mesh(tex, sp, 1.0f);
+		return build_text_mesh(tex, sp, 1.0f, -1.0f);
 	}
 }

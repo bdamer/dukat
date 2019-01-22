@@ -10,10 +10,15 @@ namespace dukat
 	public:
 		enum Align
 		{
-			Left, Center, Right
+			Center,
+			Left,
+			Right,
+			Top, 
+			Bottom
 		};
 
 	private:
+		const float yorientation;
 		// Unlike a regular mesh instance, a text mesh instance does not
 		// use the mesh cache. Instead it stores the mesh data directly.
 		std::unique_ptr<MeshData> text_mesh;
@@ -22,9 +27,12 @@ namespace dukat
 		float width, height;
 
 	public:
-		Align align;
+		// Valid values: Center, Left, Right
+		Align halign;
+		// Valid values: Center, Top, Bottom
+		Align valign;
 
-		TextMeshInstance(std::unique_ptr<MeshData> text_mesh);
+		TextMeshInstance(std::unique_ptr<MeshData> text_mesh, float yorientation = 1.0f);
 		~TextMeshInstance(void) { }
 
 		void set_text(const std::string& text);

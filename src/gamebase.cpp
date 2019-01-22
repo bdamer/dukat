@@ -75,10 +75,10 @@ namespace dukat
 		trigger(Message{Events::ToggleDebug});
 	}
 
-	std::unique_ptr<TextMeshInstance> GameBase::build_text_mesh(Texture* texture, ShaderProgram* sp, float size)
+	std::unique_ptr<TextMeshInstance> GameBase::build_text_mesh(Texture* texture, ShaderProgram* sp, float size, float yorientation)
 	{
 		TextMeshBuilder mb;
-		auto mesh_instance = std::make_unique<TextMeshInstance>(mb.build_text_mesh());
+		auto mesh_instance = std::make_unique<TextMeshInstance>(mb.build_text_mesh(), yorientation);
 		mesh_instance->transform.update();
 		mesh_instance->set_texture(texture);
 		mesh_instance->set_program(sp);

@@ -4,7 +4,8 @@
 
 namespace dukat
 {
-	TextMeshInstance::TextMeshInstance(std::unique_ptr<MeshData> text_mesh) : align(Align::Left)
+	TextMeshInstance::TextMeshInstance(std::unique_ptr<MeshData> text_mesh, float yorientation)
+		: halign(Align::Left), valign(Align::Bottom), yorientation(yorientation)
 	{
 		this->text_mesh = std::move(text_mesh);
 		set_mesh(this->text_mesh.get());
@@ -42,22 +43,39 @@ namespace dukat
 	void TextMeshInstance::update(float delta) 
 	{
 		float x_offset;
-		switch (align)
+		float y_offset;
+
+		switch (halign)
 		{
-			case Left:
-				x_offset = 0.0f;
-				break;
-			case Center:
-				x_offset = -0.5f * get_width();
-				break;
-			case Right:
-				x_offset = -get_width();
-				break;
+		case Left:
+			x_offset = 0.0f;
+			break;
+		case Center:
+			x_offset = -0.5f * get_width();
+			break;
+		case Right:
+			x_offset = -get_width();
+			break;
 		}
-		// temporarily shift X position by offset for alignment.
-		auto tmp_x = this->transform.position.x;
+
+		switch (valign)
+		{
+		case Bottom:
+			y_offset = 0.0f;
+			break;
+		case Center:
+			y_offset = yorientation * 0.5f * get_height();
+			break;
+		case Top:
+			y_offset = yorientation * get_height();
+			break;
+		}
+
+		// temporarily shift position by offset for alignment.
+		auto tmp_pos = this->transform.position;
 		this->transform.position.x += x_offset;
-		this->transform.update(); 
-		this->transform.position.x = tmp_x;
+		this->transform.position.y += y_offset;
+		this->transform.update();
+		this->transform.position = tmp_pos;
 	}
 }
