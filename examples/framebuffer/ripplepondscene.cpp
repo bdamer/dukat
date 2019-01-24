@@ -27,22 +27,18 @@ namespace dukat
 		fb_program = game->get_shaders()->get_program("fx_default.vsh", "fx_ripple.fsh");
 
 		// Generate 2 buffers for ripple map
-		tex0 = std::make_unique<Texture>(texture_size, texture_size, ProfileLinear);
-		glBindTexture(GL_TEXTURE_2D, tex0->id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, texture_size, texture_size, 0, GL_RED, GL_FLOAT, nullptr);
+		TextureBuilder tb;
+		tex0 = tb.set_filter_profile(ProfileLinear)
+			.set_wrap(GL_CLAMP_TO_BORDER)
+			.set_internal_format(GL_R32F)
+			.set_format(GL_RED)
+			.set_type(GL_FLOAT)
+			.set_width(texture_size)
+			.set_height(texture_size)
+			.build();
 		current = tex0.get();
 
-		tex1 = std::make_unique<Texture>(texture_size, texture_size, ProfileLinear);
-		glBindTexture(GL_TEXTURE_2D, tex1->id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, texture_size, texture_size, 0, GL_RED, GL_FLOAT, nullptr);
+		tex1 = tb.build();
 		last = tex1.get();
 
 		overlay_meshes.stage = RenderStage::OVERLAY;
