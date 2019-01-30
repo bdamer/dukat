@@ -71,8 +71,7 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		std::stringstream ss;
-		ss << "<#white>"
-			<< "<,.> Change Sim Speed" << std::endl
+		ss << "<,.> Change Sim Speed" << std::endl
 			<< "<e> Toggle Emitters" << std::endl
 			<< "<F1> Toggle Wirframe" << std::endl
 			<< "<F2> Toggle Light Animation" << std::endl
@@ -88,7 +87,7 @@ namespace dukat
 		multiplier_text->set_size(1.0f / 20.0f);
 		multiplier_text->transform.position = { -1.6f, 0.85f, 0.0f };
 		ss.str("");
-		ss << "<#magenta>Speed " << multiplier << "x</>";
+		ss << "<#f20884>Speed " << multiplier << "x</>";
 		multiplier_text->set_text(ss.str());
 		multiplier_text->transform.update();
 		mult_mesh = static_cast<TextMeshInstance*>(overlay_meshes.add_instance(std::move(multiplier_text)));
@@ -121,7 +120,7 @@ namespace dukat
 			{
 				multiplier = std::max(1, multiplier / 2);
 				std::stringstream ss;
-				ss << "<#magenta>Speed " << multiplier << "x</>";
+				ss << "<#f20884>Speed " << multiplier << "x</>";
 				mult_mesh->set_text(ss.str());
 			}
 			break;
@@ -129,7 +128,7 @@ namespace dukat
 			{
 				multiplier = std::min(64, multiplier * 2);
 				std::stringstream ss;
-				ss << "<#magenta>Speed " << multiplier << "x</>";
+				ss << "<#f20884>Speed " << multiplier << "x</>";
 				mult_mesh->set_text(ss.str());
 			}
 			break;

@@ -79,7 +79,7 @@ namespace dukat
 		multiplier_text->set_size(1.0f / 20.0f);
 		multiplier_text->transform.position = { -1.3f, 0.85f, 0.0f };
 		std::stringstream ss;
-		ss << "<#white>" << multiplier << "x" << std::endl
+		ss << "<#ffffff>" << multiplier << "x" << std::endl
 			<< "00:00</>";
 		multiplier_text->set_text(ss.str());
 		multiplier_text->transform.update();
@@ -92,7 +92,7 @@ namespace dukat
 			int hours = (int)(wallclock_time / 3600.0f) % 24;
 			wallclock_time -= (float)(hours * 3600);
 			int minutes = (int)(wallclock_time / 60.0f) % 60;
-			ss << "<#white>" << multiplier << "x" << std::endl
+			ss << "<#ffffff>" << multiplier << "x" << std::endl
 				<< std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2) << minutes << "</>";
 			mult_mesh->set_text(ss.str());
 		}, true);
@@ -101,8 +101,7 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.3f, -0.7f, 0.0f };
 		ss.str("");
-		ss << "<#white>"
-			<< "<WASD> Move Camera" << std::endl
+		ss << "<WASD> Move Camera" << std::endl
 			<< "<,.> Change Sim Speed" << std::endl
 			<< "<F1> Toggle Wirframe" << std::endl
 			<< "<F2> Toggle Ground" << std::endl

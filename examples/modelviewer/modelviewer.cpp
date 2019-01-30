@@ -33,8 +33,7 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		std::stringstream ss;
-		ss << "<#white>"
-			<< "<,.> Toggle Meshes" << std::endl
+		ss << "<,.> Toggle Meshes" << std::endl
 			<< "<L> Show all Meshes" << std::endl
 			<< "<[]> Change scale" << std::endl
 			<< "<F1> Toggle Wirframe" << std::endl

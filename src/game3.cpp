@@ -43,7 +43,7 @@ namespace dukat
 	void Game3::update_debug_text(void)
 	{
 		std::stringstream ss;
-		ss << "<#yellow>"
+		ss << "<#fbf305>"
 			<< "WIN: " << window->get_width() << "x" << window->get_height()
 			<< " FPS: " << get_fps()
 			<< " MSH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)

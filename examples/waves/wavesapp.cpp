@@ -62,8 +62,7 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, 0.0f, 0.0f };
 		std::stringstream ss;
-		ss << "<#white>" << std::endl 
-			<< "<WASD> Move camera" << std::endl
+		ss << "<WASD> Move camera" << std::endl
 			<< "<Right Mouse Button> Mouselook" << std::endl
 			<< "<F1> Toggle Wirframe" << std::endl
 			<< "<F2> Toggle Normal Map" << std::endl

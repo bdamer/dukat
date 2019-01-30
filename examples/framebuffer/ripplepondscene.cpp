@@ -60,8 +60,7 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.5f };
 		std::stringstream ss;
-		ss << "<#white>"
-			<< "<LMB> Add ripple" << std::endl
+		ss << "<LMB> Add ripple" << std::endl
 			<< "<D> Add random drop" << std::endl
 			<< "<T> Cycle texture" << std::endl
 			<< "<F11> Toggle Info" << std::endl

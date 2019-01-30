@@ -12,7 +12,7 @@ namespace dukat
 		auto title_text = game->create_text_mesh();
 		title_text->set_size(1.0f / 10.0f);
 		title_text->transform.position = { -0.75f, 0.25f, 0.0f };
-		title_text->set_text("<#red>Title screen</>");
+		title_text->set_text("<#dd0907>Title screen</>");
 		overlay_meshes.add_instance(std::move(title_text));
 
 		auto start_text = game->create_text_mesh();

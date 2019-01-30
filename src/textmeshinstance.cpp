@@ -42,8 +42,8 @@ namespace dukat
 
 	void TextMeshInstance::update(float delta) 
 	{
-		float x_offset;
-		float y_offset;
+		auto x_offset = 0.0f;
+		auto y_offset = 0.0f;
 
 		switch (halign)
 		{

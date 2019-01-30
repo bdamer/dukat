@@ -42,6 +42,6 @@ namespace dukat
 		void set_size(float size);
 		float get_width(void) const { return width * transform.scale.x; }
 		float get_height(void) const { return height * transform.scale.x; }
-		void update(float delta);
+		void update(float delta = 0.0f);
 	};
 }

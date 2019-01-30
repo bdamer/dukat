@@ -30,6 +30,8 @@ namespace dukat
 		Texture* texture[Renderer::max_texture_units];
 		Material material;
 
+		void update_material_buffer(void);
+
 	public:
 		MeshInstance(void);
 		virtual ~MeshInstance(void) { }
@@ -38,8 +40,14 @@ namespace dukat
 		const std::string& get_name(void) const { return name; }
 		void set_mesh(MeshData* mesh) { this->mesh = mesh; }
 		MeshData* get_mesh(void) const { return mesh; }
-		void set_material(const Material& material);
+		void set_material(const Material& material) { this->material = material; update_material_buffer(); }
 		Material get_material(void) const { return material; }
+		void set_ambient(const Color& ambient) { this->material.ambient = ambient; update_material_buffer(); }
+		Color get_ambient(void) const { return material.ambient; }
+		void set_diffuse(const Color& diffuse) { this->material.diffuse = diffuse; update_material_buffer(); }
+		Color get_diffuse(void) const { return material.diffuse; }
+		void set_specular(const Color& specular) { this->material.specular = specular; update_material_buffer(); }
+		Color get_specular(void) const { return material.specular; }
 		void set_program(ShaderProgram* program) { this->program = program; }
 		void set_texture(Texture* texture, int index = 0);
 		// Updates mesh transform.		

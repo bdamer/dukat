@@ -20,9 +20,8 @@ namespace dukat
 		transform.update();
 	}
 
-	void MeshInstance::set_material(const Material& material)
+	void MeshInstance::update_material_buffer(void)
 	{
-		this->material = material;
 #if OPENGL_VERSION >= 30
 		glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Material), &material, GL_STATIC_DRAW);

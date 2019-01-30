@@ -18,7 +18,7 @@ namespace dukat
 		std::string text;
 
 		TextButton(TextMeshInstance* text_mesh) : UIControl(), 
-			text_mesh(text_mesh), primary_color("white"), highlight_color("yellow") { }
+			text_mesh(text_mesh), primary_color("ffffff"), highlight_color("fbf305") { }
 		~TextButton(void) { }
 
 		void set_text(const std::string& text);

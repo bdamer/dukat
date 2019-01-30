@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <dukat/textmeshbuilder.h>
 #include <dukat/buffers.h>
+#include <dukat/log.h>
 #include <dukat/meshdata.h>
 #include <dukat/renderer.h>
 #include <dukat/vertextypes2.h>
@@ -9,39 +10,14 @@
 
 namespace dukat
 {
-	static std::map<Uint32, Color> color_map;
+	static constexpr Color default_color{ 1.0f, 1.0f, 1.0f, 1.0f };
 
-	Uint32 TextMeshBuilder::simple_hash(const std::string& name) const
+	uint32_t TextMeshBuilder::simple_hash(const std::string& name) const
 	{
-		Uint32 id = 0;
+		uint32_t id = 0;
 		for (const auto& it : name)
-		{
-			id = (id << 1) + (Uint32)it;
-		}
+			id = (id << 1) + static_cast<Uint32>(it);
 		return id;
-	}
-
-	TextMeshBuilder::TextMeshBuilder(int cols, int rows) : cols(cols), rows(rows)
-	{
-		if (color_map.empty())
-		{
-			color_map[simple_hash("white")] = { 1.0f, 1.0f, 1.0f, 1.0f };
-			color_map[simple_hash("yellow")] = { 251.0f / 255.0f, 243.0f / 255.0f, 5.0f / 255.0f, 1.0f };
-			color_map[simple_hash("orange")] = { 255.0f / 255.0f, 100.0f / 255.0f, 3.0f / 255.0f, 1.0f };
-			color_map[simple_hash("red")] = { 221.0f / 255.0f, 9.0f / 255.0f, 7.0f / 255.0f, 1.0f };
-			color_map[simple_hash("magenta")] = { 242.0f / 255.0f, 8.0f / 255.0f, 132.0f / 255.0f, 1.0f };
-			color_map[simple_hash("purple")] = { 71.0f / 255.0f, 0.0f / 255.0f, 165.0f / 255.0f, 1.0f };
-			color_map[simple_hash("blue")] = { 0.0f / 255.0f, 0.0f / 255.0f, 211.0f / 255.0f, 1.0f };
-			color_map[simple_hash("cyan")] = { 2.0f / 255.0f, 171.0f / 255.0f, 234.0f / 255.0f, 1.0f };
-			color_map[simple_hash("green")] = { 31.0f / 255.0f, 183.0f / 255.0f, 20.0f / 255.0f, 1.0f };
-			color_map[simple_hash("darkgreen")] = { 0.0f / 255.0f, 100.0f / 255.0f, 18.0f / 255.0f, 1.0f };
-			color_map[simple_hash("brown")] = { 86.0f / 255.0f, 44.0f / 255.0f, 5.0f / 255.0f, 1.0f };
-			color_map[simple_hash("tan")] = { 144.0f / 255.0f, 113.0f / 255.0f, 58.0f / 255.0f, 1.0f };
-			color_map[simple_hash("lightgrey")] = { 192.0f / 255.0f, 192.0f / 255.0f, 192.0f / 255.0f, 1.0f };
-			color_map[simple_hash("mediumgrey")] = { 128.0f / 255.0f, 128.0f / 255.0f, 128.0f / 255.0f, 1.0f };
-			color_map[simple_hash("darkgrey")] = { 64.0f / 255.0f, 64.0f / 255.0f, 64.0f / 255.0f, 1.0f };
-			color_map[simple_hash("black")] = { 0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 1.0f };
-		}
 	}
 
 	std::unique_ptr<MeshData> TextMeshBuilder::build_text_mesh(const std::string& text) const
@@ -61,21 +37,22 @@ namespace dukat
 		i++;
 		if (text[i] == '#') // start tag
 		{
-			int color_id = 0;
-			while (++i < text.length() && text[i] != '>')
+			const auto hex = text.substr(++i, 6);
+			try
 			{
-				color_id = (color_id << 1) + text[i];
+				color = color_rgb(std::stoul(hex, nullptr, 16));
 			}
-			if (color_map.count(color_id))
+			catch (const std::exception& e)
 			{
-				color = color_map.at(color_id);
+				log->warn("Failed to parse color: {}", hex, e.what());
 			}
+			i += 6;
 			return true;
 		}
 		else if (text[i] == '/') // end tag
 		{
 			i++; // skip character
-			color = color_map.at(simple_hash("white"));
+			color = default_color;
 			return true;
 		}
 		else
@@ -91,11 +68,12 @@ namespace dukat
 		assert(text.length() <= max_length);
 
 		// build up vertices
-		float x = 0.0f, y = 0.0f;
-		float tw = 1.0f / (float)cols, th = 1.0f / (float)rows;
-		float max_x = 0.0f;
+		auto x = 0.0f, y = 0.0f;
+		const auto tw = 1.0f / static_cast<float>(cols);
+		const auto th = 1.0f / static_cast<float>(rows);
+		auto max_x = 0.0f;
 		std::vector<Vertex2PCT> verts;
-		Color color = color_map.at(simple_hash("white"));
+		auto color = default_color;
 		for (size_t i = 0; i < text.length(); i++)
 		{
 			char c = text[i];
@@ -112,8 +90,8 @@ namespace dukat
 			}
 
 			// Create vertex for this character
-			float u = (float)((c - 32) % 16) * tw;
-			float v = (float)((c - 32) / 16) * th;
+			auto u = static_cast<float>((c - 32) % 16) * tw;
+			auto v = static_cast<float>((c - 32) / 16) * th;
 			verts.push_back({ x, y, color.r, color.g, color.b, color.a, u, v }); // top-left
 			verts.push_back({ x, y + 1.0f, color.r, color.g, color.b, color.a, u, v + th }); // bottom-left
 			verts.push_back({ x + 1.0f, y, color.r, color.g, color.b, color.a, u + tw, v }); // top-right
@@ -127,6 +105,6 @@ namespace dukat
 
 		width = max_x + 1.0f;
 		height = y + 1.0f;
-		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), (int)verts.size());
+		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), static_cast<int>(verts.size()));
 	}
 }

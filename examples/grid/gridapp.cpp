@@ -111,8 +111,7 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		std::stringstream ss;
-		ss << "<#white>"
-			<< "<,.> Change Grid Spacing" << std::endl
+		ss << "<,.> Change Grid Spacing" << std::endl
 			<< "<F1> Toggle Wirframe" << std::endl
 			<< "<F2> Generate Terrain" << std::endl
 			<< "<F5> Save Heightmap" << std::endl

@@ -34,11 +34,9 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		ss.str("");
-		ss << "<#white>"
-			<< "<F1> Toggle Wirframe" << std::endl
+		ss << "<F1> Toggle Wirframe" << std::endl
 			<< "<F11> Toggle Info" << std::endl
-			<< "<ESC> Return to Title" << std::endl
-			<< "</>";
+			<< "<ESC> Return to Title";
 		info_text->set_text(ss.str());
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 	}

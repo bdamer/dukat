@@ -63,7 +63,7 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
 		std::stringstream ss;
-		ss << "<#magenta><F1> Show land / water" << std::endl
+		ss << "<#f20884><F1> Show land / water" << std::endl
 			<< "<F2> Show elevation" << std::endl
 			<< "<F3> Show moisture" << std::endl
 			<< "<F4> Show biomes" << std::endl

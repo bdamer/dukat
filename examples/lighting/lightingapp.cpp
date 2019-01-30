@@ -74,8 +74,7 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.0f, -0.8f, 0.0f };
 		std::stringstream ss;
-		ss << "<#white>"
-			<< "<F1> Toggle Wirframe" << std::endl
+		ss << "<F1> Toggle Wirframe" << std::endl
 			<< "<F2> Toggle light animation" << std::endl
 			<< "<F11> Toggle Info" << std::endl
 			<< std::endl;

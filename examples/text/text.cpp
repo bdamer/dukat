@@ -26,14 +26,14 @@ namespace dukat
 		info_text->valign = TextMeshInstance::Center;
 		info_text->set_size(10.0f);
 		std::stringstream ss;
-		ss << "I sing the <#red>body electric</>," << std::endl
-			<< "The <#yellow>armies</> of those I <#magenta>love</> engirth me and I engirth them," << std::endl
-			<< "They will not let me off till I go with them, <#cyan>respond</> to them," << std::endl
-			<< "And <#orange>discorrupt</> them, and charge them full with the <#blue>charge</> of the soul." << std::endl << std::endl
-			<< "Was it <#purple>doubted</> that those who corrupt their own bodies <#green>conceal</> themselves ?" << std::endl
-			<< "And if those who defile the <#tan>living</> are as bad as they who defile the <#brown>dead</> ?" << std::endl
-			<< "And if the body does not do <#lightgrey>fully</> as much as the <#mediumgrey>soul</> ?" << std::endl
-			<< "And if the body were not the <#darkgreen>soul</>, what is the <#darkgrey>soul</> ?" << std::endl;
+		ss << "I sing the <#dd0907>body electric</>," << std::endl
+			<< "The <#fbf305>armies</> of those I <#f20884>love</> engirth me and I engirth them," << std::endl
+			<< "They will not let me off till I go with them, <#02abea>respond</> to them," << std::endl
+			<< "And <#ff6403>discorrupt</> them, and charge them full with the <#0000d3>charge</> of the soul." << std::endl << std::endl
+			<< "Was it <#4700a5>doubted</> that those who corrupt their own bodies <#1fb714>conceal</> themselves ?" << std::endl
+			<< "And if those who defile the <#90713a>living</> are as bad as they who defile the <#562c05>dead</> ?" << std::endl
+			<< "And if the body does not do <#c0c0c0>fully</> as much as the <#808080>soul</> ?" << std::endl
+			<< "And if the body were not the <#006412>soul</>, what is the <#404040>soul</> ?" << std::endl;
 		info_text->set_text(ss.str());
 		info_text->update(0.0f);
 		layer->add(info_text.get());
