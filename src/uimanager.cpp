@@ -117,4 +117,14 @@ namespace dukat
 		}
 		return false;
 	}
+
+	bool UIManager::cycle_focus(int dir)
+	{
+		if (focus != nullptr)
+		{
+			focus->cycle(dir);
+			return true;
+		}
+		return false;
+	}
 }

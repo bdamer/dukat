@@ -66,6 +66,6 @@ namespace dukat
 		AudioManager* get_audio(void) const { return audio_manager.get(); }
 #endif
 		DeviceManager* get_devices(void) const { return device_manager.get(); }
-		const Settings& get_settings(void) const { return settings; }
+		Settings& get_settings(void) const { return settings; }
 	};
 }

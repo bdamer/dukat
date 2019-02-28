@@ -31,5 +31,7 @@ namespace dukat
 		void next_control(void);
 		// Triggers click on control in focus, if any.
 		bool trigger_focus(void); 
+		// Cycles current control in focus, if any.
+		bool cycle_focus(int dir);
 	};
 }

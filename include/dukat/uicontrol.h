@@ -13,6 +13,7 @@ namespace dukat
 		bool enabled;
 		bool focus; // flag indicating that this control has focus
 		std::function<void(void)> trigger_func; // function to be executed when triggered
+		std::function<void(int)> cycle_func; // function to be executed when cycled
 		AABB2 bb;
 		
 	public:
@@ -37,5 +38,7 @@ namespace dukat
 		virtual void set_focus(bool focus) { this->focus = focus; }
 		void set_trigger(std::function<void(void)> trigger_func) { this->trigger_func = trigger_func; }
 		virtual void trigger(void) { if (trigger_func) trigger_func(); }
+		void set_cycle(std::function<void(int)> cycle_func) { this->cycle_func = cycle_func; }
+		virtual void cycle(int dir) { if (cycle_func) cycle_func(dir); }
 	};
 }
