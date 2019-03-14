@@ -26,8 +26,6 @@ namespace dukat
 		Window(int width, int height, bool fullscreen, bool vsync, bool msaa);
 		~Window();
 
-		// Clears screen buffers.
-		void clear(void) { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 		// Called by application to update screen buffer.
 		void present(void) { SDL_GL_SwapWindow(window); }
 		

@@ -65,24 +65,27 @@ namespace dukat
 		log->debug("Initializing frame buffer.");
 		if (camera == nullptr)
 		{
-			frame_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false);
+			frame_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false, TextureFilterProfile::ProfileNearest);
 		}
 		else
 		{
 			const auto& dim = camera->transform.dimension;
 			frame_buffer->resize(static_cast<int>(dim.x), static_cast<int>(dim.y));
 		}
-
-		// Force linear filtering
-		glBindTexture(frame_buffer->texture->target, frame_buffer->texture->id);
-		glTexParameteri(frame_buffer->texture->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(frame_buffer->texture->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
-	RenderLayer2* Renderer2::create_layer(const std::string& id, float priority, float parallax)
+	RenderLayer2* Renderer2::create_layer(const std::string& id, float priority, float parallax, bool has_render_target)
 	{
+		log->debug("Creating layer: {} [{} {}]", id, priority, parallax);
 		auto layer = std::make_unique<RenderLayer2>(shader_cache, 
 			sprite_buffer.get(), particle_buffer.get(), id, priority, parallax);
+		if (has_render_target)
+		{
+			// create render target compatible with current frame buffer
+			auto texture = std::make_unique<Texture>(frame_buffer->width, frame_buffer->height);
+			frame_buffer->initialize_draw_buffer(texture.get());
+			layer->set_render_target(std::move(texture));
+		}
 		auto res = layer.get();
 		bool inserted = false;
 		// find position to insert based on priority
@@ -169,7 +172,7 @@ namespace dukat
 
 	void Renderer2::render(void)
 	{
-		window->clear();
+		clear();
 
 #if OPENGL_VERSION >= 30
 		// This will pick up the change we made to camera transform. Since we're 
@@ -187,10 +190,13 @@ namespace dukat
 			// or alternatively render to a dedicated frame buffer followed by
 			// a composite pass to merge the frame buffer into the screen buffer
 			auto comp_program = layer->get_composite_program();
+			auto render_target = layer->get_render_target();
 			if (comp_program != nullptr)
 			{
 				frame_buffer->bind();
-				window->clear();
+				if (render_target != nullptr)
+					frame_buffer->attach_draw_buffer(render_target);
+				clear();
 			}
 
 			layer->render(this);
@@ -198,12 +204,17 @@ namespace dukat
 			// Composite pass
 			if (comp_program != nullptr)
 			{
+				if (render_target != nullptr)
+					frame_buffer->detach_draw_buffer();
 				frame_buffer->unbind();
 				switch_shader(comp_program);
 				auto id = comp_program->attr("u_aspect");
 				if (id != -1)
 					comp_program->set(id, camera->get_aspect_ratio());
-				frame_buffer->texture->bind(0, comp_program);
+				if (render_target != nullptr)
+					render_target->bind(0, comp_program);
+				else
+					frame_buffer->texture->bind(0, comp_program);
 				const auto& binder = layer->get_composite_binder();
 				if (binder)
 					binder(comp_program);

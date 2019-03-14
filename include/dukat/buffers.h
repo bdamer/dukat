@@ -76,6 +76,7 @@ namespace dukat
 		GLuint fbo;
 		// Texture
 		std::unique_ptr<Texture> texture;
+		TextureFilterProfile profile;
 		// Render buffer
 		GLuint rbo;
 		// Dimensions
@@ -83,13 +84,20 @@ namespace dukat
 		// Stores last viewport for unbind
 		GLint last_viewport[4];
 
-		FrameBuffer(int width, int height, bool create_draw_buffer, bool create_depth_buffer);
+		FrameBuffer(int width, int height, bool create_draw_buffer, 
+			bool create_depth_buffer, TextureFilterProfile profile = TextureFilterProfile::ProfileLinear);
 		~FrameBuffer(void);
 
 		void rebuild(void);
 		void resize(int width, int height);
 		void bind(void);
 		void unbind(void);
-		void attach_draw_buffer(Texture* texture);
+
+		// Initializes a draw buffer for use with this frame buffer.
+		void initialize_draw_buffer(Texture* t);
+		// Temporarily attaches draw buffer to this frame buffer.
+		void attach_draw_buffer(Texture* t);
+		// Detaches temporary draw buffer from this frame buffer and restores previous buffer, if any.
+		void detach_draw_buffer(void);
 	};
 }

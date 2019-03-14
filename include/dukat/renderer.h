@@ -93,6 +93,8 @@ namespace dukat
 		void set_blending(bool blending);
 		void set_clear_color(const Color& clr);
 
+		// Clears screen buffers.
+		void clear(void) { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 		// Changes active program.
 		void switch_shader(ShaderProgram* program);
 		// Returns the currently active program.

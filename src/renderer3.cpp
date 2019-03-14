@@ -96,7 +96,7 @@ namespace dukat
 		}
 #endif
 
-		window->clear();
+		clear();
 #ifdef OPENGL_CORE
 		if (show_wireframe)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

@@ -34,6 +34,7 @@ namespace dukat
 		ShaderProgram* particle_program;
 		ShaderProgram* composite_program;
 		std::function<void(ShaderProgram*)> composite_binder;
+		std::unique_ptr<Texture> render_target;
 		VertexBuffer* sprite_buffer;
 		VertexBuffer* particle_buffer;
 		std::vector<std::unique_ptr<Effect2>> effects;
@@ -97,5 +98,7 @@ namespace dukat
 		void set_composite_program(ShaderProgram* composite_program) { this->composite_program = composite_program; }
 		const std::function<void(ShaderProgram*)>& get_composite_binder(void) const { return composite_binder; }
 		void set_composite_binder(std::function<void(ShaderProgram*)> binder) { composite_binder = binder; }
+		Texture* get_render_target(void) const { return render_target != nullptr ? render_target.get() : nullptr; }
+		void set_render_target(std::unique_ptr<Texture> render_target) { this->render_target = std::move(render_target); }
 	};
 }

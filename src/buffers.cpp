@@ -42,8 +42,8 @@ namespace dukat
 		glBindBuffer(target, 0);
 	}
 
-	FrameBuffer::FrameBuffer(int width, int height, bool create_color_buffer, bool create_depth_buffer) 
-		: fbo(0), texture(nullptr), rbo(0), width(width), height(height)
+	FrameBuffer::FrameBuffer(int width, int height, bool create_color_buffer, bool create_depth_buffer, TextureFilterProfile profile)
+		: fbo(0), texture(nullptr), rbo(0), width(width), height(height), profile(profile)
 	{
 		glGenFramebuffers(1, &fbo);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -87,12 +87,7 @@ namespace dukat
 	{
 		if (texture != nullptr)
 		{
-			glBindTexture(texture->target, texture->id);
-			glTexImage2D(texture->target, 0, GL_RGBA, texture->w, texture->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-			glTexParameteri(texture->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(texture->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameterf(texture->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameterf(texture->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			initialize_draw_buffer(texture.get());
 			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture->target, texture->id, 0);
 		}
 
@@ -154,9 +149,35 @@ namespace dukat
 		glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3]);
 	}
 
-	void FrameBuffer::attach_draw_buffer(Texture* texture)
+	void FrameBuffer::initialize_draw_buffer(Texture* t)
 	{
-		glBindTexture(texture->target, texture->id);
-        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture->target, texture->id, 0);
+		glBindTexture(t->target, t->id);
+		glTexImage2D(t->target, 0, GL_RGBA, t->w, t->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		glTexParameterf(t->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(t->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		switch (profile)
+		{
+		case TextureFilterProfile::ProfileNearest:
+			glTexParameteri(t->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(t->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			break;
+		case TextureFilterProfile::ProfileLinear:
+		default:
+			glTexParameteri(t->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(t->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			break;
+		}
+	}
+
+	void FrameBuffer::attach_draw_buffer(Texture* t)
+	{
+		glBindTexture(t->target, t->id);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, t->target, t->id, 0);
+	}
+
+	void FrameBuffer::detach_draw_buffer(void)
+	{
+		if (texture != nullptr)
+			attach_draw_buffer(texture.get());
 	}
 }

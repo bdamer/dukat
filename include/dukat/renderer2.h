@@ -60,7 +60,7 @@ namespace dukat
 		// Draws the scene.
 		void render(void);
 		// Creates a new layer with a given priority.
-		RenderLayer2* create_layer(const std::string& id, float priority, float parallax = 1.0f);
+		RenderLayer2* create_layer(const std::string& id, float priority, float parallax = 1.0f, bool has_render_target = false);
 		// Destroys an existing render layer.
 		void destroy_layer(const std::string& id);
 		// Destroys all rendering layers.
