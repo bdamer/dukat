@@ -58,7 +58,7 @@ namespace dukat
 #endif
 	}
 
-	GLint ShaderProgram::attr(const std::string & name)
+	GLint ShaderProgram::attr(const std::string& name)
 	{
 		if (attributes.count(name) == 0)
 		{

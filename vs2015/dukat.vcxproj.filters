@@ -447,6 +447,9 @@
     <ClInclude Include="..\include\dukat\textbutton.h">
       <Filter>Header Files\ui</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\bit.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -700,6 +703,9 @@
     </ClCompile>
     <ClCompile Include="..\src\textbutton.cpp">
       <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\bit.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

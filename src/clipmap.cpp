@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/clipmap.h>
+#include <dukat/bit.h>
 #include <dukat/blockbuilder.h>
 #include <dukat/heightmap.h>
 #include <dukat/log.h>
@@ -360,7 +361,7 @@ namespace dukat
             // Each test will move the origin of the current level and then
             // check the level's orientation within the next coarser level
             // to see if that one needs to be updated as well.
-            if ((update_flags & left) == left)
+            if (check_flag(update_flags, left))
             {
                 offset_shift.x = grid_size;
                 if (level.is_right())
@@ -373,7 +374,7 @@ namespace dukat
                     level.orientation &= 0x1;
                 }
             }
-            else if ((update_flags & right) == right) 
+            else if (check_flag(update_flags, right)) 
             {
                 offset_shift.x = -grid_size;
                 if (level.is_left())
@@ -391,7 +392,7 @@ namespace dukat
                 offset_shift.x = 0.0f;
             }
 
-            if ((update_flags & up) == up)
+            if (check_flag(update_flags, up))
             {
                 offset_shift.y = grid_size;
                 if (level.is_bottom())
@@ -404,7 +405,7 @@ namespace dukat
                     level.orientation &= 0x2;
                 }
             }
-            else if ((update_flags & down) == down)
+            else if (check_flag(update_flags, down))
             {
                 offset_shift.y = -grid_size;
                 if (level.is_top())

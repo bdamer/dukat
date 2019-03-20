@@ -3,6 +3,7 @@
 #include <dukat/vertextypes2.h>
 #include <dukat/mathutil.h>
 #include <dukat/collisionmanager2.h>
+#include <dukat/bit.h>
 
 namespace dukat
 {
@@ -63,7 +64,7 @@ namespace dukat
 
 		auto cm = game->get<CollisionManager2>();
 
-		if ((flags & Flags::GRID) == Flags::GRID)
+		if (check_flag(flags, Flags::GRID))
 		{
 			Color tree_color{ 0.0f, 0.0f, 1.0f, 1.0f };
 			std::queue<QuadTree<CollisionManager2::Body>*> queue;
@@ -85,7 +86,7 @@ namespace dukat
 			}
 		}
 
-		if ((flags & Flags::BODIES) == Flags::BODIES)
+		if (check_flag(flags, Flags::BODIES))
 		{
 			Color fixed_color{ 1.0f, 1.0f, 1.0f, 0.5f };
 			Color dynamic_color{ 1.0f, 1.0f, 1.0f, 1.0f };

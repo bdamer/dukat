@@ -81,6 +81,7 @@
 #include "window.h"
 
 // Util
+#include "bit.h"
 #ifndef __ANDROID__
 #include "dds.h"
 #include "diamondsquaregenerator.h"
