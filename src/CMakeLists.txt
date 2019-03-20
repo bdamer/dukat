@@ -6,7 +6,7 @@ file(GLOB SOURCE_FILES *.cpp)
 if(ANDROID)
 	file (GLOB SOURCE_FILES
 		aabb2.cpp aabb3.cpp animationmanager.cpp application.cpp assetloader.cpp
-		blockbuilder.cpp boundingcircle.cpp boundingsphere.cpp buffers.cpp
+		bit.cpp blockbuilder.cpp boundingcircle.cpp boundingsphere.cpp buffers.cpp
 		camera2.cpp camera3.cpp collisionmanager2.cpp
 		debugeffect2.cpp devicemanager.cpp
 		effectpass.cpp environment.cpp eulerangles.cpp
