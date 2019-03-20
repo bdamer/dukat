@@ -13,9 +13,7 @@ namespace dukat
 		if (chunk == nullptr)
 		{
 			log->warn("Failed to load {}: {}", filename, Mix_GetError());
-			std::stringstream ss;
-			ss << "Could not load sample: " << filename;
-			throw std::runtime_error(ss.str());
+			return nullptr;
 		}
 		return std::make_unique<Sample>(chunk);
 	}
@@ -28,9 +26,7 @@ namespace dukat
 		if (music == nullptr)
 		{
 			log->warn("Failed to load {}: {}", filename, Mix_GetError());
-			std::stringstream ss;
-			ss << "Could not load music: " << filename;
-			throw std::runtime_error(ss.str());
+			return nullptr;
 		}
 		return std::make_unique<Music>(music);
 	}
