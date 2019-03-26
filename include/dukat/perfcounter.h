@@ -32,6 +32,7 @@ namespace dukat
 			SAMPLES,		// No# of sampling operations
 			BB_CHECKS,		// No# of bounding-box checks
 			ENTITIES,		// No# of game entities
+			BODIES,			// No# of collision bodies
 			CUSTOM1,		// Custom counters
 			CUSTOM2,
 			CUSTOM3,

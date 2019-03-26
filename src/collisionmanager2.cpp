@@ -108,6 +108,7 @@ namespace dukat
 		{
 			if (b->active)
 			{
+				perfc.inc(PerformanceCounter::BODIES);
 				tree->insert(b.get());
 			}
 		}

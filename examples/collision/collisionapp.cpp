@@ -65,7 +65,7 @@ namespace dukat
 		game->get<TimerManager>()->create_timer(0.25f, [&]() {
 			auto cm = game->get<CollisionManager2>();
 			std::stringstream ss;
-			ss << "Objects: " << cm->body_count() << std::endl
+			ss << "Bodies: " << perfc.avg(PerformanceCounter::BODIES) << std::endl
 				<< "Collisions: " << cm->contact_count() << std::endl
 				<< "Tests: " << perfc.avg(PerformanceCounter::BB_CHECKS) << std::endl
 				<< "<Space> Pause movement" << std::endl

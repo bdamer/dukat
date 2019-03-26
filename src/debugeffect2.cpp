@@ -81,38 +81,34 @@ namespace dukat
 						queue.push(t->child(i));
 				}
 
-				if (world_bb.contains(t->min) || world_bb.contains(t->max))
+				if (world_bb.contains(t->min) || world_bb.contains(Vector2{ t->min.x, t->max.y }) || 
+					world_bb.contains(t->max) || world_bb.contains(Vector2{ t->max.x, t->min.y }))
 					render_rect(t->min, t->max, tree_color);
 			}
 		}
 
 		if (check_flag(flags, Flags::BODIES))
 		{
-			Color fixed_color{ 1.0f, 1.0f, 1.0f, 0.5f };
-			Color dynamic_color{ 1.0f, 1.0f, 1.0f, 1.0f };
-			Color sensor_color{ 1.0f, 1.0f, 0.0f, 1.0f };
-			Color contact_color{ 1.0f, 0.0f, 0.0f, 0.8f };
+			const Color disabled_color{ 1.0f, 1.0f, 1.0f, 0.25f };
+			const Color fixed_color{ 1.0f, 1.0f, 1.0f, 0.5f };
+			const Color dynamic_color{ 1.0f, 1.0f, 1.0f, 1.0f };
+			const Color sensor_color{ 1.0f, 1.0f, 0.0f, 1.0f };
+			const Color contact_color{ 1.0f, 0.0f, 0.0f, 0.8f };
 			for (const auto& b : cm->bodies)
 			{
 				if (!world_bb.overlaps(b->bb))
 					continue;
 
-				if (!b->dynamic)
-				{
+				if (!b->active)
+					render_bounding_box(b->bb, disabled_color);
+				else if (!b->dynamic)
 					render_bounding_box(b->bb, fixed_color);
-				}
 				else if (!cm->get_contacts(b.get()).empty())
-				{
 					render_bounding_box(b->bb, contact_color);
-				}
 				else if (b->solid)
-				{
 					render_bounding_box(b->bb, dynamic_color);
-				}
 				else
-				{
 					render_bounding_box(b->bb, sensor_color);
-				}
 			}
 		}
 	}
