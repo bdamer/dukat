@@ -152,6 +152,7 @@
     <ClInclude Include="..\include\dukat\bit.h" />
     <ClInclude Include="..\include\dukat\boundingcircle.h" />
     <ClInclude Include="..\include\dukat\box2dmanager.h" />
+    <ClInclude Include="..\include\dukat\cameraeffect2.h" />
     <ClInclude Include="..\include\dukat\collision.h" />
     <ClInclude Include="..\include\dukat\collisionmanager2.h" />
     <ClInclude Include="..\include\dukat\controller.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="..\include\dukat\quadtree.h" />
     <ClInclude Include="..\include\dukat\scene.h" />
     <ClInclude Include="..\include\dukat\scene2.h" />
+    <ClInclude Include="..\include\dukat\shakycameraeffect.h" />
     <ClInclude Include="..\include\dukat\shape.h" />
     <ClInclude Include="..\include\dukat\textbutton.h" />
     <ClInclude Include="..\include\dukat\uicontrol.h" />
@@ -289,6 +291,7 @@
     <ClCompile Include="..\src\meshdata.cpp" />
     <ClCompile Include="..\src\mirroreffect2.cpp" />
     <ClCompile Include="..\src\scene2.cpp" />
+    <ClCompile Include="..\src\shakycameraeffect.cpp" />
     <ClCompile Include="..\src\textbutton.cpp" />
     <ClCompile Include="..\src\uimanager.cpp" />
     <ClCompile Include="..\src\voronoi.cpp" />

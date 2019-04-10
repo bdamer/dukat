@@ -4,6 +4,7 @@
 #include "recipient.h"
 #include "vector2.h"
 #include "window.h"
+#include "cameraeffect2.h"
 
 namespace dukat
 {
@@ -28,6 +29,7 @@ namespace dukat
 		float near_clip;
 		float far_clip;
 		bool fixed_dimension;
+		std::unique_ptr<CameraEffect2> effect;
 
 	public:
 		CameraTransform2 transform;
@@ -41,6 +43,7 @@ namespace dukat
 		void set_clip(float near_clip, float far_clip) { this->near_clip = near_clip; this->far_clip = far_clip; }
 		void refresh(void) { resize(window->get_width(), window->get_height()); }
 		float get_aspect_ratio(void) const { return aspect_ratio; }
+		void set_effect(std::unique_ptr<CameraEffect2> effect) { this->effect = std::move(effect); }
 
 		// Updates the camera's view matrix. Subclasses of camera should update
 		// the camera axes and call this method to update the view matrix.

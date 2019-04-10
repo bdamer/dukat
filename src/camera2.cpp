@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/camera2.h>
+#include <dukat/cameraeffect2.h>
 #include <dukat/log.h>
 #include <dukat/vector3.h>
 #include <dukat/gamebase.h>
@@ -10,7 +11,7 @@ namespace dukat
 	const float Camera2::default_far_clip = 1000.0f;
 
 	Camera2::Camera2(GameBase* game, const Vector2& dimension)
-		: window(game->get_window()), near_clip(default_near_clip), far_clip(default_far_clip)
+		: window(game->get_window()), near_clip(default_near_clip), far_clip(default_far_clip), effect(nullptr)
 	{
 		window->subscribe(Events::WindowResized, this);
 		fixed_dimension = (dimension.x != 0.0f && dimension.y != 0.0f);
@@ -49,6 +50,9 @@ namespace dukat
 
 	void Camera2::update(float delta)
 	{
+		if (effect != nullptr && !effect->is_done())
+			effect->update_transform(delta, transform);
+
 		// Rebuild camera / view matrix
 		transform.mat_view.setup_translation(Vector3(-transform.position.x, -transform.position.y, 0.0f));
 	}

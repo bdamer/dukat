@@ -450,6 +450,12 @@
     <ClInclude Include="..\include\dukat\bit.h">
       <Filter>Header Files\system</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\cameraeffect2.h">
+      <Filter>Header Files\video\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\shakycameraeffect.h">
+      <Filter>Header Files\video\camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -706,6 +712,9 @@
     </ClCompile>
     <ClCompile Include="..\src\bit.cpp">
       <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\shakycameraeffect.cpp">
+      <Filter>Source Files\video\camera</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -108,6 +108,7 @@
 #include "buffers.h"
 #include "camera2.h"
 #include "camera3.h"
+#include "cameraeffect2.h"
 #ifndef __ANDROID__
 #include "clipmap.h"
 #endif
@@ -139,6 +140,7 @@
 #include "renderer2.h"
 #include "renderer3.h"
 #include "renderlayer2.h"
+#include "shakycameraeffect.h"
 #include "shadercache.h"
 #include "shaderprogram.h"
 #include "sprite.h"
