@@ -15,6 +15,12 @@ namespace dukat
 		scenes.clear();
 	}
 	
+	void Game2::update(float delta)
+	{
+		GameBase::update(delta);
+		renderer->get_camera()->update(delta);
+	}
+
 	void Game2::toggle_debug(void)
 	{
 		GameBase::toggle_debug();

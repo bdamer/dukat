@@ -15,7 +15,7 @@ namespace dukat
 		Scene2(Game2* game) : game(game) { }
 		~Scene2(void) { }
 
-		virtual void update(float delta);
+		virtual void update(float delta) { };
 		virtual void render(void);
 	};
 }

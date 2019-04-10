@@ -12,6 +12,7 @@ namespace dukat
 	{
 	protected:
 		std::unique_ptr<Renderer2> renderer;
+		virtual void update(float delta);
 		void toggle_debug(void);
 
 	public:
