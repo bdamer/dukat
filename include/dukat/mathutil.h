@@ -62,7 +62,7 @@ namespace dukat
 	// Rounds v to the next integer.
 	inline int round(float r) 
 	{
-		return (int)(r > 0.0f ? (r + 0.5f) : (r - 0.5f));
+		return static_cast<int>(r > 0.0f ? (r + 0.5f) : (r - 0.5f));
 	}
 
 	// Returns the positive modulo value.
@@ -113,22 +113,22 @@ namespace dukat
 
 	inline float normalize(int value, int max_value = INT_MAX)
 	{
-		return ((float)value / (float)max_value);
+		return static_cast<float>(value) / static_cast<float>(max_value);
 	}
 
 	inline float normalize(short value, short max_value = SHRT_MAX)
 	{
-		return ((float)value / (float)max_value);
+		return static_cast<float>(value) / static_cast<float>(max_value);
 	}
 
 	inline float normalize(char value, char max_value = CHAR_MAX)
 	{
-		return ((float)value / (float)max_value);
+		return static_cast<float>(value) / static_cast<float>(max_value);
 	}
 
 	inline float normalize(unsigned char value)
 	{
-		return ((float)value / 255.0f);
+		return static_cast<float>(value) / 255.0f;
 	}
 
 	template <typename T> 

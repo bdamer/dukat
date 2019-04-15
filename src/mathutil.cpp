@@ -6,7 +6,7 @@ namespace dukat
 	float wrap_pi(float theta)
 	{
 		theta += pi;
-		theta -= floor(theta * one_over_two_pi) * two_pi;
+		theta -= std::floor(theta * one_over_two_pi) * two_pi;
 		theta -= pi;
 		return theta;
 	}
@@ -22,7 +22,7 @@ namespace dukat
 		{
 			return 0.0f;
 		}
-		return acos(x);
+		return std::acos(x);
 	}
 
 	// Lookup table used for fast trig functions below
@@ -40,15 +40,17 @@ namespace dukat
 
 	float fast_sin(float value)
 	{
-		static TrigTable table(sinf);
+		static TrigTable table(std::sinf);
 		auto deg = static_cast<int>(rad_to_deg(value));
+		while (deg < 0) { deg += 360; }
 		return table.values[deg % 360];
 	}
 
 	float fast_cos(float value)
 	{
-		static TrigTable table(cosf);
+		static TrigTable table(std::cosf);
 		auto deg = static_cast<int>(rad_to_deg(value));
+		while (deg < 0) { deg += 360; }
 		return table.values[deg % 360];
 	}
 
