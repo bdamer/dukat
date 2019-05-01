@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <functional>
 #include <map>
 
@@ -35,12 +36,12 @@ namespace dukat
 
 	private:
 		static std::map<VirtualButton, std::function<void(void)>> handlers;
-		bool buttons[VirtualButton::_Count];
+		std::array<bool, VirtualButton::_Count> buttons;
 
 	protected:
 		std::string name;
 		Window* window;
-		int mapping[VirtualButton::_Count];
+		std::array<int, VirtualButton::_Count> mapping;
 		void update_button_state(VirtualButton button, bool pressed);
 
 	public:

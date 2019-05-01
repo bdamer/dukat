@@ -14,6 +14,8 @@ namespace dukat
 		int num_keys;
 		const Uint8* keystate;
 		bool mouse_lb, mouse_rb;
+		// Maps mouse buttons to virtual keys.
+		std::array<int, 3> mouse_mapping;
 		// Mouse sensitivity - 1 is the most sensitive, higher values reduce sensitivity
 		int sensitivity;
 
