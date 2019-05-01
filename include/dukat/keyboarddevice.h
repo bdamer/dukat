@@ -26,5 +26,6 @@ namespace dukat
 
 		void set_sensitivity(int sensitivity) { this->sensitivity = sensitivity; }
 		bool is_pressed(VirtualButton button) const;
+		int id(void) const { return keyboard_id; }
 	};
 }

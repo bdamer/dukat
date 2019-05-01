@@ -10,11 +10,22 @@ namespace dukat
 {
 	const float XBoxDevice::sensitivity = 1.0f;
 
-	XBoxDevice::XBoxDevice(Window* window, SDL_JoystickID id) : InputDevice(window, id, false)
+	XBoxDevice::XBoxDevice(Window* window, int joystick_index) : InputDevice(window, false), joystick_index(joystick_index)
 	{
-		name = SDL_JoystickNameForIndex(id);
+		name = SDL_JoystickNameForIndex(joystick_index);
 		log->debug("Initializing XInput device: {}", name);
 		
+		// Temporarily open SDL joystick so we can get instance ID
+		auto joystick = SDL_JoystickOpen(joystick_index);
+		if (joystick == nullptr)
+		{
+			std::ostringstream ss;
+			ss << "Could not open joystick: " << SDL_GetError();
+			throw std::runtime_error(ss.str());
+		}
+		joystick_id = SDL_JoystickInstanceID(joystick);
+		SDL_JoystickClose(joystick);
+
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
 		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_LEFT_SHOULDER;
         mapping[VirtualButton::Button2] = XINPUT_GAMEPAD_RIGHT_SHOULDER;
@@ -31,7 +42,7 @@ namespace dukat
 		mapping[VirtualButton::Left] = XINPUT_GAMEPAD_DPAD_LEFT;
 		mapping[VirtualButton::Up] = XINPUT_GAMEPAD_DPAD_UP;
 
-		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(id);
+		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(joystick_index);
 		char buffer[33];
 		SDL_JoystickGetGUIDString(guid, buffer, 33);
 		log->debug("Device GUID: {}", buffer);
@@ -43,7 +54,7 @@ namespace dukat
 
 	void XBoxDevice::update(void)
 	{
-		if (XInputGetState((DWORD)id, &state) != ERROR_SUCCESS)
+		if (XInputGetState(static_cast<DWORD>(joystick_index), &state) != ERROR_SUCCESS)
 		{
 			return; // could not poll
 		}
@@ -80,7 +91,7 @@ namespace dukat
 	void XBoxDevice::normalize_axis(SHORT ix, SHORT iy, float& ox, float& oy, SHORT deadzone)
 	{
 		// determine how far the controller is pushed
-		float magnitude = sqrtf((float)(ix * ix + iy * iy));
+		const auto magnitude = std::sqrt(static_cast<float>(ix * ix + iy * iy));
 		if (magnitude <= deadzone)
 		{
 			ox = 0.0f;
@@ -88,8 +99,8 @@ namespace dukat
 		}
 		else
 		{
-			ox = normalize((short)ix);
-			oy = normalize((short)iy);
+			ox = normalize(static_cast<short>(ix));
+			oy = normalize(static_cast<short>(iy));
 		}
 	}
 

@@ -9,7 +9,7 @@ namespace dukat
 {
 	const float GamepadDevice::sensitivity = 1.0f;
 
-	GamepadDevice::GamepadDevice(Window* window, SDL_JoystickID id, const Settings& settings) : InputDevice(window, id, false)
+	GamepadDevice::GamepadDevice(Window* window, int joystick_index, const Settings& settings) : InputDevice(window, false)
 	{
 		invert_y = settings.get_bool("input.gamepad.inverty", true);
 
@@ -28,12 +28,12 @@ namespace dukat
 		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", 13);		// DPAD Left
 		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", 11);			// DPAD Up
 
-		if (!SDL_IsGameController(id))
+		if (!SDL_IsGameController(joystick_index))
 		{
-			log->warn("Attempting to use incompatible device as gamepad: {}", id);
+			log->warn("Attempting to use incompatible device as gamepad: {}", joystick_index);
 		}
 
-		device = SDL_GameControllerOpen(id);
+		device = SDL_GameControllerOpen(joystick_index);
 		if (device == nullptr)
 		{
 			std::ostringstream ss;
@@ -43,7 +43,7 @@ namespace dukat
 		name = SDL_GameControllerName(device);
 		log->info("Gamepad connected: {}", name);
 
-		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(id);
+		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(joystick_index);
 		char buffer[33];
 		SDL_JoystickGetGUIDString(guid, buffer, 33);
 		log->debug("Device GUID: {}", buffer);
@@ -100,5 +100,11 @@ namespace dukat
 	bool GamepadDevice::is_pressed(VirtualButton button) const
 	{
 		return SDL_GameControllerGetButton(device, static_cast<SDL_GameControllerButton>(mapping[button])) == SDL_PRESSED;
+	}
+
+	int GamepadDevice::id(void) const
+	{
+		auto joystick = SDL_GameControllerGetJoystick(device);
+		return SDL_JoystickInstanceID(joystick);
 	}
 }

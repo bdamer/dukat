@@ -16,11 +16,12 @@ namespace dukat
 		bool invert_y;
 
 	public:
-		GamepadDevice(Window* window, SDL_JoystickID id, const Settings& settings);
+		GamepadDevice(Window* window, int joystick_index, const Settings& settings);
 		~GamepadDevice(void);
 
 		void update(void);
 		bool is_pressed(VirtualButton button) const;
 		bool is_inverted(void) const { return invert_y; }
+		int id(void) const;
 	};
 }

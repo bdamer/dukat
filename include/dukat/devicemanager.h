@@ -24,7 +24,7 @@ namespace dukat
 
 		void add_keyboard(Window* window);
 		void remove_keyboard(void);
-		void add_joystick(Window* window, SDL_JoystickID id);
+		void add_joystick(Window* window, int index);
 		void remove_joystick(SDL_JoystickID id);
 		void update(void);
 	};

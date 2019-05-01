@@ -15,16 +15,19 @@ namespace dukat
 	private:
 		const static float sensitivity;
 
+		const int joystick_index;
+		int joystick_id;
 		DWORD last_package;
 		XINPUT_STATE state;
 		void normalize_axis(SHORT ix, SHORT iy, float& ox, float& oy, SHORT deadzone = 0);
 		void normalize_trigger(BYTE i, float& o, BYTE deadzone = 0);
 
 	public:
-		XBoxDevice(Window* window, SDL_JoystickID id);
+		XBoxDevice(Window* window, int joystick_index);
 		~XBoxDevice(void);
 		void update(void);
 		bool is_pressed(VirtualButton button) const;
+		int id(void) const { return joystick_id; }
 	};
 }
 #endif

@@ -24,15 +24,15 @@ namespace dukat
 		trigger(Message{ Events::DeviceUnbound });
 	}
 
-	void DeviceManager::add_joystick(Window* window, SDL_JoystickID id)
+	void DeviceManager::add_joystick(Window* window, int joystick_index)
 	{
 		if (!settings.get_bool("input.joystick.support", true))
 			return;
 
-		const std::string name = SDL_JoystickNameForIndex(id);
-		log->info("Joystick device [{}] added: {}", id, name);
+		const std::string name = SDL_JoystickNameForIndex(joystick_index);
+		log->info("Joystick device @ index [{}] added: {}", joystick_index, name);
 		
-		if (active != nullptr && active->id != KeyboardDevice::keyboard_id)
+		if (active != nullptr && active->id() != KeyboardDevice::keyboard_id)
 		{
 			log->warn("Already using joystick device, ignoring new device.");
 			return;
@@ -43,12 +43,12 @@ namespace dukat
 		if (name.rfind(xinput, 0) == 0 || 
 			name == "Controller (Xbox 360 Wireless Receiver for Windows)")
 		{
-			controllers.push_back(std::make_unique<XBoxDevice>(window, id));
+			controllers.push_back(std::make_unique<XBoxDevice>(window, joystick_index));
 		}
 		else
 		{
 #endif
-			controllers.push_back(std::make_unique<GamepadDevice>(window, id, settings));
+			controllers.push_back(std::make_unique<GamepadDevice>(window, joystick_index, settings));
 #ifdef XBOX_SUPPORT
 		}
 #endif		
@@ -65,7 +65,7 @@ namespace dukat
 		std::vector<std::unique_ptr<InputDevice>>::size_type i = 0;
 		while (i < controllers.size())
 		{
-			if (controllers[i]->id == id)
+			if (controllers[i]->id() == id)
 			{
 				controllers.erase(controllers.begin() + i);
 				break;
