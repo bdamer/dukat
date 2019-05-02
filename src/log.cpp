@@ -20,7 +20,7 @@ namespace dukat
 	void init_logging(const Settings& settings)
 	{
 #ifndef __ANDROID__
-		spdlog::set_pattern("%^[%Y-%m-%d %H-%M-%S.%e] [%l] %v%$");
+		spdlog::set_pattern("[%Y-%m-%d %H-%M-%S.%e] [%l] %v");
 		// Enable async flush every 2 seconds
 		spdlog::set_async_mode(4096, spdlog::async_overflow_policy::block_retry,
                        nullptr,
@@ -29,17 +29,17 @@ namespace dukat
 		const auto log_output = settings.get_string("logging.output", "console");
 		if (log_output == "console")
 		{
+#ifdef WIN32
+			spdlog::set_pattern("%^[%Y-%m-%d %H-%M-%S.%e] [%l] %v%$");
 			log = spdlog::stdout_color_st("console");
 			auto console_sink = dynamic_cast<spdlog::sinks::wincolor_stdout_sink_st*>(log->sinks().back().get());
-#ifdef WIN32
 			console_sink->set_color(spdlog::level::trace, console_sink->CYAN);
 			console_sink->set_color(spdlog::level::debug, console_sink->BOLD);
 			console_sink->set_color(spdlog::level::info, console_sink->WHITE);
 			console_sink->set_color(spdlog::level::warn, console_sink->YELLOW);
 			console_sink->set_color(spdlog::level::err, console_sink->RED);
 #else
-			// TODO: Fixme
-			// console_sink->set_color(spdlog::level::info, "\033[37m");
+			log = spdlog::stdout_logger_st("console");
 #endif
 		}
 		else if (log_output == "file")

@@ -40,7 +40,7 @@ namespace dukat
 
 	float fast_sin(float value)
 	{
-		static TrigTable table(std::sinf);
+		static TrigTable table(sinf);
 		auto deg = static_cast<int>(rad_to_deg(value));
 		while (deg < 0) { deg += 360; }
 		return table.values[deg % 360];
@@ -48,7 +48,7 @@ namespace dukat
 
 	float fast_cos(float value)
 	{
-		static TrigTable table(std::cosf);
+		static TrigTable table(cosf);
 		auto deg = static_cast<int>(rad_to_deg(value));
 		while (deg < 0) { deg += 360; }
 		return table.values[deg % 360];
