@@ -62,7 +62,7 @@ namespace dukat
 
 	void Renderer2::initialize_frame_buffer(void)
 	{
-		log->debug("Initializing frame buffer.");
+		log->trace("Initializing frame buffer.");
 		if (camera == nullptr)
 		{
 			frame_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false, TextureFilterProfile::ProfileNearest);

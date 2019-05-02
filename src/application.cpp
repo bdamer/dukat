@@ -59,7 +59,7 @@ namespace dukat
 
 	int Application::run(void)
 	{
-		log->debug("Entering application loop.");
+		log->info("Entering application loop.");
 		uint32_t ticks, last_frame = 0;
 		SDL_Event e;
 		while (!done)

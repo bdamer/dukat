@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <dukat/buffers.h>
-#include <dukat/log.h>
 #include <dukat/perfcounter.h>
 #include <dukat/sysutil.h>
 

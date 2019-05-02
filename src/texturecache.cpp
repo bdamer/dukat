@@ -59,7 +59,7 @@ namespace dukat
 	{
 		log->debug("Loading texture [{}]", filename);
 		auto surface = load_surface(filename, hflip, vflip);
-		log->debug("Created {}x{} {} surface.", surface->get_width(), surface->get_height(),
+		log->trace("Created {}x{} {} surface.", surface->get_width(), surface->get_height(),
 			SDL_GetPixelFormatName(surface->get_surface()->format->format));
 		return std::make_unique<Texture>(*surface, profile);
 	}
