@@ -336,8 +336,9 @@ namespace dukat
 			}
 
 			// check if particle visible and store result in ->rendered
-			if ((p->rendered = bb.contains(p->pos)))
+			if (bb.contains(p->pos))
 			{
+				p->flags |= Particle::Rendered;
 				particle_data[particle_count].px = p->pos.x;
 				particle_data[particle_count].py = p->pos.y;
 				particle_data[particle_count].size = p->size;
@@ -348,6 +349,10 @@ namespace dukat
 				particle_data[particle_count].ca = p->color.a;
 				perfc.inc(PerformanceCounter::PARTICLES);
 				particle_count++;
+			}
+			else
+			{
+				p->flags &= ~Particle::Rendered;
 			}
 			++it;
 		}

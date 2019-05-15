@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/particlemanager.h>
+#include <dukat/bit.h>
 
 namespace dukat
 {
@@ -24,6 +25,12 @@ namespace dukat
 		particles.push_front(std::move(particle));
 	}
 
+	void ParticleManager::clear(void)
+	{
+		for (auto& p : particles)
+			p->ttl = -1.0f;
+	}
+
 	void ParticleManager::update(float delta)
 	{
 		for (auto it = particles.begin(); it != particles.end(); )
@@ -34,8 +41,14 @@ namespace dukat
 			}
 			else
 			{
-				(*it)->ttl -= delta;
-				(*it)->pos += (*it)->dp * delta;
+				auto& p = *it;
+				p->ttl -= delta;
+				if (check_flag(p->flags, Particle::Linear))
+					p->pos += p->dp * delta;
+				if (check_flag(p->flags, Particle::Gravitational))
+					p->dp.y += gravity * delta;
+				if (check_flag(p->flags, Particle::Dampened))
+					p->dp *= dampening;
 				(*it)->color += (*it)->dc * delta;
 				(*it)->size += (*it)->dsize * delta;
 				++it;
