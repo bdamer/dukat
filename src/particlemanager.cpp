@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <dukat/particlemanager.h>
 #include <dukat/bit.h>
+#include <dukat/log.h>
 
 namespace dukat
 {
@@ -9,9 +10,7 @@ namespace dukat
 		auto particle = std::make_unique<Particle>();
 		auto res = particle.get();
 		if (particles.size() == max_particles)
-		{
-			particles.pop_back();
-		}
+			free_particle();
 		particles.push_front(std::move(particle));
 		return res;
 	}
@@ -19,10 +18,20 @@ namespace dukat
 	void ParticleManager::add_particle(std::unique_ptr<Particle> particle)
 	{
 		if (particles.size() == max_particles)
-		{
-			particles.pop_back();
-		}
+			free_particle();
 		particles.push_front(std::move(particle));
+	}
+
+	void ParticleManager::free_particle(void)
+	{
+		for (auto it = particles.rbegin(); it != particles.rend(); ++it)
+		{
+			if ((*it)->ttl > 0.0f)
+			{
+				(*it)->ttl = -1.0f;
+				return;
+			}
+		}
 	}
 
 	void ParticleManager::clear(void)

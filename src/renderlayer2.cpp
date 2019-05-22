@@ -347,7 +347,6 @@ namespace dukat
 				particle_data[particle_count].cg = p->color.g;
 				particle_data[particle_count].cb = p->color.b;
 				particle_data[particle_count].ca = p->color.a;
-				perfc.inc(PerformanceCounter::PARTICLES);
 				particle_count++;
 			}
 			else
@@ -356,6 +355,7 @@ namespace dukat
 			}
 			++it;
 		}
+		perfc.inc(PerformanceCounter::PARTICLES, particle_count);
 
 		if (particle_count == 0)
 		{

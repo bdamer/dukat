@@ -21,6 +21,9 @@ namespace dukat
 		float dampening;
 		std::deque<std::unique_ptr<Particle>> particles;
 
+		// Internal method to artifically age particles at the end of the queue
+		void free_particle(void);
+
 	public:
 		ParticleManager(GameBase* game) : Manager(game), gravity(25.0f), dampening(0.99f) { }
 		~ParticleManager(void) { }
