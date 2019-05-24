@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-	ParticlesScene::ParticlesScene(Game2* game2) : Scene2(game2), particle_accu(0.0f)
+	ParticlesScene::ParticlesScene(Game2* game2) : Scene2(game2)
 	{
 		auto settings = game->get_settings();
 		particle_layer = game->get_renderer()->create_layer("main", 1.0f);
@@ -55,59 +55,67 @@ namespace dukat
 
 		// Register particle modes
 		modes.push_back(ParticleMode{ "Fire", 
-			400.0f, 0.25f, 
 			[&](void) {
-				emitters.clear();
+				auto pm = game->get<ParticleManager>();
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 9; i++)
 				{
-					emitters.push_back(Emitter{
-						Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) },
-						0.0f, pi_over_two
-						});
+					auto e = std::make_unique<FireEmitter>();
+					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) };
+					e->rate = 40.0f;
+					e->target_layer = particle_layer;
+					e->max_change = 0.25f;
+					pm->add_emitter(std::move(e));
 					x_offset += 0.005f;
 				}
-			},
-			std::bind(&ParticlesScene::update_fire, this, std::placeholders::_1) });
+			}
+		});
 
 		modes.push_back(ParticleMode{ "Smoke",
-			100.0f, 0.15f,
 			[&](void) {
-				emitters.clear();
+				auto pm = game->get<ParticleManager>();
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 5; i++)
 				{
-					emitters.push_back(Emitter{
-						Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) },
-						0.0f, pi_over_two
-						});
+					auto e = std::make_unique<SmokeEmitter>();
+					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) };
+					e->rate = 20.0f;
+					e->target_layer = particle_layer;
+					e->max_change = 0.15f;
+					pm->add_emitter(std::move(e));
 					x_offset += 0.01f;
 				}
-			},
-			std::bind(&ParticlesScene::update_smoke, this, std::placeholders::_1) });
+			}
+		});
 
 		modes.push_back(ParticleMode{ "Fountain",
-			200.0f, 0.2f,
 			[&](void) {
-				emitters.clear();
+				auto pm = game->get<ParticleManager>();
 				auto x_offset = -0.01f;
 				for (auto i = 0; i < 5; i++)
 				{
-					emitters.push_back(Emitter{
-						Vector2{ x_offset * static_cast<float>(camera_width), 0.0f * static_cast<float>(camera_height) },
-						0.0f, pi_over_two
-						});
+					auto e = std::make_unique<FountainEmitter>();
+					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.0f * static_cast<float>(camera_height) };
+					e->rate = 40.0f;
+					e->target_layer = particle_layer;
+					e->max_change = 0.2f;
+					pm->add_emitter(std::move(e));
 					x_offset += 0.005f;
 				}
-			},
-			std::bind(&ParticlesScene::update_fountain, this, std::placeholders::_1) });
+			}
+		});
 
 		modes.push_back(ParticleMode{ "Explosion",
-			0.0f, 0.0f,
 			[&](void) {
-				emitters.clear();
-			},
-			std::bind(&ParticlesScene::update_explosion, this, std::placeholders::_1) });
+				auto pm = game->get<ParticleManager>();
+				auto e = std::make_unique<ExplosionEmitter>();
+				e->pos = Vector2{ 0.0f, 0.0f };
+				e->rate = 100.0f;
+				e->target_layer = particle_layer;
+				e->repeat_interval = 5.0f;
+				pm->add_emitter(std::move(e));
+			}
+		});
 
 		change_particle_mode(0);
 	}
@@ -133,191 +141,8 @@ namespace dukat
 		modes[cur_mode].init();
 	}
 
-	void ParticlesScene::update_fire(float delta)
-	{
-		// FIRE
-		// - upward direction
-		// - fire should have variable ttl, so that you end up with holes
-		// - if using multiple emitters, each emitter should have a current 
-		//   direction that swings by random amount; that will cause subsequent 
-		//   particles to have similar direction
-
-		auto pm = game->get<ParticleManager>();
-		
-		static int idx = 0;
-		const auto range = 2.0f; // horizontal -range,range
-		const auto min_size = 1.0f;
-		const auto max_size = 6.0f;
-
-		while (particle_accu >= 1.0f)
-		{
-			auto& emitter = emitters[++idx % emitters.size()];
-
-			const auto offset = Vector2{ 0.0f, -range }.rotate(emitter.cur_angle);
-
-			auto p = pm->create_particle();
-			p->pos = emitter.pos + Vector2{ offset.x, 0.0f };
-			p->dp.x = 2.0f * offset.x;
-			p->dp.y = randf(-25.0f, -40.0f);
-
-			auto n_size = randf(0.0f, 1.0f);
-			p->size = min_size + n_size * (max_size - min_size);
-
-			// the further from center the more red particle starts out as
-			auto dist = std::abs(p->pos.x) / 8.0f;
-			p->color = { 1.0f, 1.0f - dist * 0.25f, 0.0f, 1.0f };
-			p->dc = { 0.0f, -0.5f, 0.0f, -0.05f - n_size * 1.0f };
-
-			// The smaller the particle, the longer it will live
-			p->ttl = 1.0f + (1.f - n_size) * 4.0f;
-
-			particle_layer->add(p);
-
-			particle_accu -= 1.0f;
-		}
-	}
-
-	void ParticlesScene::update_smoke(float delta)
-	{
-		// SMOKE
-		// - upward direction
-		// - position of emitter should ocilate on the x axis
-
-		auto pm = game->get<ParticleManager>();
-
-		static int idx = 0;
-		const auto range = 4.0f; // horizontal -range,range
-		const auto min_size = 4.0f;
-		const auto max_size = 8.0f;
-
-		while (particle_accu >= 1.0f)
-		{
-			auto& emitter = emitters[++idx % emitters.size()];
-
-			const auto offset = Vector2{ 0.0f, -range }.rotate(emitter.cur_angle);
-
-			auto p = pm->create_particle();
-			p->pos = emitter.pos + Vector2{ offset.x, 0.0f };
-			p->dp.x = offset.x;
-			p->dp.y = randf(-15.0f, -25.0f);
-
-			auto n_size = randf(0.0f, 1.0f);
-			p->size = min_size + n_size * (max_size - min_size);
-
-			p->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			p->dc = { 0.0f, 0.0f, 0.0f, -0.1f - n_size * 0.5f };
-
-			// The smaller the particle, the longer it will live
-			p->ttl = 2.0f + (1.f - n_size) * 4.0f;
-
-			particle_layer->add(p);
-
-			particle_accu -= 1.0f;
-		}
-	}
-
-	void ParticlesScene::update_fountain(float delta)
-	{
-		// FOUNTAIN
-		// - initial dx, dy
-		// - gravity pulls at dy->reduce and ultimately turn around
-
-		auto pm = game->get<ParticleManager>();
-
-		static int idx = 0;
-		const auto range = 4.0f; // horizontal -range,range
-		const auto min_size = 1.0f;
-		const auto max_size = 4.0f;
-		std::array<Color, 5> colors = {
-			color_rgba(0xffffffcc),
-			color_rgba(0x0cf1ffcc),
-			color_rgba(0x00cdf9dd),
-			color_rgba(0x0098dcee),
-			color_rgba(0x0069aaff)
-		};
-
-		static float time = 0;
-
-		time += delta;
-		const auto max_v = 40.0f + 10.0f * cosf(time);
-
-		while (particle_accu >= 1.0f)
-		{
-			auto& emitter = emitters[++idx % emitters.size()];
-
-			const auto offset = Vector2{ 0.0f, -range }.rotate(emitter.cur_angle);
-
-			auto p = pm->create_particle();
-			p->flags |= Particle::Gravitational;
-			p->pos = emitter.pos + Vector2{ offset.x, 0.0f };
-			p->dp.x = offset.x;
-			p->dp.y = randf(-30.0f, -max_v);
-			
-			auto size = randi(1, 6);
-			p->size = randf(1.0f, 4.0f);// static_cast<float>(size);
-			p->color = colors[size - 1];
-			p->dc = { 0.0f, 0.0f, 0.0f, -0.05f };
-			p->ttl = 4.0f;
-
-			particle_layer->add(p);
-
-			particle_accu -= 1.0f;
-		}
-	}
-
-	void ParticlesScene::update_explosion(float delta)
-	{
-		const auto max_time = 5.0f;
-		static auto time = max_time;
-		time += delta;
-
-		if (time < max_time)
-			return;
-
-		time = 0.0f;
-
-		auto pm = game->get<ParticleManager>();
-		const auto min_size = 1.0f;
-		const auto max_size = 6.0f;
-
-		for (int i = 0; i < 200; i++)
-		{
-			const auto angle = randf(0.0f, two_pi);
-			const auto offset = Vector2{ 0.0f, -1.0f }.rotate(angle);
-
-			auto p = pm->create_particle();
-			p->flags |= Particle::Dampened;
-			p->pos = Vector2{ 0.0f, 0.0f };
-			p->dp = offset * randf(25.0f, 35.0f);
-
-			auto n_size = randf(0.0f, 1.0f);
-			p->size = min_size + n_size * (max_size - min_size);
-
-			// the further from center the more red particle starts out as
-			auto dist = std::abs(p->pos.x) / 8.0f;
-			p->color = { 1.0f, 1.0f - dist * 0.25f, 0.0f, 1.0f };
-			p->dc = { 0.0f, -0.5f, 0.0f, -0.1f - n_size * 0.8f };
-
-			// The smaller the particle, the longer it will live
-			p->ttl = 1.0f + (1.f - n_size) * 4.0f;
-
-			particle_layer->add(p);
-		}
-	}
-
 	void ParticlesScene::update(float delta)
 	{
-		const auto& mode = modes[cur_mode];
-
-		// Update angle of each emitter
-		for (auto& e : emitters)
-			e.cur_angle += randf(-mode.max_change, mode.max_change);
-
-		// Update accumulator based on particle rate
-		particle_accu += delta * mode.particle_rate;
-
-		// Emit new particles
-		mode.update(delta);
 	}
 
 	void ParticlesScene::handle_keyboard(const SDL_Event& e)

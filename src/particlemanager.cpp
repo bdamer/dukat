@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/particlemanager.h>
+#include <dukat/particleemitter.h>
 #include <dukat/bit.h>
 #include <dukat/log.h>
 
@@ -38,10 +39,14 @@ namespace dukat
 	{
 		for (auto& p : particles)
 			p->ttl = -1.0f;
+		emitters.clear();
 	}
 
 	void ParticleManager::update(float delta)
 	{
+		for (auto& e : emitters) 
+			e->update(this, delta);
+
 		for (auto it = particles.begin(); it != particles.end(); )
 		{
 			if ((*it)->ttl <= 0.0f)
@@ -63,5 +68,14 @@ namespace dukat
 				++it;
 			}
 		}
+	}
+
+	void ParticleManager::remove_emitter(ParticleEmitter* emitter) 
+	{ 
+		auto it = std::find_if(emitters.begin(), emitters.end(), [emitter](const std::unique_ptr<ParticleEmitter>& e) {
+			return e.get() == emitter;
+		});
+		if (it != emitters.end())
+			emitters.erase(it);
 	}
 }

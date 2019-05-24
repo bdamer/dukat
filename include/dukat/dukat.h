@@ -135,6 +135,7 @@
 #include "orbitallight.h"
 #include "orbitcamera3.h"
 #include "particle.h"
+#include "particleemitter.h"
 #include "particlemanager.h"
 #include "renderer.h"
 #include "renderer2.h"

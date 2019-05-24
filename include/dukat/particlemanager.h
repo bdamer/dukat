@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "particle.h"
+#include "particleemitter.h"
 #include "manager.h"
 
 namespace dukat
@@ -19,7 +20,10 @@ namespace dukat
 		float gravity;
 		// Dampening factor.
 		float dampening;
+		// Particle list
 		std::deque<std::unique_ptr<Particle>> particles;
+		// List of registered emitters
+		std::vector<std::unique_ptr<ParticleEmitter>> emitters;
 
 		// Internal method to artifically age particles at the end of the queue
 		void free_particle(void);
@@ -39,5 +43,8 @@ namespace dukat
 
 		void set_gravity(float gravity) { this->gravity = gravity; }
 		void set_dampening(float dampening) { this->dampening = dampening; }
+
+		ParticleEmitter* add_emitter(std::unique_ptr<ParticleEmitter> emitter) { emitters.push_back(std::move(emitter)); }
+		void remove_emitter(ParticleEmitter* emitter);	
 	};
 }
