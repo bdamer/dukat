@@ -70,6 +70,36 @@ namespace dukat
 		}
 	}
 
+	ParticleEmitter* ParticleManager::create_emitter(const ParticleEmitter::Recipe& recipe)
+	{
+		std::unique_ptr<ParticleEmitter> emitter;
+		switch (recipe.type)
+		{
+			case ParticleEmitter::Recipe::Fire:
+				emitter = std::make_unique<FireEmitter>(recipe);
+				break;
+			case ParticleEmitter::Recipe::Smoke:
+				emitter = std::make_unique<SmokeEmitter>(recipe);
+				break;
+			case ParticleEmitter::Recipe::Fountain:
+				emitter = std::make_unique<FountainEmitter>(recipe);
+				break;
+			case ParticleEmitter::Recipe::Explosion:
+				emitter = std::make_unique<ExplosionEmitter>(recipe);
+				break;
+			default:
+				emitter = nullptr;
+				break;
+		}
+
+		if (emitter == nullptr)
+			return nullptr;
+
+		auto res = emitter.get();
+		emitters.push_back(std::move(emitter)); 
+		return res;
+	}
+
 	void ParticleManager::remove_emitter(ParticleEmitter* emitter) 
 	{ 
 		auto it = std::find_if(emitters.begin(), emitters.end(), [emitter](const std::unique_ptr<ParticleEmitter>& e) {

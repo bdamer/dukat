@@ -60,12 +60,10 @@ namespace dukat
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 9; i++)
 				{
-					auto e = std::make_unique<FireEmitter>();
+					auto e = pm->create_emitter(ParticleEmitter::Recipe{ ParticleEmitter::Recipe::Fire });
 					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) };
 					e->rate = 40.0f;
 					e->target_layer = particle_layer;
-					e->max_change = 0.25f;
-					pm->add_emitter(std::move(e));
 					x_offset += 0.005f;
 				}
 			}
@@ -77,12 +75,10 @@ namespace dukat
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 5; i++)
 				{
-					auto e = std::make_unique<SmokeEmitter>();
+					auto e = pm->create_emitter(ParticleEmitter::Recipe{ ParticleEmitter::Recipe::Smoke });
 					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) };
 					e->rate = 20.0f;
 					e->target_layer = particle_layer;
-					e->max_change = 0.15f;
-					pm->add_emitter(std::move(e));
 					x_offset += 0.01f;
 				}
 			}
@@ -94,12 +90,10 @@ namespace dukat
 				auto x_offset = -0.01f;
 				for (auto i = 0; i < 5; i++)
 				{
-					auto e = std::make_unique<FountainEmitter>();
+					auto e = pm->create_emitter(ParticleEmitter::Recipe{ ParticleEmitter::Recipe::Fountain });
 					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.0f * static_cast<float>(camera_height) };
 					e->rate = 40.0f;
 					e->target_layer = particle_layer;
-					e->max_change = 0.2f;
-					pm->add_emitter(std::move(e));
 					x_offset += 0.005f;
 				}
 			}
@@ -108,12 +102,10 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Explosion",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = std::make_unique<ExplosionEmitter>();
+				auto e = pm->create_emitter(ParticleEmitter::Recipe{ ParticleEmitter::Recipe::Explosion });
 				e->pos = Vector2{ 0.0f, 0.0f };
 				e->rate = 100.0f;
 				e->target_layer = particle_layer;
-				e->repeat_interval = 5.0f;
-				pm->add_emitter(std::move(e));
 			}
 		});
 

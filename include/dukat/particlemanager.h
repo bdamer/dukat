@@ -44,7 +44,7 @@ namespace dukat
 		void set_gravity(float gravity) { this->gravity = gravity; }
 		void set_dampening(float dampening) { this->dampening = dampening; }
 
-		ParticleEmitter* add_emitter(std::unique_ptr<ParticleEmitter> emitter) { emitters.push_back(std::move(emitter)); }
+		ParticleEmitter* create_emitter(const ParticleEmitter::Recipe& recipe);
 		void remove_emitter(ParticleEmitter* emitter);	
 	};
 }

@@ -24,10 +24,10 @@ namespace dukat
             auto p = pm->create_particle();
             p->pos = pos + Vector2{ offset.x, 0.0f };
             p->dp.x = 2.0f * offset.x;
-            p->dp.y = randf(min_speed, max_speed);
+            p->dp.y = -randf(recipe.min_speed, recipe.max_speed);
 
             auto n_size = randf(0.0f, 1.0f);
-            p->size = min_size + n_size * (max_size - min_size);
+            p->size = recipe.min_size + n_size * (recipe.max_size - recipe.min_size);
 
             // the further from center the more red particle starts out as
             auto dist = std::abs(p->pos.x) / 8.0f;
@@ -35,7 +35,7 @@ namespace dukat
             p->dc = { 0.0f, -0.5f, 0.0f, -0.05f - n_size * 1.0f };
 
             // The smaller the particle, the longer it will live
-            p->ttl = min_ttl + (1.f - n_size) * (max_ttl - min_ttl);
+            p->ttl = recipe.min_ttl + (1.f - n_size) * (recipe.max_ttl - recipe.min_ttl);
 
             target_layer->add(p);
 
@@ -58,16 +58,16 @@ namespace dukat
             auto p = pm->create_particle();
             p->pos = pos + Vector2{ offset.x, 0.0f };
             p->dp.x = offset.x;
-            p->dp.y = randf(min_speed, max_speed);
+            p->dp.y = -randf(recipe.min_speed, recipe.max_speed);
 
             auto n_size = randf(0.0f, 1.0f);
-            p->size = min_size + n_size * (max_size - min_size);
+            p->size = recipe.min_size + n_size * (recipe.max_size - recipe.min_size);
 
             p->color = { 1.0f, 1.0f, 1.0f, 1.0f };
             p->dc = { 0.0f, 0.0f, 0.0f, -0.1f - n_size * 0.5f };
 
             // The smaller the particle, the longer it will live
-            p->ttl = min_ttl + (1.f - n_size) * (max_ttl - min_ttl);
+            p->ttl = recipe.min_ttl + (1.f - n_size) * (recipe.max_ttl - recipe.min_ttl);
 
             target_layer->add(p);
 
@@ -84,7 +84,7 @@ namespace dukat
         if (accumulator < 1.0f || target_layer == nullptr)
             return;
 
-        const auto max_v = max_speed * (1.0f + 0.25f * fast_cos(time));
+        const auto max_v = recipe.max_speed * (1.0f + 0.25f * fast_cos(time));
 
         while (accumulator >= 1.0f)
         {
@@ -94,13 +94,13 @@ namespace dukat
             p->flags |= Particle::Gravitational;
             p->pos = pos + Vector2{ offset.x, 0.0f };
             p->dp.x = offset.x;
-            p->dp.y = randf(min_speed, max_speed);
+            p->dp.y = -randf(recipe.min_speed, recipe.max_speed);
             
             auto size = randi(1, 6);
-            p->size = randf(min_size, max_size);
+            p->size = randf(recipe.min_size, recipe.max_size);
             p->color = colors[size - 1];
             p->dc = { 0.0f, 0.0f, 0.0f, -0.05f };
-            p->ttl = randf(min_ttl, max_ttl);
+            p->ttl = randf(recipe.min_ttl, recipe.max_ttl);
 
             target_layer->add(p);
 
@@ -125,10 +125,10 @@ namespace dukat
 			auto p = pm->create_particle();
 			p->flags |= Particle::Dampened;
 			p->pos = pos;
-			p->dp = offset * randf(min_speed, max_speed);
+			p->dp = offset * randf(recipe.min_speed, recipe.max_speed);
 
 			const auto n_size = randf(0.0f, 1.0f);
-			p->size = min_size + n_size * (max_size - min_size);
+			p->size = recipe.min_size + n_size * (recipe.max_size - recipe.min_size);
 
 			// the further from center the more red a particle starts out as
 			auto dist = std::abs(p->pos.x) / 8.0f;
@@ -136,7 +136,7 @@ namespace dukat
 			p->dc = { 0.0f, -0.5f, 0.0f, -0.1f - n_size * 0.8f };
 
 			// The smaller the particle, the longer it will live
-			p->ttl = min_ttl + (1.f - n_size) * (max_ttl - min_ttl);
+			p->ttl = recipe.min_ttl + (1.f - n_size) * (recipe.max_ttl - recipe.min_ttl);
 
 			target_layer->add(p);
 		}
