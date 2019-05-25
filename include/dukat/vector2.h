@@ -49,9 +49,9 @@ namespace dukat
 
 		friend std::ostream& operator<<(std::ostream& os, const Vector2& v);
 
-		const static Vector2 origin;
-		const static Vector2 unit_x;
-		const static Vector2 unit_y;
+		static const Vector2 origin;
+		static const Vector2 unit_x;
+		static const Vector2 unit_y;
 	};
 
 	inline Vector2& operator+=(Vector2& a, const Vector2& b)

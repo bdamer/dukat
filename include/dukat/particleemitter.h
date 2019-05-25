@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "color.h"
 #include "vector2.h"
 
@@ -11,46 +12,58 @@ namespace dukat
     // Abstract particle emitter base class.
     struct ParticleEmitter
     {
-        struct Recipe
-        {
-            // Recipe for a particle emitter.
-            enum Type 
-            {
-                Fire,
-                Smoke,
-                Fountain,
-                Explosion
-            };
+		struct Recipe
+		{
+			// Recipe for a particle emitter.
+			enum Type
+			{
+				Flame,
+				Smoke,
+				Fountain,
+				Explosion
+			};
 
-            Type type;
-            // particle size
-            float min_size;
-            float max_size;
-            // particle speed
-            float min_speed;
-            float max_speed;
-            // particle ttl
-            float min_ttl;
-            float max_ttl;
+			Type type;
+			// particle size
+			float min_size;
+			float max_size;
+			// particle speed
+			float min_speed;
+			float max_speed;
+			// particle ttl
+			float min_ttl;
+			float max_ttl;
+			// particle colors
+			std::array<Color, 4> colors;
 
-            Recipe(void) : min_size(0.0f), max_size(0.0f), min_speed(0.0f), max_speed(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
-            Recipe(Type type) : type(type), min_size(0.0f), max_size(0.0f), min_speed(0.0f), max_speed(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
-            ~Recipe(void) { }
-        };
+			Recipe(void) : min_size(0.0f), max_size(0.0f), min_speed(0.0f), max_speed(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
+			Recipe(Type type) : type(type), min_size(0.0f), max_size(0.0f), min_speed(0.0f), max_speed(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
+			Recipe(Type type, float min_size, float max_size, float min_speed, float max_speed, float min_ttl, float max_ttl, const std::array<Color,4> colors) 
+				: type(type), min_size(min_size), max_size(max_size), min_speed(min_speed), max_speed(max_speed), min_ttl(min_ttl), max_ttl(max_ttl), colors(colors) { }
+			~Recipe(void) { }
 
-        // Particle recipe
+			// Default recipes
+			static const Recipe FlameRecipe;
+			static const Recipe SmokeRecipe;
+			static const Recipe FountainRecipe;
+			static const Recipe ExplosionRecipe;
+		};
+
+		// Particle recipe
         Recipe recipe;
         // Emitter world pos
         Vector2 pos;
         // Rate of particle emission (particles / second)
         float rate;
+		// Will only generate particles if active
+		bool active;
         // Layer to add particles to
         RenderLayer2* target_layer;
         // Accumulator for particles to be emitted
         float accumulator;
 
-        ParticleEmitter(void) : rate(0.0f), target_layer(nullptr), accumulator(0.0f) { }
-        ParticleEmitter(const Recipe& recipe) : recipe(recipe), rate(0.0f), target_layer(nullptr), accumulator(0.0f) { }
+        ParticleEmitter(void) : rate(0.0f), active(true), target_layer(nullptr), accumulator(0.0f) { }
+        ParticleEmitter(const Recipe& recipe) : recipe(recipe), rate(0.0f), active(true), target_layer(nullptr), accumulator(0.0f) { }
         virtual ~ParticleEmitter(void) { }
 
         virtual void update(ParticleManager* pm, float delta) = 0;
@@ -66,13 +79,13 @@ namespace dukat
         void update(ParticleManager* pm, float delta) { if (update_func) update_func(this, pm, delta); };
     };
 
-    // FIRE
+    // FLAME
 	// - particles are emitted with upward direction
-    // - fire particles should have variable ttl, so that we end up with holes
+    // - flame particles have variable ttl, so that we end up with holes
     // - if using multiple emitters, each emitter should have a current 
     //   direction that swings by random amount; that will cause subsequent 
     //   particles to have similar direction
-    struct FireEmitter : public ParticleEmitter
+    struct FlameEmitter : public ParticleEmitter
     {
         // max change to angle per second
         float max_change;
@@ -81,23 +94,9 @@ namespace dukat
         // horizontal -range,range
         float range;
 
-        FireEmitter(void) : max_change(0.25f), angle(0.0f), range(2.0f) { }
-        FireEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.25f), angle(0.0f), range(2.0f)
-        {
-            if (this->recipe.min_size <= 0.0f)
-                this->recipe.min_size = 1.0f;
-            if (this->recipe.max_size <= 0.0f)
-                this->recipe.max_size = 6.0f;
-            if (this->recipe.min_ttl <= 0.0f)
-                this->recipe.min_ttl = 1.0f;
-            if (this->recipe.max_ttl <= 0.0f)
-                this->recipe.max_ttl = 5.0f;
-            if (this->recipe.min_speed <= 0.0f)
-                this->recipe.min_speed = 25.0f;
-            if (this->recipe.max_speed <= 0.0f)
-                this->recipe.max_speed = 40.0f;
-        }
-        ~FireEmitter(void) { }
+		FlameEmitter(void) : max_change(0.25f), angle(0.0f), range(2.0f) { }
+		FlameEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.25f), angle(0.0f), range(2.0f) { }
+        ~FlameEmitter(void) { }
 
         void update(ParticleManager* pm, float delta);
     };
@@ -105,6 +104,7 @@ namespace dukat
     // SMOKE
     // - upward direction of particles
     // - position of emitter ocilates on the x axis
+	// - single color that fades out over time
     struct SmokeEmitter : public ParticleEmitter
     {
         // max change to angle per second
@@ -115,21 +115,7 @@ namespace dukat
         float range;
 
         SmokeEmitter(void) : max_change(0.15f), angle(0.0f), range(4.0f) { }
-        SmokeEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.15f), angle(0.0f), range(4.0f)
-        {
-            if (this->recipe.min_size <= 0.0f)
-                this->recipe.min_size = 4.0f;
-            if (this->recipe.max_size <= 0.0f)
-                this->recipe.max_size = 8.0f;
-            if (this->recipe.min_ttl <= 0.0f)
-                this->recipe.min_ttl = 2.0f;
-            if (this->recipe.max_ttl <= 0.0f)
-                this->recipe.max_ttl = 6.0f;
-            if (this->recipe.min_speed <= 0.0f)
-                this->recipe.min_speed = 15.0f;
-            if (this->recipe.max_speed <= 0.0f)
-                this->recipe.max_speed = 25.0f;
-        }
+        SmokeEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.15f), angle(0.0f), range(4.0f) { }
         ~SmokeEmitter(void) { }
 
         void update(ParticleManager* pm, float delta);
@@ -140,14 +126,6 @@ namespace dukat
     // - gravity pulls at dy->reduce and ultimately turn around
     struct FountainEmitter : public ParticleEmitter
     {
-        static constexpr std::array<Color, 5> colors = {
-            Color{ 1.0f, 1.0f, 1.0f, 0.8f },
-            Color{ 0.47f, 0.945f, 1.0f, 0.8f },
-            Color{ 0.0f, 0.8f, 0.976f, 0.866f },
-            Color{ 0.0f, 0.596f, 0.862f, 0.933f },
-            Color{ 0.0f, 0.411f, 0.666f, 1.0f }
-        };
-
         // max change to angle per second
         float max_change;
         // current angle 
@@ -158,21 +136,7 @@ namespace dukat
         float range;
 
         FountainEmitter(void) : max_change(0.2f), angle(0.0f), time(0.0f), range(4.0f) { }
-        FountainEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.2f), angle(0.0f), range(4.0f)
-        {
-            if (this->recipe.min_size <= 0.0f)
-                this->recipe.min_size = 1.0f;
-            if (this->recipe.max_size <= 0.0f)
-                this->recipe.max_size = 4.0f;
-            if (this->recipe.min_ttl <= 0.0f)
-                this->recipe.min_ttl = 4.0f;
-            if (this->recipe.max_ttl <= 0.0f)
-                this->recipe.max_ttl = 4.0f;
-            if (this->recipe.min_speed <= 0.0f)
-                this->recipe.min_speed = 30.0f;
-            if (this->recipe.max_speed <= 0.0f)
-                this->recipe.max_speed = 40.0f;
-        }        
+        FountainEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.2f), angle(0.0f), time(0.0f), range(4.0f) { }
         ~FountainEmitter(void) { }
 
         void update(ParticleManager* pm, float delta);
@@ -188,21 +152,7 @@ namespace dukat
         float time;
 
         ExplosionEmitter(void) : repeat_interval(5.0f), time(0.0f) { }
-        ExplosionEmitter(const Recipe& recipe) : ParticleEmitter(recipe), repeat_interval(5.0f), time(0.0f)
-        {
-            if (this->recipe.min_size <= 0.0f)
-                this->recipe.min_size = 1.0f;
-            if (this->recipe.max_size <= 0.0f)
-                this->recipe.max_size = 6.0f;
-            if (this->recipe.min_ttl <= 0.0f)
-                this->recipe.min_ttl = 1.0f;
-            if (this->recipe.max_ttl <= 0.0f)
-                this->recipe.max_ttl = 6.0f;
-            if (this->recipe.min_speed <= 0.0f)
-                this->recipe.min_speed = 25.0f;
-            if (this->recipe.max_speed <= 0.0f)
-                this->recipe.max_speed = 35.0f;
-        } 
+        ExplosionEmitter(const Recipe& recipe) : ParticleEmitter(recipe), repeat_interval(5.0f), time(0.0f) { } 
         ~ExplosionEmitter(void) { }
 
         void update(ParticleManager* pm, float delta);

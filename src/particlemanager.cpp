@@ -44,8 +44,11 @@ namespace dukat
 
 	void ParticleManager::update(float delta)
 	{
-		for (auto& e : emitters) 
-			e->update(this, delta);
+		for (auto& e : emitters)
+		{
+			if (e->active)
+				e->update(this, delta);
+		}
 
 		for (auto it = particles.begin(); it != particles.end(); )
 		{
@@ -75,8 +78,8 @@ namespace dukat
 		std::unique_ptr<ParticleEmitter> emitter;
 		switch (recipe.type)
 		{
-			case ParticleEmitter::Recipe::Fire:
-				emitter = std::make_unique<FireEmitter>(recipe);
+			case ParticleEmitter::Recipe::Flame:
+				emitter = std::make_unique<FlameEmitter>(recipe);
 				break;
 			case ParticleEmitter::Recipe::Smoke:
 				emitter = std::make_unique<SmokeEmitter>(recipe);

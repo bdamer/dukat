@@ -716,5 +716,8 @@
     <ClCompile Include="..\src\shakycameraeffect.cpp">
       <Filter>Source Files\video\camera</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\particleemitter.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

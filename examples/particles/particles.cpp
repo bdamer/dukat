@@ -54,13 +54,13 @@ namespace dukat
 		game->set_controller(this);
 
 		// Register particle modes
-		modes.push_back(ParticleMode{ "Fire", 
+		modes.push_back(ParticleMode{ "Flame", 
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 9; i++)
 				{
-					auto e = pm->create_emitter(ParticleEmitter::Recipe{ ParticleEmitter::Recipe::Fire });
+					auto e = pm->create_emitter(ParticleEmitter::Recipe::FlameRecipe);
 					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) };
 					e->rate = 40.0f;
 					e->target_layer = particle_layer;
@@ -75,7 +75,7 @@ namespace dukat
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 5; i++)
 				{
-					auto e = pm->create_emitter(ParticleEmitter::Recipe{ ParticleEmitter::Recipe::Smoke });
+					auto e = pm->create_emitter(ParticleEmitter::Recipe::SmokeRecipe);
 					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) };
 					e->rate = 20.0f;
 					e->target_layer = particle_layer;
@@ -90,7 +90,7 @@ namespace dukat
 				auto x_offset = -0.01f;
 				for (auto i = 0; i < 5; i++)
 				{
-					auto e = pm->create_emitter(ParticleEmitter::Recipe{ ParticleEmitter::Recipe::Fountain });
+					auto e = pm->create_emitter(ParticleEmitter::Recipe::FountainRecipe);
 					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.0f * static_cast<float>(camera_height) };
 					e->rate = 40.0f;
 					e->target_layer = particle_layer;
@@ -102,7 +102,7 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Explosion",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe{ ParticleEmitter::Recipe::Explosion });
+				auto e = pm->create_emitter(ParticleEmitter::Recipe::ExplosionRecipe);
 				e->pos = Vector2{ 0.0f, 0.0f };
 				e->rate = 100.0f;
 				e->target_layer = particle_layer;
@@ -131,10 +131,6 @@ namespace dukat
 		info_text->set_text(ss.str());
 
 		modes[cur_mode].init();
-	}
-
-	void ParticlesScene::update(float delta)
-	{
 	}
 
 	void ParticlesScene::handle_keyboard(const SDL_Event& e)

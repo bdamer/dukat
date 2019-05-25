@@ -25,16 +25,12 @@ namespace dukat
 		std::vector<ParticleMode> modes;
 
 		int cur_mode;
-
 		void change_particle_mode(int m);
-		void update_fountain(float delta);
-		void update_explosion(float delta);
 
 	public:
 		ParticlesScene(Game2* game2);
 		~ParticlesScene(void) { }
 
-		void update(float delta);
 		void handle_keyboard(const SDL_Event& e);
 	};
 }
