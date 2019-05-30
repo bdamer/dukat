@@ -55,12 +55,18 @@ namespace dukat
         if (accumulator < 1.0f || target_layer == nullptr)
             return;
 
+		const auto offset_count = offsets.size();
         while (accumulator >= 1.0f)
         {
 			auto p = pm->create_particle();
 			
-			const auto offset = Vector2{ 0.0f, -range }.rotate(angle);
-            p->pos = pos + Vector2{ offset.x, 0.0f };
+			auto offset = Vector2{ 0.0f, -range }.rotate(angle);
+			offset.y = 0.f;
+			if (offset_count == 0)
+				p->pos = pos + offset;
+			else
+				p->pos = pos + offsets[rand() % offset_count] + offset;
+
             p->dp.x = 2.0f * offset.x;
             p->dp.y = -randf(recipe.min_speed, recipe.max_speed);
 
@@ -91,20 +97,27 @@ namespace dukat
         if (accumulator < 1.0f || target_layer == nullptr)
             return;
 
-        while (accumulator >= 1.0f)
+		const auto offset_count = offsets.size();
+		while (accumulator >= 1.0f)
         {
 			auto p = pm->create_particle();
 			
-			const auto offset = Vector2{ 0.0f, -range }.rotate(angle);
-            p->pos = pos + Vector2{ offset.x, 0.0f };
+			auto offset = Vector2{ 0.0f, -range }.rotate(angle);
+			offset.y = 0.f;
+			if (offset_count == 0)
+				p->pos = pos + offset;
+			else
+				p->pos = pos + offsets[rand() % offset_count] + offset;
+			
             p->dp.x = offset.x;
             p->dp.y = -randf(recipe.min_speed, recipe.max_speed);
 
 			const auto size = randf(0.0f, 1.0f);
             p->size = recipe.min_size + size * (recipe.max_size - recipe.min_size);
             p->color = recipe.colors[0];
-			p->dc = recipe.colors[1] * (0.1f + size); 
-			
+			p->dc = recipe.colors[1] * (0.25f + size); 
+			p->ry = pos.y + mirror_offset;
+
             // The smaller the particle, the longer it will live
             p->ttl = recipe.min_ttl + (1.f - size) * (recipe.max_ttl - recipe.min_ttl);
 
@@ -123,15 +136,21 @@ namespace dukat
         if (accumulator < 1.0f || target_layer == nullptr)
             return;
 
+		const auto offset_count = offsets.size();
 		const auto max_v = recipe.max_speed * (1.0f + 0.25f * fast_cos(time));
         while (accumulator >= 1.0f)
         {
 			auto p = pm->create_particle();
 			p->flags |= Particle::Gravitational;
 
-			const auto offset = Vector2{ 0.0f, -range }.rotate(angle);
-            p->pos = pos + Vector2{ offset.x, 0.0f };
-            p->dp.x = offset.x;
+			auto offset = Vector2{ 0.0f, -range }.rotate(angle);
+			offset.y = 0.f;
+			if (offset_count == 0)
+				p->pos = pos + offset;
+			else
+				p->pos = pos + offsets[rand() % offset_count] + offset;
+
+			p->dp.x = offset.x;
             p->dp.y = -randf(recipe.min_speed, recipe.max_speed);
             
             auto size = randi(1, recipe.colors.size());
@@ -157,6 +176,7 @@ namespace dukat
 
 		static const Vector2 base_vector{ 0.0f, -1.0f };
 
+		const auto offset_count = offsets.size();
 		for (int i = 0; i < static_cast<int>(rate); i++)
 		{
 			auto p = pm->create_particle();
@@ -164,7 +184,10 @@ namespace dukat
 
 			const auto angle = randf(0.0f, two_pi);
 			const auto offset = base_vector.rotate(angle);
-			p->pos = pos;
+			if (offset_count == 0)
+				p->pos = pos;
+			else
+				p->pos = pos + offsets[rand() % offset_count];
 			p->dp = offset * randf(recipe.min_speed, recipe.max_speed);
 
 			const auto n_size = randf(0.0f, 1.0f);

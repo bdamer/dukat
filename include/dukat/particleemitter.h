@@ -53,17 +53,22 @@ namespace dukat
         Recipe recipe;
         // Emitter world pos
         Vector2 pos;
+		// Offsets at which to emit particles
+		std::vector<Vector2> offsets;
         // Rate of particle emission (particles / second)
         float rate;
+		// offset from pos to horizontal mirror axis
+		float mirror_offset;
+		// Layer to add particles to
+        RenderLayer2* target_layer;
+
 		// Will only generate particles if active
 		bool active;
-        // Layer to add particles to
-        RenderLayer2* target_layer;
-        // Accumulator for particles to be emitted
+		// Accumulator for particles to be emitted
         float accumulator;
 
-        ParticleEmitter(void) : rate(0.0f), active(true), target_layer(nullptr), accumulator(0.0f) { }
-        ParticleEmitter(const Recipe& recipe) : recipe(recipe), rate(0.0f), active(true), target_layer(nullptr), accumulator(0.0f) { }
+        ParticleEmitter(void) : rate(0.0f), mirror_offset(0.0f), target_layer(nullptr), active(true), accumulator(0.0f) { }
+        ParticleEmitter(const Recipe& recipe) : recipe(recipe), rate(0.0f), mirror_offset(0.0f), target_layer(nullptr), active(true), accumulator(0.0f) { }
         virtual ~ParticleEmitter(void) { }
 
         virtual void update(ParticleManager* pm, float delta) = 0;

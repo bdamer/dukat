@@ -57,13 +57,14 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Flame", 
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
+				auto e = pm->create_emitter(ParticleEmitter::Recipe::FlameRecipe);
+				e->pos = Vector2{0.f, 0.25f * static_cast<float>(camera_height) };
+				e->rate = 400.0f;
+				e->target_layer = particle_layer;
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 9; i++)
 				{
-					auto e = pm->create_emitter(ParticleEmitter::Recipe::FlameRecipe);
-					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) };
-					e->rate = 40.0f;
-					e->target_layer = particle_layer;
+					e->offsets.push_back(Vector2{ x_offset * static_cast<float>(camera_width), 0.0f });
 					x_offset += 0.005f;
 				}
 			}
@@ -72,13 +73,14 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Smoke",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
+				auto e = pm->create_emitter(ParticleEmitter::Recipe::SmokeRecipe);
+				e->pos = Vector2{ 0.0f, 0.25f * static_cast<float>(camera_height) };
+				e->rate = 100.0f;
+				e->target_layer = particle_layer;
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 5; i++)
 				{
-					auto e = pm->create_emitter(ParticleEmitter::Recipe::SmokeRecipe);
-					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) };
-					e->rate = 20.0f;
-					e->target_layer = particle_layer;
+					e->offsets.push_back(Vector2{ x_offset * static_cast<float>(camera_width), 0.0f });
 					x_offset += 0.01f;
 				}
 			}
@@ -87,13 +89,14 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Fountain",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
+				auto e = pm->create_emitter(ParticleEmitter::Recipe::FountainRecipe);
+				e->pos = Vector2{ 0.f, 0.f };
+				e->rate = 200.0f;
+				e->target_layer = particle_layer;
 				auto x_offset = -0.01f;
 				for (auto i = 0; i < 5; i++)
 				{
-					auto e = pm->create_emitter(ParticleEmitter::Recipe::FountainRecipe);
-					e->pos = Vector2{ x_offset * static_cast<float>(camera_width), 0.0f * static_cast<float>(camera_height) };
-					e->rate = 40.0f;
-					e->target_layer = particle_layer;
+					e->offsets.push_back(Vector2{ x_offset * static_cast<float>(camera_width), 0.0f });
 					x_offset += 0.005f;
 				}
 			}
