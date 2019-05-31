@@ -17,6 +17,7 @@ namespace dukat
 			// Recipe for a particle emitter.
 			enum Type
 			{
+                Linear,
 				Flame,
 				Smoke,
 				Fountain,
@@ -27,19 +28,21 @@ namespace dukat
 			// particle size
 			float min_size;
 			float max_size;
-			// particle speed
-			float min_speed;
-			float max_speed;
 			// particle ttl
 			float min_ttl;
 			float max_ttl;
+            // particle speed
+            Vector2 min_dp;
+            Vector2 max_dp;
 			// particle colors
 			std::array<Color, 4> colors;
+            // color reduciton over time
+            Color dc;
 
-			Recipe(void) : min_size(0.0f), max_size(0.0f), min_speed(0.0f), max_speed(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
-			Recipe(Type type) : type(type), min_size(0.0f), max_size(0.0f), min_speed(0.0f), max_speed(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
-			Recipe(Type type, float min_size, float max_size, float min_speed, float max_speed, float min_ttl, float max_ttl, const std::array<Color,4> colors) 
-				: type(type), min_size(min_size), max_size(max_size), min_speed(min_speed), max_speed(max_speed), min_ttl(min_ttl), max_ttl(max_ttl), colors(colors) { }
+			Recipe(void) : min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
+			Recipe(Type type) : type(type), min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
+			Recipe(Type type, float min_size, float max_size, float min_ttl, float max_ttl, const Vector2& min_dp, const Vector2& max_dp, const std::array<Color,4> colors, const Color& dc) 
+				: type(type), min_size(min_size), max_size(max_size), min_ttl(min_ttl), max_ttl(max_ttl), min_dp(min_dp), max_dp(max_dp), colors(colors), dc(dc) { }
 			~Recipe(void) { }
 
 			// Default recipes
@@ -79,9 +82,20 @@ namespace dukat
         std::function<void(ParticleEmitter* em, ParticleManager* pm, float delta)> update_func;
 
         CustomEmitter(void) : update_func(nullptr) { }
-        virtual ~CustomEmitter(void) { }
+        ~CustomEmitter(void) { }
 
         void update(ParticleManager* pm, float delta) { if (update_func) update_func(this, pm, delta); };
+    };
+
+    // LINEAR
+    // - particles are created with direction in +/- dp range
+    struct LinearEmitter : public ParticleEmitter
+    {
+        LinearEmitter(void) { }
+        LinearEmitter(const Recipe& recipe) : ParticleEmitter(recipe) { }
+        ~LinearEmitter(void) { }
+
+        void update(ParticleManager* pm, float delta);
     };
 
     // FLAME

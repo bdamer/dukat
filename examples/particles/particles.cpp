@@ -54,6 +54,29 @@ namespace dukat
 		game->set_controller(this);
 
 		// Register particle modes
+		modes.push_back(ParticleMode{ "Linear", 
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+
+				ParticleEmitter::Recipe recipe{ 
+					ParticleEmitter::Recipe::Linear, 1.0f, 4.0f, 1.0f, 5.0f,
+					Vector2{ -15, -15 }, Vector2{ 15, 15 }, 	
+					{ 
+						Color{ 1.f, 0.f, 0.f, 1.f },
+						Color{ 0.f, 1.f, 0.f, 1.f },
+						Color{ 0.f, 0.f, 1.f, 1.f },
+						Color{ 1.f, 0.f, 1.f, 1.f }
+					},
+					Color{ 0.f, 0.f, 0.f, -0.1f }
+				};
+
+				auto e = pm->create_emitter(recipe);
+				e->pos = Vector2{0.f, 0.f };
+				e->rate = 200.0f;
+				e->target_layer = particle_layer;
+			}
+		});
+
 		modes.push_back(ParticleMode{ "Flame", 
 			[&](void) {
 				auto pm = game->get<ParticleManager>();

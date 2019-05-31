@@ -78,6 +78,9 @@ namespace dukat
 		std::unique_ptr<ParticleEmitter> emitter;
 		switch (recipe.type)
 		{
+			case ParticleEmitter::Recipe::Linear:
+				emitter = std::make_unique<LinearEmitter>(recipe);
+				break;
 			case ParticleEmitter::Recipe::Flame:
 				emitter = std::make_unique<FlameEmitter>(recipe);
 				break;
