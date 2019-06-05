@@ -36,6 +36,7 @@ namespace dukat
 		static constexpr Event ParentChanged = 16;
 		static constexpr Event TransformChanged = 17;
 		static constexpr Event VisibilityChanged = 18;
+		static constexpr Event LayerChanged = 19;
 		// Marks begin of a collision.
 		// param1: Body* that entity collided with.
 		// param2: Contact* contact of this collision.
