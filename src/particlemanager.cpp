@@ -6,69 +6,49 @@
 
 namespace dukat
 {
-	Particle* ParticleManager::create_particle(void)
-	{
-		auto particle = std::make_unique<Particle>();
-		auto res = particle.get();
-		if (particles.size() == max_particles)
-			free_particle();
-		particles.push_front(std::move(particle));
-		return res;
-	}
-
-	void ParticleManager::add_particle(std::unique_ptr<Particle> particle)
-	{
-		if (particles.size() == max_particles)
-			free_particle();
-		particles.push_front(std::move(particle));
-	}
-
-	void ParticleManager::free_particle(void)
-	{
-		for (auto it = particles.rbegin(); it != particles.rend(); ++it)
-		{
-			if ((*it)->ttl > 0.0f)
-			{
-				(*it)->ttl = -1.0f;
-				return;
-			}
-		}
-	}
-
 	void ParticleManager::clear(void)
 	{
-		for (auto& p : particles)
-			p->ttl = -1.0f;
+		for (auto& p : particles.data)
+			p.ttl = -1.0f;
 		emitters.clear();
 	}
 
 	void ParticleManager::update(float delta)
 	{
-		for (auto& e : emitters)
+		for (auto it = emitters.begin(); it != emitters.end(); )
 		{
+			auto& e = (*it);
 			if (e->active)
 				e->update(this, delta);
+			e->age += delta;
+			if (e->ttl > 0.0f && e->age >= e->ttl)
+				it = emitters.erase(it);
+			else
+				++it;
 		}
 
-		for (auto it = particles.begin(); it != particles.end(); )
+		// Reset free index
+		particles.free_index = 0;
+		for (auto& p : particles.data)
 		{
-			if ((*it)->ttl <= 0.0f)
+			if (!check_flag(p.flags, Particle::Alive))
+				continue;
+
+			if (p.ttl <= 0.0f)
 			{
-				it = particles.erase(it);
+				particles.release(p);
 			}
 			else
 			{
-				auto& p = *it;
-				p->ttl -= delta;
-				if (check_flag(p->flags, Particle::Linear))
-					p->pos += p->dp * delta;
-				if (check_flag(p->flags, Particle::Gravitational))
-					p->dp.y += gravity * delta;
-				if (check_flag(p->flags, Particle::Dampened))
-					p->dp *= dampening;
-				(*it)->color += (*it)->dc * delta;
-				(*it)->size += (*it)->dsize * delta;
-				++it;
+				p.ttl -= delta;
+				if (check_flag(p.flags, Particle::Linear))
+					p.pos += p.dp * delta;
+				if (check_flag(p.flags, Particle::Gravitational))
+					p.dp.y += gravity * delta;
+				if (check_flag(p.flags, Particle::Dampened))
+					p.dp *= dampening;
+				p.color += p.dc * delta;
+				p.size += p.dsize * delta;
 			}
 		}
 	}

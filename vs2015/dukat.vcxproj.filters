@@ -456,6 +456,12 @@
     <ClInclude Include="..\include\dukat\shakycameraeffect.h">
       <Filter>Header Files\video\camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\particleemitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\objectpool.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">

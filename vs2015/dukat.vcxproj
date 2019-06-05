@@ -172,6 +172,8 @@
     <ClInclude Include="..\include\dukat\mapshape.h" />
     <ClInclude Include="..\include\dukat\meshdata.h" />
     <ClInclude Include="..\include\dukat\mirroreffect2.h" />
+    <ClInclude Include="..\include\dukat\objectpool.h" />
+    <ClInclude Include="..\include\dukat\particleemitter.h" />
     <ClInclude Include="..\include\dukat\quadtree.h" />
     <ClInclude Include="..\include\dukat\scene.h" />
     <ClInclude Include="..\include\dukat\scene2.h" />

@@ -59,7 +59,7 @@ namespace dukat
 				auto pm = game->get<ParticleManager>();
 
 				ParticleEmitter::Recipe recipe{ 
-					ParticleEmitter::Recipe::Linear, 1.0f, 4.0f, 1.0f, 5.0f,
+					ParticleEmitter::Recipe::Linear, 200.0f, 1.0f, 4.0f, 1.0f, 5.0f,
 					Vector2{ -15, -15 }, Vector2{ 15, 15 }, 	
 					{ 
 						Color{ 1.f, 0.f, 0.f, 1.f },
@@ -72,7 +72,6 @@ namespace dukat
 
 				auto e = pm->create_emitter(recipe);
 				e->pos = Vector2{0.f, 0.f };
-				e->rate = 200.0f;
 				e->target_layer = particle_layer;
 			}
 		});
@@ -82,7 +81,6 @@ namespace dukat
 				auto pm = game->get<ParticleManager>();
 				auto e = pm->create_emitter(ParticleEmitter::Recipe::FlameRecipe);
 				e->pos = Vector2{0.f, 0.25f * static_cast<float>(camera_height) };
-				e->rate = 400.0f;
 				e->target_layer = particle_layer;
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 9; i++)
@@ -98,7 +96,6 @@ namespace dukat
 				auto pm = game->get<ParticleManager>();
 				auto e = pm->create_emitter(ParticleEmitter::Recipe::SmokeRecipe);
 				e->pos = Vector2{ 0.0f, 0.25f * static_cast<float>(camera_height) };
-				e->rate = 100.0f;
 				e->target_layer = particle_layer;
 				auto x_offset = -0.02f;
 				for (auto i = 0; i < 5; i++)
@@ -114,7 +111,6 @@ namespace dukat
 				auto pm = game->get<ParticleManager>();
 				auto e = pm->create_emitter(ParticleEmitter::Recipe::FountainRecipe);
 				e->pos = Vector2{ 0.f, 0.f };
-				e->rate = 200.0f;
 				e->target_layer = particle_layer;
 				auto x_offset = -0.01f;
 				for (auto i = 0; i < 5; i++)
@@ -130,7 +126,6 @@ namespace dukat
 				auto pm = game->get<ParticleManager>();
 				auto e = pm->create_emitter(ParticleEmitter::Recipe::ExplosionRecipe);
 				e->pos = Vector2{ 0.0f, 0.0f };
-				e->rate = 100.0f;
 				e->target_layer = particle_layer;
 			}
 		});

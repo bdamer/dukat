@@ -17,6 +17,7 @@ namespace dukat
 			// Recipe for a particle emitter.
 			enum Type
 			{
+				None,
                 Linear,
 				Flame,
 				Smoke,
@@ -25,6 +26,8 @@ namespace dukat
 			};
 
 			Type type;
+			// Rate of particle emission (particles / second)
+			float rate;
 			// particle size
 			float min_size;
 			float max_size;
@@ -39,10 +42,12 @@ namespace dukat
             // color reduciton over time
             Color dc;
 
-			Recipe(void) : min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
-			Recipe(Type type) : type(type), min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
-			Recipe(Type type, float min_size, float max_size, float min_ttl, float max_ttl, const Vector2& min_dp, const Vector2& max_dp, const std::array<Color,4> colors, const Color& dc) 
-				: type(type), min_size(min_size), max_size(max_size), min_ttl(min_ttl), max_ttl(max_ttl), min_dp(min_dp), max_dp(max_dp), colors(colors), dc(dc) { }
+			Recipe(void) : type(None), rate(0.0f), min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
+			Recipe(Type type) : type(type), rate(0.0f), min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
+			Recipe(Type type, float rate, float min_size, float max_size, float min_ttl, float max_ttl, 
+				const Vector2& min_dp, const Vector2& max_dp, const std::array<Color,4> colors, const Color& dc) 
+				: type(type), rate(rate), min_size(min_size), max_size(max_size), min_ttl(min_ttl), max_ttl(max_ttl), 
+				min_dp(min_dp), max_dp(max_dp), colors(colors), dc(dc) { }
 			~Recipe(void) { }
 
 			// Default recipes
@@ -58,20 +63,21 @@ namespace dukat
         Vector2 pos;
 		// Offsets at which to emit particles
 		std::vector<Vector2> offsets;
-        // Rate of particle emission (particles / second)
-        float rate;
 		// offset from pos to horizontal mirror axis
 		float mirror_offset;
 		// Layer to add particles to
         RenderLayer2* target_layer;
-
-		// Will only generate particles if active
-		bool active;
+		// Time-to-live for the emitter
+		float ttl;
+		// Age of the emitter
+		float age;
 		// Accumulator for particles to be emitted
         float accumulator;
+		// Will only generate particles if active
+		bool active;
 
-        ParticleEmitter(void) : rate(0.0f), mirror_offset(0.0f), target_layer(nullptr), active(true), accumulator(0.0f) { }
-        ParticleEmitter(const Recipe& recipe) : recipe(recipe), rate(0.0f), mirror_offset(0.0f), target_layer(nullptr), active(true), accumulator(0.0f) { }
+        ParticleEmitter(void) : mirror_offset(0.0f), target_layer(nullptr), ttl(0.0f), age(0.0f), accumulator(0.0f), active(true) { }
+        ParticleEmitter(const Recipe& recipe) : recipe(recipe), mirror_offset(0.0f), target_layer(nullptr), ttl(0.0f), age(0.0f), accumulator(0.0f), active(true) { }
         virtual ~ParticleEmitter(void) { }
 
         virtual void update(ParticleManager* pm, float delta) = 0;
@@ -110,11 +116,9 @@ namespace dukat
         float max_change;
         // current angle 
         float angle;
-        // horizontal -range,range
-        float range;
 
-		FlameEmitter(void) : max_change(0.25f), angle(0.0f), range(2.0f) { }
-		FlameEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.25f), angle(0.0f), range(2.0f) { }
+		FlameEmitter(void) : max_change(0.25f), angle(0.0f) { }
+		FlameEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.25f), angle(0.0f) { }
         ~FlameEmitter(void) { }
 
         void update(ParticleManager* pm, float delta);
@@ -130,11 +134,9 @@ namespace dukat
         float max_change;
         // current angle 
         float angle;
-        // horizontal -range,range
-        float range;
 
-        SmokeEmitter(void) : max_change(0.15f), angle(0.0f), range(4.0f) { }
-        SmokeEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.15f), angle(0.0f), range(4.0f) { }
+        SmokeEmitter(void) : max_change(0.15f), angle(0.0f) { }
+        SmokeEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.15f), angle(0.0f) { }
         ~SmokeEmitter(void) { }
 
         void update(ParticleManager* pm, float delta);
@@ -149,13 +151,9 @@ namespace dukat
         float max_change;
         // current angle 
         float angle;
-        // time accumulator
-        float time;
-        // horizontal -range,range
-        float range;
 
-        FountainEmitter(void) : max_change(0.2f), angle(0.0f), time(0.0f), range(4.0f) { }
-        FountainEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.2f), angle(0.0f), time(0.0f), range(4.0f) { }
+        FountainEmitter(void) : max_change(0.2f), angle(0.0f) { }
+        FountainEmitter(const Recipe& recipe) : ParticleEmitter(recipe), max_change(0.2f), angle(0.0f) { }
         ~FountainEmitter(void) { }
 
         void update(ParticleManager* pm, float delta);
@@ -167,11 +165,9 @@ namespace dukat
     {
         // repeat interval
         float repeat_interval;
-        // time accumulator
-        float time;
 
-        ExplosionEmitter(void) : repeat_interval(5.0f), time(0.0f) { }
-        ExplosionEmitter(const Recipe& recipe) : ParticleEmitter(recipe), repeat_interval(5.0f), time(0.0f) { } 
+        ExplosionEmitter(void) : repeat_interval(5.0f) { }
+        ExplosionEmitter(const Recipe& recipe) : ParticleEmitter(recipe), repeat_interval(5.0f) { } 
         ~ExplosionEmitter(void) { }
 
         void update(ParticleManager* pm, float delta);
