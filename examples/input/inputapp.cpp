@@ -52,14 +52,14 @@ namespace dukat
 			debug_text->set_text(ss.str());
 		}, true);
 
-		game->get_devices()->subscribe(Events::DeviceBound, this);
+		game->get_devices()->subscribe(this, Events::DeviceBound);
 
 		game->set_controller(this);
 	}
 
 	InputScene::~InputScene(void)
 	{
-		game->get_devices()->unsubscribe(Events::DeviceBound, this);
+		game->get_devices()->unsubscribe(this, Events::DeviceBound);
 	}
 
 	void InputScene::create_sprites(void)

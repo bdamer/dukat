@@ -13,14 +13,14 @@ namespace dukat
 	Camera2::Camera2(GameBase* game, const Vector2& dimension)
 		: window(game->get_window()), near_clip(default_near_clip), far_clip(default_far_clip), effect(nullptr)
 	{
-		window->subscribe(Events::WindowResized, this);
+		window->subscribe(this, Events::WindowResized);
 		fixed_dimension = (dimension.x != 0.0f && dimension.y != 0.0f);
 		transform.dimension = dimension;
 	}
 
 	Camera2::~Camera2(void)
 	{
-		window->unsubscribe(Events::WindowResized, this);
+		window->unsubscribe(this, Events::WindowResized);
 	}
 
 	void Camera2::receive(const Message& msg)

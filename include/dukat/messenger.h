@@ -72,11 +72,15 @@ namespace dukat
 		// Triggers an event for all recievers subscribed to this entity.
 		void trigger(const Message& message);
 		// Subscribes to an event on this entity.
-		void subscribe(Event ev, Recipient* recipient);
+		void subscribe(Recipient* recipient, Event ev);
+		void subscribe(Recipient* recipient, const std::vector<Event>& events);
+		void subscribe(Event ev, Recipient* recipient) { subscribe(recipient, ev); } // legacy
 		// Subscribes to all events on this entity.
 		void subscribe_all(Recipient* recipient);
 		// Unsubscribes from an event on this entity.
-		void unsubscribe(Event ev, Recipient* recipient);
+		void unsubscribe(Recipient* recipient, Event ev);
+		void unsubscribe(Recipient* recipient, const std::vector<Event>& events);
+		void unsubscribe(Event ev, Recipient* recipient) { unsubscribe(recipient, ev); } // legacy
 		// Unsubscribes from all events this recipient was registered for.
 		void unsubscribe_all(Recipient* recipient);
 	};

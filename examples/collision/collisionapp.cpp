@@ -182,12 +182,12 @@ namespace dukat
 	GameObject::GameObject(const Vector2& dir, CollisionManager2::Body* body) : dir(dir), body(body)
 	{
 		body->owner = this;
-		this->subscribe(Events::CollisionBegin, this);
+		this->subscribe(this, Events::CollisionBegin);
 	}
 
 	GameObject::~GameObject(void)
 	{
-		this->unsubscribe(Events::CollisionBegin, this);
+		this->unsubscribe(this, Events::CollisionBegin);
 	}
 
 	void GameObject::receive(const Message& msg)

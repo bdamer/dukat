@@ -13,12 +13,12 @@ namespace dukat
 	Camera3::Camera3(Window* window) : window(window), fov_v(default_fov), 
 		near_clip(default_near_clip), far_clip(default_far_clip)
 	{
-		window->subscribe(Events::WindowResized, this);
+		window->subscribe(this, Events::WindowResized);
 	}
 
 	Camera3::~Camera3(void)
 	{
-		window->unsubscribe(Events::WindowResized, this);
+		window->unsubscribe(this, Events::WindowResized);
 	}
 
 	void Camera3::compute_horizontal_fov(void)

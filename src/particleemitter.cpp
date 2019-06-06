@@ -5,10 +5,14 @@
 #include <dukat/particlemanager.h>
 #include <dukat/renderlayer2.h>
 
+#include <dukat/log.h>
+
 namespace dukat
 {
 	const ParticleEmitter::Recipe ParticleEmitter::Recipe::FlameRecipe{
-		ParticleEmitter::Recipe::Type::Flame, 400.f, 1.f, 6.f, 1.f, 5.f,
+		ParticleEmitter::Recipe::Type::Flame, 
+		Particle::Alive | Particle::Linear,
+		400.f, 1.f, 6.f, 1.f, 5.f,
 		Vector2{ 2, 25 },	// min_dp.x used to determine initial range
 		Vector2{ 2, 40 }, 	// max_dp.x used to scale particle motion 
 		{ 
@@ -21,8 +25,11 @@ namespace dukat
 	};
 
 	const ParticleEmitter::Recipe ParticleEmitter::Recipe::SmokeRecipe{
-		ParticleEmitter::Recipe::Type::Smoke, 100.f, 4.f, 8.f, 2.f, 6.f,
-		Vector2{ 0, 15 }, Vector2{ 4, 25 },		// horizontal x used for initial range
+		ParticleEmitter::Recipe::Type::Smoke, 
+		Particle::Alive | Particle::Linear,
+		100.f, 4.f, 8.f, 2.f, 6.f,
+		Vector2{ 4, 15 },	// min_dp.x used to determine initial range
+		Vector2{ 1, 25 },	// max_dp.x used to scale particle motion 
 		{
 			Color{ 1.0f, 1.0f, 1.0f, 1.0f },	// Smoke color
 			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
@@ -33,7 +40,9 @@ namespace dukat
 	};
 
 	const ParticleEmitter::Recipe ParticleEmitter::Recipe::FountainRecipe{
-		ParticleEmitter::Recipe::Type::Fountain, 200.f, 1.f, 4.f, 4.f, 6.f,
+		ParticleEmitter::Recipe::Type::Fountain, 
+		Particle::Alive | Particle::Linear | Particle::Gravitational,
+		200.f, 1.f, 4.f, 4.f, 6.f,
 		Vector2{ 0, 40 }, Vector2{ 4, 50 }, 	// horizontal x used for initial range
 		{
 			Color{ 0.47f, 0.945f, 1.0f, 0.8f }, // Each color picked randomly
@@ -45,7 +54,9 @@ namespace dukat
 	};
 
 	const ParticleEmitter::Recipe ParticleEmitter::Recipe::ExplosionRecipe{
-		ParticleEmitter::Recipe::Type::Explosion, 100.f, 1.f, 6.f, 1.f, 5.f,
+		ParticleEmitter::Recipe::Type::Explosion, 
+		Particle::Alive | Particle::Linear | Particle::Dampened,
+		100.f, 1.f, 6.f, 1.f, 5.f,
 		Vector2{ 0, 25 }, Vector2{ 0, 35 },		// horizontal speed not used 
 		{
 			Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Initial color
@@ -56,211 +67,262 @@ namespace dukat
 		Color{ 0.0f, -1.0f, 0.0f, -0.1f }		// Color reduction over time
 	};
 
-	void LinearEmitter::update(ParticleManager* pm, float delta)
+	// LINEAR
+	// - particles are created with direction in +/- dp range
+	void linear_update(ParticleManager& pm, ParticleEmitter& em, float delta)
 	{
-        accumulator += recipe.rate * delta;
-        if (accumulator < 1.0f || target_layer == nullptr)
+        em.accumulator += em.recipe.rate * delta;
+        if (em.accumulator < 1.0f || em.target_layer == nullptr)
             return;
 
-		const auto offset_count = offsets.size();
-        while (accumulator >= 1.0f)
+		const auto offset_count = em.offsets.size();
+        while (em.accumulator >= 1.0f)
         {
-			auto p = pm->create_particle();
+			auto p = pm.create_particle();
 			if (p == nullptr)
-				break;
-			p->ry = pos.y + mirror_offset;
+				return;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
 			
 			if (offset_count == 0)
-				p->pos = pos;
+				p->pos = em.pos;
 			else
-				p->pos = pos + offsets[rand() % offset_count];
+				p->pos = em.pos + em.offsets[rand() % offset_count];
 
-			p->dp = Vector2::random(recipe.min_dp, recipe.max_dp);
-            p->size = randf(recipe.min_size, recipe.max_size);
-			p->color = recipe.colors[randi(0, recipe.colors.size())];
-			p->dc = recipe.dc;
-            p->ttl = randf(recipe.min_ttl, recipe.max_ttl);
+			p->dp = Vector2::random(em.recipe.min_dp, em.recipe.max_dp);
+            p->size = randf(em.recipe.min_size, em.recipe.max_size);
+			p->color = em.recipe.colors[randi(0, em.recipe.colors.size())];
+			p->dc = em.recipe.dc;
+            p->ttl = randf(em.recipe.min_ttl, em.recipe.max_ttl);
 			
-            target_layer->add(p);
+			em.target_layer->add(p);
 
-            accumulator -= 1.0f;
+			em.accumulator -= 1.0f;
         }
 	}
 
-    void FlameEmitter::update(ParticleManager* pm, float delta)
+	// FLAME
+	// - particles are emitted with upward direction
+	// - flame particles have variable ttl, so that we end up with holes
+	// - if using multiple emitters, each emitter should have a current 
+	//   direction that swings by random amount; that will cause subsequent 
+	//   particles to have similar direction
+	void flame_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
-        angle += randf(-max_change, max_change);
-        accumulator += recipe.rate * delta;
+		const auto max_change = 0.25f;
+        em.value += randf(-max_change, max_change);
+		em.accumulator += em.recipe.rate * delta;
 
-        if (accumulator < 1.0f || target_layer == nullptr)
+        if (em.accumulator < 1.0f || em.target_layer == nullptr)
             return;
 
-		const auto range = recipe.min_dp.x;
-		const auto offset_count = offsets.size();
-        while (accumulator >= 1.0f)
+		const auto range = em.recipe.min_dp.x;
+		const auto offset_count = em.offsets.size();
+        while (em.accumulator >= 1.0f)
         {
-			auto p = pm->create_particle();
+			auto p = pm.create_particle();
 			if (p == nullptr)
 				break;
 
-			p->ry = pos.y + mirror_offset;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
 			
-			auto offset = Vector2{ 0.f, range }.rotate(angle);
+			auto offset = Vector2{ 0.f, range }.rotate(em.value);
 			offset.y = 0.f;
 
-			p->dp.x = recipe.max_dp.x * offset.x;
-			p->dp.y = -randf(recipe.min_dp.y, recipe.max_dp.y);
+			p->dp.x = em.recipe.max_dp.x * offset.x;
+			p->dp.y = -randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
 			if (offset_count > 0)
-				offset += offsets[rand() % offset_count];
-			p->pos = pos + offset;
+				offset += em.offsets[rand() % offset_count];
+			p->pos = em.pos + offset;
 
             auto n_size = randf(0.0f, 1.0f);
-            p->size = recipe.min_size + n_size * (recipe.max_size - recipe.min_size);
+            p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
 
             // determine initial color of particle based on distance from center 
 			// TODO: revise this - idea is that for offsets that are further from pos.x, go into red
             auto dist = std::abs(offset.x) / (4.0f * range);
-			p->color = recipe.colors[0] - recipe.colors[1] * dist;
-			p->dc = recipe.dc;
+			p->color = em.recipe.colors[0] - em.recipe.colors[1] * dist;
+			p->dc = em.recipe.dc;
 			p->dc.a -= n_size;
 
             // The smaller the particle, the longer it will live
-            p->ttl = recipe.min_ttl + (1.f - n_size) * (recipe.max_ttl - recipe.min_ttl);
+            p->ttl = em.recipe.min_ttl + (1.f - n_size) * (em.recipe.max_ttl - em.recipe.min_ttl);
 
-            target_layer->add(p);
+			em.target_layer->add(p);
 
-            accumulator -= 1.0f;
+			em.accumulator -= 1.0f;
         }
     }
 
-    void SmokeEmitter::update(ParticleManager* pm, float delta)
+	// SMOKE
+	// - upward direction of particles
+	// - position of emitter ocilates on the x axis
+	// - single color that fades out over time
+	void smoke_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
-        angle += randf(-max_change, max_change);
-        accumulator += recipe.rate * delta;
+		const auto max_change = 0.15f;
+		em.value += randf(-max_change, max_change);
+		em.accumulator += em.recipe.rate * delta;
 
-        if (accumulator < 1.0f || target_layer == nullptr)
+        if (em.accumulator < 1.0f || em.target_layer == nullptr)
             return;
 
-		const auto offset_count = offsets.size();
-		while (accumulator >= 1.0f)
+		const auto offset_count = em.offsets.size();
+		while (em.accumulator >= 1.0f)
         {
-			auto p = pm->create_particle();
+			auto p = pm.create_particle();
 			if (p == nullptr)
 				break;
 
-			p->ry = pos.y + mirror_offset;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
 			
-			auto offset = Vector2{ 0.f, recipe.max_dp.x }.rotate(angle);
+			auto offset = Vector2{ 0.f, em.recipe.min_dp.x }.rotate(em.value);
 			offset.y = 0.f;
 			if (offset_count == 0)
-				p->pos = pos + offset;
+				p->pos = em.pos + offset;
 			else
-				p->pos = pos + offsets[rand() % offset_count] + offset;
+				p->pos = em.pos + em.offsets[rand() % offset_count] + offset;
 			
-            p->dp.x = offset.x;
-            p->dp.y = -randf(recipe.min_dp.y, recipe.max_dp.y);
+            p->dp.x = offset.x * em.recipe.max_dp.x;
+            p->dp.y = -randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
 			const auto size = randf(0.0f, 1.0f);
-            p->size = recipe.min_size + size * (recipe.max_size - recipe.min_size);
-            p->color = recipe.colors[0];
-			p->dc = recipe.dc * (0.25f + size); 
-			p->ry = pos.y + mirror_offset;
+            p->size = em.recipe.min_size + size * (em.recipe.max_size - em.recipe.min_size);
+            p->color = em.recipe.colors[0];
+			p->dc = em.recipe.dc * (0.25f + size);
+			p->ry = em.pos.y + em.mirror_offset;
 
             // The smaller the particle, the longer it will live
-            p->ttl = recipe.min_ttl + (1.f - size) * (recipe.max_ttl - recipe.min_ttl);
+            p->ttl = em.recipe.min_ttl + (1.f - size) * (em.recipe.max_ttl - em.recipe.min_ttl);
 
-            target_layer->add(p);
+			em.target_layer->add(p);
 
-            accumulator -= 1.0f;
+			em.accumulator -= 1.0f;
         }
     }
 
-    void FountainEmitter::update(ParticleManager* pm, float delta)
+	// FOUNTAIN
+	// - initial dx, dy
+	// - gravity pulls at dy->reduce and ultimately turn around
+	void fountain_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
-        angle += randf(-max_change, max_change);
-        accumulator += recipe.rate * delta;
+		const auto max_change = 0.2f;
+		em.value += randf(-max_change, max_change);
+		em.accumulator += em.recipe.rate * delta;
 
-        if (accumulator < 1.0f || target_layer == nullptr)
+        if (em.accumulator < 1.0f || em.target_layer == nullptr)
             return;
 
-		const auto offset_count = offsets.size();
-		const auto max_v = recipe.max_dp.y * (1.0f + 0.25f * fast_cos(age));
-        while (accumulator >= 1.0f)
+		const auto offset_count = em.offsets.size();
+		const auto max_v = em.recipe.max_dp.y * (1.0f + 0.25f * fast_cos(em.age));
+        while (em.accumulator >= 1.0f)
         {
-			auto p = pm->create_particle();
+			auto p = pm.create_particle();
 			if (p == nullptr)
 				break;
 
-			p->ry = pos.y + mirror_offset;
-			p->flags |= Particle::Gravitational;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
 
-			auto offset = Vector2{ 0.f, recipe.max_dp.x }.rotate(angle);
+			auto offset = Vector2{ 0.f, em.recipe.max_dp.x }.rotate(em.value);
 			offset.y = 0.f;
 			if (offset_count == 0)
-				p->pos = pos + offset;
+				p->pos = em.pos + offset;
 			else
-				p->pos = pos + offsets[rand() % offset_count] + offset;
+				p->pos = em.pos + em.offsets[rand() % offset_count] + offset;
 
 			p->dp.x = offset.x;
-            p->dp.y = -randf(recipe.min_dp.y, recipe.max_dp.y);
+            p->dp.y = -randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
             
-            auto size = randi(1, recipe.colors.size());
-            p->size = randf(recipe.min_size, recipe.max_size);
-            p->color = recipe.colors[size - 1];
-			p->dc = recipe.dc; 
-            p->ttl = randf(recipe.min_ttl, recipe.max_ttl);
+            auto size = randi(1, em.recipe.colors.size());
+            p->size = randf(em.recipe.min_size, em.recipe.max_size);
+            p->color = em.recipe.colors[size - 1];
+			p->dc = em.recipe.dc;
+            p->ttl = randf(em.recipe.min_ttl, em.recipe.max_ttl);
 
-            target_layer->add(p);
+			em.target_layer->add(p);
 
-            accumulator -= 1.0f;
+			em.accumulator -= 1.0f;
         }
     }
 
-    void ExplosionEmitter::update(ParticleManager* pm, float delta)
+	// EXPLOSION
+	// - burst of particles
+	void explosion_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
-		if (target_layer == nullptr)
+		if (em.target_layer == nullptr)
             return;
 
-		if (age > 0.0f && repeat_interval > 0.0f)
+		// value used as repeat interval
+		if (em.age > 0.0f)
 		{
-			if (age < repeat_interval)
+			if (em.value <= 0.0f)
+				return; // no repeat
+			else if (em.age < em.value)
 				return;
 			else
-				age -= repeat_interval;
+				em.age -= em.value;
 		}
 
 		static const Vector2 base_vector{ 0.0f, -1.0f };
-
-		const auto offset_count = offsets.size();
-		for (int i = 0; i < static_cast<int>(recipe.rate); i++)
+		const auto offset_count = em.offsets.size();
+		for (int i = 0; i < static_cast<int>(em.recipe.rate); i++)
 		{
-			auto p = pm->create_particle();
+			auto p = pm.create_particle();
 			if (p == nullptr)
 				break;
 
-			p->ry = pos.y + mirror_offset;
-			p->flags |= Particle::Dampened;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
 
 			const auto angle = randf(0.0f, two_pi);
 			const auto offset = base_vector.rotate(angle);
 			if (offset_count == 0)
-				p->pos = pos;
+				p->pos = em.pos;
 			else
-				p->pos = pos + offsets[rand() % offset_count];
-			p->dp = offset * randf(recipe.min_dp.y, recipe.max_dp.y);
+				p->pos = em.pos + em.offsets[rand() % offset_count];
+			p->dp = offset * randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
 			const auto n_size = randf(0.0f, 1.0f);
-			p->size = recipe.min_size + n_size * (recipe.max_size - recipe.min_size);
+			p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
 
-			p->color = recipe.colors[0];
-			p->dc = recipe.dc;
+			p->color = em.recipe.colors[0];
+			p->dc = em.recipe.dc;
 			p->dc.a -= n_size;
 
 			// The smaller the particle, the longer it will live
-			p->ttl = recipe.min_ttl + (1.f - n_size) * (recipe.max_ttl - recipe.min_ttl);
+			p->ttl = em.recipe.min_ttl + (1.f - n_size) * (em.recipe.max_ttl - em.recipe.min_ttl);
 
-			target_layer->add(p);
+			em.target_layer->add(p);
 		}
     }
+
+	void init_emitter(ParticleEmitter& emitter, const ParticleEmitter::Recipe& recipe)
+	{
+		emitter.recipe = recipe;
+		switch (recipe.type)
+		{
+		case ParticleEmitter::Recipe::Linear:
+			emitter.update = std::bind(linear_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Flame:
+			emitter.update = std::bind(flame_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Smoke:
+			emitter.update = std::bind(smoke_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Fountain:
+			emitter.update = std::bind(fountain_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Explosion:
+			emitter.update = std::bind(explosion_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		default:
+			emitter.update = nullptr;
+			break;
+		}		
+	}
 }

@@ -15,16 +15,16 @@ namespace dukat
 
 	void ParticleManager::update(float delta)
 	{
-		for (auto it = emitters.begin(); it != emitters.end(); )
+		emitters.free_index = 0;
+		for (auto& e : emitters.data)
 		{
-			auto& e = (*it);
-			if (e->active)
-				e->update(this, delta);
-			e->age += delta;
-			if (e->ttl > 0.0f && e->age >= e->ttl)
-				it = emitters.erase(it);
-			else
-				++it;
+			if (!e.alive)
+				continue;
+			if (e.active)
+				e.update(*this, e, delta);
+			e.age += delta;
+			if (e.ttl > 0.0f && e.age >= e.ttl)
+				emitters.release(e);
 		}
 
 		// Reset free index
@@ -55,43 +55,15 @@ namespace dukat
 
 	ParticleEmitter* ParticleManager::create_emitter(const ParticleEmitter::Recipe& recipe)
 	{
-		std::unique_ptr<ParticleEmitter> emitter;
-		switch (recipe.type)
-		{
-			case ParticleEmitter::Recipe::Linear:
-				emitter = std::make_unique<LinearEmitter>(recipe);
-				break;
-			case ParticleEmitter::Recipe::Flame:
-				emitter = std::make_unique<FlameEmitter>(recipe);
-				break;
-			case ParticleEmitter::Recipe::Smoke:
-				emitter = std::make_unique<SmokeEmitter>(recipe);
-				break;
-			case ParticleEmitter::Recipe::Fountain:
-				emitter = std::make_unique<FountainEmitter>(recipe);
-				break;
-			case ParticleEmitter::Recipe::Explosion:
-				emitter = std::make_unique<ExplosionEmitter>(recipe);
-				break;
-			default:
-				emitter = nullptr;
-				break;
-		}
-
+		auto emitter = emitters.acquire();
 		if (emitter == nullptr)
 			return nullptr;
-
-		auto res = emitter.get();
-		emitters.push_back(std::move(emitter)); 
-		return res;
+		init_emitter(*emitter, recipe);
+		return emitter;
 	}
 
 	void ParticleManager::remove_emitter(ParticleEmitter* emitter) 
-	{ 
-		auto it = std::find_if(emitters.begin(), emitters.end(), [emitter](const std::unique_ptr<ParticleEmitter>& e) {
-			return e.get() == emitter;
-		});
-		if (it != emitters.end())
-			emitters.erase(it);
+	{
+		emitters.release(emitter);
 	}
 }

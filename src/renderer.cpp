@@ -12,7 +12,7 @@ namespace dukat
 	Renderer::Renderer(Window* window, ShaderCache* shader_cache)
 		: window(window), shader_cache(shader_cache), active_program(0), show_wireframe(false), blending(false)
 	{
-		window->subscribe(Events::WindowResized, this);
+		window->subscribe(this, Events::WindowResized);
 		test_capabilities();
 		uniform_buffers = std::make_unique<GenericBuffer>(UniformBuffer::_COUNT);
 		// Default settings
@@ -25,7 +25,7 @@ namespace dukat
 
 	Renderer::~Renderer(void)
 	{
-		window->unsubscribe(Events::WindowResized, this);
+		window->unsubscribe(this, Events::WindowResized);
 	}
 
 	void Renderer::test_capabilities(void)

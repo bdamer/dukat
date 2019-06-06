@@ -18,19 +18,21 @@ namespace dukat
 	{
 		std::array<T, N> data;
 		std::size_t free_index;
+		std::size_t capacity;
 		Allocator alloc;
 
-		ObjectPool(void) : free_index(0) { }
+		ObjectPool(void) : free_index(0u), capacity(N) { }
 		~ObjectPool(void) { }
 
 		T* acquire(void)
 		{
-			while (free_index < N)
+			while (free_index < N && capacity > 0u)
 			{
 				auto& e = data[free_index];
 				if (!alloc.is_alive(e))
 				{
 					alloc.init(e);
+					capacity--;
 					return &e;
 				}
 				free_index++;
@@ -38,7 +40,8 @@ namespace dukat
 			return nullptr;
 		}
 
-		void release(T* t) { alloc.free(*t); }
-		void release(T& t) { alloc.free(t); }
+		void release(T* t) { release(*t); }
+		void release(T& t) { alloc.free(t); capacity++; }
+		void clear(void) { std::for_each(data.begin(), data.end(), [&](T& t) { alloc.free(t); }); free_index = 0u; capacity = N; }
 	};
 }

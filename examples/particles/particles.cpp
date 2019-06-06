@@ -59,7 +59,9 @@ namespace dukat
 				auto pm = game->get<ParticleManager>();
 
 				ParticleEmitter::Recipe recipe{ 
-					ParticleEmitter::Recipe::Linear, 200.0f, 1.0f, 4.0f, 1.0f, 5.0f,
+					ParticleEmitter::Recipe::Linear, 
+					Particle::Alive | Particle::Linear,
+					200.0f, 1.0f, 4.0f, 1.0f, 5.0f,
 					Vector2{ -15, -15 }, Vector2{ 15, 15 }, 	
 					{ 
 						Color{ 1.f, 0.f, 0.f, 1.f },
@@ -127,6 +129,7 @@ namespace dukat
 				auto e = pm->create_emitter(ParticleEmitter::Recipe::ExplosionRecipe);
 				e->pos = Vector2{ 0.0f, 0.0f };
 				e->target_layer = particle_layer;
+				e->value = 5.0f; // repeat interval
 			}
 		});
 

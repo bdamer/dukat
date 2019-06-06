@@ -16,17 +16,36 @@ namespace dukat
 	private:
 		struct ParticleAllocator 
 		{
-			void init(Particle& p) { p.flags = Particle::Alive | Particle::Linear; p.dp.x = p.dp.y = p.dc.r = p.dc.g = p.dc.b = p.dc.a = p.dsize = 0.0f; }
+			void init(Particle& p) 
+			{ 
+				p.flags = Particle::Alive | Particle::Linear; 
+				p.dp.x = p.dp.y = p.dc.r = p.dc.g = p.dc.b = p.dc.a = p.dsize = 0.0f; 
+			}
 			bool is_alive(Particle& p) { return (p.flags & Particle::Alive) == Particle::Alive; }
 			void free(Particle& p) { p.flags = 0; }
 		};
 
+		struct ParticleEmitterAllocator
+		{
+			void init(ParticleEmitter& em) 
+			{ 
+				em.active = em.alive = true; 
+				em.accumulator = em.age = em.mirror_offset = em.ttl = em.value = 0.0f;
+				em.offsets.clear();
+				em.target_layer = nullptr;
+				em.update = nullptr;
+			}
+			bool is_alive(ParticleEmitter& em) { return em.alive; }
+			void free(ParticleEmitter& em) { em.alive = false; }
+		};
+
 		// Global limit to number of particles.
 		static constexpr auto max_particles = 4096;
+		static constexpr auto max_emitters = 256;
 		// Particle pool
 		ObjectPool<Particle, max_particles, ParticleAllocator> particles;
 		// Emitter pool
-		std::vector<std::unique_ptr<ParticleEmitter>> emitters;
+		ObjectPool<ParticleEmitter, max_emitters, ParticleEmitterAllocator> emitters;
 
 		// Gravitational constant applied to particles' vertical motion.
 		float gravity;
@@ -44,10 +63,11 @@ namespace dukat
 		void update(float delta);
 		// Creates a new particle. May return null if pool is at capacity.
 		Particle* create_particle(void) { return particles.acquire(); }
-		// Removes all particles.
-		void clear(void);
-
+		// Creates a new particle emitter from a recipe. May return null if pool is at capacity.
 		ParticleEmitter* create_emitter(const ParticleEmitter::Recipe& recipe);
-		void remove_emitter(ParticleEmitter* emitter);	
+		// Frees up a particle emitter.
+		void remove_emitter(ParticleEmitter* emitter);
+		// Removes all particles and emitters
+		void clear(void);
 	};
 }
