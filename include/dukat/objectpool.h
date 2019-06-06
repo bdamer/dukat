@@ -7,9 +7,9 @@ namespace dukat
 	template<typename T>
 	struct ObjectAllocator
 	{
-		void init(T& t) { t.flags = T::Alive; }
-		bool is_alive(T& t) { return (t.flags & T::Alive) == T::Alive; }
-		void free(T& t) { t.flags = ~T::Alive; }
+		void init(T& t) { t.alive = true; }
+		bool is_alive(T& t) { return t.alive; }
+		void free(T& t) { t.alive = false; }
 	};
 
 	// Simple object pool.
