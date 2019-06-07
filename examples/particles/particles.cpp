@@ -78,6 +78,30 @@ namespace dukat
 			}
 		});
 
+		modes.push_back(ParticleMode{ "Uniform",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+
+				ParticleEmitter::Recipe recipe{
+					ParticleEmitter::Recipe::Uniform,
+					Particle::Alive | Particle::Linear,
+					50.0f, 1.0f, 1.0f, 1.0f, 2.0f,
+					Vector2{ 16, 8 }, Vector2{ 0, -50 },
+					{
+						color_rgb(0xffffff),
+						color_rgb(0xffeb57),
+						color_rgb(0xffc825),
+						color_rgb(0xffa214)
+					},
+					Color{ 0.f, 0.f, 0.f, -1.0f }
+				};
+
+				auto e = pm->create_emitter(recipe);
+				e->pos = Vector2{ 0.f, 0.f };
+				e->target_layer = particle_layer;
+			}		
+		});
+
 		modes.push_back(ParticleMode{ "Flame", 
 			[&](void) {
 				auto pm = game->get<ParticleManager>();

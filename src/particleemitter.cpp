@@ -68,7 +68,7 @@ namespace dukat
 	};
 
 	// LINEAR
-	// - particles are created with direction in +/- dp range
+	// - particles are created with unique direction in +/- dp range
 	void linear_update(ParticleManager& pm, ParticleEmitter& em, float delta)
 	{
         em.accumulator += em.recipe.rate * delta;
@@ -99,6 +99,43 @@ namespace dukat
 
 			em.accumulator -= 1.0f;
         }
+	}
+
+	// UNIFORM
+	// - particles are generated within a box based on -min_dp, min_dp
+	// - particles are created with fixed direction based on max_dp
+	void uniform_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	{
+		em.accumulator += em.recipe.rate * delta;
+		if (em.accumulator < 1.0f || em.target_layer == nullptr)
+			return;
+
+		const auto offset_count = em.offsets.size();
+		while (em.accumulator >= 1.0f)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				return;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
+
+			if (offset_count == 0)
+				p->pos = em.pos;
+			else
+				p->pos = em.pos + em.offsets[rand() % offset_count];
+
+			p->pos += Vector2::random(-em.recipe.min_dp, em.recipe.min_dp);
+
+			p->dp = em.recipe.max_dp;
+			p->size = randf(em.recipe.min_size, em.recipe.max_size);
+			p->color = em.recipe.colors[randi(0, em.recipe.colors.size())];
+			p->dc = em.recipe.dc;
+			p->ttl = randf(em.recipe.min_ttl, em.recipe.max_ttl);
+
+			em.target_layer->add(p);
+
+			em.accumulator -= 1.0f;
+		}
 	}
 
 	// FLAME
@@ -264,7 +301,7 @@ namespace dukat
 			else if (em.age < em.value)
 				return;
 			else
-				em.age -= em.value;
+				em.age = 0.0f;
 		}
 
 		static const Vector2 base_vector{ 0.0f, -1.0f };
@@ -307,6 +344,9 @@ namespace dukat
 		{
 		case ParticleEmitter::Recipe::Linear:
 			emitter.update = std::bind(linear_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Uniform:
+			emitter.update = std::bind(uniform_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		case ParticleEmitter::Recipe::Flame:
 			emitter.update = std::bind(flame_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);

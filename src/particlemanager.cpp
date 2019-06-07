@@ -21,8 +21,10 @@ namespace dukat
 			if (!e.alive)
 				continue;
 			if (e.active)
+			{
 				e.update(*this, e, delta);
-			e.age += delta;
+				e.age += delta;
+			}
 			if (e.ttl > 0.0f && e.age >= e.ttl)
 				emitters.release(e);
 		}

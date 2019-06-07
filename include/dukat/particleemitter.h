@@ -20,6 +20,7 @@ namespace dukat
 			{
 				None,
                 Linear,
+				Uniform,
 				Flame,
 				Smoke,
 				Fountain,
