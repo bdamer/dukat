@@ -67,6 +67,21 @@ namespace dukat
 		Color{ 0.0f, -1.0f, 0.0f, -0.1f }		// Color reduction over time
 	};
 
+	const ParticleEmitter::Recipe ParticleEmitter::Recipe::SpiralRecipe{
+		ParticleEmitter::Recipe::Type::Spiral,
+		Particle::Alive | Particle::Linear,
+		100.f, 1.f, 4.f, 1.f, 5.f,
+		Vector2{ 4.f, 3.f },					// x used to scale emit range, y used to define max angular change per second
+		Vector2{ 64, 64 },						// Used to scale dp
+		{
+			Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Initial color
+			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+			Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
+		},
+		Color{ 0.0f, -1.0f, 0.0f, -0.1f }		// Color reduction over time
+	};
+
 	// LINEAR
 	// - particles are created with unique direction in +/- dp range
 	void linear_update(ParticleManager& pm, ParticleEmitter& em, float delta)
@@ -337,6 +352,51 @@ namespace dukat
 		}
     }
 
+	// SPIRAL
+	// - spiralling emitters
+	// - angle changes with time, particles are emitted with initial direction based on angle
+	void spiral_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	{
+		em.value += em.recipe.min_dp.y * delta; 
+		em.accumulator += em.recipe.rate * delta;
+
+		if (em.accumulator < 1.0f || em.target_layer == nullptr)
+			return;
+
+		auto offset = Vector2{ 0.f, 1.f }.rotate(em.value);
+
+		const auto offset_count = em.offsets.size();
+		while (em.accumulator >= 1.0f)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				break;
+
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
+			p->dp.x = em.recipe.max_dp.x * offset.x;
+			p->dp.y = em.recipe.max_dp.y * offset.y;
+
+			p->pos = em.pos + offset * em.recipe.min_dp.x;
+			if (offset_count > 0)
+				p->pos += em.offsets[rand() % offset_count];
+
+			const auto n_size = randf(0.0f, 1.0f);
+			p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
+
+			p->color = em.recipe.colors[0];
+			p->dc = em.recipe.dc;
+			p->dc.a -= n_size;
+
+			// The smaller the particle, the longer it will live
+			p->ttl = em.recipe.min_ttl + (1.f - n_size) * (em.recipe.max_ttl - em.recipe.min_ttl);
+
+			em.target_layer->add(p);
+
+			em.accumulator -= 1.0f;
+		}
+	}
+
 	void init_emitter(ParticleEmitter& emitter, const ParticleEmitter::Recipe& recipe)
 	{
 		emitter.recipe = recipe;
@@ -359,6 +419,9 @@ namespace dukat
 			break;
 		case ParticleEmitter::Recipe::Explosion:
 			emitter.update = std::bind(explosion_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Spiral:
+			emitter.update = std::bind(spiral_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		default:
 			emitter.update = nullptr;

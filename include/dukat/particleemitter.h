@@ -24,7 +24,8 @@ namespace dukat
 				Flame,
 				Smoke,
 				Fountain,
-				Explosion
+				Explosion,
+				Spiral
 			};
 
 			Type type;
@@ -59,6 +60,7 @@ namespace dukat
 			static const Recipe SmokeRecipe;
 			static const Recipe FountainRecipe;
 			static const Recipe ExplosionRecipe;
+			static const Recipe SpiralRecipe;
 		};
 
 		// Particle recipe

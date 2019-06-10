@@ -157,6 +157,15 @@ namespace dukat
 			}
 		});
 
+		modes.push_back(ParticleMode{ "Spiral",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+				auto e = pm->create_emitter(ParticleEmitter::Recipe::SpiralRecipe);
+				e->pos = Vector2{ 0.0f, 0.0f };
+				e->target_layer = particle_layer;
+			}
+		});
+
 		change_particle_mode(0);
 	}
 
