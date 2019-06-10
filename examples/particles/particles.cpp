@@ -138,6 +138,7 @@ namespace dukat
 				auto e = pm->create_emitter(ParticleEmitter::Recipe::FountainRecipe);
 				e->pos = Vector2{ 0.f, 0.f };
 				e->target_layer = particle_layer;
+				e->mirror_offset = 1.0f;
 				auto x_offset = -0.01f;
 				for (auto i = 0; i < 5; i++)
 				{

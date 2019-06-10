@@ -45,8 +45,15 @@ namespace dukat
 				p.ttl -= delta;
 				if (check_flag(p.flags, Particle::Linear))
 					p.pos += p.dp * delta;
-				if (check_flag(p.flags, Particle::Gravitational))
-					p.dp.y += gravity * delta;
+				// For gravitational particles, only apply effect as long as we're above
+				// reflection line
+				if (check_flag(p.flags, Particle::Gravitational)) 
+				{
+					if (p.pos.y < p.ry)
+						p.dp.y += gravity * delta;
+					else
+						p.pos.y = p.ry;
+				}
 				if (check_flag(p.flags, Particle::Dampened))
 					p.dp *= dampening;
 				p.color += p.dc * delta;
