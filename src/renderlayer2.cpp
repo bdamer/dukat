@@ -37,6 +37,8 @@ namespace dukat
 
 	void RenderLayer2::add(Sprite* sprite)
 	{
+		if (std::find(sprites.begin(), sprites.end(), sprite) != sprites.end())
+			return; // sprite already added to this layer
 		sprites.push_back(sprite);
 	}
 
@@ -129,7 +131,6 @@ namespace dukat
 				// TODO: perform occlusion check against untranslated camera bounding box
 				sprite->flags |= Sprite::rendered;
 				queue.push(sprite);
-				perfc.inc(PerformanceCounter::SPRITES);
 			}
 			else
 			{
@@ -170,10 +171,12 @@ namespace dukat
 				{
 					sprite->flags |= Sprite::rendered;
 					queue.push(sprite);
-					perfc.inc(PerformanceCounter::SPRITES);
 				}
 			}
 		}
+
+		perfc.inc(PerformanceCounter::SPRITES, queue.size());
+		perfc.inc(PerformanceCounter::SPRITES_TOTAL, sprites.size());
 	}
 
 	void RenderLayer2::render_sprites(Renderer2* renderer, const AABB2& camera_bb)

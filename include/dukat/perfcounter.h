@@ -29,6 +29,7 @@ namespace dukat
 			BUFFER_FREE,	// No# of freed buffers
 			FRAME_BUFFERS,	// No# of frame buffer switches
 			SPRITES,		// No# of sprites rendered
+			SPRITES_TOTAL,	// No# of total sprites on layers
 			SAMPLES,		// No# of sampling operations
 			BB_CHECKS,		// No# of bounding-box checks
 			ENTITIES,		// No# of game entities
