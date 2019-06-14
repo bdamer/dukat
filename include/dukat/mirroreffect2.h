@@ -1,6 +1,7 @@
 #pragma once
 
 #include "effect2.h"
+#include "vector2.h"
 
 namespace dukat
 {
@@ -16,12 +17,15 @@ namespace dukat
 		ShaderProgram* sprite_program;
 		ShaderProgram* particle_program;
 		std::string mirrored_layer;
+		// Bounding box shift
+		Vector2 shift;
 
 	public:
-		MirrorEffect2(ShaderProgram* sprite_program, ShaderProgram* particle_program, const std::string& mirrored_layer)
-			: sprite_program(sprite_program), particle_program(particle_program), mirrored_layer(mirrored_layer) { };
+		MirrorEffect2(ShaderProgram* sprite_program, ShaderProgram* particle_program, const std::string& mirrored_layer, const Vector2& shift = { 0,0 })
+			: sprite_program(sprite_program), particle_program(particle_program), mirrored_layer(mirrored_layer), shift(shift) { };
 		~MirrorEffect2(void) { };
 
 		void render(Renderer2* renderer, const AABB2& camera_bb);
+		void set_shift(const Vector2& shift) { this->shift = shift; }
 	};
 }
