@@ -30,6 +30,8 @@ namespace dukat
 		virtual bool is_done(void) const = 0;
 		virtual void start(void) = 0;
 		virtual void stop(void) = 0;
+		virtual void pause(void) = 0;
+		virtual void resume(void) = 0;
 		virtual void step(float delta) = 0;
 	};
 
@@ -48,15 +50,17 @@ namespace dukat
 		T value_delta;
 		// if true will loop animation
 		bool loop;
+		// if true, animation is paused
+		bool paused;
 		// called when animation is done
 		std::function<void(void)> callback;
 
 	public:
 		// Creates a new animation for the attribute provided.
-		ValueAnimation(T* attribute) : attribute(attribute), next_key(-1), loop(false) { }
+		ValueAnimation(T* attribute) : attribute(attribute), next_key(-1), loop(false), paused(false) { }
 		// Creates a new animation with a single animation key specified by time and value.
 		ValueAnimation(T* attribute, float time, T value, bool loop = false)
-			: attribute(attribute), next_key(-1), loop(loop) { add_key({ time, value }); }
+			: attribute(attribute), next_key(-1), loop(loop), paused(false) { add_key({ time, value }); }
 		~ValueAnimation(void) { }
 
 		void set_callback(const std::function<void(void)>& callback) { this->callback = callback; }
@@ -69,6 +73,8 @@ namespace dukat
 
 		void start(void);
 		void stop(void);
+		void pause(void) { paused = true; }
+		void resume(void) { paused = false; }
 		void step(float delta);
 	};
 
@@ -91,6 +97,9 @@ namespace dukat
 	template<typename T>
 	inline void ValueAnimation<T>::step(float delta)
 	{
+		if (paused)
+			return;
+
 		auto next = keys.begin() + next_key;
 		if (next->mode == AnimationKey<T>::Continuous)
 		{
