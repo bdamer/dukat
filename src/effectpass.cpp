@@ -70,6 +70,7 @@ namespace dukat
         
         fbo->unbind();
 
+		renderer->reset_viewport();
 		renderer->set_blending(true);
     }
 }

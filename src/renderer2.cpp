@@ -207,6 +207,7 @@ namespace dukat
 				if (render_target != nullptr)
 					frame_buffer->detach_draw_buffer();
 				frame_buffer->unbind();
+				reset_viewport();
 				switch_shader(comp_program);
 				auto id = comp_program->attr("u_aspect");
 				if (id != -1)
@@ -218,7 +219,7 @@ namespace dukat
 				const auto& binder = layer->get_composite_binder();
 				if (binder)
 					binder(comp_program);
-
+				// Finally, render composite image to screen buffer
 				quad->render(comp_program);
 			}
 		}

@@ -593,7 +593,8 @@ namespace dukat
         if (fbo_bound)
         {
             fb_update->unbind();
-        }
+			game->get_renderer()->reset_viewport();
+		}
 
         return max_index;
     }
@@ -643,7 +644,8 @@ namespace dukat
         }
 
         fb_normal->unbind();
-    }
+		game->get_renderer()->reset_viewport();
+	}
 
     void ClipMap::render_level(const Camera3& cam, int level_idx)
     {

@@ -105,6 +105,7 @@ namespace dukat
 
 		fbo->unbind();
 
+		game->get_renderer()->reset_viewport();
 		game->get_renderer()->set_blending(true);
 		perfc.inc(PerformanceCounter::FRAME_BUFFERS);
 	}

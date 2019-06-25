@@ -23,7 +23,7 @@ namespace dukat
 	};
 
 	// Base class for 2D and 3D renderers.
-	class Renderer : public Recipient
+	class Renderer
 	{
 	protected:		
 		Window* window;
@@ -83,9 +83,6 @@ namespace dukat
 		Renderer(Window* window, ShaderCache* shaders);
 		virtual ~Renderer(void);
 
-		// Called on window resize
-		void receive(const Message& msg);
-
 		// Display settings
 		void toggle_wireframe(void) { set_wireframe(!show_wireframe); }
 		void set_wireframe(bool wireframe);
@@ -95,6 +92,8 @@ namespace dukat
 
 		// Clears screen buffers.
 		void clear(void) { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
+		// Resets viewport to window size.
+		void reset_viewport(void);
 		// Changes active program.
 		void switch_shader(ShaderProgram* program);
 		// Returns the currently active program.

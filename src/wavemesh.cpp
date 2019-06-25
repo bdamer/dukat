@@ -308,7 +308,8 @@ namespace dukat
 		// end noise pass
 
         fbo->unbind();
-		
+
+		renderer->reset_viewport();
 		renderer->set_blending(true);
 	}
 

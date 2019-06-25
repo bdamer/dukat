@@ -12,7 +12,6 @@ namespace dukat
 	Renderer::Renderer(Window* window, ShaderCache* shader_cache)
 		: window(window), shader_cache(shader_cache), active_program(0), show_wireframe(false), blending(false)
 	{
-		window->subscribe(this, Events::WindowResized);
 		test_capabilities();
 		uniform_buffers = std::make_unique<GenericBuffer>(UniformBuffer::_COUNT);
 		// Default settings
@@ -25,7 +24,6 @@ namespace dukat
 
 	Renderer::~Renderer(void)
 	{
-		window->unsubscribe(this, Events::WindowResized);
 	}
 
 	void Renderer::test_capabilities(void)
@@ -88,16 +86,6 @@ namespace dukat
 #ifdef _DEBUG
 		gl_check_error();
 #endif
-	}
-
-	void Renderer::receive(const Message& msg)
-	{
-		switch (msg.event)
-		{
-		case Events::WindowResized:
-			glViewport(0, 0, *static_cast<const int*>(msg.param1), *static_cast<const int*>(msg.param2));
-			break;
-		}
 	}
 
 	void Renderer::switch_shader(ShaderProgram* program)
@@ -174,5 +162,10 @@ namespace dukat
 	void Renderer::set_clear_color(const Color & clr)
 	{
 		glClearColor(clr.r, clr.g, clr.b, clr.a);
+	}
+
+	void Renderer::reset_viewport(void)
+	{
+		glViewport(0, 0, window->get_width(), window->get_height());
 	}
 }

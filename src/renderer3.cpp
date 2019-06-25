@@ -154,7 +154,7 @@ namespace dukat
 
 			// Composite pass
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glViewport(0, 0, window->get_width(), window->get_height());
+			reset_viewport();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glActiveTexture(GL_TEXTURE0);

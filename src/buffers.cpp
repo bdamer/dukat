@@ -137,7 +137,6 @@ namespace dukat
 
 	void FrameBuffer::bind(void)
 	{
-		glGetIntegerv(GL_VIEWPORT, last_viewport);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		glViewport(0, 0, width, height);
 	}
@@ -145,7 +144,6 @@ namespace dukat
 	void FrameBuffer::unbind(void)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3]);
 	}
 
 	void FrameBuffer::initialize_draw_buffer(Texture* t)
