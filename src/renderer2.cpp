@@ -106,6 +106,14 @@ namespace dukat
 		return res;
 	}
 
+	RenderLayer2* Renderer2::create_overlay_layer(const std::string& id, float priority)
+	{
+		auto layer = create_layer(id, priority);
+		layer->stage = RenderStage::OVERLAY;
+		layer->set_composite_program(nullptr); // by default overlay doesn't use compositing
+		return layer;
+	}
+
 	void Renderer2::destroy_layer(const std::string& id)
 	{
 		auto it = std::find_if(layers.begin(), layers.end(), [&id](const std::unique_ptr<RenderLayer2>& layer) {
@@ -170,6 +178,46 @@ namespace dukat
 		}
 	}
 
+	void Renderer2::render_layer(RenderLayer2& layer)
+	{
+		// Each layer can either render directly to the global screen buffer,
+		// or alternatively render to a dedicated frame buffer followed by
+		// a composite pass to merge the frame buffer into the screen buffer
+		auto comp_program = layer.get_composite_program();
+		auto render_target = layer.get_render_target();
+		if (comp_program != nullptr)
+		{
+			frame_buffer->bind();
+			if (render_target != nullptr)
+				frame_buffer->attach_draw_buffer(render_target);
+			clear();
+		}
+
+		layer.render(this);
+		
+		// Composite pass
+		if (comp_program != nullptr)
+		{
+			if (render_target != nullptr)
+				frame_buffer->detach_draw_buffer();
+			frame_buffer->unbind();
+			reset_viewport();
+			switch_shader(comp_program);
+			auto id = comp_program->attr("u_aspect");
+			if (id != -1)
+				comp_program->set(id, camera->get_aspect_ratio());
+			if (render_target != nullptr)
+				render_target->bind(0, comp_program);
+			else
+				frame_buffer->texture->bind(0, comp_program);
+			const auto& binder = layer.get_composite_binder();
+			if (binder)
+				binder(comp_program);
+			// Finally, render composite image to screen buffer
+			quad->render(comp_program);
+		}
+	}
+
 	void Renderer2::render(void)
 	{
 		clear();
@@ -179,58 +227,20 @@ namespace dukat
 		// using uniform buffers, this will only be done once each frame.
 		update_uniforms();
 #endif
-
 		// Scene pass
 		for (auto& layer : layers)
 		{
 			if (!layer->visible() || layer->stage != RenderStage::SCENE)
 				continue;
-
-			// Each layer can either render directly to the global screen buffer,
-			// or alternatively render to a dedicated frame buffer followed by
-			// a composite pass to merge the frame buffer into the screen buffer
-			auto comp_program = layer->get_composite_program();
-			auto render_target = layer->get_render_target();
-			if (comp_program != nullptr)
-			{
-				frame_buffer->bind();
-				if (render_target != nullptr)
-					frame_buffer->attach_draw_buffer(render_target);
-				clear();
-			}
-
-			layer->render(this);
-			
-			// Composite pass
-			if (comp_program != nullptr)
-			{
-				if (render_target != nullptr)
-					frame_buffer->detach_draw_buffer();
-				frame_buffer->unbind();
-				reset_viewport();
-				switch_shader(comp_program);
-				auto id = comp_program->attr("u_aspect");
-				if (id != -1)
-					comp_program->set(id, camera->get_aspect_ratio());
-				if (render_target != nullptr)
-					render_target->bind(0, comp_program);
-				else
-					frame_buffer->texture->bind(0, comp_program);
-				const auto& binder = layer->get_composite_binder();
-				if (binder)
-					binder(comp_program);
-				// Finally, render composite image to screen buffer
-				quad->render(comp_program);
-			}
+			render_layer(*layer);
 		}
 
 		// Overlay pass
 		for (auto& layer : layers)
 		{
-			if (layer->visible() && layer->stage == RenderStage::OVERLAY)
-			{
-				layer->render(this);
-			}
+			if (!layer->visible() || layer->stage != RenderStage::OVERLAY)
+				continue;
+			render_layer(*layer);
 		}
 
 		window->present();

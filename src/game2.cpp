@@ -7,6 +7,7 @@ namespace dukat
 	Game2::Game2(Settings& settings) : GameBase(settings)
 	{
 		renderer = std::make_unique<Renderer2>(window.get(), shader_cache.get());
+		effect = std::make_unique<FullscreenEffect2>(this);
 	}
 
 	Game2::~Game2(void) 

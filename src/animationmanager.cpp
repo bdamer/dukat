@@ -20,7 +20,7 @@ namespace dukat
 			return animation == anim.get();
 		});
 		if (it != animations.end())
-			animations.erase(it);
+			(*it)->stop(); // don't erase here - update will take care of that
 	}
 
 	void AnimationManager::update(float delta)

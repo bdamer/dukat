@@ -47,6 +47,7 @@ namespace dukat
 		void initialize_sprite_buffers(void);
 		void initialize_particle_buffers(void);
 		void initialize_frame_buffer(void);
+		void render_layer(RenderLayer2& layer);
 
 	public:
 		static const int max_particles = 2048;
@@ -61,6 +62,8 @@ namespace dukat
 		void render(void);
 		// Creates a new layer with a given priority.
 		RenderLayer2* create_layer(const std::string& id, float priority, float parallax = 1.0f, bool has_render_target = false);
+		// Helper for creating overlay layers
+		RenderLayer2* create_overlay_layer(const std::string& id, float priority);
 		// Destroys an existing render layer.
 		void destroy_layer(const std::string& id);
 		// Destroys all rendering layers.
