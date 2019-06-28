@@ -725,5 +725,8 @@
     <ClCompile Include="..\src\particleemitter.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\fullscreeneffect2.cpp">
+      <Filter>Source Files\video\effects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

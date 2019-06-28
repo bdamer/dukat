@@ -288,6 +288,7 @@
     <ClCompile Include="..\src\collisionmanager2.cpp" />
     <ClCompile Include="..\src\debugeffect2.cpp" />
     <ClCompile Include="..\src\effectpass.cpp" />
+    <ClCompile Include="..\src\fullscreeneffect2.cpp" />
     <ClCompile Include="..\src\gridmesh.cpp" />
     <ClCompile Include="..\src\mapgraph.cpp" />
     <ClCompile Include="..\src\meshdata.cpp" />
