@@ -27,13 +27,13 @@ namespace dukat
 	{
 		for (auto it = animations.begin(); it != animations.end(); )
 		{
-			(*it)->step(delta);
 			if ((*it)->is_done())
 			{
 				it = animations.erase(it);
 			}
 			else
 			{
+				(*it)->step(delta);
 				++it;
 			}
 		}
