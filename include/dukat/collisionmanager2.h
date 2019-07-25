@@ -53,12 +53,14 @@ namespace dukat
 		// (Re)creates the quad tree.
 		void create_tree(void);
 		// Collect all entities which are at equal or higher level in the tree as a given body.
-		void find_collisions(const QuadTree<Body>& t, Body* body, std::vector<Body*>& res) const;
+		void collect_collisions(const QuadTree<Body>& t, Body* body, std::vector<Body*>& res) const;
+		// Tests that a collision between two bodies is valie and if so tracks it.
+		void test_collision(Body* this_body, Body* other_body);
 		// Attempts to resolve active collisions and notifies at the end of collisions.
 		void resolve_collisions(void);
 
 		// Generate a hash for a contact between two bodies.
-		inline uint32_t hash(Body* b1, Body* b2) const { return 65536u * static_cast<uint32_t>(std::min(b1->id, b2->id)) + static_cast<uint32_t>(std::max(b1->id, b2->id)); }
+		inline uint32_t hash(const Body* b1, const Body* b2) const { return 65536u * static_cast<uint32_t>(std::min(b1->id, b2->id)) + static_cast<uint32_t>(std::max(b1->id, b2->id)); }
 
 	public:
 		CollisionManager2(GameBase* game);

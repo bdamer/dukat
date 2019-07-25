@@ -46,15 +46,46 @@ namespace dukat
 		}
 	}
 
-	void CollisionManager2::find_collisions(const QuadTree<Body>& t, Body* body, std::vector<Body*>& res) const
+	void CollisionManager2::test_collision(Body* this_body, Body* other_body)
 	{
-		auto idx = t.get_index(body);
-		if (idx > -1 && t.has_child(idx))
+		if (this_body == other_body)
+			return;
+		if (!this_body->dynamic && !other_body->dynamic)
+			return; // static bodies do not collide with one another
+
+		// Check if collision has already been detected during this frame
+		const auto id = hash(this_body, other_body);
+		const auto contact_exists = contacts.count(id) > 0;
+		if (contact_exists && contacts[id].generation == generation)
+			return;
+
+		perfc.inc(PerformanceCounter::BB_CHECKS);
+		Contact c;
+		if (this_body->bb.intersect(other_body->bb, c.collision))
 		{
-			find_collisions(*t.child(idx), body, res);
+			// Update contact if this is an existing collision
+			if (contact_exists)
+			{
+				auto& old_contact = contacts[id];
+				old_contact.generation = generation;
+				old_contact.collision = c.collision;
+				old_contact.age++;
+			}
+			// Otherwise, create a new contact
+			else
+			{
+				c.body1 = this_body;
+				c.body2 = other_body;
+				c.generation = generation;
+				c.age = 0;
+				contacts[id] = c;
+
+				if (c.body1->owner != nullptr)
+					c.body1->owner->trigger(Message{ Events::CollisionBegin, c.body2, &c });
+				if (c.body2->owner != nullptr)
+					c.body2->owner->trigger(Message{ Events::CollisionBegin, c.body1, &c });
+			}
 		}
-		const auto& values = t.get_values();
-		res.insert(res.end(), values.begin(), values.end());
 	}
 
 	void CollisionManager2::resolve_collisions(void)
@@ -100,6 +131,17 @@ namespace dukat
 		}
 	}
 
+	void CollisionManager2::collect_collisions(const QuadTree<Body>& t, Body * body, std::vector<Body*>& res) const
+	{
+		auto idx = t.get_index(body);
+		if (idx > -1 && t.has_child(idx))
+		{
+			collect_collisions(*t.child(idx), body, res);
+		}
+		const auto& values = t.get_values();
+		res.insert(res.end(), values.begin(), values.end());
+	}
+
 	void CollisionManager2::update(float delta)
 	{
 		// broad phase - determine all possible collisions
@@ -114,54 +156,29 @@ namespace dukat
 		}
 
 		// narrow phase - build up set of actual collisions
+		std::queue<QuadTree<Body>*> nodes;
 		for (const auto& b : bodies)
 		{
 			if (!b->active)
 				continue;
 
-			candidates.clear();
+			// Start with root, compare with each child
+			nodes.push(tree.get());
 			auto this_body = b.get();
-			find_collisions(*tree, this_body, candidates);
-			for (auto other_body : candidates)
+			while (!nodes.empty())
 			{
-				if (this_body == other_body)
-					continue;
-				if (!this_body->dynamic && !other_body->dynamic)
-					continue; // static bodies do not collide with one another
-
-				// Check if collision has already been detected during this frame
-				const auto id = hash(this_body, other_body);
-				const auto contact_exists = contacts.count(id) > 0;
-				if (contact_exists && contacts[id].generation == generation)
-					continue;
-
-				perfc.inc(PerformanceCounter::BB_CHECKS);
-				Contact c;
-				if (this_body->bb.intersect(other_body->bb, c.collision))
+				auto t = nodes.front();
+				auto idx = t->get_index(this_body);
+				if (idx > -1 && t->has_child(idx))
 				{
-					// Update contact if this is an existing collision
-					if (contact_exists)
-					{
-						auto& old_contact = contacts[id];
-						old_contact.generation = generation;
-						old_contact.collision = c.collision;
-						old_contact.age++;
-					}
-					// Otherwise, create a new contact
-					else
-					{
-						c.body1 = this_body;
-						c.body2 = other_body;
-						c.generation = generation;
-						c.age = 0;
-						contacts[id] = c;
-
-						if (c.body1->owner != nullptr)
-							c.body1->owner->trigger(Message{ Events::CollisionBegin, c.body2, &c });
-						if (c.body2->owner != nullptr)
-							c.body2->owner->trigger(Message{ Events::CollisionBegin, c.body1, &c });
-					}
+					nodes.push(t->child(idx));
 				}
+				const auto& values = t->get_values();
+				for (auto& it : values)
+				{
+					test_collision(this_body, it);
+				}
+				nodes.pop();
 			}
 		}
 
@@ -192,7 +209,7 @@ namespace dukat
 		Body b{ 0 };
 		b.bb.min = b.bb.max = p;
 		candidates.clear();
-		find_collisions(*tree, &b, candidates);
+		collect_collisions(*tree, &b, candidates);
 
 		std::list<Body*> res;
 		for (Body* b : candidates)
