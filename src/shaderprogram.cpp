@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <dukat/log.h>
 #include <dukat/shaderprogram.h>
 #include <dukat/perfcounter.h>
 #include <dukat/sysutil.h>
@@ -13,9 +14,7 @@ namespace dukat
 	ShaderProgram::~ShaderProgram(void)
 	{
 		if (id != 0)
-		{
 			glDeleteProgram(id);
-		}
 	}
 
 	void ShaderProgram::index_attributes(void)
@@ -68,5 +67,17 @@ namespace dukat
 		{
 			return attributes[name];
 		}
+	}
+
+	void ShaderProgram::bind(const std::string& block_name, Renderer::UniformBuffer ub)
+	{
+		if (uniforms.count(block_name) == 0)
+			uniforms[block_name] = glGetUniformBlockIndex(id, block_name.c_str());
+		const auto& idx = uniforms[block_name];
+#ifdef _DEBUG
+		if (idx == GL_INVALID_INDEX)
+			log->warn("Invalid uniform index: {}", block_name);
+#endif
+		glUniformBlockBinding(id, idx, ub);
 	}
 }

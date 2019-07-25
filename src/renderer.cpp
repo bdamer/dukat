@@ -98,18 +98,10 @@ namespace dukat
 			this->active_program = program;
 #if OPENGL_VERSION >= 30
 			// re-bind uniform blocks
-			auto cidx = glGetUniformBlockIndex(program->id, Renderer::uf_camera);
-			if (cidx != GL_INVALID_INDEX)
-			{
-				glUniformBlockBinding(program->id, cidx, UniformBuffer::CAMERA);
-				glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[UniformBuffer::CAMERA]);
-			}
-			auto lidx = glGetUniformBlockIndex(program->id, Renderer::uf_light);
-			if (lidx != GL_INVALID_INDEX)
-			{
-				glUniformBlockBinding(program->id, lidx, UniformBuffer::LIGHT);
-				glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[UniformBuffer::LIGHT]);
-			}
+			program->bind(Renderer::uf_camera, UniformBuffer::CAMERA);
+			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[UniformBuffer::CAMERA]);
+			program->bind(Renderer::uf_light, UniformBuffer::LIGHT);
+			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[UniformBuffer::LIGHT]);
 #else
 			// update all uniforms
 			update_uniforms();

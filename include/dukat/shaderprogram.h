@@ -13,6 +13,7 @@ namespace dukat
 	{
 	private:
 		std::unordered_map<std::string,GLint> attributes;
+		std::unordered_map<std::string,GLuint> uniforms;
 		void index_attributes(void);
 
 	public:
@@ -34,10 +35,6 @@ namespace dukat
 		inline void set_vector3(const std::string& name, const Vector3& v) { glUniform4f(attributes[name], v.x, v.y, v.z, v.w); }
 		inline void set_matrix4(const std::string& name, const Matrix4& matrix) { glUniformMatrix4fv(attributes[name], 1, false, matrix.m); }
 		inline void set_matrix4(const std::string& name, GLfloat* matrix) { glUniformMatrix4fv(attributes[name], 1, false, matrix); }
-
-		inline void bind(const GLchar* block_name, Renderer::UniformBuffer ub) {
-			const auto cidx = glGetUniformBlockIndex(id, block_name);
-			glUniformBlockBinding(id, cidx, ub);
-		}
+		void bind(const std::string& block_name, Renderer::UniformBuffer ub);
 	};
 }
