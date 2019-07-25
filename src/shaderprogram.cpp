@@ -69,15 +69,19 @@ namespace dukat
 		}
 	}
 
-	void ShaderProgram::bind(const std::string& block_name, Renderer::UniformBuffer ub)
+	bool ShaderProgram::bind(const std::string& block_name, GLuint block_binding)
 	{
-		if (uniforms.count(block_name) == 0)
+		if (uniforms.count(block_name) == 0) // determine index on first call
 			uniforms[block_name] = glGetUniformBlockIndex(id, block_name.c_str());
 		const auto& idx = uniforms[block_name];
-#ifdef _DEBUG
-		if (idx == GL_INVALID_INDEX)
-			log->warn("Invalid uniform index: {}", block_name);
-#endif
-		glUniformBlockBinding(id, idx, ub);
+		if (idx != GL_INVALID_INDEX)
+		{
+			glUniformBlockBinding(id, idx, block_binding);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

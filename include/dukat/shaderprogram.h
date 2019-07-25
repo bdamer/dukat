@@ -35,6 +35,7 @@ namespace dukat
 		inline void set_vector3(const std::string& name, const Vector3& v) { glUniform4f(attributes[name], v.x, v.y, v.z, v.w); }
 		inline void set_matrix4(const std::string& name, const Matrix4& matrix) { glUniformMatrix4fv(attributes[name], 1, false, matrix.m); }
 		inline void set_matrix4(const std::string& name, GLfloat* matrix) { glUniformMatrix4fv(attributes[name], 1, false, matrix); }
-		void bind(const std::string& block_name, Renderer::UniformBuffer ub);
+		// Binds a named uniform buffer. Returns true if the operation was successful.
+		bool bind(const std::string& block_name, GLuint block_binding);
 	};
 }

@@ -98,10 +98,10 @@ namespace dukat
 			this->active_program = program;
 #if OPENGL_VERSION >= 30
 			// re-bind uniform blocks
-			program->bind(Renderer::uf_camera, UniformBuffer::CAMERA);
-			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[UniformBuffer::CAMERA]);
-			program->bind(Renderer::uf_light, UniformBuffer::LIGHT);
-			glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[UniformBuffer::LIGHT]);
+			if (program->bind(Renderer::uf_camera, UniformBuffer::CAMERA))
+				glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[UniformBuffer::CAMERA]);
+			if (program->bind(Renderer::uf_light, UniformBuffer::LIGHT))
+				glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[UniformBuffer::LIGHT]);
 #else
 			// update all uniforms
 			update_uniforms();
