@@ -6,11 +6,10 @@ namespace dukat
 	Animation* AnimationManager::add(std::unique_ptr<Animation> animation)
 	{
 		auto anim = animation.get();
+		anim->group = active_group;
 		animations.push_back(std::move(animation));
 		if (!anim->is_running())
-		{
 			anim->start();
-		}
 		return anim;
 	}
 
@@ -27,15 +26,21 @@ namespace dukat
 	{
 		for (auto it = animations.begin(); it != animations.end(); )
 		{
-			if ((*it)->is_done())
+			const auto& a = (*it);
+			// only process animations of group 0 or active group
+			if (a->group == active_group || a->group == 0)
 			{
-				it = animations.erase(it);
+				if (a->is_done())
+				{
+					it = animations.erase(it);
+					continue;
+				}
+				else
+				{
+					a->step(delta);
+				}
 			}
-			else
-			{
-				(*it)->step(delta);
-				++it;
-			}
+			++it;
 		}
 	}
 }
