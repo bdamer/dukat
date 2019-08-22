@@ -190,7 +190,7 @@ namespace dukat
 			return;
 
 		auto next = keys.begin() + next_key;
-		if (next->mode == AnimationKey<T>::Continuous)
+		if (next->mode == AnimationKey<std::array<T, S>>::Continuous)
 		{
 			for (auto i = 0u; i < S; i++)
 				*attributes[i] += static_cast<T>(value_deltas[i] * delta);
