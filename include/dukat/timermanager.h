@@ -11,7 +11,6 @@ namespace dukat
 {
     struct Timer
     {
-		uint32_t id;
 		uint32_t generation;
 		uint8_t group; // timer group
 		float interval;
@@ -20,7 +19,7 @@ namespace dukat
 		bool alive;
         std::function<void(void)> callback;
 
-        Timer(void) : id(0u), generation(0u), group(0u), interval(0.0f), runtime(0.0f), 
+        Timer(void) : generation(0u), group(0u), interval(0.0f), runtime(0.0f), 
 			recurring(false), alive(false), callback(nullptr) { }
     };
 

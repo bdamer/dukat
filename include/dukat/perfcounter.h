@@ -34,6 +34,7 @@ namespace dukat
 			BB_CHECKS,		// No# of bounding-box checks
 			ENTITIES,		// No# of game entities
 			BODIES,			// No# of collision bodies
+			TIMERS,			// No# of active timers
 			CUSTOM1,		// Custom counters
 			CUSTOM2,
 			CUSTOM3,

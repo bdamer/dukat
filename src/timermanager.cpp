@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/timermanager.h>
+#include <dukat/perfcounter.h>
 
 namespace dukat
 {
@@ -24,6 +25,7 @@ namespace dukat
     {
 		generation++;
 
+		auto alive = 0;
 		timers.free_index = 0;
 		for (auto& t : timers.data)
 		{
@@ -36,7 +38,8 @@ namespace dukat
 			// only process timers of group 0 or active group
 			if (t.group != active_group && t.group > 0)
 				continue;
-            t.runtime += delta;
+			alive++;
+			t.runtime += delta;
             // check if timer has expired
             if (t.runtime >= t.interval)
             {
@@ -49,5 +52,6 @@ namespace dukat
 					timers.release(t);
             }
         }
+		perfc.inc(PerformanceCounter::TIMERS, alive);
     }
 }
