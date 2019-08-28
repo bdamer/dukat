@@ -30,6 +30,7 @@ include/GL/*
 include/SDL2/*
 include/spdlog/*
 include/json/*
+include/libnoise/*
 include/*.h
 include/*.cpp
 
