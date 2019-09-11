@@ -462,6 +462,9 @@
     <ClInclude Include="..\include\dukat\particleemitter.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\fullscreeneffect2.h">
+      <Filter>Header Files\video\effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
