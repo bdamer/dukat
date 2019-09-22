@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 #include "surface.h"
-#include "sysutil.h"
+#include "string.h"
 #include "texture.h"
 
 namespace dukat

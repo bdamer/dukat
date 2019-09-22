@@ -465,6 +465,12 @@
     <ClInclude Include="..\include\dukat\fullscreeneffect2.h">
       <Filter>Header Files\video\effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\string.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\json.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -730,6 +736,12 @@
     </ClCompile>
     <ClCompile Include="..\src\fullscreeneffect2.cpp">
       <Filter>Source Files\video\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\string.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\json.cpp">
+      <Filter>Source Files\util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -95,6 +95,7 @@
 #include "octreenode.h"
 #endif
 #include "shape.h"
+#include "string.h"
 #include "textureutil.h"
 #ifndef __ANDROID__
 #include "voxmodel.h"
