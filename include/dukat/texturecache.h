@@ -28,6 +28,7 @@ namespace dukat
 
 		// Helper method to load a surface from a file.
 		Surface* load_surface(const std::string& filename, bool hflip = false, bool vflip = false);
+		void free_surface(const std::string& filename) { if (surfaces.count(filename)) surfaces.erase(filename); }
 		// Generates an ID that can be used to store and retrieve dynamic textures and surfaces.
 		uint32_t generate_id(void) { return ++last_id; }
 
