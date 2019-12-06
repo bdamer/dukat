@@ -25,7 +25,8 @@ namespace dukat
 				Smoke,
 				Fountain,
 				Explosion,
-				Spiral
+				Spiral,
+				Radial
 			};
 
 			Type type;

@@ -57,7 +57,8 @@ namespace dukat
 		ParticleEmitter::Recipe::Type::Explosion, 
 		Particle::Alive | Particle::Linear | Particle::Dampened,
 		100.f, 1.f, 6.f, 1.f, 5.f,
-		Vector2{ 0, 25 }, Vector2{ 0, 35 },		// horizontal speed not used 
+		Vector2{ 0, 25 }, Vector2{ 0, 35 },		// x used to adjust initial position in particle direction 
+												// y used to determine particle velocity
 		{
 			Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Initial color
 			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
@@ -142,6 +143,49 @@ namespace dukat
 			p->pos += Vector2::random(-em.recipe.min_dp, em.recipe.min_dp);
 
 			p->dp = em.recipe.max_dp;
+			p->size = randf(em.recipe.min_size, em.recipe.max_size);
+			p->color = em.recipe.colors[randi(0, em.recipe.colors.size())];
+			p->dc = em.recipe.dc;
+			p->ttl = randf(em.recipe.min_ttl, em.recipe.max_ttl);
+
+			em.target_layer->add(p);
+
+			em.accumulator -= 1.0f;
+		}
+	}
+
+	// RADIAL
+	// - continuous particles generated at a radius around emitter
+	// - particle direction determined by random angle
+	// - particle position based min_dp.x along direction vector
+	// - particle velocity within min_dp.y and max_dp.y along direction
+	void radial_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	{
+		em.accumulator += em.recipe.rate * delta;
+		if (em.accumulator < 1.0f || em.target_layer == nullptr)
+			return;
+
+		static const Vector2 base_vector{ 0.0f, -1.0f };
+		const auto offset_count = em.offsets.size();
+		while (em.accumulator >= 1.0f)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				return;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
+
+			const auto angle = randf(0.0f, two_pi);
+			const auto offset = base_vector.rotate(angle);
+			if (offset_count == 0)
+				p->pos = em.pos;
+			else
+				p->pos = em.pos + em.offsets[rand() % offset_count];
+
+			if (em.recipe.min_dp.x != 0.0f)
+				p->pos += offset * em.recipe.min_dp.x;
+
+			p->dp = offset * randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
 			p->size = randf(em.recipe.min_size, em.recipe.max_size);
 			p->color = em.recipe.colors[randi(0, em.recipe.colors.size())];
 			p->dc = em.recipe.dc;
@@ -303,6 +347,9 @@ namespace dukat
 
 	// EXPLOSION
 	// - burst of particles
+	// - particle direction determined by random angle
+	// - particle position based min_dp.x along direction vector
+	// - particle velocity within min_dp.y and max_dp.y along direction
 	void explosion_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
 		if (em.target_layer == nullptr)
@@ -336,6 +383,10 @@ namespace dukat
 				p->pos = em.pos;
 			else
 				p->pos = em.pos + em.offsets[rand() % offset_count];
+
+			if (em.recipe.min_dp.x != 0.0f)
+				p->pos += offset * em.recipe.min_dp.x;
+
 			p->dp = offset * randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
 			const auto n_size = randf(0.0f, 1.0f);
@@ -422,6 +473,9 @@ namespace dukat
 			break;
 		case ParticleEmitter::Recipe::Spiral:
 			emitter.update = std::bind(spiral_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Radial:
+			emitter.update = std::bind(radial_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		default:
 			emitter.update = nullptr;

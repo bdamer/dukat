@@ -62,10 +62,10 @@ namespace dukat
 					200.0f, 1.0f, 4.0f, 1.0f, 5.0f,
 					Vector2{ -15, -15 }, Vector2{ 15, 15 }, 	
 					{ 
-						Color{ 1.f, 0.f, 0.f, 1.f },
-						Color{ 0.f, 1.f, 0.f, 1.f },
-						Color{ 0.f, 0.f, 1.f, 1.f },
-						Color{ 1.f, 0.f, 1.f, 1.f }
+						color_rgb(0xff0000),
+						color_rgb(0x00ff00),
+						color_rgb(0x0000ff),
+						color_rgb(0xff00ff)
 					},
 					Color{ 0.f, 0.f, 0.f, -0.1f }
 				};
@@ -99,6 +99,30 @@ namespace dukat
 				e->target_layer = particle_layer;
 			}		
 		});
+
+		modes.push_back(ParticleMode{ "Radial",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+
+				ParticleEmitter::Recipe recipe{
+					ParticleEmitter::Recipe::Radial,
+					Particle::Alive | Particle::Linear,
+					50.0f, 1.0f, 1.0f, 5.0f, 10.0f,
+					Vector2{ 150, -25 }, Vector2{ 0, -25 },
+					{
+						color_rgb(0xffffff),
+						color_rgb(0xffeb57),
+						color_rgb(0xffc825),
+						color_rgb(0xffa214)
+					},
+					Color{ 0.f, 0.f, 0.f, -.1f }
+				};
+
+				auto e = pm->create_emitter(recipe);
+				e->pos = Vector2{ 0.f, 0.f };
+				e->target_layer = particle_layer;
+			}
+			});
 
 		modes.push_back(ParticleMode{ "Flame", 
 			[&](void) {
@@ -150,6 +174,20 @@ namespace dukat
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
 				auto e = pm->create_emitter(ParticleEmitter::Recipe::ExplosionRecipe);
+				e->pos = Vector2{ 0.0f, 0.0f };
+				e->target_layer = particle_layer;
+				e->value = 5.0f; // repeat interval
+			}
+		});
+
+		modes.push_back(ParticleMode{ "Implosion",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+				auto recipe = ParticleEmitter::Recipe::ExplosionRecipe;
+				recipe.min_dp.x = 25.0f; // offset by 10 pix from emitter
+				recipe.min_dp.y = -35.0f;
+				recipe.max_dp.y = -25.0f;
+				auto e = pm->create_emitter(recipe);
 				e->pos = Vector2{ 0.0f, 0.0f };
 				e->target_layer = particle_layer;
 				e->value = 5.0f; // repeat interval
