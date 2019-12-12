@@ -32,7 +32,8 @@ namespace dukat
 			SPRITES_TOTAL,	// No# of total sprites on layers
 			SAMPLES,		// No# of sampling operations
 			BB_CHECKS,		// No# of bounding-box checks
-			ENTITIES,		// No# of game entities
+			ENTITIES,		// No# of active game entities
+			ENTITIES_TOTAL, // No# of total game entities
 			BODIES,			// No# of collision bodies
 			TIMERS,			// No# of active timers
 			CUSTOM1,		// Custom counters
