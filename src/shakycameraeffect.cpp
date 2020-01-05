@@ -9,7 +9,8 @@ namespace dukat
 	{
 		if (next_jump <= 0.0f)
 		{
-			tx.position.y += sign_y * randf(min_range, max_range);
+			auto& val = vertical ? tx.position.y : tx.position.x;
+			val += sign_y * randf(min_range, max_range);
 			next_jump = frequency;
 			sign_y *= -1;
 		}
