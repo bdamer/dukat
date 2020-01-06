@@ -15,7 +15,8 @@ namespace dukat
 
 		Game2* game;
 		Animation* anim;
-		Color color;
+		Color color; // target color
+		float alpha;
 
 		void create_fade_layer(void);
 
@@ -25,5 +26,6 @@ namespace dukat
 
 		void fade_in(float duration, std::function<void(void)> callback = nullptr);
 		void fade_out(float duration, std::function<void(void)> callback = nullptr);
+		void set_color(Color color) { this->color = color; }
 	};
 }
