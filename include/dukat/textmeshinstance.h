@@ -27,14 +27,15 @@ namespace dukat
 		float width, height;
 
 	public:
-		// Valid values: Center, Left, Right
-		Align halign;
-		// Valid values: Center, Top, Bottom
-		Align valign;
+		Align halign; // Valid values: Center, Left, Right
+		Align valign; // Valid values: Center, Top, Bottom
+		float char_width; // scales space allocated for characters and lines
+		float line_height;
 
 		TextMeshInstance(std::unique_ptr<MeshData> text_mesh, float yorientation = 1.0f);
 		~TextMeshInstance(void) { }
 
+		// Accessors
 		void set_text(const std::string& text);
 		std::string get_text(void) const { return text; }
 		void set_alpha(float alpha);

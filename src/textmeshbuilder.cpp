@@ -28,7 +28,7 @@ namespace dukat
 		attr.push_back(dukat::VertexAttribute(Renderer::at_texcoord, 2));
 		auto mesh = std::make_unique<MeshData>(GL_TRIANGLES, max_length * 6, 0, attr);
 		float width, height;
-		rebuild_text_mesh(mesh.get(), text, width, height);
+		rebuild_text_mesh(mesh.get(), text, 1.0f, 1.0f, width, height);
 		return mesh;
 	}
 
@@ -63,7 +63,8 @@ namespace dukat
 		}
 	}
 
-	void TextMeshBuilder::rebuild_text_mesh(MeshData* mesh, const std::string& text, float& width, float& height) const
+	void TextMeshBuilder::rebuild_text_mesh(MeshData* mesh, const std::string& text, 
+		const float char_width, const float line_height, float& width, float& height) const
 	{
 		assert(text.length() <= max_length);
 
@@ -84,7 +85,7 @@ namespace dukat
 			}
 			else if (c == '\n')
 			{
-				y += 1.0f;
+				y += line_height;
 				x = 0.0f;
 				continue;
 			}
@@ -100,11 +101,11 @@ namespace dukat
 			verts.push_back({ x + 1.0f, y + 1.0f, color.r, color.g, color.b, color.a, u + tw, v + th }); // bottom-right
 
 			max_x = std::max(x, max_x);
-			x += 1.0f;
+			x += char_width;
 		}
 
-		width = max_x + 1.0f;
-		height = y + 1.0f;
+		width = max_x + char_width;
+		height = y + line_height;
 		mesh->set_vertices(reinterpret_cast<GLfloat*>(verts.data()), static_cast<int>(verts.size()));
 	}
 }

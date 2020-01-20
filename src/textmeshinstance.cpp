@@ -5,7 +5,7 @@
 namespace dukat
 {
 	TextMeshInstance::TextMeshInstance(std::unique_ptr<MeshData> text_mesh, float yorientation)
-		: halign(Align::Left), valign(Align::Bottom), yorientation(yorientation)
+		: text(""), char_width(1.0f), line_height(1.2f), halign(Align::Left), valign(Align::Bottom), yorientation(yorientation)
 	{
 		this->text_mesh = std::move(text_mesh);
 		set_mesh(this->text_mesh.get());
@@ -18,7 +18,7 @@ namespace dukat
 
 		this->text = text;
 		TextMeshBuilder mb;
-		mb.rebuild_text_mesh(get_mesh(), text, width, height);
+		mb.rebuild_text_mesh(get_mesh(), text, char_width, line_height, width, height);
 		update(0.0f);
 	}
 

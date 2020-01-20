@@ -27,6 +27,6 @@ namespace dukat
 		TextMeshBuilder(int cols = 16, int rows = 16) : cols(cols), rows(rows) { }
 		~TextMeshBuilder(void) { }
 		std::unique_ptr<MeshData> build_text_mesh(const std::string& text = "") const;
-		void rebuild_text_mesh(MeshData* mesh, const std::string& text, float& width, float& height) const;
+		void rebuild_text_mesh(MeshData* mesh, const std::string& text, const float char_width, const float line_height, float& width, float& height) const;
 	};
 }
