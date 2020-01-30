@@ -15,17 +15,14 @@ namespace dukat
 		static constexpr Event WindowResized = 2;
 		// Notification that controller has been added.
 		static constexpr Event DeviceBound = 3;
-		// Notification that controller ha been removed.
+		// Notification that controller has been removed.
 		static constexpr Event DeviceUnbound = 4;
 		// Game events
-		// Reset all game state.
-		static constexpr Event GameReset = 5;
-		// Game state has been restored from file.
-		static constexpr Event GameLoad = 6;
-		// Game state has been saved to file.
-		static constexpr Event GameSave = 7;
+		// Game is about to start.
+		// param1: bool* true if new game, false if existing game was restored.
+		static constexpr Event GameBegin = 5;
 		// Game is about to end
-		static constexpr Event GameEnd = 8;
+		static constexpr Event GameEnd = 6;
 		// Entity Events
 		static constexpr Event Created = 10;
 		static constexpr Event Destroyed = 11;
