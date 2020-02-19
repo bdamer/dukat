@@ -17,7 +17,6 @@ namespace dukat
 
 	void Scene2::render(void)
 	{
-		auto renderer = game->get_renderer();
-		renderer->render();
+		game->get_renderer()->render();
 	}
 }
