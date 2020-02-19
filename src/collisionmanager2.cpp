@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <dukat/collisionmanager2.h>
 #include <dukat/debugeffect2.h>
-#include <dukat/log.h>
 
 namespace dukat
 {
@@ -69,6 +68,8 @@ namespace dukat
 				auto& old_contact = contacts[id];
 				old_contact.generation = generation;
 				old_contact.collision = c.collision;
+				old_contact.body1 = this_body; // order of bodies can flip, so update them
+				old_contact.body2 = other_body;
 				old_contact.age++;
 			}
 			// Otherwise, create a new contact
