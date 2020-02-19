@@ -299,15 +299,7 @@ namespace dukat
 		// if we're in relative addressing mode, transpose sprite
 		// position by camera position.
 		if (check_flag(sprite.flags, Sprite::relative))
-		{
 			pos += camera_position;
-		}
-
-		if (check_flag(sprite.flags, Sprite::pixel_perfect))
-		{
-			pos.x = std::round(pos.x);
-			pos.y = std::round(pos.y);
-		}
 
 		// scale * rotation * translation
 		static Matrix4 tmp;

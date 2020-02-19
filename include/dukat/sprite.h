@@ -18,7 +18,6 @@ namespace dukat
 			align_right = 2,
 			align_top = 4,
 			align_left = 8,
-			pixel_perfect = 16, // if set, will round position to nearest pixel
 			relative = 32,		// if set, will interpret position relative to camera
 			rendered = 64		// set if sprite was rendered during last frame
 		};
