@@ -14,20 +14,17 @@ namespace dukat
 	class Application : public Messenger
 	{
 	private:
-		// Window title
-		const std::string title;
-		// Most recent FPS value
-		int last_fps;
-		// time since program start in seconds
-		float runtime;
-		// If true, will not execute updates
-		bool paused;
-		// If true, will exit application
-		bool done;
+		// max duration between two frames. if the actual duration is greater, 
+		// the update function will be called with this value.
+		static constexpr auto max_frame_delta = 1.0f / 15.0f;
+		const std::string title; // Window title
+		int last_fps; // Most recent FPS value
+		float runtime; // time since program start in seconds
+		bool paused; // If set, will not execute update method
+		bool done; // If set, will exit application
 
 	protected:
-		// Ticks of last update
-		uint32_t last_update;
+		uint32_t last_update; // Ticks at last update
 		Settings& settings;
 		std::unique_ptr<Window> window;
 #ifndef __ANDROID__

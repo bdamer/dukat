@@ -30,13 +30,9 @@ namespace dukat
 			return;
 
 		if (debug)
-		{
 			debug_layer->show();
-		}
 		else
-		{
 			debug_layer->hide();
-		}
 	}
 
 	std::unique_ptr<TextMeshInstance> Game2::create_text_mesh(void)

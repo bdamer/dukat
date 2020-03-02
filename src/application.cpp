@@ -33,9 +33,7 @@ namespace dukat
 
 		auto show_cursor = settings.get_bool("input.mouse.cursor", false);
 		if (!show_cursor)
-		{
 			SDL_ShowCursor(SDL_DISABLE);
-		}
 
 #ifndef __ANDROID__
 		audio_manager = std::make_unique<AudioManager>(settings.get_int("audio.channels", 16));
@@ -60,7 +58,7 @@ namespace dukat
 	int Application::run(void)
 	{
 		log->info("Entering application loop.");
-		uint32_t ticks, last_frame = 0;
+		uint32_t ticks, last_frame = 0u;
 		SDL_Event e;
 		while (!done)
 		{
@@ -70,7 +68,7 @@ namespace dukat
 			{
 				auto delta = static_cast<float>(ticks - last_update) / 1000.0f;
 				runtime += delta;
-				update(delta);
+				update(std::min(delta, max_frame_delta));
 			}
 			last_update = ticks;
 
