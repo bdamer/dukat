@@ -46,7 +46,7 @@ namespace dukat
 		info_text = game->create_text_mesh();
 		info_text->set_size(12.0f);
 		info_text->transform.position = Vector3(
-			-0.5f * (float)texture_width, 0.40f * (float)texture_height, 0.0f);
+			-0.5f * (float)texture_width, 0.35f * (float)texture_height, 0.0f);
 		info_text->transform.update();
 		std::stringstream ss;
 		ss << "Octree Test" << std::endl
@@ -61,10 +61,11 @@ namespace dukat
 		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(10.0f);
-		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.5f * (float)texture_height, 0.0f);
+		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.45f * (float)texture_height, 0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
+		game->get<TimerManager>()->create_timer(0.25f, std::bind(&OctreeScene::update_debug_text, this), true);
 
 		// Create entity 
 		entity = std::make_unique<Entity>();
@@ -77,8 +78,8 @@ namespace dukat
 
 #ifdef USE_MULTITHREADING
 		// Create worker threads
-		thread_count = settings.get_int("game->get_renderer().threads", 1);
-		chunk_count = settings.get_int("game->get_renderer().chunks", 1);
+		thread_count = settings.get_int("renderer.threads", 1);
+		chunk_count = settings.get_int("renderer.chunks", 1);
 		log->info("Creating {} render threads.", thread_count);
 		for (auto i = 0; i < thread_count; i++) {
 			thread_pool.push_back(std::thread(&OctreeScene::thread_render_loop, this));
