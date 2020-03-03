@@ -64,7 +64,8 @@ namespace dukat
 		char msg[1024];
 		glGetShaderInfoLog(shader, 1024, NULL, msg);
 		std::string shader_log(msg);
-		if (shader_log.size() > 0)
+		// Skip empty or Intel-specific message
+		if (shader_log.size() > 0 && shader_log != "No errors.\n")
 		{
 			log->warn("Failed to compile shader: {}", shader_log);
 		}
