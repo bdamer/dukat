@@ -23,6 +23,8 @@ namespace dukat
 		static constexpr Event GameBegin = 5;
 		// Game is about to end
 		static constexpr Event GameEnd = 6;
+		// Sent after camera was changed
+		static constexpr Event CameraChanged = 9;
 		// Entity Events
 		static constexpr Event Created = 10;
 		static constexpr Event Destroyed = 11;

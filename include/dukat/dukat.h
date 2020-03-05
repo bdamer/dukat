@@ -121,6 +121,7 @@
 #include "environment.h"
 #include "firstpersoncamera3.h"
 #include "fixedcamera3.h"
+#include "followercamera2.h"
 #include "followercamera3.h"
 #include "fullscreeneffect2.h"
 #include "gridmesh.h"
