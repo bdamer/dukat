@@ -194,7 +194,7 @@ namespace dukat
 		}
 
 		layer.render(this);
-		
+
 		// Composite pass
 		if (comp_program != nullptr)
 		{
@@ -220,6 +220,11 @@ namespace dukat
 
 	void Renderer2::render(void)
 	{
+		// Call glFinish to avoid buffer updates on Intel GPU.
+		// The goal is to wait until all pending render operations of
+		// the previous frame have finished.
+		glFinish();
+
 		clear();
 
 #if OPENGL_VERSION >= 30
