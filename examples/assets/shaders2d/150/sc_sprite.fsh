@@ -1,4 +1,4 @@
-#version 140
+#version 150
 ///
 // Default frament shader for 2D sprites.
 // Samples a texture and multiplies in a uniform color.
