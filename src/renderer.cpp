@@ -20,10 +20,12 @@ namespace dukat
 		glFrontFace(GL_CCW);
 		set_backface_culling(true);
 		gl_check_error();
+		window->subscribe(this, Events::WindowResized);
 	}
 
 	Renderer::~Renderer(void)
 	{
+		window->unsubscribe(this, Events::WindowResized);
 	}
 
 	void Renderer::test_capabilities(void)
@@ -113,6 +115,16 @@ namespace dukat
 	{
 		glBindBufferBase(GL_UNIFORM_BUFFER, buffer, uniform_buffers->buffers[buffer]);
 		glBufferData(GL_UNIFORM_BUFFER, size, data, GL_STREAM_DRAW);
+	}
+
+	void Renderer::receive(const Message& msg)
+	{
+		switch (msg.event)
+		{
+		case Events::WindowResized:
+			reset_viewport();
+			break;
+		}
 	}
 
 	void Renderer::set_wireframe(bool wireframe)

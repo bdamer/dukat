@@ -23,7 +23,7 @@ namespace dukat
 	};
 
 	// Base class for 2D and 3D renderers.
-	class Renderer
+	class Renderer : public Recipient
 	{
 	protected:		
 		Window* window;
@@ -82,6 +82,9 @@ namespace dukat
 
 		Renderer(Window* window, ShaderCache* shaders);
 		virtual ~Renderer(void);
+
+		// Message handler
+		void receive(const Message& msg);
 
 		// Display settings
 		void toggle_wireframe(void) { set_wireframe(!show_wireframe); }
