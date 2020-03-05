@@ -165,6 +165,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\include\dukat\effectpass.h" />
+    <ClInclude Include="..\include\dukat\followercamera2.h" />
     <ClInclude Include="..\include\dukat\followercamera3.h" />
     <ClInclude Include="..\include\dukat\fullscreeneffect2.h" />
     <ClInclude Include="..\include\dukat\gridmesh.h" />
