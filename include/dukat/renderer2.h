@@ -43,6 +43,9 @@ namespace dukat
 		bool render_sprites;
 		bool render_particles;
 		bool render_text;
+		// If set will force synchronization of OpenGL when
+		// running in fullscreen mode.
+		bool force_sync;
 
 		void initialize_sprite_buffers(void);
 		void initialize_particle_buffers(void);
@@ -90,5 +93,7 @@ namespace dukat
 		bool is_render_sprites(void) const { return render_sprites; }
 		void set_render_text(bool val) { render_text = val; }
 		bool is_render_text(void) const { return render_text; }
+		void set_force_sync(bool val) { force_sync = val; }
+		bool is_force_sync(void) { return force_sync; }
 	};
 }

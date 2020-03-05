@@ -7,6 +7,7 @@ namespace dukat
 	Game2::Game2(Settings& settings) : GameBase(settings)
 	{
 		renderer = std::make_unique<Renderer2>(window.get(), shader_cache.get());
+		renderer->set_force_sync(settings.get_bool("video.forcesync", false));
 		effect = std::make_unique<FullscreenEffect2>(this);
 	}
 

@@ -14,7 +14,7 @@
 namespace dukat
 {
 	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), 
-		render_effects(true), render_sprites(true), render_particles(true), render_text(true)
+		render_effects(true), render_sprites(true), render_particles(true), render_text(true), force_sync(false)
 	{
 		// Enable transparency
 		set_blending(true);
@@ -220,12 +220,12 @@ namespace dukat
 
 	void Renderer2::render(void)
 	{
-#if OPENGL_VERSION == 31
 		// Call glFinish to avoid buffer updates on older Intel GPU.
 		// The goal is to wait until all pending render operations of
 		// the previous frame have finished.
-		glFinish();
-#endif
+		if (force_sync && window->is_fullscreen())
+			glFinish();
+
 		clear();
 
 #if OPENGL_VERSION >= 30
