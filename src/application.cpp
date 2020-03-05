@@ -12,6 +12,8 @@
 
 namespace dukat
 {
+	constexpr float Application::max_frame_delta;
+
 	Application::Application(Settings& settings)
 		: title(settings.get_string("window.title")), runtime(0.0f), paused(false), done(false), last_update(0), settings(settings)
 	{
