@@ -149,12 +149,13 @@ namespace dukat
 	void CollisionScene::add_object(void)
 	{
 		auto dir = Vector2{ randf(-max_speed, max_speed), randf(-max_speed, max_speed) };
-		auto size = randf(10.0f, 20.0f);
+		auto size = randi(10, 20);
 		auto seed_pos = screen_dim - Vector2{ wall_size + 0.5f * size, wall_size + 0.5f * size };
 		auto pos = Vector2::random(-seed_pos, seed_pos);
 		auto body = game->get<CollisionManager2>()->create_body();
 		body->bb.min = pos - Vector2{ size, size };
 		body->bb.max = pos + Vector2{ size, size };
+		body->mass = static_cast<float>(size * size);
 		objects.push_back(std::make_unique<GameObject>(dir, body));
 	}
 

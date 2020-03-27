@@ -109,21 +109,22 @@ namespace dukat
 				auto b2 = it->second.body2;
 				if (b1->solid && b2->solid)
 				{
-					auto shift = it->second.collision.delta;
+					const auto shift = it->second.collision.delta;
 					if (b1->dynamic)
 					{
-						b1->bb.min += shift;
-						b1->bb.max += shift;
+						const auto mfactor = b2->dynamic ? 1.0f - (b1->mass / (b1->mass + b2->mass)) : 1.0f;
+						const auto b1_shift = shift * mfactor;
+						b1->bb += b1_shift;
 						if (b1->owner != nullptr)
-							b1->owner->trigger(Message{ Events::CollisionResolve, &shift });
+							b1->owner->trigger(Message{ Events::CollisionResolve, &b1_shift });
 					}
 					if (b2->dynamic)
 					{
-						shift = -shift;
-						b2->bb.min += shift;
-						b2->bb.max += shift;
+						const auto mfactor = b1->dynamic ? 1.0f - (b2->mass / (b1->mass + b2->mass)) : 1.0f;
+						const auto b2_shift = -shift * mfactor;
+						b2->bb += b2_shift;
 						if (b2->owner != nullptr)
-							b2->owner->trigger(Message{ Events::CollisionResolve, &shift });
+							b2->owner->trigger(Message{ Events::CollisionResolve, &b2_shift });
 					}
 				}
 

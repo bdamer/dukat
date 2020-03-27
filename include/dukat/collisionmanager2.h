@@ -22,10 +22,11 @@ namespace dukat
 			bool dynamic;	// dynamic bodies can be moved as part of collision resolution
 			bool solid;		// if true, will cause this body to take part in collision resolution
 			bool active;	// if false, will cause this body to be ignored by collision manager
+			float mass;		// Mass factor of this body use during collision resolution with other bodies
 			AABB2 bb;
 			Messenger* owner;
 
-			Body(uint16_t id) : id(id), dynamic(true), solid(true), active(true), owner(nullptr) { }
+			Body(uint16_t id) : id(id), dynamic(true), solid(true), active(true), mass(1.0f), owner(nullptr) { }
 		};
 
 		struct Contact
