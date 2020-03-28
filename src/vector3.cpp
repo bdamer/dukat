@@ -12,10 +12,10 @@ namespace dukat
 
 	Vector3& Vector3::normalize(void)
 	{
-		float mag_sq = x * x + y * y + z * z;
+		const auto mag_sq = x * x + y * y + z * z;
 		if (mag_sq > 0.0f)
 		{
-			float one_over_mag = 1.0f / sqrt(mag_sq);
+			const auto one_over_mag = 1.0f / std::sqrt(mag_sq);
 			x *= one_over_mag;
 			y *= one_over_mag;
 			z *= one_over_mag;
@@ -25,10 +25,10 @@ namespace dukat
 
 	Vector3& Vector3::normalize_fast(void)
 	{
-		auto mag_sq = x * x + y * y + z * z;
+		const auto mag_sq = x * x + y * y + z * z;
 		if (mag_sq > 0.0f)
 		{
-			auto one_over_mag = inv_sqrt(mag_sq);
+			const auto one_over_mag = inv_sqrt(mag_sq);
 			x *= one_over_mag;
 			y *= one_over_mag;
 			z *= one_over_mag;
@@ -38,27 +38,24 @@ namespace dukat
 
 	void Vector3::sanitize(void)
 	{
-		if (abs(x) < small_number)
-		{
+		if (std::abs(x) < small_number)
 			x = 0.0f;
-		}
-		if (abs(y) < small_number)
-		{
+		if (std::abs(y) < small_number)
 			y = 0.0f;
-		}
-		if (abs(z) < small_number)
-		{
+		if (std::abs(z) < small_number)
 			z = 0.0f;
-		}
 	}
 
-	void Vector3::randomize(float mag)
+	Vector3 random(float mag)
 	{
-		z = randf(-mag, mag);
-		float phi = randf(0, two_pi);
-		float theta = asin(z / mag);
-		x = mag * cos(theta) * cos(phi);
-		y = mag * cos(theta) * sin(phi);
+		const auto z = randf(-mag, mag);
+		const auto phi = randf(0, two_pi);
+		const auto theta = std::asin(z / mag);
+		return Vector3{
+			mag * std::cos(theta) * std::cos(phi),
+			mag * std::cos(theta) * std::sin(phi),
+			z 
+		};
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Vector3& v)

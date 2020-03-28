@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <dukat/vector2.h>
-#include <dukat/mathutil.h>
 
 namespace dukat
 {
@@ -11,49 +10,36 @@ namespace dukat
 
 	Vector2 Vector2::rotate(float theta) const
 	{
-		float cs = std::cos(theta);
-		float sn = std::sin(theta);
+		const auto cs = std::cos(theta);
+		const auto sn = std::sin(theta);
 		return Vector2(x * cs - y * sn, x * sn + y * cs);
 	}
 
 	Vector2& Vector2::normalize_fast(void)
 	{
-		auto mag_sq = x * x + y * y;
+		const auto mag_sq = x * x + y * y;
 		if (mag_sq > 0.0f)
 		{
-			auto one_over_mag = inv_sqrt(mag_sq);
+			const auto one_over_mag = inv_sqrt(mag_sq);
 			x *= one_over_mag;
 			y *= one_over_mag;
 		}
 		return *this;
 	}
 
-	float Vector2::angle_between(const Vector2& v) const
-	{
-		float angle = safe_acos(*this * v);
-		// "direction" of angle - left if positive, otherwise right
-		if (0 > (x * v.y - y * v.x)) 
-		{
-			angle = -angle;
-		}
-		return angle;
-	}
-
 	float Vector2::angle(void) const
 	{
 		// angle between this and (1,0)
-		float angle = safe_acos(x);
+		const auto angle = safe_acos(x);
 		// "direction" of angle - left if positive, otherwise right
-		if (y < 0) 
-		{
-			angle = -angle;
-		}
-		return angle;	
+		return (y < 0) ? -angle : angle;
 	}
 
-	Vector2 Vector2::random(const Vector2& min, const Vector2& max)
+	float compute_angle(const Vector2& a, const Vector2& b)
 	{
-		return Vector2(randf(min.x, max.x), randf(min.y, max.y));
+		const auto angle = safe_acos(a * b);
+		// "direction" of angle - left if positive, otherwise right
+		return (0 > (a.x * b.y - a.y * b.x)) ? -angle : angle;
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Vector2& v)

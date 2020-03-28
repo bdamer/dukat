@@ -20,17 +20,17 @@ namespace dukat
 	static constexpr float no_intersection = 1e30f;
 
 	// Fast inverse square root.
-	extern float inv_sqrt(float number);
+	float inv_sqrt(float number);
 		
 	// "Wrap an angle in range -PI...PI by adding the correct multiple of 2 PI
-	extern float wrap_pi(float theta);
+	float wrap_pi(float theta);
 
 	// "Safe" inverse trig functions
 
 	// Same as acos(x), but if x is out of range, it is "clamped" to the nearest
 	// valid value. The value returned is in range 0...PI, the same as the 
 	// standard C acos function.
-	extern float safe_acos(float x);
+	float safe_acos(float x);
 
 	// Compute the sin and cosine of an angle. On some platforms, if we know
 	// that we need both values, it can be computed faster than computing the 
@@ -44,8 +44,8 @@ namespace dukat
 	}
 
 	// Fast sin / cos based on lookup tables.
-	extern float fast_sin(float value);
-	extern float fast_cos(float value);
+	float fast_sin(float value);
+	float fast_cos(float value);
 
 	// convert degrees to radians and back
 	inline float deg_to_rad(float x) { return (x*pi)/180.0f; }
@@ -73,7 +73,7 @@ namespace dukat
 
 	inline float randf(float min, float max)
 	{
-		return min + (max - min) * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
+		return min + (max - min) * (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX));
 	}
 
 	inline int randi(int min, int max)
@@ -81,7 +81,7 @@ namespace dukat
 		if (min == max)
 			return min;
 		else
-			return min + rand() % (max - min);
+			return min + std::rand() % (max - min);
 	}
 
 	// normalizes the value of an angle between 0 and 2 pi

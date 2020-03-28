@@ -103,9 +103,9 @@ namespace dukat
 			if (offset_count == 0)
 				p->pos = em.pos;
 			else
-				p->pos = em.pos + em.offsets[rand() % offset_count];
+				p->pos = em.pos + em.offsets[std::rand() % offset_count];
 
-			p->dp = Vector2::random(em.recipe.min_dp, em.recipe.max_dp);
+			p->dp = random(em.recipe.min_dp, em.recipe.max_dp);
             p->size = randf(em.recipe.min_size, em.recipe.max_size);
 			p->color = em.recipe.colors[randi(0, em.recipe.colors.size())];
 			p->dc = em.recipe.dc;
@@ -140,7 +140,7 @@ namespace dukat
 			else
 				p->pos = em.pos + em.offsets[rand() % offset_count];
 
-			p->pos += Vector2::random(-em.recipe.min_dp, em.recipe.min_dp);
+			p->pos += random(-em.recipe.min_dp, em.recipe.min_dp);
 
 			p->dp = em.recipe.max_dp;
 			p->size = randf(em.recipe.min_size, em.recipe.max_size);
@@ -180,7 +180,7 @@ namespace dukat
 			if (offset_count == 0)
 				p->pos = em.pos;
 			else
-				p->pos = em.pos + em.offsets[rand() % offset_count];
+				p->pos = em.pos + em.offsets[std::rand() % offset_count];
 
 			if (em.recipe.min_dp.x != 0.0f)
 				p->pos += offset * em.recipe.min_dp.x;
@@ -230,7 +230,7 @@ namespace dukat
 			p->dp.y = -randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
 			if (offset_count > 0)
-				offset += em.offsets[rand() % offset_count];
+				offset += em.offsets[std::rand() % offset_count];
 			p->pos = em.pos + offset;
 
             auto n_size = randf(0.0f, 1.0f);
@@ -328,7 +328,7 @@ namespace dukat
 			if (offset_count == 0)
 				p->pos = em.pos + offset;
 			else
-				p->pos = em.pos + em.offsets[rand() % offset_count] + offset;
+				p->pos = em.pos + em.offsets[std::rand() % offset_count] + offset;
 
 			p->dp.x = offset.x;
             p->dp.y = -randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
@@ -382,7 +382,7 @@ namespace dukat
 			if (offset_count == 0)
 				p->pos = em.pos;
 			else
-				p->pos = em.pos + em.offsets[rand() % offset_count];
+				p->pos = em.pos + em.offsets[std::rand() % offset_count];
 
 			if (em.recipe.min_dp.x != 0.0f)
 				p->pos += offset * em.recipe.min_dp.x;
@@ -430,7 +430,7 @@ namespace dukat
 
 			p->pos = em.pos + offset * em.recipe.min_dp.x;
 			if (offset_count > 0)
-				p->pos += em.offsets[rand() % offset_count];
+				p->pos += em.offsets[std::rand() % offset_count];
 
 			const auto n_size = randf(0.0f, 1.0f);
 			p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);

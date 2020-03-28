@@ -66,8 +66,8 @@ namespace dukat
                     auto py = 0.5f + (float)y;
                     auto pz = 0.5f + (float)z;
                     auto len = (px * px + py * py + pz * pz);
-                    if (abs(len - rad2) < radius)	// how odd - what's the relation between the 
-                                                    // squared distances?
+                    if (std::abs(len - rad2) < radius)	// how odd - what's the relation between the 
+                                                        // squared distances?
                     {
                         auto data = std::make_unique<SDL_Color>();
                         data->r = (Uint8)(255.0f * (float)x / (float)size);

@@ -29,7 +29,7 @@ namespace dukat
 
 		// Create some boids
 		for (auto i = 0; i < num_boids; i++)
-			add_boid(Vector2::random({ 0,0 }, { window_width, window_height }));
+			add_boid(random({ 0,0 }, { window_width, window_height }));
 
 		// Event handlers
 		game->get_devices()->active->on_press(InputDevice::Button1, [&](void) {

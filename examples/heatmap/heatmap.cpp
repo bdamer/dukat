@@ -141,14 +141,14 @@ namespace dukat
         }
 
         // normalized center of cluster
-        auto center = Vector2::random({-0.25f, -0.25f}, {0.25f, 0.25f});
+        auto center = random({-0.25f, -0.25f}, {0.25f, 0.25f});
         for (int j = 0; j < num_emitters; j++) 
         {
             int x, y;
             bool done = false;
             while (!done)
             {
-                auto pos = center + Vector2::random({-rn, -rn}, {rn, rn});
+                auto pos = center + random({-rn, -rn}, {rn, rn});
                 if (!shape.contains(pos))
                     continue;
                 x = (int)std::floor((pos.x + 1.0f) * hs);
