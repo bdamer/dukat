@@ -12,6 +12,12 @@ namespace dukat
 
         Message(void) { }
         Message(Event ev, const void* param1 = nullptr, const void* param2 = nullptr) : event(ev), param1(param1), param2(param2) { }
+    
+        // convenience methods
+        template <typename T>
+        const T* get_param1(void) const { return static_cast<const T*>(param1); }
+        template <typename T>
+        const T* get_param2(void) const { return static_cast<const T*>(param2); }
     };
 
     // Abstract recipient interface
