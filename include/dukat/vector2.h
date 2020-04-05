@@ -102,4 +102,7 @@ namespace dukat
 
 	// Angle between two vectors. Both vectors must be normalized.
 	float compute_angle(const Vector2& a, const Vector2& b);
+
+	// Populates list with uniformly distributed coordinates.
+	void generate_distribution(std::vector<Vector2>& data, const Vector2& min_v = Vector2{ 0, 0 }, const Vector2& max_v = Vector2{ 1, 1 });
 }

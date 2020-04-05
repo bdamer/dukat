@@ -101,4 +101,7 @@ namespace dukat
 
 	// Creates a random vector with given magnitude.
 	Vector3 random(float mag = 1.0f);
+
+	// Populates list with uniformly distributed coordinates.
+	void generate_distribution(std::vector<Vector3>& data, const Vector3& min_v = Vector3{ 0, 0, 0 }, const Vector3& max_v = Vector3{ 1, 1, 1 });
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <dukat/vector3.h>
 #include <dukat/mathutil.h>
+#include <random>
 
 namespace dukat
 {
@@ -56,6 +57,21 @@ namespace dukat
 			mag * std::cos(theta) * std::sin(phi),
 			z 
 		};
+	}
+
+	void generate_distribution(std::vector<Vector3>& data, const Vector3& min_v, const Vector3& max_v)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> x_dist(min_v.x, max_v.x);
+		std::uniform_real_distribution<float> y_dist(min_v.y, max_v.y);
+		std::uniform_real_distribution<float> z_dist(min_v.z, max_v.z);
+		for (auto& el : data)
+		{
+			el.x = x_dist(gen);
+			el.y = y_dist(gen);
+			el.z = z_dist(gen);
+		}
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Vector3& v)

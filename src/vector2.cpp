@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/vector2.h>
+#include <random>
 
 namespace dukat
 {
@@ -40,6 +41,19 @@ namespace dukat
 		const auto angle = safe_acos(a * b);
 		// "direction" of angle - left if positive, otherwise right
 		return (0 > (a.x * b.y - a.y * b.x)) ? -angle : angle;
+	}
+
+	void generate_distribution(std::vector<Vector2>& data, const Vector2& min_v, const Vector2& max_v)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> x_dist(min_v.x, max_v.x);
+		std::uniform_real_distribution<float> y_dist(min_v.y, max_v.y);
+		for (auto& el : data)
+		{
+			el.x = x_dist(gen);
+			el.y = y_dist(gen);
+		}
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Vector2& v)
