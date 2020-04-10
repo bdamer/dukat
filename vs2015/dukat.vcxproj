@@ -178,6 +178,7 @@
     <ClInclude Include="..\include\dukat\objectpool.h" />
     <ClInclude Include="..\include\dukat\particleemitter.h" />
     <ClInclude Include="..\include\dukat\quadtree.h" />
+    <ClInclude Include="..\include\dukat\rand.h" />
     <ClInclude Include="..\include\dukat\scene.h" />
     <ClInclude Include="..\include\dukat\scene2.h" />
     <ClInclude Include="..\include\dukat\shakycameraeffect.h" />

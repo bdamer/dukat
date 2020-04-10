@@ -86,11 +86,11 @@ namespace dukat
 		p->pos = pos;
 		if (predator)
 		{
-			p->color = { 1.0f, 0.0f, 0.0f, randf(0.5f, 1.0f) };
+			p->color = { 1.0f, 0.0f, 0.0f, random(0.5f, 1.0f) };
 		}
 		else
 		{
-			p->color = { 1.0f, 1.0f, 1.0f, randf(0.5f, 1.0f) };
+			p->color = { 1.0f, 1.0f, 1.0f, random(0.5f, 1.0f) };
 		}
 		p->size = 4.0f;
 		p->dp = Vector2{ 1.0f, 0.0f };

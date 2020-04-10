@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <dukat/diamondsquaregenerator.h>
-#include <dukat/mathutil.h>
+#include <dukat/rand.h>
 
 namespace dukat
 {
@@ -87,7 +87,7 @@ namespace dukat
 		{
 			for (auto x = half_size; x < level.size; x += size)
 			{
-				square(level, x, y, half_size, randf(-scale, scale));
+				square(level, x, y, half_size, random(-scale, scale));
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace dukat
 		{
 			for (auto x = (y + half_size) % size; x <= level.size; x += size)
 			{
-				diamond(level, x, y, half_size, randf(-scale, scale));
+				diamond(level, x, y, half_size, random(-scale, scale));
 			}
 		}
 

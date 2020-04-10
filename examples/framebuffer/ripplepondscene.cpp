@@ -99,7 +99,7 @@ namespace dukat
 			game->pop_scene();
 			break;
 		case SDLK_d:
-			add_ripple(rand() % texture_size, rand() % texture_size, randf(0.25f * ripple_amplitude, ripple_amplitude));
+			add_ripple(rand() % texture_size, rand() % texture_size, random(0.25f * ripple_amplitude, ripple_amplitude));
 			break;
 		case SDLK_t:
 			background_idx++;
@@ -126,7 +126,7 @@ namespace dukat
 			x = std::max(std::min(x, 1.0f), 0.0f);
 			auto y = 1.0f - (ctrl->rya / window_height); // normalized y
 
-			add_ripple(static_cast<int>(x * texture_size), static_cast<int>(y * texture_size), randf(-ripple_amplitude, 0.0f));
+			add_ripple(static_cast<int>(x * texture_size), static_cast<int>(y * texture_size), random(-ripple_amplitude, 0.0f));
 		}
 
 		overlay_meshes.update(delta);

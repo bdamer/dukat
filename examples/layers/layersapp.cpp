@@ -118,10 +118,10 @@ namespace dukat
 		// spawn particles
 		auto pm = game->get<ParticleManager>();
 		auto p = pm->create_particle();
-		p->pos = Vector2{ randf(-4.0f, 4.0f), -randf(32.0f, 34.0f) };
+		p->pos = Vector2{ random(-4.0f, 4.0f), -random(32.0f, 34.0f) };
 		p->ry = -32.0f;
-		p->dp = Vector2{ randf(-4.0f, 4.0f), -randf(12.0f, 16.0f) };
-		p->color = Color{ 1.0f, 1.0f, 1.0f, randf(0.75f, 1.0f) };
+		p->dp = Vector2{ random(-4.0f, 4.0f), -random(12.0f, 16.0f) };
+		p->color = Color{ 1.0f, 1.0f, 1.0f, random(0.75f, 1.0f) };
 		p->dc = Color{ 0.0f, 0.0f, 0.0f, -0.1f };
 		p->ttl = 1.0f;
 		game->get_renderer()->get_layer("scene")->add(p);

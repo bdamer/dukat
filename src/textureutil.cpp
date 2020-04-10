@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <dukat/textureutil.h>
 #include <dukat/texture.h>
+#include <dukat/rand.h>
 #include <dukat/sysutil.h>
 
 namespace dukat
@@ -12,8 +13,8 @@ namespace dukat
         // Generate texture with noise values in RG components
         for (int i = 0; i < texture_size; i++)
         {
-            data[i] = ( (static_cast<uint8_t>(std::rand() % 256) << 24) | 
-                        (static_cast<uint8_t>(std::rand() % 256) << 16) | 
+            data[i] = ( (static_cast<uint8_t>(random(0, 256)) << 24) | 
+                        (static_cast<uint8_t>(random(0, 256)) << 16) | 
                         (0xff << 8) |
                         0xff );
         }

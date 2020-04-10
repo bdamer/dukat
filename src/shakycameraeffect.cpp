@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <dukat/camera2.h>
 #include <dukat/shakycameraeffect.h>
-#include <dukat/mathutil.h>
+#include <dukat/rand.h>
 
 namespace dukat
 {
@@ -10,7 +10,7 @@ namespace dukat
 		if (next_jump <= 0.0f)
 		{
 			auto& val = vertical ? tx.position.y : tx.position.x;
-			val += sign_y * randf(min_range, max_range);
+			val += sign_y * random(min_range, max_range);
 			next_jump = frequency;
 			sign_y *= -1;
 		}

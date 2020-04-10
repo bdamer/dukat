@@ -2,7 +2,7 @@
 
 #include <cmath>
 #include <iostream>
-#include <dukat/mathutil.h>
+#include <dukat/rand.h>
 
 namespace dukat
 {
@@ -92,7 +92,7 @@ namespace dukat
 	
 	inline Vector2 random(const Vector2& min, const Vector2& max)
 	{
-		return Vector2{ randf(min.x, max.x), randf(min.y, max.y) };
+		return Vector2{ random(min.x, max.x), random(min.y, max.y) };
 	}
 
 	inline bool in_range(const Vector2& v, const Vector2& min, const Vector2& max)

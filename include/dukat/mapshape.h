@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mathutil.h"
+#include "rand.h"
 #include "shape.h"
 
 namespace dukat
@@ -15,8 +16,8 @@ namespace dukat
         const float dip_width;
 
     public:
-        IslandShape(void) : island_factor(1.07f), bumps(1 + (std::rand() % 6)),
-          start_angle(randf(0.0f, two_pi)), dip_angle(randf(0.0f, two_pi)), dip_width(randf(0.2f, 0.7f)) { }
+        IslandShape(void) : island_factor(1.07f), bumps(random(1, 7)),
+          start_angle(random(0.0f, two_pi)), dip_angle(random(0.0f, two_pi)), dip_width(random(0.2f, 0.7f)) { }
 
         bool contains(const Vector2& q) const
         {

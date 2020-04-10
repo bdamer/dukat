@@ -474,6 +474,9 @@
     <ClInclude Include="..\include\dukat\followercamera2.h">
       <Filter>Header Files\video\camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\rand.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">

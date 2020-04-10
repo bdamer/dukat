@@ -3,10 +3,10 @@
 #include <dukat/blockbuilder.h>
 #include <dukat/game3.h>
 #include <dukat/log.h>
-#include <dukat/mathutil.h>
 #include <dukat/meshbuilder2.h>
 #include <dukat/meshinstance.h>
 #include <dukat/textureutil.h>
+#include <dukat/rand.h>
 #include <dukat/renderer3.h>
 #include <dukat/vertextypes3.h>
 #include <dukat/wavemesh.h>
@@ -111,14 +111,14 @@ namespace dukat
 
 	void WaveMesh::init_geo_wave(int i)
 	{
-		geo_waves[i].phase = randf(0.0f, two_pi);
-		geo_waves[i].len = randf(geo_state.min_length, geo_state.max_length);
+		geo_waves[i].phase = random(0.0f, two_pi);
+		geo_waves[i].len = random(geo_state.min_length, geo_state.max_length);
 		geo_waves[i].amp = geo_waves[i].len * geo_state.amp_over_len / static_cast<float>(num_geo_waves);
 		geo_waves[i].freq = two_pi / geo_waves[i].len;
 		geo_waves[i].fade = 1.f;
 
 		auto rot_base = geo_state.angle_deviation * pi / 180.f;
-		auto rads = rot_base * randf(-1.0f, 1.0f);
+		auto rads = rot_base * random(-1.0f, 1.0f);
 		auto rx = std::cos(rads);
 		auto ry = std::sin(rads);
 		auto x = -geo_state.wind_dir.x;
@@ -130,7 +130,7 @@ namespace dukat
 
 	void WaveMesh::init_tex_wave(int i)
 	{
-		auto rads = randf(-1.0f, 1.0f) * tex_state.angle_deviation * pi / 180.f;
+		auto rads = random(-1.0f, 1.0f) * tex_state.angle_deviation * pi / 180.f;
 		auto rx = std::cos(rads);
 		auto ry = std::sin(rads);
 		auto dx = tex_state.wind_dir.x * rx + tex_state.wind_dir.y * ry;
@@ -153,7 +153,7 @@ namespace dukat
 		tex_waves[i].len = static_cast<float>(texture_size) * eff_k;
 		tex_waves[i].freq = two_pi / tex_waves[i].len;
 		tex_waves[i].amp = tex_waves[i].len * tex_state.amp_over_len;
-		tex_waves[i].phase = randf(0.0f, 1.0f);
+		tex_waves[i].phase = random(0.0f, 1.0f);
 
 		tex_waves[i].dir.x = dx * eff_k;
 		tex_waves[i].dir.y = dy * eff_k;
@@ -161,7 +161,7 @@ namespace dukat
 		tex_waves[i].fade = 1.0f;
 
 		auto speed = (1.0f / std::sqrt(tex_waves[i].len / (two_pi * grav_constant))) / 3.0f;
-		speed *= 1.0f + randf(-tex_state.speed_deviation, tex_state.speed_deviation);
+		speed *= 1.0f + random(-tex_state.speed_deviation, tex_state.speed_deviation);
 		tex_waves[i].speed = speed;
 	}
 

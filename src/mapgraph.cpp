@@ -522,7 +522,7 @@ namespace dukat
         const auto size = 100;
         for (int i = 0; i < size / 2; i++)
         {
-            auto q = corners[std::rand() % (corners.size() - 1)].get();
+            auto q = corners[random(0, corners.size() - 1)].get();
             if (q->ocean || q->elevation < 0.3f || q->elevation > 0.9f)
                 continue;
             while (!q->coast)

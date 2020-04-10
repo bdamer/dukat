@@ -116,10 +116,10 @@ namespace dukat
 		if (particles_enabled && (input.x != 0.0f || input.y != 0.0f))
 		{
 			auto p = game->get<ParticleManager>()->create_particle();
-			p->pos = sprite->p + Vector2{ randf(-pos_offset, pos_offset), randf(-pos_offset, pos_offset) }; 
+			p->pos = sprite->p + Vector2{ random(-pos_offset, pos_offset), random(-pos_offset, pos_offset) }; 
 			p->color = { std::abs(input.x), std::abs(input.y), 1.0f, 1.0f };
-			p->size = randf(5.0f, 10.0f);
-			p->dp = input * -15.0f + Vector2{ randf(-vel_offset, vel_offset), randf(-vel_offset, vel_offset) }; 
+			p->size = random(5.0f, 10.0f);
+			p->dp = input * -15.0f + Vector2{ random(-vel_offset, vel_offset), random(-vel_offset, vel_offset) }; 
 			p->dc = { 0.0f, 0.0f, 0.0f, -0.2f };
 			p->ttl = 5.0f;
 			particle_layer->add(p);

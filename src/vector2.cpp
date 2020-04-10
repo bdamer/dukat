@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/vector2.h>
+#include <dukat/mathutil.h>
 #include <random>
 
 namespace dukat

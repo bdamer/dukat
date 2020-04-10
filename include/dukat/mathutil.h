@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdlib>
 #include <cmath>
 #include <climits>
 
@@ -70,19 +69,6 @@ namespace dukat
     {
         return (i % n + n) % n;
     }
-
-	inline float randf(float min, float max)
-	{
-		return min + (max - min) * (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX));
-	}
-
-	inline int randi(int min, int max)
-	{
-		if (min == max)
-			return min;
-		else
-			return min + std::rand() % (max - min);
-	}
 
 	// normalizes the value of an angle between 0 and 2 pi
 	inline void normalize_angle(float& angle)

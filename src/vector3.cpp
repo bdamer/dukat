@@ -2,6 +2,7 @@
 #include <dukat/vector3.h>
 #include <dukat/mathutil.h>
 #include <random>
+#include <dukat/rand.h>
 
 namespace dukat
 {
@@ -49,8 +50,8 @@ namespace dukat
 
 	Vector3 random(float mag)
 	{
-		const auto z = randf(-mag, mag);
-		const auto phi = randf(0, two_pi);
+		const auto z = random(-mag, mag);
+		const auto phi = random(0.0f, two_pi);
 		const auto theta = std::asin(z / mag);
 		return Vector3{
 			mag * std::cos(theta) * std::cos(phi),

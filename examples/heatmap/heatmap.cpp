@@ -161,9 +161,9 @@ namespace dukat
             }
 
             Emitter e{ x, y };
-            e.phase = randf(0.0f, two_pi);
-            e.period = randf(min_period, max_period);
-            e.max_emission = randf(min_emission, max_emission);
+            e.phase = random(0.0f, two_pi);
+            e.period = random(min_period, max_period);
+            e.max_emission = random(min_emission, max_emission);
             emitters.push_back(e);
         }
     }

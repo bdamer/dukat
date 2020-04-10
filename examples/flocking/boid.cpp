@@ -8,7 +8,7 @@ namespace dukat
 
 	Boid::Boid(Particle * p, bool predator) : p(p), predator(predator), max_speed(120.0f), max_force(0.8f)
 	{
-		auto angle = randf(0, two_pi);
+		auto angle = random(0.0f, two_pi);
 		p->dp.rotate(angle);
 	}
 
@@ -23,7 +23,7 @@ namespace dukat
 		p->dp += acceleration;
 		p->dp.limit(max_speed);
 
-		if (predator && randf(0.0, 1.0) < 0.001f)
+		if (predator && random(0.0f, 1.0f) < 0.001f)
 			p->dp = -p->dp;
 	}
 
