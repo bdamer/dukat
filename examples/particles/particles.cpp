@@ -84,7 +84,7 @@ namespace dukat
 					ParticleEmitter::Recipe::Uniform,
 					Particle::Alive | Particle::Linear,
 					50.0f, 1.0f, 1.0f, 1.0f, 2.0f,
-					Vector2{ 16, 8 }, Vector2{ 0, -50 },
+					Vector2{ 0, -50 }, Vector2{ 0, -50 },
 					{
 						color_rgb(0xffffff),
 						color_rgb(0xffeb57),
@@ -96,6 +96,8 @@ namespace dukat
 
 				auto e = pm->create_emitter(recipe);
 				e->pos = Vector2{ 0.f, 0.f };
+				e->offsets.push_back(Vector2{ -16, -8 });
+				e->offsets.push_back(Vector2{ 16, 8 });
 				e->target_layer = particle_layer;
 			}		
 		});
@@ -167,6 +169,17 @@ namespace dukat
 					e->offsets.push_back(Vector2{ x_offset * static_cast<float>(camera_width), 0.0f });
 					x_offset += 0.005f;
 				}
+			}
+		});
+
+		modes.push_back(ParticleMode{ "Snow",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+				auto e = pm->create_emitter(ParticleEmitter::Recipe::SnowRecipe);
+				e->pos = Vector2{ 0.f, -138.f };
+				e->offsets.push_back(Vector2{ -240, 0 });
+				e->offsets.push_back(Vector2{ 240, 0 });
+				e->target_layer = particle_layer;
 			}
 		});
 

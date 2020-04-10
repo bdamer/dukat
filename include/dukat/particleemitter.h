@@ -26,7 +26,8 @@ namespace dukat
 				Fountain,
 				Explosion,
 				Spiral,
-				Radial
+				Radial,
+				Layered
 			};
 
 			Type type;
@@ -61,6 +62,7 @@ namespace dukat
 			static const Recipe SmokeRecipe;
 			static const Recipe FountainRecipe;
 			static const Recipe ExplosionRecipe;
+			static const Recipe SnowRecipe;
 			static const Recipe SpiralRecipe;
 		};
 

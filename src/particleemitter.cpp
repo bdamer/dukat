@@ -3,6 +3,7 @@
 #include <dukat/particleemitter.h>
 #include <dukat/particle.h>
 #include <dukat/particlemanager.h>
+#include <dukat/rand.h>
 #include <dukat/renderlayer2.h>
 
 #include <dukat/log.h>
@@ -83,6 +84,23 @@ namespace dukat
 		Color{ 0.0f, -1.0f, 0.0f, -0.1f }		// Color reduction over time
 	};
 
+	const ParticleEmitter::Recipe ParticleEmitter::Recipe::SnowRecipe{
+		ParticleEmitter::Recipe::Layered,
+		Particle::Alive | Particle::Linear,
+		40.0f,	
+		1.0f, 3.0f,		// size within 1,3
+		10.0f, 10.0f,	// ttl 
+		Vector2{ -2, 24 },  // particle motion for background (color[2] and color[3])
+		Vector2{ 4, 36 },	// particle motion for foreground (color[0] and color[1])
+		{
+			color_rgba(0xffffffff),
+			color_rgba(0xffffffc0),
+			color_rgba(0xc7cfddc0),
+			color_rgba(0x94fdffc0),
+		},
+		Color{ 0.f, 0.f, 0.f, -0.005f }
+	};
+
 	// LINEAR
 	// - particles are created with unique direction in +/- dp range
 	void linear_update(ParticleManager& pm, ParticleEmitter& em, float delta)
@@ -103,13 +121,13 @@ namespace dukat
 			if (offset_count == 0)
 				p->pos = em.pos;
 			else
-				p->pos = em.pos + em.offsets[std::rand() % offset_count];
+				p->pos = em.pos + em.offsets[random(0, offset_count)];
 
 			p->dp = random(em.recipe.min_dp, em.recipe.max_dp);
-            p->size = randf(em.recipe.min_size, em.recipe.max_size);
-			p->color = em.recipe.colors[randi(0, em.recipe.colors.size())];
+            p->size = random(em.recipe.min_size, em.recipe.max_size);
+			p->color = em.recipe.colors[random(0, em.recipe.colors.size())];
 			p->dc = em.recipe.dc;
-            p->ttl = randf(em.recipe.min_ttl, em.recipe.max_ttl);
+            p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
 			
 			em.target_layer->add(p);
 
@@ -118,15 +136,19 @@ namespace dukat
 	}
 
 	// UNIFORM
-	// - particles are generated within a box based on -min_dp, min_dp
-	// - particles are created with fixed direction based on max_dp
+	// - particles are generated within a box based on offset[0] - offset[1]
+	// - particles are created with fixed direction within +/- dp range
 	void uniform_update(ParticleManager& pm, ParticleEmitter& em, float delta)
 	{
 		em.accumulator += em.recipe.rate * delta;
 		if (em.accumulator < 1.0f || em.target_layer == nullptr)
 			return;
 
-		const auto offset_count = em.offsets.size();
+		if (em.offsets.size() < 2)
+			return; 
+
+		const auto& min_offset = em.offsets[0];
+		const auto& max_offset = em.offsets[1];
 		while (em.accumulator >= 1.0f)
 		{
 			auto p = pm.create_particle();
@@ -134,19 +156,52 @@ namespace dukat
 				return;
 			p->flags = em.recipe.flags;
 			p->ry = em.pos.y + em.mirror_offset;
+			p->pos = em.pos + random(min_offset, max_offset);
 
-			if (offset_count == 0)
-				p->pos = em.pos;
-			else
-				p->pos = em.pos + em.offsets[rand() % offset_count];
-
-			p->pos += random(-em.recipe.min_dp, em.recipe.min_dp);
-
-			p->dp = em.recipe.max_dp;
-			p->size = randf(em.recipe.min_size, em.recipe.max_size);
-			p->color = em.recipe.colors[randi(0, em.recipe.colors.size())];
+			p->dp = random(em.recipe.min_dp, em.recipe.max_dp);
+			p->size = random(em.recipe.min_size, em.recipe.max_size);
+			p->color = em.recipe.colors[random(0, em.recipe.colors.size())];
 			p->dc = em.recipe.dc;
-			p->ttl = randf(em.recipe.min_ttl, em.recipe.max_ttl);
+			p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
+
+			em.target_layer->add(p);
+
+			em.accumulator -= 1.0f;
+		}
+	}
+
+	// LAYERED
+	// - particles are generated within a box based on offset[0] - offset[1]
+	// - background particles are created with min_dp and colors 2 and 3
+	// - foreground particles are created with max_dp and colors 0 and 1
+	void layered_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	{
+		em.accumulator += em.recipe.rate * delta;
+		if (em.accumulator < 1.0f || em.target_layer == nullptr)
+			return;
+
+		if (em.offsets.size() < 2)
+			return;
+
+		const auto& min_offset = em.offsets[0];
+		const auto& max_offset = em.offsets[1];
+		while (em.accumulator >= 1.0f)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				return;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
+			p->pos = em.pos + random(min_offset, max_offset);
+
+			const auto z = random(0, em.recipe.colors.size());
+			p->dp = (z >= 2) ? em.recipe.min_dp : em.recipe.max_dp;
+
+			p->size = random(static_cast<int>(em.recipe.min_size), static_cast<int>(em.recipe.max_size));
+			
+			p->color = em.recipe.colors[z];
+			p->dc = em.recipe.dc;
+			p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
 
 			em.target_layer->add(p);
 
@@ -175,21 +230,21 @@ namespace dukat
 			p->flags = em.recipe.flags;
 			p->ry = em.pos.y + em.mirror_offset;
 
-			const auto angle = randf(0.0f, two_pi);
+			const auto angle = random(0.0f, two_pi);
 			const auto offset = base_vector.rotate(angle);
 			if (offset_count == 0)
 				p->pos = em.pos;
 			else
-				p->pos = em.pos + em.offsets[std::rand() % offset_count];
+				p->pos = em.pos + em.offsets[random(0, offset_count)];
 
 			if (em.recipe.min_dp.x != 0.0f)
 				p->pos += offset * em.recipe.min_dp.x;
 
-			p->dp = offset * randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
-			p->size = randf(em.recipe.min_size, em.recipe.max_size);
-			p->color = em.recipe.colors[randi(0, em.recipe.colors.size())];
+			p->dp = offset * random(em.recipe.min_dp.y, em.recipe.max_dp.y);
+			p->size = random(em.recipe.min_size, em.recipe.max_size);
+			p->color = em.recipe.colors[random(0, em.recipe.colors.size())];
 			p->dc = em.recipe.dc;
-			p->ttl = randf(em.recipe.min_ttl, em.recipe.max_ttl);
+			p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
 
 			em.target_layer->add(p);
 
@@ -206,7 +261,7 @@ namespace dukat
 	void flame_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
 		const auto max_change = 0.25f;
-        em.value += randf(-max_change, max_change);
+        em.value += random(-max_change, max_change);
 		em.accumulator += em.recipe.rate * delta;
 
         if (em.accumulator < 1.0f || em.target_layer == nullptr)
@@ -227,13 +282,13 @@ namespace dukat
 			offset.y = 0.f;
 
 			p->dp.x = em.recipe.max_dp.x * offset.x;
-			p->dp.y = -randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
+			p->dp.y = -random(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
 			if (offset_count > 0)
-				offset += em.offsets[std::rand() % offset_count];
+				offset += em.offsets[random(0, offset_count)];
 			p->pos = em.pos + offset;
 
-            auto n_size = randf(0.0f, 1.0f);
+            auto n_size = random(0.0f, 1.0f);
             p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
 
             // determine initial color of particle based on distance from center 
@@ -259,7 +314,7 @@ namespace dukat
 	void smoke_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
 		const auto max_change = 0.15f;
-		em.value += randf(-max_change, max_change);
+		em.value += random(-max_change, max_change);
 		em.accumulator += em.recipe.rate * delta;
 
         if (em.accumulator < 1.0f || em.target_layer == nullptr)
@@ -283,9 +338,9 @@ namespace dukat
 				p->pos = em.pos + em.offsets[rand() % offset_count] + offset;
 			
             p->dp.x = offset.x * em.recipe.max_dp.x;
-            p->dp.y = -randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
+            p->dp.y = -random(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
-			const auto size = randf(0.0f, 1.0f);
+			const auto size = random(0.0f, 1.0f);
             p->size = em.recipe.min_size + size * (em.recipe.max_size - em.recipe.min_size);
             p->color = em.recipe.colors[0];
 			p->dc = em.recipe.dc * (0.25f + size);
@@ -306,7 +361,7 @@ namespace dukat
 	void fountain_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
 		const auto max_change = 0.2f;
-		em.value += randf(-max_change, max_change);
+		em.value += random(-max_change, max_change);
 		em.accumulator += em.recipe.rate * delta;
 
         if (em.accumulator < 1.0f || em.target_layer == nullptr)
@@ -328,16 +383,16 @@ namespace dukat
 			if (offset_count == 0)
 				p->pos = em.pos + offset;
 			else
-				p->pos = em.pos + em.offsets[std::rand() % offset_count] + offset;
+				p->pos = em.pos + em.offsets[random(0, offset_count)] + offset;
 
 			p->dp.x = offset.x;
-            p->dp.y = -randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
+            p->dp.y = -random(em.recipe.min_dp.y, em.recipe.max_dp.y);
             
-            auto size = randi(1, em.recipe.colors.size());
-            p->size = randf(em.recipe.min_size, em.recipe.max_size);
+            auto size = random(1, em.recipe.colors.size());
+            p->size = random(em.recipe.min_size, em.recipe.max_size);
             p->color = em.recipe.colors[size - 1];
 			p->dc = em.recipe.dc;
-            p->ttl = randf(em.recipe.min_ttl, em.recipe.max_ttl);
+            p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
 
 			em.target_layer->add(p);
 
@@ -377,19 +432,19 @@ namespace dukat
 			p->flags = em.recipe.flags;
 			p->ry = em.pos.y + em.mirror_offset;
 
-			const auto angle = randf(0.0f, two_pi);
+			const auto angle = random(0.0f, two_pi);
 			const auto offset = base_vector.rotate(angle);
 			if (offset_count == 0)
 				p->pos = em.pos;
 			else
-				p->pos = em.pos + em.offsets[std::rand() % offset_count];
+				p->pos = em.pos + em.offsets[random(0, offset_count)];
 
 			if (em.recipe.min_dp.x != 0.0f)
 				p->pos += offset * em.recipe.min_dp.x;
 
-			p->dp = offset * randf(em.recipe.min_dp.y, em.recipe.max_dp.y);
+			p->dp = offset * random(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
-			const auto n_size = randf(0.0f, 1.0f);
+			const auto n_size = random(0.0f, 1.0f);
 			p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
 
 			p->color = em.recipe.colors[0];
@@ -430,9 +485,9 @@ namespace dukat
 
 			p->pos = em.pos + offset * em.recipe.min_dp.x;
 			if (offset_count > 0)
-				p->pos += em.offsets[std::rand() % offset_count];
+				p->pos += em.offsets[random(0, offset_count)];
 
-			const auto n_size = randf(0.0f, 1.0f);
+			const auto n_size = random(0.0f, 1.0f);
 			p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
 
 			p->color = em.recipe.colors[0];
@@ -476,6 +531,9 @@ namespace dukat
 			break;
 		case ParticleEmitter::Recipe::Radial:
 			emitter.update = std::bind(radial_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Layered:
+			emitter.update = std::bind(layered_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		default:
 			emitter.update = nullptr;
