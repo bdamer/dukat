@@ -17,7 +17,7 @@ namespace dukat
 		// swap sprite program and render sprites
 		auto sp = layer->get_sprite_program();
 		layer->set_sprite_program(sprite_program);
-		layer->render_sprites(renderer, shifted_bb);
+		layer->render_sprites(renderer, shifted_bb, [](Sprite* s) { return (s->flags & Sprite::fx) != Sprite::fx; });
 		layer->set_sprite_program(sp);
 
 		// do the same for particles

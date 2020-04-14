@@ -44,7 +44,7 @@ namespace dukat
 		bool is_visible;
 
 		// Fills up priority queue with visible sprites.
-		void fill_sprite_queue(const AABB2& camera_bb, 
+		void fill_sprite_queue(const AABB2& camera_bb, std::function<bool(Sprite*)> predicate,
 			std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator>& queue);
 
 		// Generates sprite model matrix.
@@ -80,7 +80,7 @@ namespace dukat
 		
 		void render(Renderer2* renderer);
 		void render_effects(Renderer2* renderer, const AABB2& camera_bb);
-		void render_sprites(Renderer2* renderer, const AABB2& camera_bb);
+		void render_sprites(Renderer2* renderer, const AABB2& camera_bb, std::function<bool(Sprite*)> predicate = nullptr);
 		void render_particles(Renderer2* renderer, const AABB2& camera_bb);
 		void render_text(Renderer2* renderer, const AABB2& camera_bb);
 

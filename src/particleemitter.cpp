@@ -197,7 +197,7 @@ namespace dukat
 			const auto z = random(0, em.recipe.colors.size());
 			p->dp = (z >= 2) ? em.recipe.min_dp : em.recipe.max_dp;
 
-			p->size = random(static_cast<int>(em.recipe.min_size), static_cast<int>(em.recipe.max_size));
+			p->size = static_cast<float>(random(static_cast<int>(em.recipe.min_size), static_cast<int>(em.recipe.max_size)));
 			
 			p->color = em.recipe.colors[z];
 			p->dc = em.recipe.dc;

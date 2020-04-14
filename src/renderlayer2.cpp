@@ -120,12 +120,15 @@ namespace dukat
 		texts.clear();
 	}
 
-	void RenderLayer2::fill_sprite_queue(const AABB2& camera_bb,
+	void RenderLayer2::fill_sprite_queue(const AABB2& camera_bb, std::function<bool(Sprite*)> predicate,
 		std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator>& queue)
 	{
 		// Fill queue with sprites ordered by priority from low to high
 		for (auto sprite : sprites)
 		{
+			if (predicate != nullptr && !predicate(sprite))
+				continue; // exclude sprites which fail predicate
+
 			if (check_flag(sprite->flags, Sprite::relative))
 			{
 				// TODO: perform occlusion check against untranslated camera bounding box
@@ -179,10 +182,10 @@ namespace dukat
 		perfc.inc(PerformanceCounter::SPRITES_TOTAL, sprites.size());
 	}
 
-	void RenderLayer2::render_sprites(Renderer2* renderer, const AABB2& camera_bb)
+	void RenderLayer2::render_sprites(Renderer2* renderer, const AABB2& camera_bb, std::function<bool(Sprite*)> predicate)
 	{
 		static std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator> queue;
-		fill_sprite_queue(camera_bb, queue);
+		fill_sprite_queue(camera_bb, predicate, queue);
 		if (queue.empty())
 			return; // nothing to render
 
