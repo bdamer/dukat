@@ -477,6 +477,9 @@
     <ClInclude Include="..\include\dukat\rand.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\shadoweffect2.h">
+      <Filter>Header Files\video\effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -748,6 +751,9 @@
     </ClCompile>
     <ClCompile Include="..\src\json.cpp">
       <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\shadoweffect2.cpp">
+      <Filter>Source Files\video\effects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

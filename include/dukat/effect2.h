@@ -8,7 +8,7 @@ namespace dukat
 
 	class Effect2
 	{
-	private:
+	protected:
 		RenderLayer2* layer;
 
 	public:

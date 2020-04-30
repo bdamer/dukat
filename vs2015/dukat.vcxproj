@@ -181,6 +181,7 @@
     <ClInclude Include="..\include\dukat\rand.h" />
     <ClInclude Include="..\include\dukat\scene.h" />
     <ClInclude Include="..\include\dukat\scene2.h" />
+    <ClInclude Include="..\include\dukat\shadoweffect2.h" />
     <ClInclude Include="..\include\dukat\shakycameraeffect.h" />
     <ClInclude Include="..\include\dukat\shape.h" />
     <ClInclude Include="..\include\dukat\string.h" />
@@ -301,6 +302,7 @@
     <ClCompile Include="..\src\mirroreffect2.cpp" />
     <ClCompile Include="..\src\particleemitter.cpp" />
     <ClCompile Include="..\src\scene2.cpp" />
+    <ClCompile Include="..\src\shadoweffect2.cpp" />
     <ClCompile Include="..\src\shakycameraeffect.cpp" />
     <ClCompile Include="..\src\string.cpp" />
     <ClCompile Include="..\src\textbutton.cpp" />

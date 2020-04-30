@@ -147,6 +147,7 @@
 #include "shakycameraeffect.h"
 #include "shadercache.h"
 #include "shaderprogram.h"
+#include "shadoweffect2.h"
 #include "sprite.h"
 #include "surface.h"
 #include "textmeshbuilder.h"
