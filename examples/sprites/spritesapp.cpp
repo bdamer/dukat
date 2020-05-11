@@ -15,16 +15,16 @@ namespace dukat
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));
 
-		bg_layer = game->get_renderer()->create_layer("background", 10.0f, 2.0f);
-		particle_layer = game->get_renderer()->create_layer("particles", 15.0f);
-		main_layer = game->get_renderer()->create_layer("main", 20.0f);
+		bg_layer = game->get_renderer()->create_composite_layer("background", 10.0f, 2.0f);
+		particle_layer = game->get_renderer()->create_composite_layer("particles", 15.0f);
+		main_layer = game->get_renderer()->create_composite_layer("main", 20.0f);
 
 		auto texture = game->get_textures()->get("dukat.png");
 		sprite = std::make_unique<Sprite>(texture);
 		main_layer->add(sprite.get());
 
 		// Set up info text
-		auto info_layer = game->get_renderer()->create_overlay_layer("overlay", 25.0f);
+		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)window_width, 0.4f * (float)window_height, 0.0f);
@@ -41,7 +41,7 @@ namespace dukat
 		game->get_audio()->play_music(music, -1);
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_overlay_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window_width, -0.5f * (float)window_height, 0.0f);

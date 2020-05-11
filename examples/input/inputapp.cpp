@@ -19,7 +19,7 @@ namespace dukat
 		create_sprites();
 
 		// Set up info text
-		auto info_layer = game->get_renderer()->create_overlay_layer("overlay", 25.0f);
+		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)320, 0.4f * (float)180, 0.0f);
@@ -30,7 +30,7 @@ namespace dukat
 		info_layer->add(info_text.get());
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_overlay_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)640, -0.5f * (float)360, 0.0f);
@@ -62,7 +62,7 @@ namespace dukat
 
 	void InputScene::create_sprites(void)
 	{
-		auto layer = game->get_renderer()->create_layer("main", 1.0f);
+		auto layer = game->get_renderer()->create_composite_layer("main", 1.0f);
 
 		// Mask
 		mask_sprite = std::make_unique<Sprite>(game->get_textures()->get("controller.png"));

@@ -24,16 +24,16 @@ namespace dukat
 		ground_texture = game->get_textures()->get("ground32.png");
 
 		// Set up layers
-		auto ground_layer = game->get_renderer()->create_layer("ground", 0.0f);
+		auto ground_layer = game->get_renderer()->create_composite_layer("ground", 0.0f);
 		ground_layer->set_composite_program(game->get_shaders()->get_program("fx_default.vsh", "fx_ground.fsh"));
 		ground_layer->set_composite_binder([&](ShaderProgram* p) {
 			ground_texture->bind(1, p);
 			p->set("u_scale", 8.0f);
 		});
 
-		auto bg_layer = game->get_renderer()->create_layer("background", 10.0f);
+		auto bg_layer = game->get_renderer()->create_composite_layer("background", 10.0f);
 
-		auto scene_mirror = game->get_renderer()->create_layer("scene_mirror", 15.0f);
+		auto scene_mirror = game->get_renderer()->create_composite_layer("scene_mirror", 15.0f);
 		scene_mirror->set_composite_program(game->get_shaders()->get_program("fx_default.vsh", "fx_mirror.fsh"));
 		scene_mirror->set_composite_binder([&](ShaderProgram* p) {
 			mask_texture->bind(1, p);
@@ -42,7 +42,7 @@ namespace dukat
 		auto pp = game->get_shaders()->get_program("sc_particle_mirror.vsh", "sc_particle.fsh");
 		scene_mirror->add(std::make_unique<MirrorEffect2>(sp, pp, "scene"));
 
-		auto scene_layer = game->get_renderer()->create_layer("scene", 20.0f);
+		auto scene_layer = game->get_renderer()->create_composite_layer("scene", 20.0f);
 		auto ssp = game->get_shaders()->get_program("sc_shadow.vsh", "sc_shadow.fsh");
 		scene_layer->add(std::make_unique<ShadowEffect2>(ssp));
 
@@ -63,22 +63,21 @@ namespace dukat
 		scene_layer->add(barrel_sprite.get());
 
 		// Set up info text
-		auto info_layer = game->get_renderer()->create_overlay_layer("overlay", 25.0f);
+		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(2.0f);
-		info_text->transform.position = Vector3(-0.5f * (float)game_width, 0.0f, 0.0f);
+		info_text->transform.position = Vector3(-0.5f * (float)game_width, 0.45f * (float)game_height, 0.0f);
 		info_text->transform.update();
 		std::stringstream ss;
 		ss << "Layers Example" << std::endl
 			<< "<W,A,S,D> Movement" << std::endl;
 		info_text->set_text(ss.str());
 		info_layer->add(info_text.get());
-		info_layer->hide();
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_overlay_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
-		debug_text->set_size(4.0f);
+		debug_text->set_size(2.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)game_width, -0.5f * (float)game_height, 0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());

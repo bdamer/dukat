@@ -8,7 +8,7 @@ namespace dukat
 {
 	TextScene::TextScene(Game2* game2) : Scene2(game2)
 	{
-		auto layer = game->get_renderer()->create_overlay_layer("main", 1.0f);
+		auto layer = game->get_renderer()->create_direct_layer("main", 1.0f);
 
 		auto settings = game->get_settings();
 
@@ -38,7 +38,7 @@ namespace dukat
 		layer->add(info_text.get());
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(12.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window->get_width(), -0.5f * (float)window->get_height(), 0.0f);

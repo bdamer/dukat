@@ -24,7 +24,7 @@ namespace dukat
 	RenderLayer2::RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
 	    const std::string& id, float priority, float parallax) : render_target(nullptr), composite_binder(nullptr),
 		 sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), is_visible(true),
-		id(id), parallax(parallax), priority(priority), stage(RenderStage::SCENE)
+		id(id), parallax(parallax), priority(priority), stage(Composite)
 	{
 		sprite_program = shader_cache->get_program("sc_sprite.vsh", "sc_sprite.fsh");
 		particle_program = shader_cache->get_program("sc_particle.vsh", "sc_particle.fsh");

@@ -21,7 +21,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="surfaceapp.h">
+    <ClInclude Include="fullscreenfxapp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -29,7 +29,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="surfaceapp.cpp">
+    <ClCompile Include="fullscreenfxapp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

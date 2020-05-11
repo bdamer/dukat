@@ -14,6 +14,7 @@
 namespace dukat
 {
 	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), 
+		composite_program(nullptr), composite_binder(nullptr),
 		render_effects(true), render_sprites(true), render_particles(true), render_text(true), force_sync(false)
 	{
 		// Enable transparency
@@ -28,7 +29,9 @@ namespace dukat
 
 		initialize_sprite_buffers();
 		initialize_particle_buffers();
-		initialize_frame_buffer();
+		initialize_frame_buffers();
+
+		composite_program = shader_cache->get_program("fx_default.vsh", "fx_default.fsh");
 
 		MeshBuilder2 builder;
 		quad = builder.build_textured_quad();
@@ -60,12 +63,13 @@ namespace dukat
 		particle_buffer->load_data(0, GL_ARRAY_BUFFER, max_particles, sizeof(Vertex2PSC), nullptr, GL_STREAM_DRAW);
 	}
 
-	void Renderer2::initialize_frame_buffer(void)
+	void Renderer2::initialize_frame_buffers(void)
 	{
-		log->trace("Initializing frame buffer.");
+		log->trace("Initializing frame buffers.");
 		if (camera == nullptr)
 		{
 			frame_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false, TextureFilterProfile::ProfileNearest);
+			screen_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false, TextureFilterProfile::ProfileNearest);
 		}
 		else
 		{
@@ -74,18 +78,11 @@ namespace dukat
 		}
 	}
 
-	RenderLayer2* Renderer2::create_layer(const std::string& id, float priority, float parallax, bool has_render_target)
+	RenderLayer2* Renderer2::create_layer(const std::string& id, float priority, float parallax)
 	{
 		log->debug("Creating layer: {} [{} {}]", id, priority, parallax);
-		auto layer = std::make_unique<RenderLayer2>(shader_cache, 
+		auto layer = std::make_unique<RenderLayer2>(shader_cache,
 			sprite_buffer.get(), particle_buffer.get(), id, priority, parallax);
-		if (has_render_target)
-		{
-			// create render target compatible with current frame buffer
-			auto texture = std::make_unique<Texture>(frame_buffer->width, frame_buffer->height);
-			frame_buffer->initialize_draw_buffer(texture.get());
-			layer->set_render_target(std::move(texture));
-		}
 		auto res = layer.get();
 		bool inserted = false;
 		// find position to insert based on priority
@@ -106,10 +103,23 @@ namespace dukat
 		return res;
 	}
 
-	RenderLayer2* Renderer2::create_overlay_layer(const std::string& id, float priority)
+	RenderLayer2* Renderer2::create_composite_layer(const std::string& id, float priority, float parallax, bool has_render_target)
 	{
-		auto layer = create_layer(id, priority);
-		layer->stage = RenderStage::OVERLAY;
+		auto layer = create_layer(id, priority, parallax);
+		if (has_render_target)
+		{
+			// create render target compatible with current frame buffer
+			auto texture = std::make_unique<Texture>(frame_buffer->width, frame_buffer->height);
+			frame_buffer->initialize_draw_buffer(texture.get());
+			layer->set_render_target(std::move(texture));
+		}
+		return layer;
+	}
+
+	RenderLayer2* Renderer2::create_direct_layer(const std::string& id, float priority)
+	{
+		auto layer = create_layer(id, priority, 1.0f);
+		layer->stage = RenderLayer2::Direct;
 		layer->set_composite_program(nullptr); // by default overlay doesn't use compositing
 		return layer;
 	}
@@ -174,8 +184,15 @@ namespace dukat
 		if (frame_buffer == nullptr || frame_buffer->texture->w != this->camera->transform.dimension.x
 			|| frame_buffer->texture->h != this->camera->transform.dimension.y)
 		{
-			initialize_frame_buffer();
+			initialize_frame_buffers();
 		}
+	}
+
+	void Renderer2::resize_window(void)
+	{
+		Renderer::resize_window();
+		log->debug("Resizing screen buffer to {}x{}", window->get_width(), window->get_height());
+		screen_buffer->resize(window->get_width(), window->get_height());
 	}
 
 	void Renderer2::render_layer(RenderLayer2& layer)
@@ -200,8 +217,8 @@ namespace dukat
 		{
 			if (render_target != nullptr)
 				frame_buffer->detach_draw_buffer();
-			frame_buffer->unbind();
-			reset_viewport();
+			// Swith to screen buffer
+			screen_buffer->bind();
 			switch_shader(comp_program);
 			auto id = comp_program->attr("u_aspect");
 			if (id != -1)
@@ -218,6 +235,18 @@ namespace dukat
 		}
 	}
 
+	void Renderer2::render_screenbuffer(void)
+	{
+		screen_buffer->unbind();
+		clear(); // clean actual screen
+		switch_shader(composite_program);
+		screen_buffer->texture->bind(0, composite_program);
+		if (composite_binder != nullptr)
+			composite_binder(composite_program);
+		quad->render(composite_program);
+		window->present();
+	}
+
 	void Renderer2::render(void)
 	{
 		// Call glFinish to avoid buffer updates on older Intel GPU.
@@ -226,6 +255,8 @@ namespace dukat
 		if (force_sync && window->is_fullscreen())
 			glFinish();
 
+		// Bind and clear screenbuffer.
+		screen_buffer->bind();
 		clear();
 
 #if OPENGL_VERSION >= 30
@@ -233,23 +264,25 @@ namespace dukat
 		// using uniform buffers, this will only be done once each frame.
 		update_uniforms();
 #endif
-		// Scene pass
+		// Composite pass - rendered to screenbuffer via framebuffer
 		for (auto& layer : layers)
 		{
-			if (!layer->visible() || layer->stage != RenderStage::SCENE)
+			if (!layer->visible() || layer->stage != RenderLayer2::Composite)
 				continue;
 			render_layer(*layer);
 		}
 
-		// Overlay pass
+		// Direct pass - rendered directly to screen buffer
 		for (auto& layer : layers)
 		{
-			if (!layer->visible() || layer->stage != RenderStage::OVERLAY)
+			if (!layer->visible() || layer->stage != RenderLayer2::Direct)
+				continue;
+			if (layer->id == "fade_mask")
 				continue;
 			render_layer(*layer);
 		}
 
-		window->present();
+		render_screenbuffer();
 
 #if OPENGL_VERSION < 30
 		// invalidate active program to force uniforms rebind during
@@ -273,5 +306,10 @@ namespace dukat
 		glUniform2fv(active_program->attr(Renderer2::u_cam_position), 1, (GLfloat*)(&camera->transform.position));
 		glUniform2fv(active_program->attr(Renderer2::u_cam_dimension), 1, (GLfloat*)(&camera->transform.dimension));
 #endif
+	}
+	void Renderer2::set_composite_program(ShaderProgram* composite_program, std::function<void(ShaderProgram*)> composite_binder)
+	{
+		this->composite_program = composite_program;
+		this->composite_binder = composite_binder;
 	}
 }

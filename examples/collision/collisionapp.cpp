@@ -21,7 +21,7 @@ namespace dukat
 
 		screen_dim = Vector2{ 0.5f * window_width, 0.5f * window_height };
 
-		main_layer = game->get_renderer()->create_layer("main", 20.0f);
+		main_layer = game->get_renderer()->create_direct_layer("main", 20.0f);
 		debug_effect = static_cast<DebugEffect2*>(main_layer->add(std::make_unique<DebugEffect2>(game, 1.0f)));
 
 		// Add cursor
@@ -75,7 +75,7 @@ namespace dukat
 		}, true);
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_composite_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(16.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window_width, -0.5f * (float)window_height, 0.0f);

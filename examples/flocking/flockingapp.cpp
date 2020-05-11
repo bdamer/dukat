@@ -18,8 +18,8 @@ namespace dukat
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));
 
-		particle_layer = game->get_renderer()->create_layer("particles", 15.0f);
-		main_layer = game->get_renderer()->create_layer("main", 20.0f);
+		particle_layer = game->get_renderer()->create_direct_layer("particles", 15.0f);
+		main_layer = game->get_renderer()->create_direct_layer("main", 20.0f);
 		
 		// Add cursor
 		auto texture = game->get_textures()->get("cursor32.png");
@@ -56,7 +56,7 @@ namespace dukat
 		main_layer->add(info_text.get());
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_composite_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(16.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window_width, -0.5f * (float)window_height, 0.0f);

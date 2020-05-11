@@ -24,10 +24,9 @@ namespace dukat
 		game->get_renderer()->set_camera(std::move(camera));
 
 		// Set up layers
-		auto bg_layer = game->get_renderer()->create_layer("background", 10.0f);
-		auto scene_layer = game->get_renderer()->create_layer("scene", 20.0f);
-		//auto ui_layer = game->get_renderer()->create_overlay_layer("ui", 10.0f);
-		auto ui_layer = game->get_renderer()->create_layer("ui", 40.0f);
+		auto bg_layer = game->get_renderer()->create_composite_layer("background", 10.0f);
+		auto scene_layer = game->get_renderer()->create_composite_layer("scene", 20.0f);
+		auto ui_layer = game->get_renderer()->create_composite_layer("ui", 40.0f);
 
 		// Load sprites
 		init_background(bg_layer);
@@ -50,7 +49,7 @@ namespace dukat
 		scene_layer->add(player_sprite.get());
 
 		// Set up info text
-		auto info_layer = game->get_renderer()->create_overlay_layer("overlay", 25.0f);
+		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)game_width, 0.25f * (float)game_height, 0.0f);
@@ -63,7 +62,7 @@ namespace dukat
 		info_layer->hide();
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_overlay_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(4 * tile_scale);
 		debug_text->transform.position = Vector3(-0.5f * (float)game_width, -0.5f * (float)game_height, 0.0f);

@@ -9,7 +9,7 @@ namespace dukat
 	HelloDukat::HelloDukat(Game2* game2) : Scene2(game2)
 	{
 		auto settings = game->get_settings();
-		auto layer = game->get_renderer()->create_layer("main", 1.0f);
+		auto layer = game->get_renderer()->create_composite_layer("main", 1.0f);
 
 		// Set up default camera centered around origin
 		auto camera = std::make_unique<Camera2>(game, Vector2(camera_width, camera_height));
@@ -18,7 +18,7 @@ namespace dukat
 		game->get_renderer()->set_camera(std::move(camera));
 
 		// Set up info text
-		auto info_layer = game->get_renderer()->create_overlay_layer("overlay", 25.0f);
+		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.25f * (float)camera_width, 0.0f, 0.0f);
@@ -29,7 +29,7 @@ namespace dukat
 		info_layer->add(info_text.get());
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_overlay_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)camera_width, -0.5f * (float)camera_height, 0.0f);

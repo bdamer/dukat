@@ -90,6 +90,11 @@ namespace dukat
 #endif
 	}
 
+	void Renderer::resize_window(void)
+	{
+		reset_viewport();
+	}
+
 	void Renderer::switch_shader(ShaderProgram* program)
 	{
 		assert(program != nullptr);
@@ -122,7 +127,7 @@ namespace dukat
 		switch (msg.event)
 		{
 		case Events::WindowResized:
-			reset_viewport();
+			resize_window();
 			break;
 		}
 	}

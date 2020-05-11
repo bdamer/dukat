@@ -10,7 +10,7 @@ namespace dukat
 {
 	OctreeScene::OctreeScene(Game2* game) : game(game), show_bounding_body(false)
 	{
-		auto layer = game->get_renderer()->create_layer("main", 1.0f);
+		auto layer = game->get_renderer()->create_composite_layer("main", 1.0f);
 
 		auto settings = game->get_settings();
 
@@ -58,7 +58,7 @@ namespace dukat
 		layer->add(info_text.get());
 
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_layer("debug", 1000.0f);
+		auto debug_layer = game->get_renderer()->create_composite_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(10.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.45f * (float)texture_height, 0.0f);
