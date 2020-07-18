@@ -48,6 +48,13 @@ namespace dukat
 			transform.dimension.x / 2.0f, transform.dimension.y / 2.0f, near_clip, far_clip);
 	}
 
+	AABB2 Camera2::get_bb(float parallax)
+	{
+		const auto camera_pos = transform.position * parallax;
+		const auto camera_dim = transform.dimension / 2.0f;
+		return AABB2{ camera_pos - camera_dim, camera_pos + camera_dim };
+	}
+
 	void Camera2::update(float delta)
 	{
 		if (effect != nullptr && !effect->is_done())

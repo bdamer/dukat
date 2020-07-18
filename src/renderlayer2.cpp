@@ -90,9 +90,7 @@ namespace dukat
 	{
 		// Compute bounding box for current layer adjusted for parallax value
 		auto camera = renderer->get_camera();
-		Vector2 camera_pos = camera->transform.position * parallax;
-		Vector2 camera_dim = camera->transform.dimension / 2.0f;
-		AABB2 camera_bb(camera_pos - camera_dim, camera_pos + camera_dim);
+		const auto camera_bb = camera->get_bb(parallax);
 
 		if (has_effects() && renderer->is_render_effects())
 		{

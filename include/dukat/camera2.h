@@ -5,6 +5,7 @@
 #include "vector2.h"
 #include "window.h"
 #include "cameraeffect2.h"
+#include "aabb2.h"
 
 namespace dukat
 {
@@ -44,6 +45,10 @@ namespace dukat
 		void refresh(void) { resize(window->get_width(), window->get_height()); }
 		float get_aspect_ratio(void) const { return aspect_ratio; }
 		void set_effect(std::unique_ptr<CameraEffect2> effect) { this->effect = std::move(effect); }
+
+		// Returns bounding box for camera. If parallax value is provided, will adjust camera
+		// position accordingly.
+		AABB2 get_bb(float parallax = 1.0f);
 
 		// Updates the camera's view matrix. Subclasses of camera should update
 		// the camera axes and call this method to update the view matrix.
