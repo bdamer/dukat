@@ -26,7 +26,11 @@ namespace dukat
 		// Sent after camera was changed
 		static constexpr Event CameraChanged = 9;
 		// Entity Events
+		// Entity has been created.
+		// param1: Entity* The entity that has been created.
 		static constexpr Event Created = 10;
+		// Entity is about to be destroyed
+		// param1: Entity* The entity that will be destroyed.
 		static constexpr Event Destroyed = 11;
 		static constexpr Event Activated = 12;
 		static constexpr Event Deactivated = 13;
