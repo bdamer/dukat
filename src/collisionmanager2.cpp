@@ -109,7 +109,9 @@ namespace dukat
 				auto b2 = it->second.body2;
 				if (b1->solid && b2->solid)
 				{
-					const auto shift = it->second.collision.delta;
+					auto shift = it->second.collision.delta;
+					if (shift.x == 0.0f && shift.y == 0.0f)
+						shift.x = 0.25f; // centers occupy the same position, force horizontal shift
 					if (b1->dynamic)
 					{
 						const auto mfactor = b2->dynamic ? 1.0f - (b1->mass / (b1->mass + b2->mass)) : 1.0f;
