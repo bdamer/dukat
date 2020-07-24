@@ -7,26 +7,24 @@
 
 namespace dukat
 {
-	const float GamepadDevice::sensitivity = 1.0f;
-
 	GamepadDevice::GamepadDevice(Window* window, int joystick_index, const Settings& settings) : InputDevice(window, false)
 	{
 		invert_y = settings.get_bool("input.gamepad.inverty", true);
 
-		mapping[VirtualButton::Button1] = settings.get_int("input.gamepad.button1", 9);	// Left Button
-        mapping[VirtualButton::Button2] = settings.get_int("input.gamepad.button2", 10);// Right Button
-		mapping[VirtualButton::Button3] = settings.get_int("input.gamepad.button3", 0);	// A
-		mapping[VirtualButton::Button4] = settings.get_int("input.gamepad.button4", 1);	// B
-		mapping[VirtualButton::Button5] = settings.get_int("input.gamepad.button5", 2);	// X
-		mapping[VirtualButton::Button6] = settings.get_int("input.gamepad.button6", 3);	// Y
-		mapping[VirtualButton::Button7] = settings.get_int("input.gamepad.button7", 7); // Left Thumb
-		mapping[VirtualButton::Button8] = settings.get_int("input.gamepad.button8", 8); // Right Tumb
-		mapping[VirtualButton::Select] = settings.get_int("input.gamepad.select", 4); 	// Select Button
-		mapping[VirtualButton::Start] = settings.get_int("input.gamepad.start", 6);		// Start Button
-		mapping[VirtualButton::Down] = settings.get_int("input.gamepad.down", 12);		// DPAD Down
-		mapping[VirtualButton::Right] = settings.get_int("input.gamepad.right", 14);	// DPAD Right
-		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", 13);		// DPAD Left
-		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", 11);			// DPAD Up
+		mapping[VirtualButton::Button1] = settings.get_int("input.gamepad.button1", button_left_shoulder);
+		mapping[VirtualButton::Button2] = settings.get_int("input.gamepad.button2", button_right_shoulder);
+		mapping[VirtualButton::Button3] = settings.get_int("input.gamepad.button3", button_a);
+		mapping[VirtualButton::Button4] = settings.get_int("input.gamepad.button4", button_b);
+		mapping[VirtualButton::Button5] = settings.get_int("input.gamepad.button5", button_x);
+		mapping[VirtualButton::Button6] = settings.get_int("input.gamepad.button6", button_y);
+		mapping[VirtualButton::Button7] = settings.get_int("input.gamepad.button7", button_left_thumb);
+		mapping[VirtualButton::Button8] = settings.get_int("input.gamepad.button8", button_right_thumb);
+		mapping[VirtualButton::Select] = settings.get_int("input.gamepad.select", button_select);
+		mapping[VirtualButton::Start] = settings.get_int("input.gamepad.start", button_start);
+		mapping[VirtualButton::Down] = settings.get_int("input.gamepad.down", dpad_down);
+		mapping[VirtualButton::Right] = settings.get_int("input.gamepad.right", dpad_right);
+		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", dpad_left);
+		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", dpad_up);
 
 		if (!SDL_IsGameController(joystick_index))
 		{
@@ -106,5 +104,42 @@ namespace dukat
 	{
 		auto joystick = SDL_GameControllerGetJoystick(device);
 		return SDL_JoystickInstanceID(joystick);
+	}
+
+	std::string GamepadDevice::get_button_name(VirtualButton button) const
+	{
+		switch (mapping[button])
+		{
+		case button_a:
+			return "A";
+		case button_b:
+			return "B";
+		case button_x:
+			return "X";
+		case button_y:
+			return "Y";
+		case button_left_shoulder:
+			return "Left Button";
+		case button_right_shoulder:
+			return "Right Button";
+		case button_left_thumb:
+			return "Left Thumb";
+		case button_right_thumb:
+			return "Right Thumb";
+		case button_select:
+			return "Select";
+		case button_start:
+			return "Start";
+		case dpad_down:
+			return "DPAD Down";
+		case dpad_right:
+			return "DPAD Right";
+		case dpad_left:
+			return "DPAD Left";
+		case dpad_up:
+			return "DPAD Up";
+		default:
+			return "n/a";
+		}
 	}
 }

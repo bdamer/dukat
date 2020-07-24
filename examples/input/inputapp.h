@@ -24,6 +24,7 @@ namespace dukat
 		std::unique_ptr<TextMeshInstance> debug_text;
 
 		void create_sprites(void);
+		void bind_events(void);
 
 	public:
 		InputScene(Game2* game2);

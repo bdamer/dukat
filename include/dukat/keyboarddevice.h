@@ -25,9 +25,9 @@ namespace dukat
 		KeyboardDevice(Window* window, const Settings& settings);
 		~KeyboardDevice(void);
 		void update(void);
-
 		void set_sensitivity(int sensitivity) { this->sensitivity = sensitivity; }
 		bool is_pressed(VirtualButton button) const;
 		int id(void) const { return keyboard_id; }
+		std::string get_button_name(VirtualButton button) const;
 	};
 }

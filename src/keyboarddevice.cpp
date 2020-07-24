@@ -103,4 +103,20 @@ namespace dukat
 		else
 			return keystate[mapping[button]] == 1;
 	}
+	
+	std::string KeyboardDevice::get_button_name(VirtualButton button) const
+	{
+		if (button == mouse_mapping[0])
+			return "Left Mouse Button";
+		else if (button == mouse_mapping[1])
+			return "Middle Mouse Button";
+		else if (button == mouse_mapping[2])
+			return "Right Mouse Button";
+
+		const auto code = mapping[button];
+		if (code == -1)
+			return "n/a";
+		else
+			return SDL_GetScancodeName(static_cast<SDL_Scancode>(code));
+	}
 }

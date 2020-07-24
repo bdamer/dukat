@@ -52,6 +52,8 @@ namespace dukat
 
 		game->get_devices()->subscribe(this, Events::DeviceBound);
 
+		bind_events();
+
 		game->set_controller(this);
 	}
 
@@ -184,6 +186,16 @@ namespace dukat
 		right_sprites[3]->p = Vector2{ 56, 30 };
 		right_sprites[3]->color = c;
 		layer->add(right_sprites[3].get());
+	}
+
+	void InputScene::bind_events(void)
+	{
+		auto dev = game->get_devices()->active;
+		for (auto i = 0; i < InputDevice::_Count; i++)
+		{
+			const auto btn = static_cast<InputDevice::VirtualButton>(i);
+			dev->on_press(btn, [&, btn](void) { log->info("Pressed: {}", game->get_devices()->active->get_button_name(btn)); });
+		}
 	}
 
 	void InputScene::handle_keyboard(const SDL_Event& e)

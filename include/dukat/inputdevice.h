@@ -66,6 +66,8 @@ namespace dukat
 		// Returns a unique ID for this device.
 		virtual int id(void) const = 0;
 		const std::string& get_name(void) const { return name; }
+		// Returns human-readable name for a button.
+		virtual std::string get_button_name(VirtualButton button) const = 0;
 		void on_press(VirtualButton button, std::function<void(void)> handler) { handlers[button] = handler; }
 		void unbind(VirtualButton button) { handlers.erase(button); }
 	};

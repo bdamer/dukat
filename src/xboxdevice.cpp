@@ -89,6 +89,48 @@ namespace dukat
 		return ((state.Gamepad.wButtons & mapping[button]) != 0);
 	}
 
+	std::string XBoxDevice::get_button_name(VirtualButton button) const
+	{
+		switch (mapping[button])
+		{
+		case XINPUT_GAMEPAD_LEFT_SHOULDER:
+			return "Left Button";
+		case XINPUT_GAMEPAD_RIGHT_SHOULDER:
+			return "Right Button";
+		case XINPUT_GAMEPAD_A:
+			return "A";
+		case XINPUT_GAMEPAD_B:
+			return "B";
+		case XINPUT_GAMEPAD_X:
+			return "X";
+		case XINPUT_GAMEPAD_Y:
+			return "Y";
+		case XINPUT_GAMEPAD_LEFT_THUMB:
+			return "Left Thumb";
+		case XINPUT_GAMEPAD_RIGHT_THUMB:
+			return "Right Thumb";
+		case XINPUT_GAMEPAD_BACK:
+			return "Select";
+		case XINPUT_GAMEPAD_START:
+			return "Start";
+		case XINPUT_GAMEPAD_DPAD_DOWN:
+			return "DPAD Down";
+		case XINPUT_GAMEPAD_DPAD_RIGHT:
+			return "DPAD Right";
+		case XINPUT_GAMEPAD_DPAD_LEFT:
+			return "DPAD Left";
+		case XINPUT_GAMEPAD_DPAD_UP:
+			return "DPAD Up";
+		default:
+			if (button == VirtualButton::LeftTrigger)
+				return "Left Trigger";
+			else if (button == VirtualButton::RightTrigger)
+				return "Right Trigger";
+			else
+				return "n/a";
+		}
+	}
+
 	void XBoxDevice::normalize_axis(SHORT ix, SHORT iy, float& ox, float& oy, SHORT deadzone)
 	{
 		// determine how far the controller is pushed

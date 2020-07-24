@@ -28,6 +28,7 @@ namespace dukat
 		void update(void);
 		bool is_pressed(VirtualButton button) const;
 		int id(void) const { return joystick_id; }
+		std::string get_button_name(VirtualButton button) const;
 	};
 }
 #endif
