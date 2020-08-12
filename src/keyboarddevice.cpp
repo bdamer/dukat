@@ -7,14 +7,14 @@
 
 namespace dukat
 {
-	KeyboardDevice::KeyboardDevice(Window* window, const Settings& settings) : InputDevice(window, true)
+	KeyboardDevice::KeyboardDevice(Window* window, const Settings& settings) : InputDevice(window, true), mouse_buttons({ 0, 0, 0 })
 	{
 		name = "keyboard";
 		sensitivity = settings.get_int("input.mouse.sensitivity", 2);
 		// Initialize key mapping
 		mapping[VirtualButton::Button1] = settings.get_int("input.keyboard.button1", -1);
 		mapping[VirtualButton::Button2] = settings.get_int("input.keyboard.button2", -1);
-		mapping[VirtualButton::Button3] = settings.get_int("input.keyboard.button3", SDL_SCANCODE_SPACE);
+		mapping[VirtualButton::Button3] = settings.get_int("input.keyboard.button3", -1);
 		mapping[VirtualButton::Button4] = settings.get_int("input.keyboard.button4", -1);
 		mapping[VirtualButton::Button5] = settings.get_int("input.keyboard.button5", -1);
 		mapping[VirtualButton::Button6] = settings.get_int("input.keyboard.button6", -1);
@@ -31,7 +31,7 @@ namespace dukat
 		mapping[VirtualButton::Debug] = settings.get_int("input.keyboard.debug", SDL_SCANCODE_F1);
 		// Initialize mouse mapping
 		mouse_mapping[0] = settings.get_int("input.mouse.left", VirtualButton::Button1);
-		mouse_mapping[1] = settings.get_int("input.mouse.middle", -1);
+		mouse_mapping[1] = settings.get_int("input.mouse.middle", VirtualButton::Button3);
 		mouse_mapping[2] = settings.get_int("input.mouse.right", VirtualButton::Button2);
 		// Initialize default key bindings
 		keystate = SDL_GetKeyboardState(&num_keys);
@@ -78,18 +78,18 @@ namespace dukat
 		rxa = (float)abs_x;
 		rya = (float)abs_y;
 
-		// Mouse buttons
-		mouse_lb = (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) > 0;
-		mouse_rb = (buttons & SDL_BUTTON(SDL_BUTTON_RIGHT)) > 0;
+		// Update & handle mouse buttons
+		for (auto i = 0u; i < 3; i++)
+		{
+			mouse_buttons[i] = (buttons & SDL_BUTTON(SDL_BUTTON_LEFT + i)) > 0;
+			if (mouse_mapping[i] > -1)
+				update_button_state(static_cast<VirtualButton>(mouse_mapping[i]), mouse_buttons[i]);
+		}
 
-		// Handle mapped keys & mouse buttons
+		// Handle mapped keys
 		for (int i = 0; i < VirtualButton::_Count; i++)
 		{
-			if (mouse_mapping[0] == i) // left button
-				update_button_state(static_cast<VirtualButton>(mouse_mapping[0]), mouse_lb);
-            else if (mouse_mapping[2] == i) // right button
-				update_button_state(static_cast<VirtualButton>(mouse_mapping[2]), mouse_rb);
-			else if (mapping[i] > -1)
+			if (mapping[i] > -1)
 				update_button_state(static_cast<VirtualButton>(i), keystate[mapping[i]] == 1);
 		}
 	}
@@ -97,9 +97,11 @@ namespace dukat
 	bool KeyboardDevice::is_pressed(VirtualButton button) const
 	{
 		if (mouse_mapping[0] == button)
-			return mouse_lb;
+			return mouse_buttons[0];
+		else if (mouse_mapping[1] == button)
+			return mouse_buttons[1];
         else if (mouse_mapping[2] == button)
-            return mouse_rb;
+            return mouse_buttons[2];
 		else
 			return keystate[mapping[button]] == 1;
 	}
