@@ -6,6 +6,8 @@ namespace dukat
 {
 	Timer* TimerManager::create_timer(float interval, std::function<void(void)> callback, bool recurring)
     {
+		assert(interval >= 0);
+
 		// Find unused timer
 		Timer* t = timers.acquire();
 		if (t == nullptr) // no timers available
