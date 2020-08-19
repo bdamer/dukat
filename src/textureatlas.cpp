@@ -21,4 +21,11 @@ namespace dukat
 		}
 		return is;
 	}
+	
+	Rect TextureAtlas::get(const std::string& name) const
+	{
+		if (!contains(name))
+			throw std::runtime_error("Invalid texture atlas entry: " + name);
+		return entries.at(name);
+	}
 }

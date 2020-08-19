@@ -15,7 +15,7 @@ namespace dukat
 
 		void add(const std::string& name, const Rect& rect) { entries[name] = rect; }
 		void remove(const std::string& name) { entries.erase(name); }
-		Rect get(const std::string& name) const { return contains(name) ? entries.at(name) : Rect{}; }
+		Rect get(const std::string& name) const;
 		bool contains(const std::string& name) const { return entries.count(name) > 0; }
 		size_t size(void) const { return entries.size(); }
 
