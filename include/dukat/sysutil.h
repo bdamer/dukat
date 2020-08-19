@@ -2,10 +2,6 @@
 
 namespace dukat
 {
-	// Checks a SDL result for errors. If there is an error, will 
-	// throw a runtime exception.
-	void sdl_check_result(int res, const std::string& operation);
-
 	void gl_check_error(void);
 
 	inline constexpr uint32_t mc_const(char a, char b, char c, char d) 
@@ -32,4 +28,8 @@ namespace dukat
 	// Writes the content of the current screen buffer to a file.
 	void save_screenshot(const std::string& filename);
 
+	inline std::string file_extension(const std::string& filename)
+	{
+		return filename.substr(filename.rfind('.') + 1);
+	}
 }

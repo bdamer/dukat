@@ -7,11 +7,6 @@ namespace dukat
 {
 	// Begin inline string helpers
 
-	inline std::string get_extension(const std::string& filename)
-	{
-		return filename.substr(filename.rfind('.') + 1);
-	}
-
 	inline bool starts_with(const std::string& haystack, const std::string& needle)
 	{
 		return needle.length() <= haystack.length() && equal(needle.begin(), needle.end(), haystack.begin());

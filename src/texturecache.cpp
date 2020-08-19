@@ -3,6 +3,7 @@
 #include <dukat/surface.h>
 #include <dukat/texturecache.h>
 #include <dukat/dds.h>
+#include <dukat/sysutil.h>
 
 namespace dukat
 {
@@ -69,7 +70,7 @@ namespace dukat
 		const auto id = compute_hash(filename);
 		if (textures.count(id) == 0)
 		{
-			auto ext = get_extension(filename);
+			auto ext = file_extension(filename);
 			// TODO: base this on file header not extension (use streams if possible)
 			if (ext == "dds" || ext == "tga" || ext == "TGA")
 			{
@@ -116,6 +117,28 @@ namespace dukat
 		if (textures.count(id) != 0)
 		{
 			textures.erase(id);
+		}
+	}
+
+	TextureAtlas* TextureCache::get_atlas(const std::string& name)
+	{
+		if (atlases.count(name))
+		{
+			return atlases[name].get();
+		}
+		else
+		{
+			const auto fname = resource_dir + "/" + name + ".map";
+			std::ifstream file(fname);
+			if (!file.is_open())
+				throw std::runtime_error("Unable to load texture atlas.");
+
+			auto atlas = std::make_unique<TextureAtlas>();
+			file >> *atlas;
+
+			auto res = atlas.get();
+			atlases[name] = std::move(atlas);
+			return res;
 		}
 	}
 

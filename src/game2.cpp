@@ -42,4 +42,37 @@ namespace dukat
 		auto sp = shader_cache->get_program("sc_text.vsh", "sc_text.fsh");
 		return build_text_mesh(tex, sp, 1.0f, -1.0f);
 	}
+		
+	std::unique_ptr<Sprite> Game2::create_sprite(const std::string& filename, Rect rect)
+	{
+		Texture* texture;
+
+		// check if this is an atlas entry
+		const auto pos = filename.find_last_of('/');
+		if (pos != std::string::npos)
+		{
+			const auto atlas_name = filename.substr(0, pos);
+			const auto atlas_entry = filename.substr(pos + 1);
+			auto atlas = texture_cache->get_atlas(atlas_name);
+			const auto atlas_rect = atlas->get(atlas_entry);
+			texture = texture_cache->get(atlas_name + ".png");
+
+			if (rect.w == 0) // rect is empty, use atlas rect
+				rect = atlas_rect;
+			else // rect was specified, need to transpose by atlas position
+			{
+				rect.x += atlas_rect.x;
+				rect.y += atlas_rect.y;
+			}
+		}
+		else
+		{
+			texture = texture_cache->get(filename);
+		}
+
+		if (rect.w > 0) // rect is not empty
+			return std::make_unique<Sprite>(texture, rect);
+		else
+			return std::make_unique<Sprite>(texture);
+	}
 }

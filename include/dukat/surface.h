@@ -53,6 +53,7 @@ namespace dukat
 		// Blends another surface on top of this one
 		void blend(const Surface& another);
 		void blend(const Surface& another, const Rect& src, const Rect& dest);
+		void blend(const Surface& another, int x, int y);
 		// Flips surface 
 		void flip_horizontal(void);
 		void flip_vertical(void);
@@ -62,6 +63,7 @@ namespace dukat
 		void draw_rect(int x, int y, int width, int height, Uint32 color);
 		void fill_circle(int x0, int y0, int radius, Uint32 color);
 		void fill_rect(int x, int y, int width, int height, Uint32 color);
+		void fill_rect(const Rect& r, Uint32 color) { fill_rect(r.x, r.y, r.w, r.h, color); }
 		void fill(Uint32 color);
 		// Applies a transformation to each pixel of the surface. Only supports 32 bit surfaces.
 		void apply(const std::function<void(int x, int y, SDL_Surface* s, uint32_t* p)>& f);

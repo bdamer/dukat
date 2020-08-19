@@ -58,7 +58,7 @@ namespace dukat
 			throw std::runtime_error("Could not open file.");
 		}
 
-		auto ext = get_extension(filename);
+		const auto ext = file_extension(filename);
 		if (ext == "ms3d")
 		{
 			MS3DModel ms3d;

@@ -4,6 +4,7 @@
 #include "surface.h"
 #include "string.h"
 #include "texture.h"
+#include "textureatlas.h"
 
 namespace dukat
 {
@@ -19,6 +20,7 @@ namespace dukat
 		uint32_t last_id;
 		std::unordered_map<uint32_t, std::unique_ptr<Texture>> textures;
 		std::unordered_map<std::string, std::unique_ptr<Surface>> surfaces;
+		std::unordered_map<std::string, std::unique_ptr<TextureAtlas>> atlases;
 		std::unique_ptr<Texture> load(const std::string& filename, TextureFilterProfile profile);
 
 	public:
@@ -47,6 +49,9 @@ namespace dukat
 		// Frees the texture corresponding to the image file.
 		void free(const std::string& filename) { free(compute_hash(filename)); }
 		void free(uint32_t id);
+
+		// Looks up texture index by name.
+		TextureAtlas* get_atlas(const std::string& name);
 
 		void set_hflip(bool hflip) { this->hflip = hflip; }
 		void set_vflip(bool vflip) { this->vflip = vflip; }

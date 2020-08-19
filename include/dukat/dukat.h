@@ -76,6 +76,7 @@
 #include "log.h"
 #include "perfcounter.h"
 #include "settings.h"
+#include "sdlutil.h"
 #include "sysutil.h"
 #include "timermanager.h"
 #include "window.h"
@@ -96,6 +97,7 @@
 #endif
 #include "shape.h"
 #include "string.h"
+#include "textureatlas.h"
 #include "textureutil.h"
 #ifndef __ANDROID__
 #include "voxmodel.h"

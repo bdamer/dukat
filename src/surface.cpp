@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <dukat/surface.h>
 #include <dukat/log.h>
-#include <dukat/sysutil.h>
+#include <dukat/sdlutil.h>
 
 namespace dukat
 {
@@ -300,6 +300,12 @@ namespace dukat
 	void Surface::blend(const Surface& another, const Rect& src, const Rect& dest)
 	{
 		SDL_BlitSurface(another.get_surface(), (SDL_Rect*)&src, surface, (SDL_Rect*)&dest);
+	}
+
+	void Surface::blend(const Surface& another, int x, int y)
+	{
+		SDL_Rect r{ x, y, another.get_width(), another.get_height() };
+		SDL_BlitSurface(another.get_surface(), nullptr, surface, &r);
 	}
 
 	std::unique_ptr<Surface> Surface::from_file(const std::string& filename)

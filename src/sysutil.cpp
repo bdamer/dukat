@@ -5,16 +5,6 @@
 
 namespace dukat
 {
-	void sdl_check_result(int res, const std::string& operation)
-	{
-		if (res < 0)
-		{
-			std::ostringstream ss;
-			ss << "Failed to " << operation << ": " << SDL_GetError() << std::endl;
-			throw std::runtime_error(ss.str());
-		}
-	}
-
 	void gl_check_error(void)
 	{
 		GLenum err;

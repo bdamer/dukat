@@ -480,6 +480,12 @@
     <ClInclude Include="..\include\dukat\shadoweffect2.h">
       <Filter>Header Files\video\effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\sdlutil.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\textureatlas.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -754,6 +760,12 @@
     </ClCompile>
     <ClCompile Include="..\src\shadoweffect2.cpp">
       <Filter>Source Files\video\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\sdlutil.cpp">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textureatlas.cpp">
+      <Filter>Source Files\util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

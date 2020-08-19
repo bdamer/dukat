@@ -181,11 +181,13 @@
     <ClInclude Include="..\include\dukat\rand.h" />
     <ClInclude Include="..\include\dukat\scene.h" />
     <ClInclude Include="..\include\dukat\scene2.h" />
+    <ClInclude Include="..\include\dukat\sdlutil.h" />
     <ClInclude Include="..\include\dukat\shadoweffect2.h" />
     <ClInclude Include="..\include\dukat\shakycameraeffect.h" />
     <ClInclude Include="..\include\dukat\shape.h" />
     <ClInclude Include="..\include\dukat\string.h" />
     <ClInclude Include="..\include\dukat\textbutton.h" />
+    <ClInclude Include="..\include\dukat\textureatlas.h" />
     <ClInclude Include="..\include\dukat\uicontrol.h" />
     <ClInclude Include="..\include\dukat\uimanager.h" />
     <ClInclude Include="..\include\dukat\voronoi.h" />
@@ -302,10 +304,12 @@
     <ClCompile Include="..\src\mirroreffect2.cpp" />
     <ClCompile Include="..\src\particleemitter.cpp" />
     <ClCompile Include="..\src\scene2.cpp" />
+    <ClCompile Include="..\src\sdlutil.cpp" />
     <ClCompile Include="..\src\shadoweffect2.cpp" />
     <ClCompile Include="..\src\shakycameraeffect.cpp" />
     <ClCompile Include="..\src\string.cpp" />
     <ClCompile Include="..\src\textbutton.cpp" />
+    <ClCompile Include="..\src\textureatlas.cpp" />
     <ClCompile Include="..\src\uimanager.cpp" />
     <ClCompile Include="..\src\voronoi.cpp" />
     <ClCompile Include="..\src\wavemesh.cpp" />

@@ -3,6 +3,7 @@
 #include <dukat/audiomanager.h>
 #include <dukat/log.h>
 #include <dukat/perfcounter.h>
+#include <dukat/sdlutil.h>
 #include <dukat/sysutil.h>
 #include <dukat/window.h>
 #include <dukat/devicemanager.h>

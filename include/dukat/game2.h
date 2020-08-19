@@ -21,6 +21,7 @@ namespace dukat
 		Game2(Settings& settings);
 		virtual ~Game2(void);
 		std::unique_ptr<TextMeshInstance> create_text_mesh(void);
+		std::unique_ptr<Sprite> create_sprite(const std::string& filename, Rect rect = { });
 
 		Renderer2* get_renderer(void) const { return renderer.get(); }
 		FullscreenEffect2* get_effect(void) const { return effect.get(); }
