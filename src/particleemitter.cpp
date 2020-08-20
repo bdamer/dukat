@@ -439,8 +439,8 @@ namespace dukat
 			else
 				p->pos = em.pos + em.offsets[random(0, offset_count)];
 
-			if (em.recipe.min_dp.x != 0.0f)
-				p->pos += offset * em.recipe.min_dp.x;
+			if (em.recipe.min_dp.x != 0.0f || em.recipe.max_dp.x != 0.0f)
+				p->pos += offset * random(em.recipe.min_dp.x, em.recipe.max_dp.x);
 
 			p->dp = offset * random(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
