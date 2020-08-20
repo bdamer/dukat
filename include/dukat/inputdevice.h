@@ -30,6 +30,10 @@ namespace dukat
 			Up,
 			LeftTrigger,
 			RightTrigger,
+			LeftAxisDown,
+			LeftAxisRight,
+			LeftAxisLeft,
+			LeftAxisUp,
 			Debug,
 			_Count
 		};

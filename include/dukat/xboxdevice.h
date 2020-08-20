@@ -24,7 +24,7 @@ namespace dukat
 
 	public:
 		XBoxDevice(Window* window, int joystick_index);
-		~XBoxDevice(void);
+		~XBoxDevice(void) { }
 		void update(void);
 		bool is_pressed(VirtualButton button) const;
 		int id(void) const { return joystick_id; }

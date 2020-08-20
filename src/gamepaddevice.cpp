@@ -83,6 +83,10 @@ namespace dukat
 		}
 		update_button_state(VirtualButton::LeftTrigger, lt > 0.0f);
 		update_button_state(VirtualButton::RightTrigger, rt > 0.0f);
+		update_button_state(VirtualButton::LeftAxisDown, ly <= -1.0f);
+		update_button_state(VirtualButton::LeftAxisUp, ly >= 1.0f);
+		update_button_state(VirtualButton::LeftAxisLeft, lx <= -1.0f);
+		update_button_state(VirtualButton::LeftAxisRight, lx >= 1.0f);
 
 		// compute absolute positions
 		lxa += lx * sensitivity;

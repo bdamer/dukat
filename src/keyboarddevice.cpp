@@ -20,14 +20,18 @@ namespace dukat
 		mapping[VirtualButton::Button6] = settings.get_int("input.keyboard.button6", -1);
 		mapping[VirtualButton::Button7] = settings.get_int("input.keyboard.button7", -1);
 		mapping[VirtualButton::Button8] = settings.get_int("input.keyboard.button8", -1);
-		mapping[VirtualButton::Down] = settings.get_int("input.keyboard.down", SDL_SCANCODE_S);
-		mapping[VirtualButton::Right] = settings.get_int("input.keyboard.right", SDL_SCANCODE_D);
-		mapping[VirtualButton::Left] = settings.get_int("input.keyboard.left", SDL_SCANCODE_A);
-		mapping[VirtualButton::Up] = settings.get_int("input.keyboard.up", SDL_SCANCODE_W);
-		mapping[VirtualButton::LeftTrigger] = settings.get_int("input.keyboard.lt", SDL_SCANCODE_TAB);
-		mapping[VirtualButton::RightTrigger] = settings.get_int("input.keyboard.rt", SDL_SCANCODE_SPACE);
 		mapping[VirtualButton::Select] = SDL_SCANCODE_ESCAPE;
 		mapping[VirtualButton::Start] = SDL_SCANCODE_RETURN;
+		mapping[VirtualButton::Down] = settings.get_int("input.keyboard.down", SDL_SCANCODE_DOWN);
+		mapping[VirtualButton::Right] = settings.get_int("input.keyboard.right", SDL_SCANCODE_RIGHT);
+		mapping[VirtualButton::Left] = settings.get_int("input.keyboard.left", SDL_SCANCODE_LEFT);
+		mapping[VirtualButton::Up] = settings.get_int("input.keyboard.up", SDL_SCANCODE_UP);
+		mapping[VirtualButton::LeftTrigger] = settings.get_int("input.keyboard.lt", SDL_SCANCODE_TAB);
+		mapping[VirtualButton::RightTrigger] = settings.get_int("input.keyboard.rt", SDL_SCANCODE_SPACE);
+		mapping[VirtualButton::LeftAxisDown] = settings.get_int("input.keyboard.leftaxis.down", SDL_SCANCODE_S);
+		mapping[VirtualButton::LeftAxisRight] = settings.get_int("input.keyboard.leftaxis.right", SDL_SCANCODE_D);
+		mapping[VirtualButton::LeftAxisLeft] = settings.get_int("input.keyboard.leftaxis.left", SDL_SCANCODE_A);
+		mapping[VirtualButton::LeftAxisUp] = settings.get_int("input.keyboard.leftaxis.up", SDL_SCANCODE_W);
 		mapping[VirtualButton::Debug] = settings.get_int("input.keyboard.debug", SDL_SCANCODE_F1);
 		// Initialize mouse mapping
 		mouse_mapping[0] = settings.get_int("input.mouse.left", VirtualButton::Button1);
@@ -48,14 +52,14 @@ namespace dukat
 		SDL_PumpEvents();
 
 		// Handle direction keys
-		const auto key_left = mapping[VirtualButton::Left];
-		const auto key_right = mapping[VirtualButton::Right];
+		const auto key_left = mapping[VirtualButton::LeftAxisLeft];
+		const auto key_right = mapping[VirtualButton::LeftAxisRight];
 		if (key_left > -1 && key_right > -1)
 		{
 			lx = keystate[key_left] ? -1.0f : (keystate[key_right] ? 1.0f : 0.0f);
 		}
-		const auto key_up = mapping[VirtualButton::Up];
-		const auto key_down = mapping[VirtualButton::Down];
+		const auto key_up = mapping[VirtualButton::LeftAxisUp];
+		const auto key_down = mapping[VirtualButton::LeftAxisDown];
 		if (key_up > -1 && key_down > -1)
 		{
 			ly = keystate[key_up] ? 1.0f : (keystate[key_down] ? -1.0f : 0.0f);

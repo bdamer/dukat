@@ -48,10 +48,6 @@ namespace dukat
 		log->debug("Device GUID: {}", buffer);
 	}
 
-	XBoxDevice::~XBoxDevice(void)
-	{
-	}
-
 	void XBoxDevice::update(void)
 	{
 		if (XInputGetState(static_cast<DWORD>(joystick_index), &state) != ERROR_SUCCESS)
@@ -72,6 +68,10 @@ namespace dukat
 			const auto trigger_threshold = 0xff - XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
 			update_button_state(VirtualButton::LeftTrigger, state.Gamepad.bLeftTrigger > trigger_threshold);
 			update_button_state(VirtualButton::RightTrigger, state.Gamepad.bRightTrigger > trigger_threshold);
+			update_button_state(VirtualButton::LeftAxisDown, ly <= -1.0f);
+			update_button_state(VirtualButton::LeftAxisUp, ly >= 1.0f);
+			update_button_state(VirtualButton::LeftAxisLeft, lx <= -1.0f);
+			update_button_state(VirtualButton::LeftAxisRight, lx >= 1.0f);
 		}
 		// compute absolute positions
 		lxa += lx * sensitivity;
@@ -126,6 +126,14 @@ namespace dukat
 				return "Left Trigger";
 			else if (button == VirtualButton::RightTrigger)
 				return "Right Trigger";
+			else if (button == VirtualButton::LeftAxisDown)
+				return "LEFT Down";
+			else if (button == VirtualButton::LeftAxisLeft)
+				return "LEFT Left";
+			else if (button == VirtualButton::LeftAxisRight)
+				return "LEFT Right";
+			else if (button == VirtualButton::LeftAxisUp)
+				return "LEFT Up";
 			else
 				return "n/a";
 		}
