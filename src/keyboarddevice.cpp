@@ -37,6 +37,8 @@ namespace dukat
 		mouse_mapping[0] = settings.get_int("input.mouse.left", VirtualButton::Button1);
 		mouse_mapping[1] = settings.get_int("input.mouse.middle", VirtualButton::Button3);
 		mouse_mapping[2] = settings.get_int("input.mouse.right", VirtualButton::Button2);
+		mouse_mapping[3] = settings.get_int("input.mouse.extra1", VirtualButton::Button4);
+		mouse_mapping[4] = settings.get_int("input.mouse.extra2", VirtualButton::Button5);
 		// Initialize default key bindings
 		keystate = SDL_GetKeyboardState(&num_keys);
 	}
@@ -83,7 +85,7 @@ namespace dukat
 		rya = (float)abs_y;
 
 		// Update & handle mouse buttons
-		for (auto i = 0u; i < 3; i++)
+		for (auto i = 0u; i < mouse_buttons.size(); i++)
 		{
 			mouse_buttons[i] = (buttons & SDL_BUTTON(SDL_BUTTON_LEFT + i)) > 0;
 			if (mouse_mapping[i] > -1)
@@ -118,6 +120,10 @@ namespace dukat
 			return "Middle Mouse Button";
 		else if (button == mouse_mapping[2])
 			return "Right Mouse Button";
+		else if (button == mouse_mapping[3])
+			return "Extra Mouse Button 1";
+		else if (button == mouse_mapping[4])
+			return "Extra Mouse Button 2";
 
 		const auto code = mapping[button];
 		if (code == -1)
