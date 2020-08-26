@@ -15,7 +15,7 @@ if(ANDROID)
 		meshcache.cpp meshdata.cpp meshgroup.cpp meshinstance.cpp messenger.cpp model3.cpp obb2.cpp orbitcamera3.cpp 
 		particleemitter.cpp particlemanager.cpp perfcounter.cpp quaternion.cpp
 		ray3.cpp renderer.cpp renderer2.cpp renderer3.cpp renderlayer2.cpp 
-		scene2.cpp settings.cpp shadercache.cpp shaderprogram.cpp shadoweffect2.cpp sprite.cpp
+		scene2.cpp sdlutil.cpp settings.cpp shadercache.cpp shaderprogram.cpp shadoweffect2.cpp sprite.cpp
 		shakycameraeffect.cpp stdafx.cpp string.cpp surface.cpp sysutil.cpp
 		textmeshbuilder.cpp textmeshinstance.cpp texturecache.cpp texture.cpp textureutil.cpp timermanager.cpp transform3.cpp 
 		uimanager.cpp vector2.cpp vector3.cpp window.cpp)
