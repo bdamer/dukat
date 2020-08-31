@@ -48,6 +48,12 @@ namespace dukat
 			transform.dimension.x / 2.0f, transform.dimension.y / 2.0f, near_clip, far_clip);
 	}
 
+	void Camera2::set_effect(std::unique_ptr<CameraEffect2> effect)
+	{
+		log->trace("Starting effect: {}", effect->get_duration());
+		this->effect = std::move(effect);
+	}
+
 	AABB2 Camera2::get_bb(float parallax)
 	{
 		const auto camera_pos = transform.position * parallax;
@@ -57,8 +63,18 @@ namespace dukat
 
 	void Camera2::update(float delta)
 	{
-		if (effect != nullptr && !effect->is_done())
-			effect->update_transform(delta, transform);
+		if (effect != nullptr)
+		{
+			if (effect->is_done())
+			{
+				log->trace("Effect is done.");
+				effect = nullptr;
+			}
+			else
+			{
+				effect->update_transform(delta, transform);
+			}
+		}
 
 		// Rebuild camera / view matrix
 		transform.mat_view.setup_translation(Vector3(-transform.position.x, -transform.position.y, 0.0f));

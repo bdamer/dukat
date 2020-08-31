@@ -44,7 +44,7 @@ namespace dukat
 		void set_clip(float near_clip, float far_clip) { this->near_clip = near_clip; this->far_clip = far_clip; }
 		void refresh(void) { resize(window->get_width(), window->get_height()); }
 		float get_aspect_ratio(void) const { return aspect_ratio; }
-		void set_effect(std::unique_ptr<CameraEffect2> effect) { this->effect = std::move(effect); }
+		void set_effect(std::unique_ptr<CameraEffect2> effect);
 
 		// Returns bounding box for camera. If parallax value is provided, will adjust camera
 		// position accordingly.
