@@ -14,6 +14,9 @@ namespace dukat
 		std::vector<float> channel_volume;
 
 	public:
+		static constexpr auto loop_repeat = -1;
+		static constexpr auto playback_error = -1;
+
 		// Creates an audio manager with a specified number of mixer channels.
 		AudioManager(int num_channels);
 		~AudioManager(void);
@@ -27,13 +30,13 @@ namespace dukat
 		float get_channel_volume(int channel) const { return channel_volume[channel]; }
 		void set_channel_volume(int channel, float volume) { channel_volume[channel] = volume; }
 
-		// Plays music. Number of loops can be set to -1 to repeat.
+		// Plays music. Number of loops can be set to loop_repeat to repeat.
 		void play_music(Music* music, int loops = 1) const;
 		void pause_music(void) const;
 		void stop_music(void) const;
 
 		// Plays a sample. If no channel specified, will use next available channel. Will
-		// return the channel user or -1 in case of error.
+		// return the channel user or playback_error in case of error.
 		int play_sample(Sample* sample, int channel = -1, int loops = 0);
 		void stop_sample(int channel);
 	};

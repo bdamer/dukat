@@ -32,7 +32,7 @@ namespace dukat
 
 	void AudioManager::play_music(Music* music, int loops) const
 	{
-		if (Mix_PlayMusic(music->music, loops) == -1)
+		if (Mix_PlayMusic(music->music, loops) == playback_error)
 		{
 			log->warn("Failed to play music: {}", Mix_GetError());
 		}
@@ -51,8 +51,8 @@ namespace dukat
 
 	int AudioManager::play_sample(Sample* sample, int channel, int loops)
 	{
-		auto res = Mix_PlayChannel(channel, sample->chunk, loops);
-		if (res > -1) 
+		const auto res = Mix_PlayChannel(channel, sample->chunk, loops);
+		if (res != playback_error)
 		{
 			Mix_Volume(res, static_cast<int>(channel_volume[res] * sample_volume * MIX_MAX_VOLUME));
 		}
