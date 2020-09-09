@@ -122,4 +122,15 @@ namespace dukat
 	{
 		return (T(0) < val) - (val < T(0));
 	}
+
+	// Generates distribution of values within range [min_val..max_val] into data.
+	template <typename T>
+	void generate_distribution(std::vector<T>& data, T min_val, T max_val)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<T> dist(min_val, max_val);
+		for (auto& el : data)
+			el = dist(gen);
+	}
 }
