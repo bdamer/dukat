@@ -5,6 +5,7 @@ precision mediump float;
 ///
 in vec2 v_tex_coord;
 
+uniform vec4 u_color;
 uniform float u_radius;
 uniform float u_alpha;
 
@@ -17,7 +18,7 @@ void main()
 	  
 	float dist = sqrt(dot(uv, uv));
 	if (dist < u_radius)
-		o_color = vec4(0, 0, 0, u_alpha);
+		o_color = vec4(0, 0, 0, u_color.a * u_alpha);
 	else
 		o_color = vec4(0, 0, 0, 0);
 }
