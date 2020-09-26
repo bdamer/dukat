@@ -10,7 +10,7 @@ namespace dukat
 	}
 
 	// Sets or clears a specific bit mask.
-	inline bool set_flag(int& val, int mask, bool set)
+	inline void set_flag(int& val, int mask, bool set)
 	{
 		if (set) 
 			val |= mask; 
