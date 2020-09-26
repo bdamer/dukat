@@ -9,6 +9,15 @@ namespace dukat
 		return ((val & mask) == mask);
 	}
 
+	// Sets or clears a specific bit mask.
+	inline bool set_flag(int& val, int mask, bool set)
+	{
+		if (set) 
+			val |= mask; 
+		else 
+			val &= ~mask;
+	}
+
 	// Swap endianess
 	uint32_t swape32(uint32_t value);
 	uint16_t swape16(uint16_t value);
