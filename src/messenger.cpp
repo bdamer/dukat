@@ -18,9 +18,9 @@ namespace dukat
 	{
 		if (subscriptions.count(ev) == 0)
 		{
-			subscriptions[ev] = std::set<Recipient*>();
+			subscriptions[ev] = std::list<Recipient*>();
 		}
-		subscriptions[ev].insert(recipient);
+		subscriptions[ev].push_back(recipient);
 	}
 
 	void Messenger::subscribe(Recipient * recipient, const std::vector<Event>& events)
@@ -36,12 +36,23 @@ namespace dukat
 		}
 	}
 
+	void Messenger::do_unsubscribe(Recipient* recipient, std::list<Recipient*>& list)
+	{
+		for (auto it = list.begin(); it != list.end(); ++it)
+		{
+			if (*it == recipient)
+			{
+				list.erase(it);
+				break;
+			}
+		}
+	}
+
 	void Messenger::unsubscribe(Recipient* recipient, Event ev)
 	{
+
 		if (subscriptions.count(ev))
-		{
-			subscriptions[ev].erase(recipient);
-		}
+			do_unsubscribe(recipient, subscriptions[ev]);
 	}
 
 	void Messenger::unsubscribe(Recipient* recipient, const std::vector<Event>& events)
@@ -52,8 +63,6 @@ namespace dukat
 	void Messenger::unsubscribe_all(Recipient* recipient)
 	{
 		for (auto it = subscriptions.begin(); it != subscriptions.end(); ++it)
-		{
-			it->second.erase(recipient);
-		}
+			do_unsubscribe(recipient, it->second);
 	}
 }
