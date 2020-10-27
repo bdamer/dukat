@@ -2,6 +2,7 @@
 #include <dukat/fullscreeneffect2.h>
 #include <dukat/animationmanager.h>
 #include <dukat/game2.h>
+#include <dukat/log.h>
 
 namespace dukat
 {
@@ -17,6 +18,8 @@ namespace dukat
 
     void FullscreenEffect2::fade_in(float duration, std::function<void(void)> callback)
     {
+        log->debug("Begin fade-in: {}", duration);
+
         if (anim != nullptr)
             game->get<AnimationManager>()->cancel(anim);
 
@@ -37,6 +40,8 @@ namespace dukat
 
     void FullscreenEffect2::fade_out(float duration, std::function<void(void)> callback)
     {
+        log->debug("Begin fade-out: {}", duration);
+
         if (anim != nullptr)
             game->get<AnimationManager>()->cancel(anim);
 
