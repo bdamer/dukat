@@ -54,6 +54,7 @@ namespace dukat
 
 		void toggle_pause(void) { paused = !paused; }
 		bool is_paused(void) const { return paused; }
+		void set_paused(bool paused) { this->paused = paused; }
 		bool is_done(void) const { return done; }
 		void set_done(bool done) { this->done = done; }
 		int get_fps(void) const { return last_fps; }
