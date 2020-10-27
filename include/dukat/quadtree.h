@@ -31,6 +31,7 @@ namespace dukat
 		~QuadTree(void) { }
 
 		void insert(T* value);
+		void remove(T* value);
 		void clear(void);
 
 		int get_index(T* value) const;
@@ -42,7 +43,7 @@ namespace dukat
 	template<class T>
 	void QuadTree<T>::insert(T* value)
 	{
-		auto idx = get_index(value);
+		const auto idx = get_index(value);
 		if (idx > -1 && depth < max_depth)
 		{
 			// split if necessary
@@ -69,6 +70,21 @@ namespace dukat
 		else
 		{
 			values.push_back(value);
+		}
+	}
+
+	template<class T>
+	void QuadTree<T>::remove(T* value)
+	{
+		const auto idx = get_index(value);
+		if (idx > -1 && depth < max_depth)
+		{
+			if (children[idx] != nullptr)
+				children[idx]->remove(value);
+		}
+		else
+		{
+			values.remove_if([&](T* t) { return t == value; });
 		}
 	}
 

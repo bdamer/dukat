@@ -36,6 +36,9 @@ namespace dukat
 			contacts.erase(hash(c->body1, c->body2));
 		}
 
+		// Remove from tree
+		tree->remove(body);
+
 		auto it = std::find_if(bodies.begin(), bodies.end(), 
 			[body](const std::unique_ptr<Body>& b) { return body == b.get(); });
 		if (it != bodies.end())
