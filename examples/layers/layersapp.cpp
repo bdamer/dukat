@@ -42,9 +42,11 @@ namespace dukat
 		auto pp = game->get_shaders()->get_program("sc_particle_mirror.vsh", "sc_particle.fsh");
 		scene_mirror->add(std::make_unique<MirrorEffect2>(sp, pp, "scene"));
 
-		auto scene_layer = game->get_renderer()->create_composite_layer("scene", 20.0f);
+		auto scene_shadow = game->get_renderer()->create_composite_layer("scene_shadow", 19.0f);
 		auto ssp = game->get_shaders()->get_program("sc_shadow.vsh", "sc_shadow.fsh");
-		scene_layer->add(std::make_unique<ShadowEffect2>(ssp));
+		scene_shadow->add(std::make_unique<ShadowEffect2>(ssp, "scene"));
+
+		auto scene_layer = game->get_renderer()->create_composite_layer("scene", 20.0f);
 
 		// Load sprites
 		water_sprite = std::make_unique<Sprite>(game->get_textures()->get("white.png"));

@@ -8,14 +8,18 @@ namespace dukat
 {
 	void ShadowEffect2::render(Renderer2* renderer, const AABB2& camera_bb)
 	{
+		auto target_layer = renderer->get_layer(shadowed_layer);
+		if (target_layer == nullptr)
+			return;
+
 		// swap sprite program and render sprites
-		auto sp = layer->get_sprite_program();
-		layer->set_sprite_program(sprite_program);
+		auto sp = target_layer->get_sprite_program();
+		target_layer->set_sprite_program(sprite_program);
 		// force activation so parameter can be set
 		renderer->switch_shader(sprite_program);
 		sprite_program->set("u_alpha", alpha);
 		sprite_program->set("u_radius", radius);
-		layer->render_sprites(renderer, camera_bb, [](Sprite* s) { return (s->flags & Sprite::fx) != Sprite::fx; });
-		layer->set_sprite_program(sp);
+		target_layer->render_sprites(renderer, camera_bb, [](Sprite* s) { return (s->flags & Sprite::fx) != Sprite::fx; });
+		target_layer->set_sprite_program(sp);
 	}
 }

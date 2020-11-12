@@ -12,12 +12,13 @@ namespace dukat
 	{
 	private:
 		ShaderProgram* sprite_program;
+		std::string shadowed_layer;
 		float radius;
 		float alpha;
 
 	public:
-		ShadowEffect2(ShaderProgram* sprite_program)
-			: sprite_program(sprite_program), radius(0.25f), alpha(0.7f) { };
+		ShadowEffect2(ShaderProgram* sprite_program, const std::string& shadowed_layer)
+			: sprite_program(sprite_program), shadowed_layer(shadowed_layer), radius(0.25f), alpha(0.7f) { };
 		~ShadowEffect2(void) { };
 
 		void set_radius(float radius) { this->radius = radius; }
