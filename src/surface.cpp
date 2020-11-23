@@ -5,6 +5,12 @@
 
 namespace dukat
 {
+
+	#pragma region Utility Functions
+
+	// Struct for manipulating 24-bit surfaces
+	struct Uint24 { Uint8 c[3]; };
+
 	SDL_Color SDL_MapColor(SDL_PixelFormat* fmt, Uint32 pixel)
 	{
 		Uint32 temp;
@@ -36,6 +42,48 @@ namespace dukat
 		return result;
 	}
 
+	void flip_surface_v(SDL_Surface* surface)
+	{
+		const auto size = surface->w * surface->h;
+		switch (surface->format->BytesPerPixel)
+		{
+		case 1:
+			dukat::flip_vertical(static_cast<Uint8*>(surface->pixels), static_cast<Uint8*>(surface->pixels) + size, static_cast<size_t>(surface->w));
+			break;
+		case 2:
+			dukat::flip_vertical(static_cast<Uint16*>(surface->pixels), static_cast<Uint16*>(surface->pixels) + size, static_cast<size_t>(surface->w));
+			break;
+		case 3:
+			dukat::flip_vertical(static_cast<Uint24*>(surface->pixels), static_cast<Uint24*>(surface->pixels) + size, static_cast<size_t>(surface->w));
+			break;
+		case 4:
+			dukat::flip_vertical(static_cast<Uint32*>(surface->pixels), static_cast<Uint32*>(surface->pixels) + size, static_cast<size_t>(surface->w));
+			break;
+		}
+	}
+
+	void flip_surface_h(SDL_Surface* surface)
+	{
+		const auto size = surface->w * surface->h;
+		switch (surface->format->BytesPerPixel)
+		{
+		case 1:
+			dukat::flip_horizontal(static_cast<Uint8*>(surface->pixels), static_cast<Uint8*>(surface->pixels) + size, static_cast<size_t>(surface->w));
+			break;
+		case 2:
+			dukat::flip_horizontal(static_cast<Uint16*>(surface->pixels), static_cast<Uint16*>(surface->pixels) + size, static_cast<size_t>(surface->w));
+			break;
+		case 3:
+			dukat::flip_horizontal(static_cast<Uint24*>(surface->pixels), static_cast<Uint24*>(surface->pixels) + size, static_cast<size_t>(surface->w));
+			break;
+		case 4:
+			dukat::flip_horizontal(static_cast<Uint32*>(surface->pixels), static_cast<Uint32*>(surface->pixels) + size, static_cast<size_t>(surface->w));
+			break;
+		}
+	}
+
+	#pragma endregion
+
 	Surface::Surface(int width, int height, Uint32 format)
 	{
 		int bpp;
@@ -43,9 +91,7 @@ namespace dukat
 		SDL_PixelFormatEnumToMasks(format, &bpp, &rmask, &gmask, &bmask, &amask);
 		surface = SDL_CreateRGBSurface(0, width, height, bpp, rmask, gmask, bmask, amask); 
 		if (surface == nullptr)
-		{
 			throw std::runtime_error("Could not create RGB surface.");
-		}
 	}
 
 	Surface::~Surface(void)
@@ -255,43 +301,6 @@ namespace dukat
 		surface = tmp;
 	}
 
-	void Surface::flip_vertical(void)
-	{
-		Uint8* top = (Uint8*)surface->pixels;
-		Uint8* bottom = ((Uint8*)surface->pixels) + surface->pitch * (surface->h - 1);
-		while (top < bottom)
-		{
-			for (int i = 0; i < surface->pitch; i++)
-			{
-				Uint8 tmp = *top;
-				*top++ = *bottom;
-				*bottom++ = tmp;
-			}
-			bottom -= 2 * surface->pitch;
-		}
-	}
-
-	void Surface::flip_horizontal(void)
-	{
-		Uint8 bpp = surface->format->BytesPerPixel;
-		for (int row = 0; row < surface->h; row++)
-		{
-			Uint8* left = (Uint8*)surface->pixels + row * surface->pitch;
-			Uint8* right = left + surface->pitch - bpp;
-			while (left < right)
-			{
-				for (int i = 0; i < bpp; i++)
-				{
-					Uint8 tmp = left[i];
-					left[i] = right[i];
-					right[i] = tmp;
-				}
-				left += bpp;
-				right -= bpp;
-			}
-		}
-	}
-
 	void Surface::blend(const Surface& another)
 	{
 		SDL_BlitSurface(another.get_surface(), nullptr, surface, nullptr);
@@ -306,6 +315,30 @@ namespace dukat
 	{
 		SDL_Rect r{ x, y, another.get_width(), another.get_height() };
 		SDL_BlitSurface(another.get_surface(), nullptr, surface, &r);
+	}
+
+	void Surface::blend_flip_h(const Surface& another, const Rect& src, const Rect& dest)
+	{
+		auto tmp_surface = SDL_CreateRGBSurface(0, src.w, src.h, surface->format->BitsPerPixel, 
+			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask);
+		if (tmp_surface == nullptr)
+			throw std::runtime_error("Failed to create surface.");
+		SDL_BlitSurface(surface, (SDL_Rect*)&src, tmp_surface, nullptr);
+		flip_surface_h(tmp_surface);
+		SDL_BlitSurface(tmp_surface, nullptr, another.surface, (SDL_Rect*)&dest);
+		SDL_FreeSurface(tmp_surface);
+	}
+
+	void Surface::blend_flip_v(const Surface& another, const Rect& src, const Rect& dest)
+	{
+		auto tmp_surface = SDL_CreateRGBSurface(0, src.w, src.h, surface->format->BitsPerPixel,
+			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask);
+		if (tmp_surface == nullptr)
+			throw std::runtime_error("Failed to create surface.");
+		SDL_BlitSurface(surface, (SDL_Rect*)&src, tmp_surface, nullptr);
+		flip_surface_v(tmp_surface);
+		SDL_BlitSurface(tmp_surface, nullptr, another.surface, (SDL_Rect*)&dest);
+		SDL_FreeSurface(tmp_surface);
 	}
 
 	std::unique_ptr<Surface> Surface::from_file(const std::string& filename)
@@ -336,5 +369,5 @@ namespace dukat
 				f(x, y, surface, ptr++);
 			}
 		}
-	}
+	}	
 }

@@ -2,12 +2,16 @@
 
 #include "color.h"
 #include "rect.h"
+#include "bit.h"
 
 namespace dukat
 {
 	class Vector2;
 
-	extern SDL_Color SDL_MapColor(SDL_PixelFormat* fmt, Uint32 p);
+	// Free utility functions
+	SDL_Color SDL_MapColor(SDL_PixelFormat* fmt, Uint32 p);
+	void flip_surface_h(SDL_Surface* surface);
+	void flip_surface_v(SDL_Surface* surface);
 
 	/**
 	 * Wrapper for a 32-bit SDL surface.
@@ -54,9 +58,13 @@ namespace dukat
 		void blend(const Surface& another);
 		void blend(const Surface& another, const Rect& src, const Rect& dest);
 		void blend(const Surface& another, int x, int y);
+		// Blends flipped surface onto another surface
+		void blend_flip_h(const Surface& another, const Rect& src, const Rect& dest);
+		void blend_flip_v(const Surface& another, const Rect& src, const Rect& dest);
+
 		// Flips surface 
-		void flip_horizontal(void);
-		void flip_vertical(void);
+		void flip_vertical(void) const { flip_surface_v(surface); }
+		void flip_horizontal(void) const { flip_surface_h(surface); }
 		// Drawing methods
 		void draw_line(int x0, int y0, int x1, int y1, Uint32 color);
 		void draw_circle(int x0, int y0, int radius, Uint32 color);
