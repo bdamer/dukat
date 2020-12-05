@@ -13,7 +13,7 @@ namespace dukat
 			texture[i] = nullptr;
 #if OPENGL_VERSION >= 30
 		uniform_buffers = std::make_unique<GenericBuffer>(1);
-		glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(Renderer::UniformBuffer::Material), uniform_buffers->buffers[0]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Material), &material, GL_STATIC_DRAW);
 #endif
 		// initialize default transform
@@ -23,7 +23,7 @@ namespace dukat
 	void MeshInstance::update_material_buffer(void)
 	{
 #if OPENGL_VERSION >= 30
-		glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(Renderer::UniformBuffer::Material), uniform_buffers->buffers[0]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Material), &material, GL_STATIC_DRAW);
 #endif
 	}
@@ -55,8 +55,8 @@ namespace dukat
 		auto midx = glGetUniformBlockIndex(program->id, Renderer::uf_material);
 		if (midx != GL_INVALID_INDEX)
 		{
-			glUniformBlockBinding(program->id, midx, Renderer::UniformBuffer::MATERIAL);
-			glBindBufferBase(GL_UNIFORM_BUFFER, Renderer::UniformBuffer::MATERIAL, uniform_buffers->buffers[0]);
+			glUniformBlockBinding(program->id, midx, static_cast<GLuint>(Renderer::UniformBuffer::Material));
+			glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(Renderer::UniformBuffer::Material), uniform_buffers->buffers[0]);
 		}
 #else
 		// manually bind material (sending custom.r twice since there is no dedicated

@@ -7,7 +7,7 @@ namespace dukat
 {
 	// Light structure passed to shader.
 	// 
-	// Attenuation constants based on Orge3D wiki:
+	// Attenuation constants based on Ogre3D wiki:
 	//	Range	k0 		k1 		k2
 	//	7 		1.0 	0.7 	1.8
 	//	13 		1.0 	0.35 	0.44

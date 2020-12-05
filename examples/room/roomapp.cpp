@@ -76,7 +76,7 @@ namespace dukat
 			std::bind(&RoomCamera::jump, camera.get()));
 		game->get_renderer()->set_camera(std::move(camera));
 
-		object_meshes.stage = RenderStage::SCENE;
+		object_meshes.stage = RenderStage::Scene;
 		object_meshes.visible = true;
 
 		// Origin

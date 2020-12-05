@@ -46,13 +46,7 @@ namespace dukat
 		// just a single light for now
 		Light light;
 		// Render flags
-		bool render_effects;
-		bool render_sprites;
-		bool render_particles;
-		bool render_text;
-		// If set will force synchronization of OpenGL when
-		// running in fullscreen mode.
-		bool force_sync;
+		int render_flags;
 
 		void initialize_sprite_buffers(void);
 		void initialize_particle_buffers(void);
@@ -64,6 +58,17 @@ namespace dukat
 
 	public:
 		static const int max_particles = 2048;
+
+		enum Flags
+		{
+			RenderFx = 1,
+			RenderSprites = 2,
+			RenderParticles = 4,
+			RenderText = 8,
+			// If set will force synchronization of OpenGL when
+			// running in fullscreen mode.
+			ForceSync = 16
+		};
 
 #if OPENGL_VERSION <= 30
 		static constexpr const char* u_cam_dimension = "u_cam_dimension";
@@ -97,15 +102,15 @@ namespace dukat
 		// Updates program used to composite final image to screen.
 		void set_composite_program(ShaderProgram* composite_program, std::function<void(ShaderProgram*)> composite_binder = nullptr);
 		// Gets / sets flags
-		void set_render_particles(bool val) { render_particles = val; }
-		bool is_render_particles(void) const { return render_particles; }
-		void set_render_effects(bool val) { render_effects = val; }
-		bool is_render_effects(void) const { return render_effects; }
-		void set_render_sprites(bool val) { render_sprites = val; }
-		bool is_render_sprites(void) const { return render_sprites; }
-		void set_render_text(bool val) { render_text = val; }
-		bool is_render_text(void) const { return render_text; }
-		void set_force_sync(bool val) { force_sync = val; }
-		bool is_force_sync(void) { return force_sync; }
+		void set_render_particles(bool val) { set_flag(render_flags, RenderParticles, val); }
+		bool is_render_particles(void) const { return check_flag(render_flags, RenderParticles); }
+		void set_render_effects(bool val) { set_flag(render_flags, RenderFx, val); }
+		bool is_render_effects(void) const { return check_flag(render_flags, RenderFx); }
+		void set_render_sprites(bool val) { set_flag(render_flags, RenderSprites, val); }
+		bool is_render_sprites(void) const { return check_flag(render_flags, RenderSprites); }
+		void set_render_text(bool val) { set_flag(render_flags, RenderText, val); }
+		bool is_render_text(void) const { return check_flag(render_flags, RenderText); }
+		void set_force_sync(bool val) { set_flag(render_flags, ForceSync, val); }
+		bool is_force_sync(void) { return check_flag(render_flags, ForceSync); }
 	};
 }

@@ -6,7 +6,7 @@ namespace dukat
 {
 	TitleScene::TitleScene(Game3* game3) : game(game3)
 	{
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		auto title_text = game->create_text_mesh();

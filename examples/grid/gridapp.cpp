@@ -29,7 +29,7 @@ namespace dukat
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));		
-		object_meshes.stage = RenderStage::SCENE;
+		object_meshes.stage = RenderStage::Scene;
 		object_meshes.visible = true;
 
 		// Generate heightmap
@@ -104,7 +104,7 @@ namespace dukat
 		mat.diffuse = Color{0.22f,0.41f,0.75f,1.0f};
 		skydome_mesh->set_material(mat);
 
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		auto info_text = game->create_text_mesh();

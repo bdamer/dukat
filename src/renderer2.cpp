@@ -14,8 +14,7 @@
 namespace dukat
 {
 	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), 
-		composite_program(nullptr), composite_binder(nullptr),
-		render_effects(true), render_sprites(true), render_particles(true), render_text(true), force_sync(false)
+		composite_program(nullptr), composite_binder(nullptr), render_flags(RenderFx | RenderSprites | RenderParticles | RenderText)
 	{
 		// Enable transparency
 		set_blending(true);
@@ -252,7 +251,7 @@ namespace dukat
 		// Call glFinish to avoid buffer updates on older Intel GPU.
 		// The goal is to wait until all pending render operations of
 		// the previous frame have finished.
-		if (force_sync && window->is_fullscreen())
+		if (check_flag(render_flags, ForceSync) && window->is_fullscreen())
 			glFinish();
 
 		// Bind and clear screenbuffer.
@@ -295,9 +294,9 @@ namespace dukat
 	{
 #if OPENGL_VERSION >= 30
 		// Update uniform buffers
-		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[UniformBuffer::CAMERA]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Camera), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Camera)]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform2), &camera->transform, GL_STREAM_DRAW);
-		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[UniformBuffer::LIGHT]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Light), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Light)]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &light, GL_STREAM_DRAW);
 #else
 		// Update uniform variables

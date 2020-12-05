@@ -106,7 +106,7 @@ namespace dukat
 
 		for (auto& it : meshes)
 		{
-			if (it->visible && it->stage == RenderStage::SCENE)
+			if (it->visible && it->stage == RenderStage::Scene)
 			{
 				it->render(this);
 			}
@@ -177,7 +177,7 @@ namespace dukat
 		// Overlay pass
 		for (auto& it : meshes)
 		{
-			if (it->visible && it->stage == RenderStage::OVERLAY)
+			if (it->visible && it->stage == RenderStage::Overlay)
 			{
 				it->render(this);
 			}
@@ -196,9 +196,9 @@ namespace dukat
 	{
 #if OPENGL_VERSION >= 30
 		// Update uniform buffers
-		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[UniformBuffer::CAMERA]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Camera), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Camera)]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform3), &camera->transform, GL_STREAM_DRAW);
-		glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[UniformBuffer::LIGHT]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Light), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Light)]);
 		glBufferData(GL_UNIFORM_BUFFER, num_lights * sizeof(Light), &lights, GL_STREAM_DRAW);
 #else
 		// Update individual uniforms.

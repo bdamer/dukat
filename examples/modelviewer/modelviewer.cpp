@@ -26,7 +26,7 @@ namespace dukat
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));		
 
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		auto info_text = game->create_text_mesh();
@@ -73,7 +73,7 @@ namespace dukat
 		}
 
 		object_meshes = build_mesh_group(game, *model);
-		object_meshes->stage = RenderStage::SCENE;
+		object_meshes->stage = RenderStage::Scene;
 		object_meshes->visible = true;
 	}
 

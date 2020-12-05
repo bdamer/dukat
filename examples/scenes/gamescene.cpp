@@ -18,7 +18,7 @@ namespace dukat
 		light0->diffuse = { 0.5f, 0.5f, 0.5f, 1.0f };
 		light0->specular = { 0.4f, 0.4f, 0.4f, 1.0f };
 
-		scene_meshes.stage = RenderStage::SCENE;
+		scene_meshes.stage = RenderStage::Scene;
 		scene_meshes.visible = true;
 
 		auto box = scene_meshes.create_instance();
@@ -27,7 +27,7 @@ namespace dukat
 		box->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
 		box->transform.scale = Vector3{ 2.0f, 2.0f, 2.0f };
 
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		auto info_text = game->create_text_mesh();

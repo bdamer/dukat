@@ -23,7 +23,7 @@ namespace dukat
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));		
 
-		object_meshes.stage = RenderStage::SCENE;
+		object_meshes.stage = RenderStage::Scene;
 		object_meshes.visible = true;
 
 		// load environment map
@@ -44,7 +44,7 @@ namespace dukat
 
 		init_environment();
 		
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		// Quad used to visualize normal map

@@ -16,7 +16,7 @@ namespace dukat
 			renderer->enable_effects();
 		}
 
-		debug_meshes.stage = RenderStage::OVERLAY;
+		debug_meshes.stage = RenderStage::Overlay;
 		debug_meshes.visible = debug;
 
 		auto debug_text = create_text_mesh();

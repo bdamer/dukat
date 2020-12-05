@@ -374,8 +374,8 @@ namespace dukat
 		grid_program->set("u_k", k);
 
 		// Bind geo waves to uniform buffer
-		renderer->bind_uniform(Renderer::UniformBuffer::USER, num_geo_waves * sizeof(GeoWaveDesc), geo_waves.data());
-		grid_program->bind("Waves", Renderer::UniformBuffer::USER);
+		renderer->bind_uniform(Renderer::UniformBuffer::User, num_geo_waves * sizeof(GeoWaveDesc), geo_waves.data());
+		grid_program->bind("Waves", static_cast<GLuint>(Renderer::UniformBuffer::User));
 
 		// Set environment and bump map
 		if (env_map != nullptr)

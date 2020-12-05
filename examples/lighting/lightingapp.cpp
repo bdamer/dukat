@@ -48,7 +48,7 @@ namespace dukat
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));
 
-		object_meshes.stage = RenderStage::SCENE;
+		object_meshes.stage = RenderStage::Scene;
 		object_meshes.visible = true;
 
 		// Generate some meshes
@@ -67,7 +67,7 @@ namespace dukat
 		sphere_mesh->set_material(mat_gold);
 		sphere_mesh->transform.position.x = -2.5f;
 		
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		auto info_text = game->create_text_mesh();

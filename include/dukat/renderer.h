@@ -16,10 +16,10 @@ namespace dukat
 	struct GenericBuffer;
 	struct Color;
 
-	enum RenderStage
+	enum class RenderStage
 	{
-		SCENE,      // scene geometry
-		OVERLAY     // no depth-buffer, used for UI
+		Scene,      // scene geometry
+		Overlay     // no depth-buffer, used for UI
 	};
 
 	// Base class for 2D and 3D renderers.
@@ -40,13 +40,13 @@ namespace dukat
 		virtual void resize_window(void);
 
 	public:
-		enum UniformBuffer
+		enum class UniformBuffer : int
 		{
-			CAMERA,
-			LIGHT,
-			MATERIAL,
-			USER,
-			_COUNT
+			Camera,
+			Light,
+			Material,
+			User,
+			_count
 		};
 
 		// Used to restart primitives in batched call

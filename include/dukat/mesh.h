@@ -14,7 +14,7 @@ namespace dukat
 		RenderStage stage;
         bool visible;
 
-        Mesh(void) : stage(RenderStage::SCENE), visible(true) { };
+        Mesh(void) : stage(RenderStage::Scene), visible(true) { };
         virtual ~Mesh(void) { };
 
         // Updates mesh transform.

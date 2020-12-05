@@ -22,18 +22,17 @@ namespace dukat
 	static PVertex particle_data[Renderer2::max_particles];
 
 	RenderLayer2::RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
-	    const std::string& id, float priority, float parallax) : render_target(nullptr), composite_binder(nullptr),
-		 sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), is_visible(true),
-		id(id), parallax(parallax), priority(priority), stage(Composite)
+		const std::string& id, float priority, float parallax) : render_target(nullptr), composite_binder(nullptr),
+		sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), is_visible(true),
+		id(id), parallax(parallax), priority(priority), stage(Composite),
+		render_flags(Renderer2::RenderFx | Renderer2::RenderSprites | Renderer2::RenderParticles | Renderer2::RenderText)
 	{
 		sprite_program = shader_cache->get_program("sc_sprite.vsh", "sc_sprite.fsh");
 		particle_program = shader_cache->get_program("sc_particle.vsh", "sc_particle.fsh");
 		composite_program = shader_cache->get_program("fx_default.vsh", "fx_default.fsh");
 	}
 
-	RenderLayer2::~RenderLayer2(void)
-	{
-	}
+	RenderLayer2::~RenderLayer2(void) { }
 
 	void RenderLayer2::add(Sprite* sprite)
 	{
@@ -58,7 +57,7 @@ namespace dukat
 	void RenderLayer2::remove(Effect2* fx)
 	{
 		fx->set_layer(nullptr);
-		auto it = std::find_if(effects.begin(), effects.end(), 
+		auto it = std::find_if(effects.begin(), effects.end(),
 			[fx](const std::unique_ptr<Effect2>& ptr) -> bool { return fx == ptr.get(); });
 		if (it != effects.end())
 		{
@@ -76,7 +75,7 @@ namespace dukat
 		particles.erase(std::remove(particles.begin(), particles.end(), p), particles.end());
 	}
 
-	void RenderLayer2::add(TextMeshInstance * text)
+	void RenderLayer2::add(TextMeshInstance* text)
 	{
 		texts.push_back(text);
 	}
@@ -92,19 +91,19 @@ namespace dukat
 		auto camera = renderer->get_camera();
 		const auto camera_bb = camera->get_bb(parallax);
 
-		if (has_effects() && renderer->is_render_effects())
+		if (has_effects() && check_flag(render_flags, Renderer2::RenderFx) && renderer->is_render_effects())
 		{
 			render_effects(renderer, camera_bb);
 		}
-		if (has_sprites() && renderer->is_render_sprites())
+		if (has_sprites() && check_flag(render_flags, Renderer2::RenderSprites) && renderer->is_render_sprites())
 		{
 			render_sprites(renderer, camera_bb);
 		}
-		if (has_particles() && renderer->is_render_particles())
+		if (has_particles() && check_flag(render_flags, Renderer2::RenderParticles) && renderer->is_render_particles())
 		{
 			render_particles(renderer, camera_bb);
 		}
-		if (has_text() && renderer->is_render_text())
+		if (has_text() && check_flag(render_flags, Renderer2::RenderText) && renderer->is_render_text())
 		{
 			render_text(renderer, camera_bb);
 		}
@@ -222,7 +221,7 @@ namespace dukat
 
 		// set texture unit 0 
 		glUniform1i(sprite_program->attr(Renderer::uf_tex0), 0);
-		
+
 		// Get uniforms that will be set for each sprite
 		auto uvwh_id = sprite_program->attr("u_uvwh");
 		auto color_id = sprite_program->attr(Renderer::uf_color);
@@ -252,22 +251,22 @@ namespace dukat
 			glUniformMatrix4fv(model_id, 1, false, &mat_m.m[0]);
 			glUniform4fv(color_id, 1, &sprite->color.r);
 			glUniform4fv(uvwh_id, 1, sprite->tex);
-			
+
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}
 
 #ifdef _DEBUG
-	#if OPENGL_VERSION >= 30
+#if OPENGL_VERSION >= 30
 		// unbind buffers
 		glDisableVertexAttribArray(pos_id);
 		glDisableVertexAttribArray(uv_id);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
-	#else
+#else
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	#endif
+#endif
 #endif
 	}
 
@@ -400,14 +399,14 @@ namespace dukat
 		glDrawArrays(GL_POINTS, 0, particle_count);
 
 #ifdef _DEBUG
-	#if OPENGL_VERSION >= 30
+#if OPENGL_VERSION >= 30
 		glDisableVertexAttribArray(pos_id);
 		glDisableVertexAttribArray(color_id);
 		glBindVertexArray(0);
-	#else
+#else
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);
-	#endif
+#endif
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 #endif
 	}

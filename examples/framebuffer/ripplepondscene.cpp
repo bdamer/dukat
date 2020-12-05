@@ -41,7 +41,7 @@ namespace dukat
 		tex1 = tb.build();
 		last = tex1.get();
 
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		// Create quad mesh & set material properties

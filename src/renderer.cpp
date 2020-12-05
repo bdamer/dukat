@@ -13,7 +13,7 @@ namespace dukat
 		: window(window), shader_cache(shader_cache), active_program(0), show_wireframe(false), blending(false)
 	{
 		test_capabilities();
-		uniform_buffers = std::make_unique<GenericBuffer>(UniformBuffer::_COUNT);
+		uniform_buffers = std::make_unique<GenericBuffer>(static_cast<int>(UniformBuffer::_count));
 		// Default settings
 		set_clear_color(Color{ 0.0f, 0.0f, 0.0f, 0.0f });
 		// Enable back-face culling
@@ -51,7 +51,7 @@ namespace dukat
 #if OPENGL_VERSION >= 30
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &int_val);
 		log->trace("GL_MAX_UNIFORM_BUFFER_BINDINGS: {}", int_val);
-		assert(int_val >= UniformBuffer::_COUNT);
+		assert(int_val >= static_cast<int>(UniformBuffer::_count));
 		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &int_val);
 		log->trace("GL_MAX_UNIFORM_BLOCK_SIZE: {}", int_val);
         glGetIntegerv(GL_MAX_VERTEX_UNIFORM_BLOCKS, &int_val);
@@ -105,10 +105,10 @@ namespace dukat
 			this->active_program = program;
 #if OPENGL_VERSION >= 30
 			// re-bind uniform blocks
-			if (program->bind(Renderer::uf_camera, UniformBuffer::CAMERA))
-				glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::CAMERA, uniform_buffers->buffers[UniformBuffer::CAMERA]);
-			if (program->bind(Renderer::uf_light, UniformBuffer::LIGHT))
-				glBindBufferBase(GL_UNIFORM_BUFFER, UniformBuffer::LIGHT, uniform_buffers->buffers[UniformBuffer::LIGHT]);
+			if (program->bind(Renderer::uf_camera, static_cast<GLuint>(UniformBuffer::Camera)))
+				glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Camera), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Camera)]);
+			if (program->bind(Renderer::uf_light, static_cast<GLuint>(UniformBuffer::Light)))
+				glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Light), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Light)]);
 #else
 			// update all uniforms
 			update_uniforms();
@@ -118,7 +118,7 @@ namespace dukat
 
 	void Renderer::bind_uniform(UniformBuffer buffer, GLsizeiptr size, const GLvoid* data)
 	{
-		glBindBufferBase(GL_UNIFORM_BUFFER, buffer, uniform_buffers->buffers[buffer]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(buffer), uniform_buffers->buffers[static_cast<int>(buffer)]);
 		glBufferData(GL_UNIFORM_BUFFER, size, data, GL_STREAM_DRAW);
 	}
 

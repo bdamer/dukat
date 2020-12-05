@@ -24,7 +24,7 @@ namespace dukat
 		light0->diffuse = { 0.4f, 0.4f, 0.4f, 1.0f };
 		light0->specular = { 0.4f, 0.4f, 0.4f, 1.0f };
 
-		object_meshes.stage = RenderStage::SCENE;
+		object_meshes.stage = RenderStage::Scene;
 		object_meshes.visible = true;
 
 		// Origin
@@ -65,7 +65,7 @@ namespace dukat
 		mat.diffuse = Color{0.22f,0.41f,0.75f,1.0f};
 		skydome_mesh->set_material(mat);
 
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		auto info_text = game->create_text_mesh();

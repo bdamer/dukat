@@ -42,6 +42,7 @@ namespace dukat
 		std::deque<Particle*> particles;
 		std::vector<TextMeshInstance*> texts;
 		bool is_visible;
+		int render_flags;
 
 		// Fills up priority queue with visible sprites.
 		void fill_sprite_queue(const AABB2& camera_bb, std::function<bool(Sprite*)> predicate,
@@ -106,5 +107,8 @@ namespace dukat
 		void set_composite_binder(std::function<void(ShaderProgram*)> binder) { composite_binder = binder; }
 		Texture* get_render_target(void) const { return render_target != nullptr ? render_target.get() : nullptr; }
 		void set_render_target(std::unique_ptr<Texture> render_target) { this->render_target = std::move(render_target); }
+	
+		// Sets flags
+		void set_render_flag(int flag, bool val) { set_flag(render_flags, flag, val); }
 	};
 }

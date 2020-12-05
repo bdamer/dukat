@@ -17,7 +17,7 @@ namespace dukat
 		fbo = std::make_unique<FrameBuffer>(texture_size, texture_size, true, false);
 		fb_program = game->get_shaders()->get_program("fx_default.vsh", "fx_fractal.fsh");
 
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		quad_mesh = overlay_meshes.create_instance();

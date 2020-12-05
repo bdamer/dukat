@@ -41,7 +41,7 @@ namespace dukat
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));		
 
-		object_meshes.stage = RenderStage::SCENE;
+		object_meshes.stage = RenderStage::Scene;
 		object_meshes.visible = true;
 
 		heatmap = std::make_unique<HeatMap>(game, map_size, 100.0f);
@@ -64,7 +64,7 @@ namespace dukat
 		mat.diffuse = Color{0.22f,0.41f,0.75f,1.0f};
 		skydome_mesh->set_material(mat);
 
-		overlay_meshes.stage = RenderStage::OVERLAY;
+		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
 
 		auto info_text = game->create_text_mesh();
