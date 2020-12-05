@@ -1,6 +1,7 @@
 #pragma once
 
 #include "camera2.h"
+#include "aabb2.h"
 
 namespace dukat
 {
@@ -15,14 +16,17 @@ namespace dukat
         T* target;
         Vector2 actual_offset;
         Vector2 target_offset;
+		AABB2 limits; // limits camera movement
 
     public:
         FollowerCamera2(GameBase* game, const Vector2& dimension = { 0.0f, 0.0f })
-            : Camera2(game, dimension), game(game), target(nullptr), actual_offset{ 0, 0 }, target_offset{ 0, 0 } { }
+            : Camera2(game, dimension), game(game), target(nullptr), actual_offset{ 0, 0 }, target_offset{ 0, 0 }, 
+			limits(Vector2{ -big_number, -big_number }, Vector2{ big_number, big_number }) { }
         ~FollowerCamera2(void) { }
 
         void set_target(T* target);
         void set_offset(const Vector2& offset, bool immediate = true);
+		void set_limits(const AABB2& bb) { this->limits = bb; }
         void update(float delta);
     };
 
@@ -70,8 +74,9 @@ namespace dukat
 		auto dx = pos.x - transform.position.x;
 		auto dy = pos.y - transform.position.y;
 
-		transform.position.x = pos.x;
-		transform.position.y = pos.y;
+		// Limit coordinates
+		transform.position.x = std::max(std::min(pos.x, limits.max.x), limits.min.x);
+		transform.position.y = std::max(std::min(pos.y, limits.max.y), limits.min.y);
 
 		if (std::abs(dx) > jump_threshold || std::abs(dy) > jump_threshold)
 		{
