@@ -22,6 +22,8 @@ namespace dukat
 		~AssetLoader(void) { }
 
 		void load_text(const std::string& filename, std::stringstream& ss) const;
+		// Checks if a given asset exists.
+		bool exists(const std::string& filename) const;
 
 	};
 }

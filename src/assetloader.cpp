@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/assetloader.h>
+#include <filesystem>
 
 #ifdef __ANDROID__
 #include <android/asset_manager.h>
@@ -35,6 +36,16 @@ namespace dukat
 		{
 			ss << is.rdbuf();
 		}
+#endif
+	}
+	
+	bool AssetLoader::exists(const std::string& filename) const
+	{
+#ifdef __ANDROID__
+		return false;
+#else
+		std::ifstream infile(filename);
+		return infile.good();
 #endif
 	}
 }
