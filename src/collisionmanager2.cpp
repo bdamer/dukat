@@ -54,6 +54,8 @@ namespace dukat
 			return;
 		if (!this_body->dynamic && !other_body->dynamic)
 			return; // static bodies do not collide with one another
+		if (this_body->id > other_body->id)
+			std::swap(this_body, other_body); // enforce body order stays consistent across checks
 
 		// Check if collision has already been detected during this frame
 		const auto id = hash(this_body, other_body);
