@@ -72,6 +72,7 @@ namespace dukat
 		const std::string& get_name(void) const { return name; }
 		// Returns human-readable name for a button.
 		virtual std::string get_button_name(VirtualButton button) const = 0;
+		int get_mapping(VirtualButton button) const { return mapping[button]; }
 		void on_press(VirtualButton button, std::function<void(void)> handler) { handlers[button] = handler; }
 		void unbind(VirtualButton button) { handlers.erase(button); }
 	};
