@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <queue>
 #include <stack>
 #include <typeindex>
 
@@ -37,6 +38,7 @@ namespace dukat
 		std::map<std::type_index, std::unique_ptr<Manager>> managers;
 		std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
 		std::stack<Scene*> scene_stack;
+		std::queue<std::function<void(void)>> delayed_actions;
 		Controller* controller;
 
 		virtual void handle_event(const SDL_Event& e);
@@ -65,9 +67,12 @@ namespace dukat
 		Scene* get_scene(void) const { return scene_stack.top(); }
 		void set_controller(Controller* controller) { this->controller = controller; }
 
+		// Schedules an action to be executed at the start of the next frame.
+		void delay_action(const std::function<void(void)>& action) { delayed_actions.push(action); }
+
 		// Retrieves a registered manager.
 		template <typename T>
-		T* get(void);
+		T* get(void) const;
 		// Registers a new manager.
 		template <typename T>
 		T* add_manager(void);
@@ -81,16 +86,18 @@ namespace dukat
 		ShaderCache* get_shaders(void) const { return shader_cache.get(); }
 		TextureCache* get_textures(void) const { return texture_cache.get(); }
 		MeshCache* get_meshes(void) const { return mesh_cache.get(); }
+		TimerManager* get_timers(void) const { return get<TimerManager>(); }
+		AnimationManager* get_animations(void) const { return get<AnimationManager>(); }
 	};
 
 	// Define template methods here:
 	template <typename T>
-	T* GameBase::get(void)
+	T* GameBase::get(void) const
 	{
 		std::type_index index(typeid(T));
 		if (managers.count(index) != 0)
 		{
-			return static_cast<T*>(managers[index].get());
+			return static_cast<T*>(managers.at(index).get());
 		}
 		else
 		{

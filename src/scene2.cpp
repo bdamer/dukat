@@ -4,17 +4,6 @@
 
 namespace dukat
 {
-	void Scene2::update(float delta)
-	{
-		// Execute any delayed actions once
-		while (!delayed_actions.empty())
-		{
-			const auto& action = delayed_actions.front();
-			action();
-			delayed_actions.pop();
-		}
-	}
-
 	void Scene2::render(void)
 	{
 		game->get_renderer()->render();

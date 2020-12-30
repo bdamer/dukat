@@ -55,6 +55,14 @@ namespace dukat
 
 	void GameBase::update(float delta)
 	{
+		// Execute any delayed actions once
+		while (!delayed_actions.empty())
+		{
+			const auto& action = delayed_actions.front();
+			action();
+			delayed_actions.pop();
+		}
+
 		// Scene first so that managers can operate on updated properties.
 		scene_stack.top()->update(delta);
 		for (auto& it : managers)
