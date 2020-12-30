@@ -4,7 +4,7 @@
 
 namespace dukat
 {
-	Timer* TimerManager::create_timer(float interval, std::function<void(void)> callback, bool recurring)
+	Timer* TimerManager::create(float interval, std::function<void(void)> callback, bool recurring)
     {
 		assert(interval >= 0);
 

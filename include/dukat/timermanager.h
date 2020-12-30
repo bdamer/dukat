@@ -36,10 +36,15 @@ namespace dukat
 		TimerManager(GameBase* game) : Manager(game), generation(0u), active_group(0u) { }
 		~TimerManager(void) { }
 
-        Timer* create_timer(float interval, std::function<void(void)> callback, bool recurring = false);
-		void cancel_timer(Timer* timer) { if (timer != nullptr) timers.release(timer); }
-        void update(float delta);
+		Timer* create(float interval, std::function<void(void)> callback, bool recurring = false);
+		void cancel(Timer* timer) { if (timer != nullptr) timers.release(timer); }
+		void update(float delta);
 		void set_active_group(uint8_t group) { this->active_group = group; }
+
+		// Deprecated - use create instead
+		Timer* create_timer(float interval, std::function<void(void)> callback, bool recurring = false) { return create(interval, callback, recurring); }
+		// Deprecated - use cancel instead
+		void cancel_timer(Timer* timer) { cancel(timer); }
 
 		// Cancels all active timers.
 		void clear(void) { timers.clear(); }
