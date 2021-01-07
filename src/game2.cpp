@@ -4,7 +4,7 @@
 
 namespace dukat
 {
-	Game2::Game2(Settings& settings) : GameBase(settings)
+	Game2::Game2(Settings& settings) : GameBase(settings), speed_factor(1.0f)
 	{
 		renderer = std::make_unique<Renderer2>(window.get(), shader_cache.get());
 		renderer->set_force_sync(settings.get_bool("video.forcesync", false));
@@ -19,8 +19,9 @@ namespace dukat
 	
 	void Game2::update(float delta)
 	{
-		GameBase::update(delta);
-		renderer->get_camera()->update(delta);
+		const auto scaled_delta = speed_factor * delta;
+		GameBase::update(scaled_delta);
+		renderer->get_camera()->update(scaled_delta);
 	}
 
 	void Game2::toggle_debug(void)
