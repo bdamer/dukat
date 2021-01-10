@@ -18,6 +18,8 @@ namespace dukat
 		std::array<int, 5> mouse_mapping;
 		// Mouse sensitivity - 1 is the most sensitive, higher values reduce sensitivity
 		int sensitivity;
+		// Updates button states.
+		void update_buttons(Uint32 buttons);
 
 	public:
 		static constexpr auto keyboard_id = -1;

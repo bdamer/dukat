@@ -84,20 +84,31 @@ namespace dukat
 		rxa = (float)abs_x;
 		rya = (float)abs_y;
 
+		update_buttons(buttons);
+	}
+
+	void KeyboardDevice::update_buttons(Uint32 buttons)
+	{
+		std::array<bool, VirtualButton::_Count> states;
+		std::fill(states.begin(), states.end(), false);
+
 		// Update & handle mouse buttons
 		for (auto i = 0u; i < mouse_buttons.size(); i++)
 		{
 			mouse_buttons[i] = (buttons & SDL_BUTTON(SDL_BUTTON_LEFT + i)) > 0;
 			if (mouse_mapping[i] > -1)
-				update_button_state(static_cast<VirtualButton>(mouse_mapping[i]), mouse_buttons[i]);
+				states[mouse_mapping[i]] |= mouse_buttons[i];
 		}
 
 		// Handle mapped keys
-		for (int i = 0; i < VirtualButton::_Count; i++)
+		for (auto i = 0u; i < VirtualButton::_Count; i++)
 		{
 			if (mapping[i] > -1)
-				update_button_state(static_cast<VirtualButton>(i), keystate[mapping[i]] == 1);
+				states[i] |= keystate[mapping[i]] == 1;
 		}
+
+		for (auto i = 0u; i < VirtualButton::_Count; i++)
+			update_button_state(static_cast<VirtualButton>(i), states[i]);
 	}
 
 	bool KeyboardDevice::is_pressed(VirtualButton button) const
