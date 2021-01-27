@@ -25,16 +25,7 @@ namespace dukat
 
 	void CollisionManager2::destroy_body(Body* body)
 	{
-		// Remove any contacts this body is part of
-		for (const auto& c : get_contacts(body))
-		{
-			auto other_body = c->body1 == body ? c->body2 : c->body1;
-			if (other_body->owner != nullptr)
-			{
-				other_body->owner->trigger(Message{ Events::CollisionEnd, body });
-			}
-			contacts.erase(hash(c->body1, c->body2));
-		}
+		invalidate_contacts(body);
 
 		// Remove from tree
 		tree->remove(body);
@@ -45,6 +36,20 @@ namespace dukat
 		{
 			trigger(Message{ Events::BodyDestroyed, (*it).get(), nullptr });
 			bodies.erase(it);
+		}
+	}
+
+	void CollisionManager2::invalidate_contacts(Body* body)
+	{
+		// Remove any contacts this body is part of
+		for (const auto& c : get_contacts(body))
+		{
+			auto other_body = c->body1 == body ? c->body2 : c->body1;
+			if (other_body->owner != nullptr)
+			{
+				other_body->owner->trigger(Message{ Events::CollisionEnd, body });
+			}
+			contacts.erase(hash(c->body1, c->body2));
 		}
 	}
 

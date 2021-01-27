@@ -76,6 +76,7 @@ namespace dukat
 
 		Body* create_body(bool dynamic = true);
 		void destroy_body(Body* body);
+		void invalidate_contacts(Body* body);
 
 		// Returns the number of collision bodies.
 		int body_count(void) const { return static_cast<int>(bodies.size()); }
