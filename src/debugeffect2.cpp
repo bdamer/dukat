@@ -103,7 +103,7 @@ namespace dukat
 					render_bounding_box(b->bb, disabled_color);
 				else if (!b->dynamic)
 					render_bounding_box(b->bb, fixed_color);
-				else if (!cm->get_contacts(b.get()).empty())
+				else if (!cm->has_contact(b.get()))
 					render_bounding_box(b->bb, contact_color);
 				else if (b->solid)
 					render_bounding_box(b->bb, dynamic_color);

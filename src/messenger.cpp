@@ -5,20 +5,18 @@ namespace dukat
 {
 	void Messenger::trigger(const Message& message)
 	{
-		if (subscriptions.count(message.event))
-		{
-			for (auto r : subscriptions[message.event])
-			{
-				r->receive(message);
-			}
-		}
+		if (!subscriptions.count(message.event))
+			return;
+		const auto& subs = subscriptions.at(message.event);
+		for (const auto& r : subs)
+			r->receive(message);
 	}
 
 	void Messenger::subscribe(Recipient* recipient, Event ev)
 	{
 		if (subscriptions.count(ev) == 0)
-			subscriptions[ev] = std::list<Recipient*>();
-		auto& list = subscriptions[ev];
+			subscriptions.emplace(ev, std::list<Recipient*>());
+		auto& list = subscriptions.at(ev);
 		auto it = std::find(list.begin(), list.end(), recipient);
 		if (it == list.end())
 			list.push_back(recipient);
@@ -50,7 +48,7 @@ namespace dukat
 	void Messenger::unsubscribe(Recipient* recipient, Event ev)
 	{
 		if (subscriptions.count(ev))
-			do_unsubscribe(recipient, subscriptions[ev]);
+			do_unsubscribe(recipient, subscriptions.at(ev));
 	}
 
 	void Messenger::unsubscribe(Recipient* recipient, const std::vector<Event>& events)

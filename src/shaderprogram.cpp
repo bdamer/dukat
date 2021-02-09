@@ -31,10 +31,8 @@ namespace dukat
 			GLsizei length;
 			glGetActiveUniform(id, i, buffer_size, &length, &size, &type, buffer);
 			auto location = glGetUniformLocation(id, buffer);
-			if (location >= 0) 
-			{
-				attributes[buffer] = location;
-			}
+			if (location >= 0)
+				attributes.emplace(buffer, location);
 		}
 
 		// query and index attributes
@@ -47,9 +45,7 @@ namespace dukat
 			glGetActiveAttrib(id, i, buffer_size, &length, &size, &type, buffer);
 			auto location = glGetAttribLocation(id, buffer);
 			if (location >= 0)
-			{
-				attributes[buffer] = location;
-			}
+				attributes.emplace(buffer, location);
 		}
 
 #ifdef _DEBUG
@@ -65,15 +61,15 @@ namespace dukat
 		}
 		else
 		{
-			return attributes[name];
+			return attributes.at(name);
 		}
 	}
 
 	bool ShaderProgram::bind(const std::string& block_name, GLuint block_binding)
 	{
 		if (uniforms.count(block_name) == 0) // determine index on first call
-			uniforms[block_name] = glGetUniformBlockIndex(id, block_name.c_str());
-		const auto& idx = uniforms[block_name];
+			uniforms.emplace(block_name, glGetUniformBlockIndex(id, block_name.c_str()));
+		const auto& idx = uniforms.at(block_name);
 		if (idx != GL_INVALID_INDEX)
 		{
 			glUniformBlockBinding(id, idx, block_binding);

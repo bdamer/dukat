@@ -207,6 +207,16 @@ namespace dukat
 		tree = std::make_unique<QuadTree<Body>>(world_origin - dim, world_origin + dim, world_depth);
 	}
 
+	bool CollisionManager2::has_contact(Body* b) const
+	{
+		for (const auto& it : contacts)
+		{
+			if (it.second.body1 == b || it.second.body2 == b)
+				return true;
+		}
+		return false;
+	}
+
 	std::list<CollisionManager2::Contact*> CollisionManager2::get_contacts(Body* b) const
 	{
 		std::list<Contact*> res;

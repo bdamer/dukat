@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+#include <robin_hood.h>
 #include <list>
 #include "recipient.h"
 
@@ -66,7 +66,7 @@ namespace dukat
 	{
 	private:
 		// Map of subscribers, indexed by event type
-		std::unordered_map<Event, std::list<Recipient*>> subscriptions;
+		robin_hood::unordered_map<Event, std::list<Recipient*>> subscriptions;
 
 		void do_unsubscribe(Recipient* recipient, std::list<Recipient*>& list);
 

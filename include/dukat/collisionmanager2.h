@@ -2,7 +2,7 @@
 
 #include <list>
 #include <memory>
-#include <unordered_set>
+#include <robin_hood.h>
 
 #include "game2.h"
 #include "manager.h"
@@ -47,7 +47,7 @@ namespace dukat
 
 		std::unique_ptr<QuadTree<Body>> tree;
 		std::list<std::unique_ptr<Body>> bodies;
-		std::unordered_map<uint32_t, Contact> contacts;
+		robin_hood::unordered_map<uint32_t, Contact> contacts;
 
 		friend class DebugEffect2;
 
@@ -84,6 +84,8 @@ namespace dukat
 		int contact_count(void) const { return static_cast<int>(contacts.size()); }
 		// Returns true if there exists a contact between two bodies.
 		bool has_contact(Body* b1, Body* b2) const { return contacts.count(hash(b1, b2)) > 0; }
+		// Returns true if there exists at least one contact that includes a given body.
+		bool has_contact(Body* b) const;
 		// Returns all contacts for a given body.
 		std::list<Contact*> get_contacts(Body* b) const;
 		// Returns all bodies at point p.
