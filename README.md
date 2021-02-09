@@ -5,6 +5,7 @@
 * Box2D 2.3.1
 * glew 2.1.0
 * LibPNG 1.6.16
+* Robin Hood 3.9.1
 * SDL2 2.0.8
 * SDL2_image 2.0.3
 * SDL2_mixer 2.0.2
@@ -15,6 +16,7 @@
 ## Windows
 Place header files for the following libraries in include/ directory:
 * / LibPNG
+* / Robin Hood
 * GL/ OpenGL Extension Wranger Library
 * SDL2/ SDL 2
 * SDL2/ SDL Image 2
