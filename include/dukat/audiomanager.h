@@ -23,6 +23,7 @@ namespace dukat
 
 		int get_num_channels(void) const { return num_channels; }
 		float get_music_volume(void) const { return music_volume; }
+		int get_num_active_channels(void) const;
 		// Note: music volume for midi files changes global application volume.
 		void set_music_volume(float volume);
 		float get_sample_volume(void) const { return sample_volume; }

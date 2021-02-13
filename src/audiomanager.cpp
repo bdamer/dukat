@@ -21,6 +21,11 @@ namespace dukat
 		Mix_CloseAudio();
 	}
 
+	int AudioManager::get_num_active_channels(void) const
+	{
+		return Mix_Playing(-1);
+	}
+
 	void AudioManager::set_music_volume(float volume)
 	{
 		music_volume = volume;

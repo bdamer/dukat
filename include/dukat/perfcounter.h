@@ -31,6 +31,7 @@ namespace dukat
 			SPRITES,		// No# of sprites rendered
 			SPRITES_TOTAL,	// No# of total sprites on layers
 			SAMPLES,		// No# of sampling operations
+			CHANNELS,		// No# of active audio channels
 			BB_CHECKS,		// No# of bounding-box checks
 			ENTITIES,		// No# of active game entities
 			ENTITIES_TOTAL, // No# of total game entities
