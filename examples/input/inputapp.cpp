@@ -195,6 +195,7 @@ namespace dukat
 		{
 			const auto btn = static_cast<InputDevice::VirtualButton>(i);
 			dev->on_press(btn, [&, btn](void) { log->info("Pressed: {}", game->get_devices()->active->get_button_name(btn)); });
+			dev->bind_long_press(btn, [&, btn](void) { log->info("Long Pressed: {}", game->get_devices()->active->get_button_name(btn)); });
 		}
 	}
 
