@@ -34,7 +34,9 @@ namespace dukat
 		void set_mag(float magnitude) { const auto k = magnitude / mag(); x *= k; y *= k; }
 		void zero(void) { x = y = 0.0f;  }
 		void limit(float max_mag) { const auto m = mag(); const auto k = std::min(m, max_mag) / m; x *= k; y *= k; }
-		void normalize(void) { const auto one_over_mag = 1.0f / mag(); x *= one_over_mag; y *= one_over_mag; }
+		// Normalization 
+		Vector2& normalize(void) { const auto one_over_mag = 1.0f / mag(); x *= one_over_mag; y *= one_over_mag; return *this; }
+		Vector2& normalize(float& len) { len = mag(); const auto one_over_mag = 1.0f / len; x *= one_over_mag; y *= one_over_mag; return *this; }
 		// Faster, less accurate normalization method.
 		Vector2& normalize_fast(void);
 
