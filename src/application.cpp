@@ -44,8 +44,8 @@ namespace dukat
 		audio_manager->set_sample_volume(settings.get_float("audio.sample.volume", 1.0f));
 #endif
 
-		device_manager = std::make_unique<DeviceManager>(settings);
-		device_manager->add_keyboard(window.get());
+		device_manager = std::make_unique<DeviceManager>(*window, settings);
+		device_manager->add_keyboard();
 		gl_check_error();
 	}
 
@@ -114,7 +114,7 @@ namespace dukat
 			handle_window_event(e);
 			break;
 		case SDL_JOYDEVICEADDED:
-			device_manager->add_joystick(window.get(), e.jdevice.which);
+			device_manager->add_joystick(e.jdevice.which);
 			break;
 		case SDL_JOYDEVICEREMOVED:
 			device_manager->remove_joystick(e.jdevice.which);

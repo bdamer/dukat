@@ -23,7 +23,7 @@ namespace dukat
 		void normalize_trigger(BYTE i, float& o, BYTE deadzone = 0);
 
 	public:
-		XBoxDevice(Window* window, int joystick_index);
+		XBoxDevice(const Window& window, const Settings& settings, int joystick_index);
 		~XBoxDevice(void) { }
 		void update(void);
 		bool is_pressed(VirtualButton button) const;

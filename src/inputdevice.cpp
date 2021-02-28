@@ -1,16 +1,17 @@
 #include "stdafx.h"
 #include <dukat/inputdevice.h>
+#include <dukat/settings.h>
 
 namespace dukat
 {
-	const Uint32 InputDevice::long_press_threshold = 1500u;
 	std::array<std::function<void(void)>, InputDevice::VirtualButton::_Count> InputDevice::button_handlers;
 	std::array<std::function<void(void)>, InputDevice::VirtualButton::_Count> InputDevice::long_press_handlers;
 
-	InputDevice::InputDevice(Window* window, bool digital) : window(window), lx(0.0f), ly(0.0f),
+	InputDevice::InputDevice(const Window& window, const Settings& settings, bool digital) : window(window), lx(0.0f), ly(0.0f),
 		rx(0.0f), ry(0.0f), lxa(0.0f), lya(0.0f), rxa(0.0f), rya(0.0f), lt(0.0f), rt(0.0f), digital(digital)
 	{
 		std::fill(buttons.begin(), buttons.end(), 0x0);
+		long_press_threshold = settings.get_int("input.longpress", 1000);
 	}
 
 	void InputDevice::update_button_state(VirtualButton button, bool pressed)

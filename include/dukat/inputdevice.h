@@ -7,6 +7,7 @@
 namespace dukat
 {
 	class Window;
+	class Settings;
 
 	// Base class for all supported input devices
 	class InputDevice
@@ -39,14 +40,14 @@ namespace dukat
 		};
 
 	private:
-		static const Uint32 long_press_threshold; // time to long press in ms
 		static std::array<std::function<void(void)>, VirtualButton::_Count> button_handlers;
 		static std::array<std::function<void(void)>, VirtualButton::_Count> long_press_handlers;
 		std::array<Uint32, VirtualButton::_Count> buttons; // tracks current button state
 		
 	protected:
 		std::string name;
-		Window* window;
+		const Window& window;
+		Uint32 long_press_threshold; // time to long press in ms
 		std::array<int, VirtualButton::_Count> mapping;
 		void update_button_state(VirtualButton button, bool pressed);
 
@@ -64,7 +65,7 @@ namespace dukat
 		// Flag indicating that this is a digital controller
 		const bool digital;
 
-		InputDevice(Window* window, bool digital);
+		InputDevice(const Window& window, const Settings& settings, bool digital);
 		virtual ~InputDevice(void) { }
 		virtual void update(void) = 0;
 		virtual bool is_pressed(VirtualButton button) const = 0;

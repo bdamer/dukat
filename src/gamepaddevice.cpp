@@ -7,7 +7,7 @@
 
 namespace dukat
 {
-	GamepadDevice::GamepadDevice(Window* window, int joystick_index, const Settings& settings) : InputDevice(window, false)
+	GamepadDevice::GamepadDevice(const Window& window, const Settings& settings, int joystick_index) : InputDevice(window, settings, false)
 	{
 		invert_y = settings.get_bool("input.gamepad.inverty", true);
 
@@ -93,10 +93,10 @@ namespace dukat
 		lya += ly * sensitivity;
 		rxa += rx * sensitivity;
 		rya += ry * sensitivity;
-		clamp(lxa, 0.0f, static_cast<float>(window->get_width()));
-		clamp(lya, 0.0f, static_cast<float>(window->get_height()));
-		clamp(rxa, 0.0f, static_cast<float>(window->get_width()));
-		clamp(rya, 0.0f, static_cast<float>(window->get_height()));
+		clamp(lxa, 0.0f, static_cast<float>(window.get_width()));
+		clamp(lya, 0.0f, static_cast<float>(window.get_height()));
+		clamp(rxa, 0.0f, static_cast<float>(window.get_width()));
+		clamp(rya, 0.0f, static_cast<float>(window.get_height()));
 	}
 
 	bool GamepadDevice::is_pressed(VirtualButton button) const

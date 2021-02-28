@@ -10,7 +10,7 @@ namespace dukat
 {
 	const float XBoxDevice::sensitivity = 1.0f;
 
-	XBoxDevice::XBoxDevice(Window* window, int joystick_index) : InputDevice(window, false), joystick_index(joystick_index)
+	XBoxDevice::XBoxDevice(const Window& window, const Settings& settings, int joystick_index) : InputDevice(window, settings, false), joystick_index(joystick_index)
 	{
 		name = SDL_JoystickNameForIndex(joystick_index);
 		log->debug("Initializing XInput device: {}", name);
@@ -51,37 +51,35 @@ namespace dukat
 	void XBoxDevice::update(void)
 	{
 		if (XInputGetState(static_cast<DWORD>(joystick_index), &state) != ERROR_SUCCESS)
-		{
 			return; // could not poll
-		}
-		if (state.dwPacketNumber != last_package)
+
+		// Update button states
+		last_package = state.dwPacketNumber;
+		normalize_axis(state.Gamepad.sThumbLX, state.Gamepad.sThumbLY, lx, ly, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+		normalize_axis(state.Gamepad.sThumbRX, state.Gamepad.sThumbRY, rx, ry, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+		normalize_trigger(state.Gamepad.bLeftTrigger, lt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+		normalize_trigger(state.Gamepad.bRightTrigger, rt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+		for (auto i = 0; i < VirtualButton::LeftTrigger; i++)
 		{
-			last_package = state.dwPacketNumber;
-			normalize_axis(state.Gamepad.sThumbLX, state.Gamepad.sThumbLY, lx, ly, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
-			normalize_axis(state.Gamepad.sThumbRX, state.Gamepad.sThumbRY, rx, ry, XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
-			normalize_trigger(state.Gamepad.bLeftTrigger, lt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-			normalize_trigger(state.Gamepad.bRightTrigger, rt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-			for (auto i = 0; i < VirtualButton::LeftTrigger; i++)
-			{
-				update_button_state(static_cast<VirtualButton>(i), (state.Gamepad.wButtons & mapping[i]) != 0);
-			}
-			const auto trigger_threshold = 0xff - XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
-			update_button_state(VirtualButton::LeftTrigger, state.Gamepad.bLeftTrigger > trigger_threshold);
-			update_button_state(VirtualButton::RightTrigger, state.Gamepad.bRightTrigger > trigger_threshold);
-			update_button_state(VirtualButton::LeftAxisDown, ly <= -1.0f);
-			update_button_state(VirtualButton::LeftAxisUp, ly >= 1.0f);
-			update_button_state(VirtualButton::LeftAxisLeft, lx <= -1.0f);
-			update_button_state(VirtualButton::LeftAxisRight, lx >= 1.0f);
+			update_button_state(static_cast<VirtualButton>(i), (state.Gamepad.wButtons & mapping[i]) != 0);
 		}
+		const auto trigger_threshold = 0xff - XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
+		update_button_state(VirtualButton::LeftTrigger, state.Gamepad.bLeftTrigger > trigger_threshold);
+		update_button_state(VirtualButton::RightTrigger, state.Gamepad.bRightTrigger > trigger_threshold);
+		update_button_state(VirtualButton::LeftAxisDown, ly <= -1.0f);
+		update_button_state(VirtualButton::LeftAxisUp, ly >= 1.0f);
+		update_button_state(VirtualButton::LeftAxisLeft, lx <= -1.0f);
+		update_button_state(VirtualButton::LeftAxisRight, lx >= 1.0f);
+
 		// compute absolute positions
 		lxa += lx * sensitivity;
 		lya += ly * sensitivity;
 		rxa += rx * sensitivity;
 		rya -= ry * sensitivity;
-		clamp(lxa, 0.0f, static_cast<float>(window->get_width()));
-		clamp(lya, 0.0f, static_cast<float>(window->get_height()));
-		clamp(rxa, 0.0f, static_cast<float>(window->get_width()));
-		clamp(rya, 0.0f, static_cast<float>(window->get_height()));
+		clamp(lxa, 0.0f, static_cast<float>(window.get_width()));
+		clamp(lya, 0.0f, static_cast<float>(window.get_height()));
+		clamp(rxa, 0.0f, static_cast<float>(window.get_width()));
+		clamp(rya, 0.0f, static_cast<float>(window.get_height()));
 	}
 
 	bool XBoxDevice::is_pressed(VirtualButton button) const

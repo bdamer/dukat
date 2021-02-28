@@ -7,7 +7,7 @@
 
 namespace dukat
 {
-	KeyboardDevice::KeyboardDevice(Window* window, const Settings& settings) : InputDevice(window, true), mouse_buttons({ 0, 0, 0 })
+	KeyboardDevice::KeyboardDevice(const Window& window, const Settings& settings) : InputDevice(window, settings, true), mouse_buttons({ 0, 0, 0 })
 	{
 		name = "keyboard";
 		sensitivity = settings.get_int("input.mouse.sensitivity", 2);

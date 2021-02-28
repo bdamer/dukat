@@ -11,7 +11,7 @@
 
 namespace dukat
 {
-	void DeviceManager::add_keyboard(Window* window)
+	void DeviceManager::add_keyboard(void)
 	{
 		log->info("Keyboard device added.");
 		controllers.push_back(std::make_unique<KeyboardDevice>(window, settings));
@@ -24,7 +24,7 @@ namespace dukat
 		trigger(Message{ Events::DeviceUnbound });
 	}
 
-	void DeviceManager::add_joystick(Window* window, int joystick_index)
+	void DeviceManager::add_joystick(int joystick_index)
 	{
 		if (!settings.get_bool("input.joystick.support", true))
 			return;
@@ -43,12 +43,12 @@ namespace dukat
 		if (name.rfind(xinput, 0) == 0 || 
 			name == "Controller (Xbox 360 Wireless Receiver for Windows)")
 		{
-			controllers.push_back(std::make_unique<XBoxDevice>(window, joystick_index));
+			controllers.push_back(std::make_unique<XBoxDevice>(window, settings, joystick_index));
 		}
 		else
 		{
 #endif
-			controllers.push_back(std::make_unique<GamepadDevice>(window, joystick_index, settings));
+			controllers.push_back(std::make_unique<GamepadDevice>(window, settings, joystick_index));
 #ifdef XBOX_SUPPORT
 		}
 #endif		

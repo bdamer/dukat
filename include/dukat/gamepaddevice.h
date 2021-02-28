@@ -30,7 +30,7 @@ namespace dukat
 		bool invert_y;
 
 	public:
-		GamepadDevice(Window* window, int joystick_index, const Settings& settings);
+		GamepadDevice(const Window& window, const Settings& settings, int joystick_index);
 		~GamepadDevice(void);
 
 		void update(void);
