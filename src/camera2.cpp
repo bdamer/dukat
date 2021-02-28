@@ -50,8 +50,15 @@ namespace dukat
 
 	void Camera2::set_effect(std::unique_ptr<CameraEffect2> effect)
 	{
-		log->trace("Starting effect: {}", effect->get_duration());
-		this->effect = std::move(effect);
+		if (effect != nullptr)
+		{
+			log->trace("Starting effect: {}", effect->get_duration());
+			this->effect = std::move(effect);
+		}
+		else
+		{
+			this->effect = nullptr;
+		}
 	}
 
 	AABB2 Camera2::get_bb(float parallax)
