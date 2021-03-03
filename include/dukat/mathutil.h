@@ -123,6 +123,13 @@ namespace dukat
 		return (T(0) < val) - (val < T(0));
 	}
 
+	// Returns linear interpolation between p and q.
+	template<typename T>
+	T lerp(const T& p, const T& q, float t)
+	{
+		return p + (q - p) * t;
+	}
+
 	// Generates distribution of values within range [min_val..max_val] into data.
 	template <typename T>
 	void generate_distribution(std::vector<T>& data, T min_val, T max_val)

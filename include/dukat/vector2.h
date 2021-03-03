@@ -76,12 +76,6 @@ namespace dukat
 		return a;
 	}
 
-	// Returns linear interpolation between p and q.
-	inline Vector2 lerp(const Vector2& p, const Vector2& q, float t)
-	{
-		return p + (q - p) * t; 
-	}
-
 	inline Vector2 round(const Vector2& v) 
 	{ 
 		return Vector2{ std::round(v.x), std::round(v.y) }; 
