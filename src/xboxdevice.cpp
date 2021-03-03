@@ -60,9 +60,8 @@ namespace dukat
 		normalize_trigger(state.Gamepad.bLeftTrigger, lt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 		normalize_trigger(state.Gamepad.bRightTrigger, rt, XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 		for (auto i = 0; i < VirtualButton::LeftTrigger; i++)
-		{
 			update_button_state(static_cast<VirtualButton>(i), (state.Gamepad.wButtons & mapping[i]) != 0);
-		}
+
 		const auto trigger_threshold = 0xff - XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
 		update_button_state(VirtualButton::LeftTrigger, state.Gamepad.bLeftTrigger > trigger_threshold);
 		update_button_state(VirtualButton::RightTrigger, state.Gamepad.bRightTrigger > trigger_threshold);
@@ -80,11 +79,6 @@ namespace dukat
 		clamp(lya, 0.0f, static_cast<float>(window.get_height()));
 		clamp(rxa, 0.0f, static_cast<float>(window.get_width()));
 		clamp(rya, 0.0f, static_cast<float>(window.get_height()));
-	}
-
-	bool XBoxDevice::is_pressed(VirtualButton button) const
-	{
-		return ((state.Gamepad.wButtons & mapping[button]) != 0);
 	}
 
 	std::string XBoxDevice::get_button_name(VirtualButton button) const

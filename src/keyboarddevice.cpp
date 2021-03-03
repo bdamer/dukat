@@ -110,18 +110,6 @@ namespace dukat
 		for (auto i = 0u; i < VirtualButton::_Count; i++)
 			update_button_state(static_cast<VirtualButton>(i), states[i]);
 	}
-
-	bool KeyboardDevice::is_pressed(VirtualButton button) const
-	{
-		if (mouse_mapping[0] == button)
-			return mouse_buttons[0];
-		else if (mouse_mapping[1] == button)
-			return mouse_buttons[1];
-        else if (mouse_mapping[2] == button)
-            return mouse_buttons[2];
-		else
-			return keystate[mapping[button]] == 1;
-	}
 	
 	std::string KeyboardDevice::get_button_name(VirtualButton button) const
 	{

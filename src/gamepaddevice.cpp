@@ -99,11 +99,6 @@ namespace dukat
 		clamp(rya, 0.0f, static_cast<float>(window.get_height()));
 	}
 
-	bool GamepadDevice::is_pressed(VirtualButton button) const
-	{
-		return SDL_GameControllerGetButton(device, static_cast<SDL_GameControllerButton>(mapping[button])) == SDL_PRESSED;
-	}
-
 	int GamepadDevice::id(void) const
 	{
 		auto joystick = SDL_GameControllerGetJoystick(device);

@@ -68,7 +68,7 @@ namespace dukat
 		InputDevice(const Window& window, const Settings& settings, bool digital);
 		virtual ~InputDevice(void) { }
 		virtual void update(void) = 0;
-		virtual bool is_pressed(VirtualButton button) const = 0;
+		bool is_pressed(VirtualButton button) const { return buttons[static_cast<int>(button)] > 0; }
 		// Returns a unique ID for this device.
 		virtual int id(void) const = 0;
 		const std::string& get_name(void) const { return name; }

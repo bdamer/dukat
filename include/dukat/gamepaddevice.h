@@ -34,7 +34,6 @@ namespace dukat
 		~GamepadDevice(void);
 
 		void update(void);
-		bool is_pressed(VirtualButton button) const;
 		bool is_inverted(void) const { return invert_y; }
 		int id(void) const;
 		std::string get_button_name(VirtualButton button) const;
