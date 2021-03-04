@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/game2.h>
+#include <dukat/log.h>
 #include <dukat/settings.h>
 
 namespace dukat
@@ -55,15 +56,23 @@ namespace dukat
 			const auto atlas_name = filename.substr(0, pos);
 			const auto atlas_entry = filename.substr(pos + 1);
 			auto atlas = texture_cache->get_atlas(atlas_name);
-			const auto atlas_rect = atlas->get(atlas_entry);
-			texture = texture_cache->get(atlas_name + ".png");
-
-			if (rect.w == 0) // rect is empty, use atlas rect
-				rect = atlas_rect;
-			else // rect was specified, need to transpose by atlas position
+			try
 			{
-				rect.x += atlas_rect.x;
-				rect.y += atlas_rect.y;
+				const auto atlas_rect = atlas->get(atlas_entry);
+				texture = texture_cache->get(atlas_name + ".png");
+				if (rect.w == 0) // rect is empty, use atlas rect
+					rect = atlas_rect;
+				else // rect was specified, need to transpose by atlas position
+				{
+					rect.x += atlas_rect.x;
+					rect.y += atlas_rect.y;
+				}
+			}
+			catch (const std::runtime_error& ex)
+			{
+				log->warn("Failed to create sprite: {}", ex.what());
+				texture = texture_cache->get("missing.png");
+				rect.w = 0;
 			}
 		}
 		else
