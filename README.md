@@ -9,7 +9,7 @@
 * SDL2 2.0.8
 * SDL2_image 2.0.3
 * SDL2_mixer 2.0.2
-* spdlog 0.17.0
+* spdlog 1.5.0
 
 # Installation
 

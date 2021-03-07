@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <climits>
+#include <random>
 
 namespace dukat
 {
