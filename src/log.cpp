@@ -6,6 +6,9 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/null_sink.h>
+#ifdef WIN32
+#include <spdlog/sinks/stdout_color_sinks.h>
+#endif
 #include <spdlog/sinks/stdout_sinks.h>
 #endif
 

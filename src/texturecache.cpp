@@ -145,6 +145,6 @@ namespace dukat
 	void TextureCache::free_all(void)
 	{
 		log->debug("Freeing {} texture(s)...", textures.size());
-		textures.empty();
+		textures.clear();
 	}
 }

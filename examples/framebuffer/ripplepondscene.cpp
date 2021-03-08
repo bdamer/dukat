@@ -143,7 +143,7 @@ namespace dukat
 		current->bind(0, fb_program);
 		last->bind(1, fb_program);
 		const auto size = static_cast<float>(texture_size);
-		fb_program->set("u_size", size);
+		if (fb_program->attr("u_size") > -1) fb_program->set("u_size", size);
 		fb_program->set("u_one_over_size", 1.0f / size);
 		fb_program->set("u_dampening", ripple_dampening);
 		game->get_meshes()->get("quad")->render(fb_program);

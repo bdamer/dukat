@@ -355,7 +355,7 @@ namespace dukat
 		grid_program->set("u_ws.depth_offset",
 			geo_state.water_level + 1.0f, geo_state.water_level + 1.0f, 
 			geo_state.water_level, geo_state.water_level);
-		grid_program->set("u_ws.fog_params", -200.0f, 1.0f / -100.0f, 0.0f, 1.0f);
+		// grid_program->set("u_ws.fog_params", -200.0f, 1.0f / -100.0f, 0.0f, 1.0f);
 		// Specular attenuation
 		auto norm_scale = geo_state.spec_atten * tex_state.amp_over_len * two_pi;
 		norm_scale *= (static_cast<float>(num_bump_passes) + tex_state.noise) * (tex_state.chop + 1.0f);
