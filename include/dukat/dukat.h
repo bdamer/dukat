@@ -86,6 +86,7 @@
 #ifndef __ANDROID__
 #include "dds.h"
 #include "diamondsquaregenerator.h"
+#include "fsm.h"
 #include "heightmap.h"
 #include "heightmapgenerator.h"
 #include "mapgraph.h"

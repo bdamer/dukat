@@ -167,6 +167,7 @@
     <ClInclude Include="..\include\dukat\effectpass.h" />
     <ClInclude Include="..\include\dukat\followercamera2.h" />
     <ClInclude Include="..\include\dukat\followercamera3.h" />
+    <ClInclude Include="..\include\dukat\fsm.h" />
     <ClInclude Include="..\include\dukat\fullscreeneffect2.h" />
     <ClInclude Include="..\include\dukat\gridmesh.h" />
     <ClInclude Include="..\include\dukat\json.h" />
