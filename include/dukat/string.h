@@ -13,13 +13,13 @@ namespace dukat
 	}
 
 	template<typename T>
-	std::string to_string(const std::vector<T>& vec)
+	std::string join(const std::vector<T>& items, const char* delim = ",")
 	{
 		std::ostringstream oss;
-		if (!vec.empty())
+		if (!items.empty())
 		{
-			std::copy(vec.begin(), vec.end() - 1, std::ostream_iterator<int>(oss, ","));
-			oss << vec.back();
+			std::copy(items.begin(), items.end() - 1, std::ostream_iterator<int>(oss, delim));
+			oss << items.back();
 		}
 		return oss.str();
 	}
