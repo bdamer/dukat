@@ -220,5 +220,4 @@ int main(int argc, char** argv)
 		dukat::log->error("Application failed with error: {}", e.what());
 		return -1;
 	}
-	return 0;
 }
