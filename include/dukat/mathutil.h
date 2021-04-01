@@ -59,10 +59,25 @@ namespace dukat
 		return ++v;
 	}
 
-	// Rounds v to the next integer.
+	// Rounds r to the next integer.
 	inline int round(float r) 
 	{
 		return static_cast<int>(r > 0.0f ? (r + 0.5f) : (r - 0.5f));
+	}
+
+	// Rounds r to the next multiple of base.
+	inline float round(float r, float base) 
+	{
+		if (base != 0.f && r != 0.f)
+		{
+			const auto sign = r > 0.f ? 1.f : -1.f;
+			r *= sign;
+			r /= base;
+			const auto fixed_point = static_cast<int>(std::ceil(r));
+			r = fixed_point * base;
+			r *= sign;
+		}
+		return r;
 	}
 
 	// Returns the positive modulo value.
