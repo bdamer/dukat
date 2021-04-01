@@ -128,7 +128,7 @@ namespace dukat
 						const auto b1_shift = shift * mfactor;
 						b1->bb += b1_shift;
 						if (b1->owner != nullptr)
-							b1->owner->trigger(Message{ Events::CollisionResolve, &b1_shift });
+							b1->owner->trigger(Message{ Events::CollisionResolve, &b1_shift, b2 });
 					}
 					if (b2->dynamic)
 					{
@@ -136,7 +136,7 @@ namespace dukat
 						const auto b2_shift = -shift * mfactor;
 						b2->bb += b2_shift;
 						if (b2->owner != nullptr)
-							b2->owner->trigger(Message{ Events::CollisionResolve, &b2_shift });
+							b2->owner->trigger(Message{ Events::CollisionResolve, &b2_shift, b1 });
 					}
 				}
 
