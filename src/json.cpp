@@ -24,13 +24,37 @@ namespace dukat
 		}
 	}
 
-	Json::Value merge_json(Json::Value base, const Json::Value & patch)
+	void merge_json_subtree(Json::Value& base, const Json::Value& patch)
 	{
 		for (auto p : patch.getMemberNames())
 		{
-			// TODO: support patching partial trees
-			base[p] = patch[p];
+			auto& dest = base[p];
+			const auto& src = patch[p];
+			if (src.isObject() && dest.isObject())
+			{
+				merge_json_subtree(dest, src);
+			}
+			else if (src.isArray() && dest.isArray())
+			{
+				assert(src.size() == dest.size());
+				for (auto i = 0u; i < src.size(); i++)
+				{
+					if (src[i].isObject())
+						merge_json_subtree(dest[i], src[i]);
+					else
+						dest[i] = src[i];
+				}
+			}
+			else // primitive
+			{
+				dest = src;
+			}
 		}
+	}
+
+	Json::Value merge_json(Json::Value base, const Json::Value& patch)
+	{
+		merge_json_subtree(base, patch);
 		return base;
 	}
 
