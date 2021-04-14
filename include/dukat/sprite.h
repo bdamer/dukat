@@ -18,9 +18,9 @@ namespace dukat
 			align_right = 2,
 			align_top = 4,
 			align_left = 8,
-			_reserved = 16,		// reserved for future use
-			relative = 32,		// if set, will interpret position relative to camera
-			rendered = 64,		// set if sprite was rendered during last frame
+			flip_h = 16,		// flip
+			flip_v = 32,
+			relative = 64,		// if set, will interpret position relative to camera
 			fx = 128			// can be used by custom render effects
 		};
 

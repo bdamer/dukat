@@ -129,7 +129,6 @@ namespace dukat
 			if (check_flag(sprite->flags, Sprite::relative))
 			{
 				// TODO: perform occlusion check against untranslated camera bounding box
-				sprite->flags |= Sprite::rendered;
 				queue.push(sprite);
 			}
 			else
@@ -163,15 +162,8 @@ namespace dukat
 				}
 
 				AABB2 sprite_bb(min_p, max_p);
-				if (!camera_bb.overlaps(sprite_bb))
-				{
-					sprite->flags &= ~Sprite::rendered;
-				}
-				else
-				{
-					sprite->flags |= Sprite::rendered;
+				if (camera_bb.overlaps(sprite_bb))
 					queue.push(sprite);
-				}
 			}
 		}
 
@@ -230,6 +222,7 @@ namespace dukat
 		// Render in order
 		GLuint last_texture = -1;
 		Matrix4 mat_m;
+		GLfloat uvwh[4];
 		while (!queue.empty())
 		{
 			// get top element from queue
@@ -250,7 +243,29 @@ namespace dukat
 			compute_model_matrix(*sprite, renderer->get_camera()->transform.position, mat_m);
 			glUniformMatrix4fv(model_id, 1, false, &mat_m.m[0]);
 			glUniform4fv(color_id, 1, &sprite->color.r);
-			glUniform4fv(uvwh_id, 1, sprite->tex);
+
+			if ((sprite->flags & Sprite::flip_h) == 0)
+			{
+				uvwh[0] = sprite->tex[0];
+				uvwh[2] = sprite->tex[2];
+			}
+			else
+			{
+				uvwh[0] = sprite->tex[0] + sprite->tex[2];
+				uvwh[2] = -sprite->tex[2];
+			}
+
+			if ((sprite->flags & Sprite::flip_v) == 0)
+			{
+				uvwh[1] = sprite->tex[1];
+				uvwh[3] = sprite->tex[3];
+			}
+			else
+			{
+				uvwh[1] = sprite->tex[1] + sprite->tex[3];
+				uvwh[3] = -sprite->tex[3];
+			}
+			glUniform4fv(uvwh_id, 1, uvwh);
 
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}

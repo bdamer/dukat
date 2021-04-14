@@ -86,6 +86,11 @@ namespace dukat
 		// Update sprite position
 		sprite->p += sprite_vel * delta;
 
+		if (dev->lx < 0.0f)
+			sprite->flags &= ~Sprite::flip_h;
+		else if (dev->lx > 0.0f)
+			sprite->flags |= Sprite::flip_h;
+
 		const auto half_width = 0.5f * static_cast<float>(window_width);
 		const auto half_height = 0.5f * static_cast<float>(window_height);
 		bool bounce = false;

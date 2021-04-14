@@ -44,7 +44,7 @@ namespace dukat
 		ui_layer->add(star_sprite.get());
 
 		player_sprite = std::make_unique<Sprite>(game->get_textures()->get("lobber.png"));
-		player_sprite->flags |= Sprite::align_bottom;
+		player_sprite->flags |= Sprite::align_bottom | Sprite::flip_h;
 		player_sprite->scale = tile_scale;
 		scene_layer->add(player_sprite.get());
 
