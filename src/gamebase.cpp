@@ -29,9 +29,11 @@ namespace dukat
 		add_manager<ParticleManager>();
 		add_manager<TimerManager>();
 		add_manager<AnimationManager>();
-		add_manager<UIManager>();		
+		add_manager<UIManager>();
+#ifdef _DEBUG
 		device_manager->active->on_press(InputDevice::VirtualButton::Debug, std::bind(&GameBase::toggle_debug, this));
 		get<TimerManager>()->create_timer(1.0f, std::bind(&GameBase::update_debug_text, this), true);
+#endif
 	}
 
 	GameBase::~GameBase(void)
