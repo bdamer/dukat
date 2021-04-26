@@ -67,7 +67,11 @@ namespace dukat
 		{
 			ticks = SDL_GetTicks();
 
-			if (!paused)
+			if (paused)
+			{
+				SDL_Delay(static_cast<Uint32>(1000 / 15));
+			}
+			else 
 			{
 				auto delta = static_cast<float>(ticks - last_update) / 1000.0f;
 				runtime += delta;
@@ -150,27 +154,27 @@ namespace dukat
 		switch (e.window.event)
 		{
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
+			paused = false;
 			if (settings.get_bool("input.mouse.lock", true))
 			{
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
 			}
-	        break;
+			break;
         case SDL_WINDOWEVENT_FOCUS_LOST:
-    		if (settings.get_bool("input.mouse.lock", true))
+			paused = true;
+			if (settings.get_bool("input.mouse.lock", true))
 			{
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
 			}
 	        break;
-		case SDL_WINDOWEVENT_RESIZED:
-			window->on_resize();
-			break;
-		case SDL_WINDOWEVENT_SIZE_CHANGED:
-			break;
 		case SDL_WINDOWEVENT_SHOWN:
 			paused = false;
 			break;
 		case SDL_WINDOWEVENT_HIDDEN:
 			paused = true;
+			break;
+		case SDL_WINDOWEVENT_RESIZED:
+			window->on_resize();
 			break;
 		}
 	}
