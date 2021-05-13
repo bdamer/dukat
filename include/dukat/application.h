@@ -20,7 +20,8 @@ namespace dukat
 		const std::string title; // Window title
 		int last_fps; // Most recent FPS value
 		float runtime; // time since program start in seconds
-		bool paused; // If set, will not execute update method
+		bool paused; // Triggered by application events. If set, will not execute update method.
+		bool active; // Triggered by application window becoming active. If set, will execute update method.
 		bool done; // If set, will exit application
 
 	protected:

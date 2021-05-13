@@ -16,7 +16,8 @@ namespace dukat
 	constexpr float Application::max_frame_delta;
 
 	Application::Application(Settings& settings)
-		: title(settings.get_string("window.title")), runtime(0.0f), paused(false), done(false), last_update(0), settings(settings)
+		: title(settings.get_string("window.title")), runtime(0.0f), 
+		paused(false), active(true), done(false), last_update(0), settings(settings)
 	{
 		init_logging(settings);
 		log->info("Initializing application.");
@@ -67,7 +68,7 @@ namespace dukat
 		{
 			ticks = SDL_GetTicks();
 
-			if (paused)
+			if (paused || !active)
 			{
 				SDL_Delay(static_cast<Uint32>(1000 / 15));
 			}
@@ -154,24 +155,24 @@ namespace dukat
 		switch (e.window.event)
 		{
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
-			paused = false;
+			active = true;
 			if (settings.get_bool("input.mouse.lock", true))
 			{
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
 			}
 			break;
         case SDL_WINDOWEVENT_FOCUS_LOST:
-			paused = true;
+			active = false;
 			if (settings.get_bool("input.mouse.lock", true))
 			{
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
 			}
 	        break;
 		case SDL_WINDOWEVENT_SHOWN:
-			paused = false;
+			active = true;
 			break;
 		case SDL_WINDOWEVENT_HIDDEN:
-			paused = true;
+			active = false;
 			break;
 		case SDL_WINDOWEVENT_RESIZED:
 			window->on_resize();
