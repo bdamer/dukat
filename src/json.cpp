@@ -2,6 +2,7 @@
 #include <dukat/json.h>
 #include <dukat/log.h>
 #include <json/json.h>
+#include <dukat/settings.h>
 
 namespace dukat
 {
@@ -68,5 +69,51 @@ namespace dukat
 		Json::StyledStreamWriter writer;
 		writer.write(fs, root);
 		fs.close();
+	}
+
+	void save_settings(const Settings& settings, const std::string& filename)
+	{
+		log->info("Saving settings to: {}", filename);
+		Json::Value root;
+		for (const auto& it : settings.map)
+		{
+			Json::Value* cur = &root;
+			auto from = 0u;
+			auto to = it.first.find('.');
+			while (to != std::string::npos)
+			{
+				cur = &(*cur)[it.first.substr(from, to - from)];
+				from = to + 1;
+				to = it.first.find('.', from);
+			}
+			(*cur)[it.first.substr(from)] = it.second;
+		}
+		save_json(filename, root);
+	}
+
+	void load_settings_from_json(const Json::Value& node, const std::string prefix, std::map<std::string, std::string>& map)
+	{
+		if (node.isObject())
+		{
+			for (const auto& key : node.getMemberNames())
+				load_settings_from_json(node[key], (prefix.length() ? prefix + "." : "") + key, map);
+		}
+		else if (node.isArray())
+		{
+			auto i = 0;
+			for (const auto& val : node)
+				load_settings_from_json(val, (prefix.length() ? prefix + "." : "") + std::to_string(i++), map);
+		}
+		else
+		{
+			map[prefix] = node.asString();
+		}
+	}
+
+	void load_settings(const std::string& filename, Settings& settings)
+	{
+		log->info("Loading settings from: {}", filename);
+		const auto root = load_json(filename);
+		load_settings_from_json(root, "", settings.map);
 	}
 }

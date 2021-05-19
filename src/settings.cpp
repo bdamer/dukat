@@ -8,6 +8,19 @@ namespace dukat
 	Settings::Settings(const std::string& filename)
 	{
 		log->info("Loading settings from: {}", filename);
+		load_ini(filename);
+	}
+
+	Settings::Settings(const Settings& settings)
+	{
+		for (auto it = settings.map.begin(); it != settings.map.end(); ++it)
+		{
+			map[(*it).first] = (*it).second;
+		}
+	}
+
+	void Settings::load_ini(const std::string& filename)
+	{
 		std::stringstream ss;
 		AssetLoader loader;
 		loader.load_text(filename, ss);
@@ -25,14 +38,6 @@ namespace dukat
 				auto val = line.substr(idx + 1);
 				map[key] = val;
 			}
-		}
-	}
-
-	Settings::Settings(const Settings& settings)
-	{
-		for (auto it = settings.map.begin(); it != settings.map.end(); ++it)
-		{
-			map[(*it).first] = (*it).second;
 		}
 	}
 

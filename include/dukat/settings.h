@@ -9,6 +9,7 @@ namespace dukat
 	{
 	private:
 		std::map<std::string, std::string> map;
+		void load_ini(const std::string& filename);
 
 	public:
 		Settings(void) { }
@@ -27,5 +28,8 @@ namespace dukat
 		void set(const std::string& name, int value);
 		void set(const std::string& name, float value);
 		void set(const std::string& name, bool value);
+
+		friend void save_settings(const Settings& settings, const std::string& filename);
+		friend void load_settings(const std::string& filename, Settings& settings);
 	};
 }

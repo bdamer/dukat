@@ -12,6 +12,11 @@ namespace dukat
 		return needle.length() <= haystack.length() && equal(needle.begin(), needle.end(), haystack.begin());
 	}
 
+	inline bool ends_with(const std::string& haystack, const std::string& needle)
+	{
+		return needle.length() <= haystack.length() && equal(needle.begin(), needle.end(), haystack.end() - needle.size());
+	}
+
 	template<typename T>
 	std::string join(const std::vector<T>& items, const char* delim = ",")
 	{
