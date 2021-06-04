@@ -19,9 +19,10 @@ namespace dukat
         std::string cur_state;
 		// Global listener invoked after each state change.
 		state_callback state_change_listener;
+        bool in_transition;
 
     public:
-        FSM(void) : cur_state(default_state) { }
+        FSM(void) : cur_state(default_state), in_transition(false) { }
         ~FSM(void) { }
 
         void add_state(const T& state) { states[state.id] = state; }
@@ -64,6 +65,11 @@ namespace dukat
         if (!prev_state.transitions.count(id))
             return false;
 
+        if (in_transition)
+            return false; // already in transition, undefined behavior
+
+        in_transition = true;
+
         auto& next_state = states.at(id);
 
         // call state exit / entrance handlers
@@ -76,6 +82,8 @@ namespace dukat
 
 		if (state_change_listener != nullptr)
 			state_change_listener(cur_state);
+
+        in_transition = false;
 
         return true;
     }
