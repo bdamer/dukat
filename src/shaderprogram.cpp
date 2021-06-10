@@ -6,7 +6,8 @@
 
 namespace dukat
 {
-	ShaderProgram::ShaderProgram(GLuint id) : id(id)
+	ShaderProgram::ShaderProgram(GLuint id, const std::string& vertex_file, const std::string& fragment_file, const std::string& geometry_file)
+		: id(id), vertex_file(vertex_file), fragment_file(fragment_file), geometry_file(geometry_file)
 	{
 		index_attributes();
 	}

@@ -78,7 +78,7 @@ namespace dukat
 		return shader;
 	}
 
-	GLuint ShaderCache::build_program(const std::string& vertex_file, const std::string& fragment_file,
+	std::unique_ptr<ShaderProgram> ShaderCache::build_program(const std::string& vertex_file, const std::string& fragment_file,
 			const std::string& geometry_file)
 	{
 		auto program = glCreateProgram();
@@ -126,7 +126,7 @@ namespace dukat
 #ifdef _DEBUG
 		gl_check_error();
 #endif
-		return program;
+		return std::make_unique<ShaderProgram>(program, vertex_file, fragment_file, geometry_file);
 	}
 
 	ShaderProgram* ShaderCache::get_program(const std::string& vertex_file, const std::string& fragment_file,
@@ -136,7 +136,7 @@ namespace dukat
 		if (programs.count(key) == 0)
 		{
 			auto program = build_program(vertex_file, fragment_file, geometry_file);
-			programs[key] = std::make_unique<ShaderProgram>(program);
+			programs[key] = std::move(program);
 		}
 		return programs[key].get();
 	}

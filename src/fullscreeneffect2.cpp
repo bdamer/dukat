@@ -8,10 +8,14 @@ namespace dukat
 {
     FullscreenEffect2::FullscreenEffect2(Game2* game) : game(game), anim(nullptr), last_sp(nullptr), color({0.f, 0.f, 0.f, 0.f}), alpha(0.f)
     {
+        static constexpr auto uniform_time = "u_time";
+        static constexpr auto uniform_diffuse = "u_diffuse";
+
         composite_binder = [&](ShaderProgram* sp) {
-            if (sp->attr("u_time") != -1)
-                sp->set("u_time", this->game->get_time());
-            sp->set("u_diffuse", color.r, color.g, color.b, color.a * alpha);
+            if (sp->attr(uniform_time) != -1)
+                sp->set(uniform_time, this->game->get_time());
+            if (sp->attr(uniform_diffuse) != -1)
+                sp->set(uniform_diffuse, color.r, color.g, color.b, color.a * alpha);
         };
     }
 

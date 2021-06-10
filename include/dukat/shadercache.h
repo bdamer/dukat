@@ -37,7 +37,7 @@ namespace dukat
 		// Builds a new shader from a source file.
 		GLuint build_shader(GLenum shaderType, const std::string& filename);
 		// Builds a new program from a set of source files.
-		GLuint build_program(const std::string& vertex_file, const std::string& fragement_file,
+		std::unique_ptr<ShaderProgram> build_program(const std::string& vertex_file, const std::string& fragement_file,
 			const std::string& geometry_file = "");
 
 	public:

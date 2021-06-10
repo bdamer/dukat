@@ -18,7 +18,11 @@ namespace dukat
 
 	public:
 		const GLuint id;
-		ShaderProgram(GLuint id);
+		const std::string vertex_file;
+		const std::string fragment_file;
+		const std::string geometry_file;
+
+		ShaderProgram(GLuint id, const std::string& vertex_file, const std::string& fragment_file, const std::string& geometry_file);
 		~ShaderProgram(void);
 
 		GLint attr(const std::string& name);
