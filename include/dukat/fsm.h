@@ -34,6 +34,7 @@ namespace dukat
 		void set_state(const std::string& id);
         T* get_state(void) { return (cur_state == default_state) ? nullptr : &states.at(cur_state); }
 		bool in_state(const std::string& id) const { return id == cur_state; }
+        bool in_state(const std::vector<std::string>& list) const { return std::find(list.begin(), list.end(), cur_state) != list.end(); }
 
         // Transitions to a new state.
         bool transition_to(const std::string& id);
