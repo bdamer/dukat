@@ -78,7 +78,7 @@ namespace dukat
 		return shader;
 	}
 
-	std::unique_ptr<ShaderProgram> ShaderCache::build_program(const std::string& vertex_file, const std::string& fragment_file,
+	GLuint ShaderCache::build_program(const std::string& vertex_file, const std::string& fragment_file,
 			const std::string& geometry_file)
 	{
 		auto program = glCreateProgram();
@@ -126,7 +126,7 @@ namespace dukat
 #ifdef _DEBUG
 		gl_check_error();
 #endif
-		return std::make_unique<ShaderProgram>(program, vertex_file, fragment_file, geometry_file);
+		return program;
 	}
 
 	ShaderProgram* ShaderCache::get_program(const std::string& vertex_file, const std::string& fragment_file,
@@ -136,8 +136,34 @@ namespace dukat
 		if (programs.count(key) == 0)
 		{
 			auto program = build_program(vertex_file, fragment_file, geometry_file);
-			programs[key] = std::move(program);
+			programs[key] = std::make_unique<ShaderProgram>(program, vertex_file, fragment_file, geometry_file);
 		}
 		return programs[key].get();
+	}
+
+	void ShaderCache::evict(ShaderProgram* sp)
+	{
+		// removed any cached sources
+		if (sources.count(sp->vertex_file))
+			sources.erase(sp->vertex_file);
+		if (sources.count(sp->fragment_file))
+			sources.erase(sp->fragment_file);
+		if (sources.count(sp->geometry_file))
+			sources.erase(sp->geometry_file);
+		const auto key = sp->vertex_file + "|" + sp->fragment_file + "|" + sp->geometry_file;
+		programs.erase(key);
+	}
+	
+	void ShaderCache::refresh(void)
+	{
+		log->info("Refreshing shader cache.");
+		sources.clear();
+		for (auto& it : programs)
+		{
+			// erase existing program and replace with new version
+			auto sp = it.second.get();
+			glDeleteProgram(sp->id);
+			sp->id = build_program(sp->vertex_file, sp->fragment_file, sp->geometry_file);
+		}
 	}
 }

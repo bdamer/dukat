@@ -17,7 +17,7 @@ namespace dukat
 		void index_attributes(void);
 
 	public:
-		const GLuint id;
+		GLuint id;
 		const std::string vertex_file;
 		const std::string fragment_file;
 		const std::string geometry_file;

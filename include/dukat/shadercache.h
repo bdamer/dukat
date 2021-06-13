@@ -37,7 +37,7 @@ namespace dukat
 		// Builds a new shader from a source file.
 		GLuint build_shader(GLenum shaderType, const std::string& filename);
 		// Builds a new program from a set of source files.
-		std::unique_ptr<ShaderProgram> build_program(const std::string& vertex_file, const std::string& fragement_file,
+		GLuint build_program(const std::string& vertex_file, const std::string& fragement_file,
 			const std::string& geometry_file = "");
 
 	public:
@@ -47,6 +47,10 @@ namespace dukat
 		// Returns a program for a set of shaders. If necessary, will create the program.
 		ShaderProgram* get_program(const std::string& vertex_file, const std::string& fragement_file,
 			const std::string& geometry_file = "");
+		// Removes program from cache.
+		void evict(ShaderProgram* sp);
+		// Recompiles all loaded shaders from source. Existing ShaderProgram pointers remain valid.
+		void refresh(void);
 	};
 }
 
