@@ -193,6 +193,27 @@ namespace dukat
 			}
 		});
 
+		modes.push_back(ParticleMode{ "Cascade",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+				auto e = pm->create_emitter(ParticleEmitter::Recipe::ExplosionRecipe);
+				e->pos = Vector2{ 0.0f, 0.0f };
+				e->target_layer = particle_layer;
+				e->value = 0.25f; // repeat interval
+
+				e->offsets.push_back(Vector2{ 0, 30 });
+				e->offsets.push_back(Vector2{ -20, 25 });
+				e->offsets.push_back(Vector2{ 15, 20 });
+				e->offsets.push_back(Vector2{ -15, 10 });
+				e->offsets.push_back(Vector2{ 20, 5 });
+				e->offsets.push_back(Vector2{ 0, 0 });
+				e->offsets.push_back(Vector2{ -30, -5 });
+				e->offsets.push_back(Vector2{ 20, -15 });
+				e->offsets.push_back(Vector2{ -15, -20 });
+				e->offsets.push_back(Vector2{ 0, -30 });
+			}
+		});
+
 		modes.push_back(ParticleMode{ "Implosion",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();

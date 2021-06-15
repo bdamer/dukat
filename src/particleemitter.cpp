@@ -421,9 +421,18 @@ namespace dukat
 				em.age = 0.0f;
 		}
 
+		Vector2 base_offset{ 0, 0 };
+		const auto offset_count = static_cast<int>(em.offsets.size());
+		if (offset_count > 0)
+		{
+			// use accumulator to store last offset to avoid repetition
+			const auto idx = (static_cast<int>(em.accumulator) + 1) % offset_count;
+			base_offset = em.offsets[idx];
+			em.accumulator = static_cast<float>(idx);
+		}
+
 		static const Vector2 base_vector{ 0.0f, -1.0f };
-		const auto offset_count = em.offsets.size();
-		for (int i = 0; i < static_cast<int>(em.recipe.rate); i++)
+		for (auto i = 0; i < static_cast<int>(em.recipe.rate); i++)
 		{
 			auto p = pm.create_particle();
 			if (p == nullptr)
@@ -434,10 +443,7 @@ namespace dukat
 
 			const auto angle = random(0.0f, two_pi);
 			const auto offset = base_vector.rotate(angle);
-			if (offset_count == 0)
-				p->pos = em.pos;
-			else
-				p->pos = em.pos + em.offsets[random(0, offset_count)];
+			p->pos = em.pos + base_offset;
 
 			if (em.recipe.min_dp.x != 0.0f || em.recipe.max_dp.x != 0.0f)
 				p->pos += offset * random(em.recipe.min_dp.x, em.recipe.max_dp.x);
