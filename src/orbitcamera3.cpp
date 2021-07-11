@@ -3,6 +3,7 @@
 #include <dukat/gamebase.h>
 #include <dukat/devicemanager.h>
 #include <dukat/inputdevice.h>
+#include <dukat/inputrecorder.h>
 #include <dukat/quaternion.h>
 
 namespace dukat

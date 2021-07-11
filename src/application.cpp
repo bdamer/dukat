@@ -7,6 +7,7 @@
 #include <dukat/sysutil.h>
 #include <dukat/window.h>
 #include <dukat/devicemanager.h>
+#include <dukat/inputrecorder.h>
 #include <dukat/keyboarddevice.h>
 #include <dukat/settings.h>
 #include <ctime>

@@ -10,7 +10,7 @@ namespace dukat
 	KeyboardDevice::KeyboardDevice(const Window& window, const Settings& settings) : InputDevice(window, settings, true), mouse_buttons({ 0, 0, 0 })
 	{
 		name = "keyboard";
-		sensitivity = settings.get_int("input.mouse.sensitivity", 2);
+		sensitivity = settings.get_int("input.mouse.sensitivity", 128);
 		// Initialize key mapping
 		mapping[VirtualButton::Button1] = settings.get_int("input.keyboard.button1", -1);
 		mapping[VirtualButton::Button2] = settings.get_int("input.keyboard.button2", -1);
@@ -76,9 +76,12 @@ namespace dukat
 		// Right axis comes from mouse cursor
 		int rel_x, rel_y;
 		auto buttons = SDL_GetRelativeMouseState(&rel_x, &rel_y);
+		// Cap relative mouse motion at <sensitivity> pixels / frame
+		clamp(rel_x, -sensitivity, sensitivity);
+		clamp(rel_y, -sensitivity, sensitivity);
 		rx = normalize(rel_x, sensitivity);
 		ry = -normalize(rel_y, sensitivity);
-		
+
 		int abs_x, abs_y;
 		SDL_GetMouseState(&abs_x, &abs_y);
 		rxa = (float)abs_x;

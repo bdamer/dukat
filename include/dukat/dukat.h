@@ -31,6 +31,7 @@
 #include "devicemanager.h"
 #include "gamepaddevice.h"
 #include "inputdevice.h"
+#include "inputrecorder.h"
 #include "keyboarddevice.h"
 #include "xboxdevice.h"
 

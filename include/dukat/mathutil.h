@@ -133,6 +133,12 @@ namespace dukat
 		return static_cast<float>(value) / 255.0f;
 	}
 
+	template <typename T>
+	inline T denormalize(float value, T max_value)
+	{
+		return static_cast<T>(value * static_cast<float>(max_value));
+	}
+
 	template <typename T> 
 	int sgn(T val) 
 	{

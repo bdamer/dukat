@@ -2,6 +2,7 @@
 #include <dukat/gamebase.h>
 #include <dukat/controller.h>
 #include <dukat/devicemanager.h>
+#include <dukat/inputrecorder.h>
 #include <dukat/keyboarddevice.h>
 #include <dukat/log.h>
 #include <dukat/manager.h>

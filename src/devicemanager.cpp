@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include <dukat/devicemanager.h>
+#include <dukat/inputrecorder.h>
 #include <dukat/log.h>
 #include <dukat/keyboarddevice.h>
 #include <dukat/gamepaddevice.h>
+#include <dukat/playbackdevice.h>
+#include <dukat/mathutil.h>
 #include <dukat/settings.h>
 
 #ifdef XBOX_SUPPORT
@@ -82,6 +85,55 @@ namespace dukat
 		if (active != nullptr)
 		{
 			active->update();
+			if (recording && recorder != nullptr)
+				recorder->record_frame(active->get_state());
+		}
+	}
+
+	void DeviceManager::start_record(const std::string& filename)
+	{
+		assert(recorder == nullptr);
+
+		log->info("Starting recording: {}", filename);
+		recorder = std::make_unique<InputRecorder>();
+		recorder->start_recording(filename, active->id());
+		recording = true;
+	}
+
+	void DeviceManager::stop_record(void)
+	{
+		if (recording)
+		{
+			log->info("Stopping recording");
+			recorder = nullptr;
+			recording = false;
+		}
+	}
+
+	void DeviceManager::start_replay(const std::string& filename)
+	{
+		assert(recorder == nullptr);
+
+		log->info("Starting replay: {}", filename);
+		recorder = std::make_unique<InputRecorder>();
+		recorder->start_playback(filename);
+
+		controllers.push_back(std::make_unique<PlaybackDevice>(window, settings, recorder.get()));
+		active = controllers.back().get();
+		replaying = true;
+
+		trigger(Message{ Events::DeviceBound });
+	}
+	
+	void DeviceManager::stop_replay(void)
+	{
+		if (replaying)
+		{
+			log->info("Stopping replay");
+			recorder = nullptr;
+			controllers.pop_back();
+			active = controllers.back().get();
+			replaying = false;
 		}
 	}
 }

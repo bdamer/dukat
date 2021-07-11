@@ -3,6 +3,7 @@
 #include <array>
 #include <functional>
 #include <map>
+#include <dukat/inputstate.h>
 
 namespace dukat
 {
@@ -43,7 +44,7 @@ namespace dukat
 		static std::array<std::function<void(void)>, VirtualButton::_Count> button_handlers;
 		static std::array<std::function<void(void)>, VirtualButton::_Count> long_press_handlers;
 		std::array<Uint32, VirtualButton::_Count> buttons; // tracks current button state
-		
+
 	protected:
 		std::string name;
 		const Window& window;
@@ -79,5 +80,6 @@ namespace dukat
 		void unbind(VirtualButton button) { button_handlers[button] = nullptr; }
 		void bind_long_press(VirtualButton button, std::function<void(void)> handler) { long_press_handlers[button] = handler; }
 		void unbind_long_press(VirtualButton button) { long_press_handlers[button] = nullptr; }
+		InputState get_state(void) const { return InputState{ buttons, lx, ly, rx, ry, lt, rt }; }
 	};
 }

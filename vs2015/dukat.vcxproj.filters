@@ -489,6 +489,15 @@
     <ClInclude Include="..\include\dukat\fsm.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\inputrecorder.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\inputstate.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dukat\playbackdevice.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -769,6 +778,12 @@
     </ClCompile>
     <ClCompile Include="..\src\textureatlas.cpp">
       <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inputrecorder.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\playbackdevice.cpp">
+      <Filter>Source Files\input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -170,6 +170,8 @@
     <ClInclude Include="..\include\dukat\fsm.h" />
     <ClInclude Include="..\include\dukat\fullscreeneffect2.h" />
     <ClInclude Include="..\include\dukat\gridmesh.h" />
+    <ClInclude Include="..\include\dukat\inputrecorder.h" />
+    <ClInclude Include="..\include\dukat\inputstate.h" />
     <ClInclude Include="..\include\dukat\json.h" />
     <ClInclude Include="..\include\dukat\manager.h" />
     <ClInclude Include="..\include\dukat\mapgraph.h" />
@@ -287,6 +289,7 @@
     <ClInclude Include="..\src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\dukat\playbackdevice.h" />
     <ClCompile Include="..\src\assetloader.cpp" />
     <ClCompile Include="..\src\audiocache.cpp" />
     <ClCompile Include="..\src\audiomanager.cpp" />
@@ -299,11 +302,13 @@
     <ClCompile Include="..\src\effectpass.cpp" />
     <ClCompile Include="..\src\fullscreeneffect2.cpp" />
     <ClCompile Include="..\src\gridmesh.cpp" />
+    <ClCompile Include="..\src\inputrecorder.cpp" />
     <ClCompile Include="..\src\json.cpp" />
     <ClCompile Include="..\src\mapgraph.cpp" />
     <ClCompile Include="..\src\meshdata.cpp" />
     <ClCompile Include="..\src\mirroreffect2.cpp" />
     <ClCompile Include="..\src\particleemitter.cpp" />
+    <ClCompile Include="..\src\playbackdevice.cpp" />
     <ClCompile Include="..\src\scene2.cpp" />
     <ClCompile Include="..\src\sdlutil.cpp" />
     <ClCompile Include="..\src\shadoweffect2.cpp" />

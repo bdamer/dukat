@@ -206,6 +206,20 @@ namespace dukat
 		case SDLK_ESCAPE:
 			game->set_done(true);
 			break;
+
+		case SDLK_F5:
+			if (game->get_devices()->is_recording())
+				game->get_devices()->stop_record();
+			else
+				game->get_devices()->start_record("recording");
+			break;
+
+		case SDLK_F6:
+			if (game->get_devices()->is_replaying())
+				game->get_devices()->stop_replay();
+			else
+				game->get_devices()->start_replay("recording");
+			break;
 		}
 	}
 
