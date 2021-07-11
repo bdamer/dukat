@@ -12,6 +12,9 @@ namespace dukat
 		if (target_layer == nullptr)
 			return;
 
+		if (update_handler != nullptr)
+			update_handler(this);
+
 		// swap sprite program and render sprites
 		auto sp = target_layer->get_sprite_program();
 		target_layer->set_sprite_program(sprite_program);
