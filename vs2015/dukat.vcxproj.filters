@@ -605,9 +605,6 @@
     <ClCompile Include="..\src\dds.cpp">
       <Filter>Source Files\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\textmeshbuilder.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\gamebase.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
@@ -619,9 +616,6 @@
     </ClCompile>
     <ClCompile Include="..\src\messenger.cpp">
       <Filter>Source Files\engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\textmeshinstance.cpp">
-      <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="..\src\animationmanager.cpp">
       <Filter>Source Files\system</Filter>
@@ -784,6 +778,12 @@
     </ClCompile>
     <ClCompile Include="..\src\playbackdevice.cpp">
       <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textmeshinstance.cpp">
+      <Filter>Source Files\video\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textmeshbuilder.cpp">
+      <Filter>Source Files\video\mesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

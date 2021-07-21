@@ -40,6 +40,8 @@ namespace dukat
 		std::string get_text(void) const { return text; }
 		void set_alpha(float alpha);
 		float get_alpha(void) const;
+		void set_color(const Color& color) { set_ambient(color); }
+		Color get_color(void) const { return get_ambient(); }
 		void set_size(float size);
 		float get_width(void) const { return width * transform.scale.x; }
 		float get_height(void) const { return height * transform.scale.x; }
