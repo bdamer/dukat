@@ -51,6 +51,7 @@ namespace dukat
 		void set_indices(const std::vector<GLushort>& indicies, int index_count = 0);
 		void set_indices(const GLvoid* indices, int index_count = 0);
 		int vertex_count(void) const { return buffer->counts[0]; }
+		void set_vertex_count(int count) { buffer->counts[0] = count; }
 
 		// Renders this mesh.
 		void render(ShaderProgram* program);

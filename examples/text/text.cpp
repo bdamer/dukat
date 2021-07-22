@@ -24,16 +24,7 @@ namespace dukat
 		info_text->halign = TextMeshInstance::Center;
 		info_text->valign = TextMeshInstance::Center;
 		info_text->set_size(10.0f);
-		std::stringstream ss;
-		ss << "I sing the <#dd0907>body electric</>," << std::endl
-			<< "The <#fbf305>armies</> of those I <#f20884>love</> engirth me and I engirth them," << std::endl
-			<< "They will not let me off till I go with them, <#02abea>respond</> to them," << std::endl
-			<< "And <#ff6403>discorrupt</> them, and charge them full with the <#0000d3>charge</> of the soul." << std::endl << std::endl
-			<< "Was it <#4700a5>doubted</> that those who corrupt their own bodies <#1fb714>conceal</> themselves ?" << std::endl
-			<< "And if those who defile the <#90713a>living</> are as bad as they who defile the <#562c05>dead</> ?" << std::endl
-			<< "And if the body does not do <#c0c0c0>fully</> as much as the <#808080>soul</> ?" << std::endl
-			<< "And if the body were not the <#006412>soul</>, what is the <#404040>soul</> ?" << std::endl;
-		info_text->set_text(ss.str());
+		reset_text();
 		info_text->update(0.0f);
 		layer->add(info_text.get());
 
@@ -57,6 +48,25 @@ namespace dukat
 				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
 			debug_text->set_text(ss.str());
 		}, true);
+	}
+
+	void TextScene::reset_text(void)
+	{
+		std::stringstream ss;
+		ss << "I sing the <#dd0907>body electric</>," << std::endl
+			<< "The <#fbf305>armies</> of those I <#f20884>love</> engirth me and I engirth them," << std::endl
+			<< "They will not let me off till I go with them, <#02abea>respond</> to them," << std::endl
+			<< "And <#ff6403>discorrupt</> them, and charge them full with the <#0000d3>charge</> of the soul." << std::endl << std::endl
+			<< "Was it <#4700a5>doubted</> that those who corrupt their own bodies <#1fb714>conceal</> themselves ?" << std::endl
+			<< "And if those who defile the <#90713a>living</> are as bad as they who defile the <#562c05>dead</> ?" << std::endl
+			<< "And if the body does not do <#c0c0c0>fully</> as much as the <#808080>soul</> ?" << std::endl
+			<< "And if the body were not the <#006412>soul</>, what is the <#404040>soul</> ?" << std::endl;
+		info_text->set_text_scroll(ss.str(), 0.05f, std::bind(&TextScene::reset_text, this));
+	}
+
+	void TextScene::update(float delta)
+	{
+		info_text->update(delta);
 	}
 }
 

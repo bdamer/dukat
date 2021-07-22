@@ -5,7 +5,8 @@
 namespace dukat
 {
 	TextMeshInstance::TextMeshInstance(std::unique_ptr<MeshData> text_mesh, float yorientation)
-		: text(""), char_width(1.0f), line_height(1.2f), halign(Align::Left), valign(Align::Bottom), yorientation(yorientation)
+		: text(""), char_width(1.0f), line_height(1.2f), halign(Align::Left), valign(Align::Bottom), yorientation(yorientation),
+		  num_vertices(0), scroll_delay(0.0f), scroll_accumulator(0.0f), scroll_callback(nullptr)
 	{
 		this->text_mesh = std::move(text_mesh);
 		set_mesh(this->text_mesh.get());
@@ -20,6 +21,20 @@ namespace dukat
 		TextMeshBuilder mb;
 		mb.rebuild_text_mesh(get_mesh(), text, char_width, line_height, width, height);
 		update(0.0f);
+	}
+
+	void TextMeshInstance::set_text_scroll(const std::string& text, float delay, const std::function<void(void)>& callback)
+	{
+		set_text(text);
+
+		// Start with a single character
+		auto md = this->get_mesh();
+		num_vertices = md->vertex_count();
+		md->set_vertex_count(vertices_per_char);
+
+		scroll_delay = delay;
+		scroll_accumulator = 0.0f;
+		scroll_callback = callback;
 	}
 
 	void TextMeshInstance::set_alpha(float alpha)
@@ -40,8 +55,34 @@ namespace dukat
 		transform.scale = { size, size, size };
 	}
 
+	void TextMeshInstance::update_scroll(float delta)
+	{
+		if (scroll_delay > 0.0f)
+		{
+			scroll_accumulator += delta;
+
+			if (scroll_accumulator >= scroll_delay)
+			{
+				scroll_accumulator -= scroll_delay;
+				auto md = this->get_mesh();
+				const auto new_vc = md->vertex_count() + vertices_per_char;
+				md->set_vertex_count(new_vc);
+
+				if (new_vc >= num_vertices)
+				{
+					scroll_delay = 0.0f; // we're done with delayed print
+
+					if (scroll_callback)
+						scroll_callback();
+				}
+			}
+		}
+	}
+
 	void TextMeshInstance::update(float delta) 
 	{
+		update_scroll(delta);
+
 		auto x_offset = 0.0f;
 		auto y_offset = 0.0f;
 
