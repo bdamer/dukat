@@ -25,7 +25,7 @@ namespace dukat
         FSM(void) : cur_state(default_state), in_transition(false) { }
         ~FSM(void) { }
 
-        void add_state(const T& state) { states[state.id] = state; }
+        void add_state(const T& state) { states.emplace(state.id, state); }
         void remove_state(const std::string& id) { if (states.count(id)) { states.erase(id); } };
 
 		void set_state_change_listener(const state_callback& listener) { state_change_listener = listener; }
