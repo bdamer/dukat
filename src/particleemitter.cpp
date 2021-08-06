@@ -33,7 +33,7 @@ namespace dukat
 		Vector2{ 1, 25 },	// max_dp.x used to scale particle motion 
 		{
 			Color{ 1.0f, 1.0f, 1.0f, 1.0f },	// Smoke color
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+			Color{ 0.15f, 0.0f, 0.0f, 0.0f },	// R-value: rate of change to angle, other values not used
 			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
 			Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
 		},
@@ -309,12 +309,11 @@ namespace dukat
 
 	// SMOKE
 	// - upward direction of particles
-	// - position of emitter ocilates on the x axis
+	// - position of emitter oscillates on the x axis
 	// - single color that fades out over time
 	void smoke_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {
-		const auto max_change = 0.15f;
-		em.value += random(-max_change, max_change);
+		em.value += random(-em.recipe.colors[1].r, em.recipe.colors[1].r);
 		em.accumulator += em.recipe.rate * delta;
 
         if (em.accumulator < 1.0f || em.target_layer == nullptr)
