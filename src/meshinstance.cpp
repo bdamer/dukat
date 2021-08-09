@@ -51,13 +51,8 @@ namespace dukat
 
 #if OPENGL_VERSION >= 30
 		// Bind uniform buffers
-		// TODO: use a single buffer for all materials?
-		auto midx = glGetUniformBlockIndex(program->id, Renderer::uf_material);
-		if (midx != GL_INVALID_INDEX)
-		{
-			glUniformBlockBinding(program->id, midx, static_cast<GLuint>(Renderer::UniformBuffer::Material));
+		if (program->bind(Renderer::uf_material, static_cast<GLuint>(Renderer::UniformBuffer::Material)))
 			glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(Renderer::UniformBuffer::Material), uniform_buffers->buffers[0]);
-		}
 #else
 		// manually bind material (sending custom.r twice since there is no dedicated
 		// shininess in later versions)
