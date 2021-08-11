@@ -6,10 +6,15 @@
 
 namespace dukat
 {
-	Window::Window(int width, int height, bool fullscreen, bool vsync, bool msaa)
-		: width(width), height(height), fullscreen(fullscreen)
+	Window::Window(const Settings& settings)
 	{
+		this->width = settings.get_int("window.width", 640);
+		this->height = settings.get_int("window.height", 480);
+		this->fullscreen = settings.get_bool("window.fullscreen");
+		this->resizable = settings.get_bool("window.resizable");
+
 #ifdef OPENGL_CORE
+		const auto msaa = settings.get_bool("window.msaa");
 		// Need to request MSAA buffers before creating window
 		if (msaa)
 		{
@@ -33,24 +38,26 @@ namespace dukat
 		SDL_DisplayMode display_mode;
 		SDL_GetCurrentDisplayMode(0, &display_mode);
 		log->debug("Creating Android window.");
-		window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 			display_mode.w, display_mode.h, SDL_WINDOW_SHOWN);
 		this->width = display_mode.w;
 		this->height = display_mode.h;
 #else
-		// Create the window with the requested resoltion
+		// Create the window with the requested resolution
+		log->debug("Creating window with size: {}x{}", width, height);
+		Uint32 window_flags = SDL_WINDOW_OPENGL;
 		if (fullscreen)
 		{
-			log->debug("Creating fullscreen window.");
-			window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-				width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
+			window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 		else
 		{
-			log->debug("Creating window with size: {}x{}", width, height);
-			window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-				width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+			window_flags |= SDL_WINDOW_OPENGL;
+			if (resizable)
+				window_flags |= SDL_WINDOW_RESIZABLE;
 		}
+		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			width, height, window_flags);
 #endif
 		if (window == nullptr)
         {
@@ -67,7 +74,7 @@ namespace dukat
 		log->debug("Created OpenGL context {}.{}", major, minor);
 
 		// Set vsync for current context 
-		set_vsync(vsync);
+		set_vsync(settings.get_bool("window.vsync", true));
 
 #ifdef OPENGL_CORE
 		if (msaa)

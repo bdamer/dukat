@@ -7,24 +7,28 @@
 #endif // !OPENGL_VERSION
 
 #include "messenger.h"
+#include "settings.h"
 
 namespace dukat
 {
 	class Window : public Messenger
 	{
 	private:
+		static constexpr auto window_title = "dukat";
+
 		// Physical resolution
 		int width;
 		int height;
 		bool fullscreen;
+		bool resizable; // indicates that the window can be resized
 		bool vsync;
 		bool msaa_enabled;
 		SDL_Window* window;
 		SDL_GLContext context;
 
 	public:
-		Window(int width, int height, bool fullscreen, bool vsync, bool msaa);
-		~Window();
+		Window(const Settings& settings);
+		~Window(void);
 
 		// Called by application to update screen buffer.
 		void present(void) { SDL_GL_SwapWindow(window); }
@@ -40,6 +44,7 @@ namespace dukat
 		float get_aspect_ratio(void) const { return (float)width / (float)height; }
 
 		bool is_fullscreen(void) const { return fullscreen; }
+		bool is_resizable(void) const { return resizable; }
 		bool is_msaa_enabled(void) const { return msaa_enabled; }
 		
 		// Triggered by application / SDL after resize.

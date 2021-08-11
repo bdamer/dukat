@@ -32,8 +32,7 @@ namespace dukat
 			static_cast<int>(linked.major), static_cast<int>(linked.minor), static_cast<int>(linked.patch));
 
 		sdl_check_result(SDL_Init(SDL_INIT_EVERYTHING), "Initialize SDL");
-		window = std::make_unique<Window>(settings.get_int("window.width", 640), settings.get_int("window.height", 480),
-			settings.get_bool("window.fullscreen"), settings.get_bool("window.vsync", true), settings.get_bool("window.msaa"));
+		window = std::make_unique<Window>(settings);
 		window->set_title(title);
 
 		auto show_cursor = settings.get_bool("input.mouse.cursor", false);
