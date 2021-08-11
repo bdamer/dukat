@@ -26,7 +26,7 @@ namespace dukat
 	class Manager;
 
 	// Abstract base class for game implementations.
-	class GameBase : public Application
+	class GameBase : public Application, public Recipient
 	{
 	protected:
 #ifndef __ANDROID__
@@ -45,7 +45,6 @@ namespace dukat
 		virtual void handle_keyboard(const SDL_Event& e);
 		virtual void update(float delta);
 		virtual void render(void);
-		virtual void receive(const Message& message) { }
 
 		bool debug;
 		// Called on a timer to output debug information.
@@ -66,6 +65,7 @@ namespace dukat
 		Scene* get_scene(const std::string& id) const;
 		Scene* get_scene(void) const { return scene_stack.top(); }
 		void set_controller(Controller* controller) { this->controller = controller; }
+		virtual void receive(const Message& message);
 
 		// Schedules an action to be executed at the start of the next frame.
 		void delay_action(const std::function<void(void)>& action) { delayed_actions.push(action); }

@@ -32,5 +32,6 @@ namespace dukat
 
 		void handle_keyboard(const SDL_Event& e);
 		void update(float delta);
+		void resize(int width, int height);
 	};
 }

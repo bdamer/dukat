@@ -10,12 +10,10 @@ namespace dukat
 	const float Camera2::default_near_clip = 0.0f;
 	const float Camera2::default_far_clip = 1000.0f;
 
-	Camera2::Camera2(GameBase* game, const Vector2& dimension)
-		: window(game->get_window()), near_clip(default_near_clip), far_clip(default_far_clip), effect(nullptr)
+	Camera2::Camera2(GameBase* game) : window(game->get_window()), near_clip(default_near_clip), far_clip(default_far_clip), 
+		effect(nullptr), handler(nullptr)
 	{
 		window->subscribe(this, Events::WindowResized);
-		fixed_dimension = (dimension.x != 0.0f && dimension.y != 0.0f);
-		transform.dimension = dimension;
 	}
 
 	Camera2::~Camera2(void)
@@ -35,11 +33,16 @@ namespace dukat
 
 	void Camera2::resize(int width, int height)
 	{
-		if (!fixed_dimension)
+		if (handler != nullptr)
 		{
-			transform.dimension.x = (float)width;
-			transform.dimension.y = (float)height;
+			handler(this, window);
 		}
+		else
+		{
+			transform.dimension.x = static_cast<float>(width);
+			transform.dimension.y = static_cast<float>(height);
+		}
+		log->debug("Resizing camera to: {}x{}", static_cast<int>(transform.dimension.x), static_cast<int>(transform.dimension.y));
 
 		aspect_ratio = transform.dimension.x / transform.dimension.y;
 	

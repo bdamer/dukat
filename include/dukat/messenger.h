@@ -12,6 +12,9 @@ namespace dukat
 		static constexpr Event None = 0;
 		// System events
 		static constexpr Event ToggleDebug = 1;
+		// Window was resized.
+		// param1: int* Window width
+		// param2: int* Window height
 		static constexpr Event WindowResized = 2;
 		// Notification that controller has been added.
 		static constexpr Event DeviceBound = 3;

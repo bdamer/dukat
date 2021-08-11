@@ -35,10 +35,12 @@ namespace dukat
 		device_manager->active->on_press(InputDevice::VirtualButton::Debug, std::bind(&GameBase::toggle_debug, this));
 		get<TimerManager>()->create_timer(1.0f, std::bind(&GameBase::update_debug_text, this), true);
 #endif
+		window->subscribe(this, Events::WindowResized);
 	}
 
 	GameBase::~GameBase(void)
 	{
+		window->unsubscribe(this, Events::WindowResized);
 		device_manager->active->unbind(InputDevice::VirtualButton::Debug);
 	}
 
@@ -139,12 +141,18 @@ namespace dukat
 	Scene* GameBase::get_scene(const std::string& id) const
 	{
 		if (scenes.count(id) > 0)
-		{
 			return scenes.at(id).get();
-		}
 		else
-		{
 			return nullptr;
+	}
+
+	void GameBase::receive(const Message& message)
+	{
+		switch (message.event) {
+		case Events::WindowResized:
+			if (!scene_stack.empty())
+				scene_stack.top()->resize(*message.get_param1<int>(), *message.get_param2<int>());
+			break;
 		}
 	}
 }

@@ -19,8 +19,8 @@ namespace dukat
 		AABB2 limits; // limits camera movement
 
     public:
-        FollowerCamera2(GameBase* game, const Vector2& dimension = { 0.0f, 0.0f })
-            : Camera2(game, dimension), game(game), target(nullptr), actual_offset{ 0, 0 }, target_offset{ 0, 0 }, 
+        FollowerCamera2(GameBase* game)
+            : Camera2(game), game(game), target(nullptr), actual_offset{ 0, 0 }, target_offset{ 0, 0 }, 
 			limits(Vector2{ -big_number, -big_number }, Vector2{ big_number, big_number }) { }
         ~FollowerCamera2(void) { }
 

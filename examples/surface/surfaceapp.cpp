@@ -12,8 +12,9 @@ namespace dukat
 		auto layer = game->get_renderer()->create_composite_layer("main", 1.0f);
 
 		// Set up default camera centered around origin
-		auto camera = std::make_unique<Camera2>(game, Vector2(texture_width, texture_height));
+		auto camera = std::make_unique<Camera2>(game);
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_resize_handler(fixed_camera(texture_width, texture_height));
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));
 

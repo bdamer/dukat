@@ -22,6 +22,9 @@ namespace dukat
 
 	class Camera2 : public Recipient
 	{
+	public:
+		typedef std::function<void(Camera2 * camera, Window * window)> resize_handler;
+
 	private:
 		static const float default_near_clip;
 		static const float default_far_clip;
@@ -31,13 +34,13 @@ namespace dukat
 		float far_clip;
 		bool fixed_dimension;
 		std::unique_ptr<CameraEffect2> effect;
+		resize_handler handler;
 
 	public:
 		CameraTransform2 transform;
 
-		// Creates a new camera for a given window. Unless specified, the 
-		// camera will use the dimensions of the window.
-		Camera2(GameBase* game, const Vector2& dimension = { 0.0f, 0.0f });
+		// Creates a new camera for a given window.
+		Camera2(GameBase* game);
 		virtual ~Camera2(void);
 
 		void resize(int width, int height);
@@ -45,6 +48,7 @@ namespace dukat
 		void refresh(void) { resize(window->get_width(), window->get_height()); }
 		float get_aspect_ratio(void) const { return aspect_ratio; }
 		void set_effect(std::unique_ptr<CameraEffect2> effect);
+		void set_resize_handler(const resize_handler& func) { handler = func; }
 
 		// Returns bounding box for camera. If parallax value is provided, will adjust camera
 		// position accordingly.
@@ -56,4 +60,29 @@ namespace dukat
 
 		void receive(const Message& msg);
 	};
+
+	inline Camera2::resize_handler fixed_camera(int width, int height)
+	{
+		return [width, height](Camera2* camera, Window* window) { 
+			camera->transform.dimension.x = static_cast<float>(width);
+			camera->transform.dimension.y = static_cast<float>(height);
+		};
+	}
+
+	inline Camera2::resize_handler fixed_width_camera(int width) 
+	{
+		return [width](Camera2* camera, Window* window) {
+			camera->transform.dimension.x = static_cast<float>(width);
+			camera->transform.dimension.y = std::round(static_cast<float>(width) / window->get_aspect_ratio());
+		};
+	}
+
+	inline Camera2::resize_handler fixed_height_camera(int height)
+	{
+		return [height](Camera2* camera, Window* window) {
+			const auto ratio = static_cast<float>(window->get_height()) / static_cast<float>(window->get_width());
+			camera->transform.dimension.x = std::round(static_cast<float>(height) / ratio);
+			camera->transform.dimension.y = static_cast<float>(height); 
+		};
+	}
 }

@@ -26,6 +26,8 @@ namespace dukat
 		virtual void render(void) = 0;
 		// Called whenever the scene is deactivated.
 		virtual void deactivate(void) { active = false; }
+		// Called whenever the application window has been resized.
+		virtual void resize(int width, int height) { }
 
 		bool is_active(void) const { return active; }
 	};

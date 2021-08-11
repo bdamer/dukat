@@ -134,9 +134,7 @@ namespace dukat
 		{
 		case SDLK_RETURN:
 			if (e.key.keysym.mod & KMOD_ALT)
-			{
 				window->toggle_fullscreen();
-			}
 			break;
 		case SDLK_PAUSE:
 			toggle_pause();

@@ -64,16 +64,30 @@ namespace dukat
 
 	void Renderer2::initialize_frame_buffers(void)
 	{
-		log->trace("Initializing frame buffers.");
 		if (camera == nullptr)
 		{
-			frame_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false, TextureFilterProfile::ProfileNearest);
-			screen_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(), true, false, TextureFilterProfile::ProfileNearest);
+			const auto width = window->get_width();
+			const auto height = window->get_height();
+			log->debug("Initializing frame buffers: {}x{}", width, height);
+			frame_buffer = std::make_unique<FrameBuffer>(width, height, true, false, TextureFilterProfile::ProfileNearest);
+			screen_buffer = std::make_unique<FrameBuffer>(width, height, true, false, TextureFilterProfile::ProfileNearest);
 		}
 		else
 		{
 			const auto& dim = camera->transform.dimension;
+			log->warn("Resizing frame buffers: {}x{}", static_cast<int>(dim.x), static_cast<int>(dim.y));
 			frame_buffer->resize(static_cast<int>(dim.x), static_cast<int>(dim.y));
+
+			for (auto& layer : layers)
+			{
+				if (layer->get_render_target() != nullptr)
+				{
+					// recreate render target
+					auto texture = std::make_unique<Texture>(frame_buffer->width, frame_buffer->height);
+					frame_buffer->initialize_draw_buffer(texture.get());
+					layer->set_render_target(std::move(texture));
+				}
+			}
 		}
 	}
 

@@ -11,11 +11,11 @@ namespace dukat
 		auto settings = game->get_settings();
 
 		// Set up default camera centered around origin
-		auto game_height = static_cast<int>(game_width / game->get_window()->get_aspect_ratio());
-		log->debug("Setting virtual resolution to: {}x{}", game_width, game_height);
-		auto camera = std::make_unique<Camera2>(game, Vector2(game_width, game_height));
+		auto camera = std::make_unique<Camera2>(game);
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_resize_handler(fixed_width_camera(game_width));
 		camera->refresh();
+		const auto game_height = static_cast<int>(camera->transform.dimension.y);
 		game->get_renderer()->set_camera(std::move(camera));
 
 		// Mirror mask 
@@ -130,6 +130,17 @@ namespace dukat
 		game->get_renderer()->get_layer("scene")->add(p);
 
 		Scene2::update(delta);
+	}
+	
+	void LayersScene::resize(int width, int height)
+	{
+		auto settings = game->get_settings();
+		// Set up default camera centered around origin
+		auto camera = std::make_unique<Camera2>(game);
+		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_resize_handler(fixed_width_camera(game_width));
+		camera->refresh();
+		game->get_renderer()->set_camera(std::move(camera));
 	}
 }
 

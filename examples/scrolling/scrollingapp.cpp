@@ -11,16 +11,16 @@ namespace dukat
 		// Set up default camera centered around origin
 		auto settings = game->get_settings();
 		const auto game_width = settings.get_int("game.width", 320);
-		const auto game_height = static_cast<int>(game_width / game->get_window()->get_aspect_ratio());
-		log->debug("Setting virtual resolution to: {}x{}", game_width, game_height);
 
 		player = std::make_unique<Player>();
 		player->pos = Vector2{ game_width / 2, 0 };
 
-		auto camera = std::make_unique<FollowerCamera2<Player>>(game, Vector2(game_width, game_height));
+		auto camera = std::make_unique<FollowerCamera2<Player>>(game);
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_resize_handler(fixed_width_camera(game_width));
 		camera->set_target(player.get());
 		camera->refresh();
+		const auto game_height = static_cast<int>(camera->transform.dimension.y);
 		game->get_renderer()->set_camera(std::move(camera));
 
 		// Set up layers
