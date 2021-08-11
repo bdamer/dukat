@@ -68,14 +68,14 @@ namespace dukat
 		{
 			const auto width = window->get_width();
 			const auto height = window->get_height();
-			log->debug("Initializing frame buffers: {}x{}", width, height);
+			log->trace("Initializing frame buffers: {}x{}", width, height);
 			frame_buffer = std::make_unique<FrameBuffer>(width, height, true, false, TextureFilterProfile::ProfileNearest);
 			screen_buffer = std::make_unique<FrameBuffer>(width, height, true, false, TextureFilterProfile::ProfileNearest);
 		}
 		else
 		{
 			const auto& dim = camera->transform.dimension;
-			log->warn("Resizing frame buffers: {}x{}", static_cast<int>(dim.x), static_cast<int>(dim.y));
+			log->trace("Resizing frame buffers: {}x{}", static_cast<int>(dim.x), static_cast<int>(dim.y));
 			frame_buffer->resize(static_cast<int>(dim.x), static_cast<int>(dim.y));
 
 			for (auto& layer : layers)
