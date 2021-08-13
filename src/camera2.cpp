@@ -89,4 +89,35 @@ namespace dukat
 		// Rebuild camera / view matrix
 		transform.mat_view.setup_translation(Vector3(-transform.position.x, -transform.position.y, 0.0f));
 	}
+
+	Camera2::resize_handler fixed_camera(int width, int height)
+	{
+		return [width, height](Camera2* camera, Window* window) {
+			camera->transform.dimension.x = static_cast<float>(width);
+			camera->transform.dimension.y = static_cast<float>(height);
+		};
+	}
+
+	Camera2::resize_handler fixed_width_camera(int width)
+	{
+		return [width](Camera2* camera, Window* window) {
+			camera->transform.dimension.x = static_cast<float>(width);
+			// adjust height to nearest multiple of 2
+			auto height = static_cast<int>(std::round(static_cast<float>(width) / window->get_aspect_ratio()));
+			height += height % 2;
+			camera->transform.dimension.y = static_cast<float>(height);
+		};
+	}
+
+	Camera2::resize_handler fixed_height_camera(int height)
+	{
+		return [height](Camera2* camera, Window* window) {
+			const auto ratio = static_cast<float>(window->get_height()) / static_cast<float>(window->get_width());
+			// adjust width to nearest multiple of 2
+			auto width = static_cast<int>(std::round(static_cast<float>(height) / ratio));
+			width += width % 2; 
+			camera->transform.dimension.x = static_cast<float>(width);
+			camera->transform.dimension.y = static_cast<float>(height);
+		};
+	}
 }
