@@ -173,7 +173,9 @@ namespace dukat
 			active = false;
 			break;
 		case SDL_WINDOWEVENT_RESIZED:
-			window->on_resize();
+			window->on_resize();			
+			if (paused) // run a single frame update to fix display if paused
+				update(1.0f / 60.0f);
 			break;
 		}
 	}
