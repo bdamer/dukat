@@ -7,6 +7,7 @@
 
 namespace dukat
 {
+	struct Sample;
 	class Vector2;
 
 	class UIManager : public Manager
@@ -14,9 +15,12 @@ namespace dukat
 	private:
 		std::list<UIControl*> controls;
 		UIControl* focus;
+		Sample* select_sample;
+		Sample* trigger_sample;
+		Sample* cycle_sample;
 
 	public:
-		UIManager(GameBase* game) : Manager(game), focus(nullptr) { }
+		UIManager(GameBase* game) : Manager(game), focus(nullptr), select_sample(nullptr), trigger_sample(nullptr), cycle_sample(nullptr) { }
 		~UIManager(void) { }
 
 		// Adds and removes control.
@@ -33,5 +37,10 @@ namespace dukat
 		bool trigger_focus(void); 
 		// Cycles current control in focus, if any.
 		bool cycle_focus(int dir);
+
+		// Loads audio samples for UI navigation actions
+		void set_select_sample(const std::string& sample);
+		void set_trigger_sample(const std::string& sample);
+		void set_cycle_sample(const std::string& sample);
 	};
 }

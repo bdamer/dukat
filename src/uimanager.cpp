@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include <dukat/uimanager.h>
+#include <dukat/audiomanager.h>
+#include <dukat/gamebase.h>
 
 namespace dukat
 {
+	static constexpr auto channel = 10;
+
 	void UIManager::add_control(UIControl* control)
 	{
 		for (auto it = controls.begin(); it != controls.end(); ++it)
@@ -81,6 +85,9 @@ namespace dukat
 			}
 			focus = *it;
 			focus->set_focus(true);
+
+			if (select_sample != nullptr)
+				game->get_audio()->play_sample(select_sample, channel);
 		}
 	}
 
@@ -100,11 +107,12 @@ namespace dukat
 		if (it != controls.end())
 		{
 			if (focus != nullptr)
-			{
 				focus->set_focus(false);
-			}
 			focus = *it;
 			focus->set_focus(true);
+
+			if (select_sample != nullptr)
+				game->get_audio()->play_sample(select_sample, channel);
 		}
 	}
 
@@ -113,6 +121,8 @@ namespace dukat
 		if (focus != nullptr)
 		{
 			focus->trigger();
+			if (trigger_sample != nullptr)
+				game->get_audio()->play_sample(trigger_sample, channel);
 			return true;
 		}
 		return false;
@@ -123,8 +133,34 @@ namespace dukat
 		if (focus != nullptr)
 		{
 			focus->cycle(dir);
+			if (cycle_sample != nullptr)
+				game->get_audio()->play_sample(cycle_sample, channel);
 			return true;
 		}
 		return false;
+	}
+	
+	void UIManager::set_select_sample(const std::string& sample)
+	{
+		if (sample.length() > 0)
+			select_sample = game->get_samples()->get_sample(sample);
+		else
+			select_sample = nullptr;
+	}
+
+	void UIManager::set_trigger_sample(const std::string& sample)
+	{
+		if (sample.length() > 0)
+			trigger_sample = game->get_samples()->get_sample(sample);
+		else
+			trigger_sample = nullptr;
+	}
+
+	void UIManager::set_cycle_sample(const std::string& sample)
+	{
+		if (sample.length() > 0)
+			cycle_sample = game->get_samples()->get_sample(sample);
+		else
+			cycle_sample = nullptr;
 	}
 }
