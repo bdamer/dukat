@@ -19,6 +19,7 @@ namespace dukat
 		static constexpr auto max_frame_delta = 1.0f / 15.0f;
 		const std::string title; // Window title
 		int last_fps; // Most recent FPS value
+		float fixed_frame_rate; // Fix frame rate to use instead of actual delta
 		float runtime; // time since program start in seconds
 		bool paused; // Triggered by application events. If set, will not execute update method.
 		bool active; // Triggered by application window becoming active. If set, will execute update method.
@@ -58,6 +59,7 @@ namespace dukat
 		void set_paused(bool paused) { this->paused = paused; }
 		bool is_done(void) const { return done; }
 		void set_done(bool done) { this->done = done; }
+		void set_fixed_frame_rate(float rate) { fixed_frame_rate = rate; }
 		int get_fps(void) const { return last_fps; }
 		float get_time(void) const { return runtime; }
 

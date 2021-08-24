@@ -17,7 +17,7 @@ namespace dukat
 	constexpr float Application::max_frame_delta;
 
 	Application::Application(Settings& settings)
-		: title(settings.get_string("window.title")), runtime(0.0f), 
+		: title(settings.get_string("window.title")), runtime(0.0f), fixed_frame_rate(0.0f),
 		paused(false), active(true), done(false), last_update(0), settings(settings)
 	{
 		init_logging(settings);
@@ -72,9 +72,14 @@ namespace dukat
 			{
 				SDL_Delay(static_cast<Uint32>(1000 / 15));
 			}
-			else 
+			else if (fixed_frame_rate > 0.0f)
 			{
-				auto delta = static_cast<float>(ticks - last_update) / 1000.0f;
+				runtime += fixed_frame_rate;
+				update(std::min(fixed_frame_rate, max_frame_delta));
+			}
+			else
+			{
+				const auto delta = static_cast<float>(ticks - last_update) / 1000.0f;
 				runtime += delta;
 				update(std::min(delta, max_frame_delta));
 			}
