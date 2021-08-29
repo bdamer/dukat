@@ -113,7 +113,7 @@ namespace dukat
     {
         state.sp = game->get_shaders()->get_program(default_vsh, default_fsh);
         game->get_renderer()->set_composite_program(state.sp);
-        state.color = Color{ 1, 1, 1, 1 };
+        state.color = Color{ 0, 0, 0, 1 };
         state.alpha = 0.0f;
         state.anim = nullptr;
     }
