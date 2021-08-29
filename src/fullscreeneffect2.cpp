@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-    FullscreenEffect2::FullscreenEffect2(Game2* game) : game(game), anim(nullptr), last_sp(nullptr), color({0.f, 0.f, 0.f, 0.f}), alpha(0.f)
+    FullscreenEffect2::FullscreenEffect2(Game2* game) : game(game)
     {
         static constexpr auto uniform_time = "u_time";
         static constexpr auto uniform_diffuse = "u_diffuse";
@@ -15,14 +15,20 @@ namespace dukat
             if (sp->attr(uniform_time) != -1)
                 sp->set(uniform_time, this->game->get_time());
             if (sp->attr(uniform_diffuse) != -1)
-                sp->set(uniform_diffuse, color.r, color.g, color.b, color.a * alpha);
+                sp->set(uniform_diffuse, state.color.r, state.color.g, state.color.b, state.color.a * state.alpha);
         };
     }
 
     FullscreenEffect2::~FullscreenEffect2(void)
     {
-        if (anim != nullptr)
-            game->get<AnimationManager>()->cancel(anim);
+        auto am = game->get<AnimationManager>();
+        if (state.anim != nullptr)
+            am->cancel(state.anim);
+        for (auto& it : state_stash)
+        {
+            if (it.second.anim != nullptr)
+                am->cancel(it.second.anim);
+        }
     }
 
     void FullscreenEffect2::begin_fade_in(float duration, std::function<void(void)> callback)
@@ -30,8 +36,8 @@ namespace dukat
         log->debug("Begin fade-in: {}", duration);
         cancel_anim();
 
-        alpha = 1.0f;
-        auto sp = game->get_shaders()->get_program("fx_default.vsh", "fx_solid.fsh");
+        state.alpha = 1.0f;
+        auto sp = game->get_shaders()->get_program(default_vsh, solid_fsh);
         game->get_renderer()->set_composite_program(sp, composite_binder);
 
         begin_anim(duration, 0.0f, callback);
@@ -42,8 +48,8 @@ namespace dukat
         log->debug("Begin fade-out: {}", duration);
         cancel_anim();
 
-        alpha = 0.0f;
-        auto sp = game->get_shaders()->get_program("fx_default.vsh", "fx_solid.fsh");
+        state.alpha = 0.0f;
+        auto sp = game->get_shaders()->get_program(default_vsh, solid_fsh);
         game->get_renderer()->set_composite_program(sp, composite_binder);
         
         begin_anim(duration, 1.0f, callback);
@@ -51,39 +57,64 @@ namespace dukat
 
     void FullscreenEffect2::begin_anim(float duration, float target, std::function<void(void)> callback)
     {
-        auto value_anim = std::make_unique<ValueAnimation<float>>(&alpha, duration, target);
+        auto value_anim = std::make_unique<ValueAnimation<float>>(&state.alpha, duration, target);
         value_anim->set_callback([&, callback](void) {
             if (callback != nullptr)
                 callback();
-            anim = nullptr;
+            state.anim = nullptr;
         });
-        anim = game->get<AnimationManager>()->add(std::move(value_anim));
+        state.anim = game->get<AnimationManager>()->add(std::move(value_anim));
     }
 
     void FullscreenEffect2::cancel_anim(void)
     {
-        if (anim != nullptr)
+        if (state.anim != nullptr)
         {
-            game->get<AnimationManager>()->cancel(anim);
-            anim = nullptr;
+            game->get<AnimationManager>()->cancel(state.anim);
+            state.anim = nullptr;
         }
+    }
+
+    void FullscreenEffect2::stash(const std::string& id)
+    {
+        if (state.anim != nullptr)
+            state.anim->pause();
+
+        state_stash[id] = state;
+    }
+
+    void FullscreenEffect2::restore(const std::string& id)
+    {
+        if (!state_stash.count(id))
+        {
+            reset_composite_program(); // if no effect defined, just go to default
+            return;
+        }
+
+        if (state.anim != nullptr)
+            game->get<AnimationManager>()->cancel(state.anim);
+
+        state = state_stash[id];
+        state_stash.erase(id);
+
+        game->get_renderer()->set_composite_program(state.sp, composite_binder);
+
+        if (state.anim != nullptr)
+            state.anim->resume();
     }
     
     void FullscreenEffect2::set_composite_program(ShaderProgram* sp, std::function<void(ShaderProgram*)> binder)
     {
         game->get_renderer()->set_composite_program(sp, binder != nullptr ? binder : composite_binder);
-        last_sp = sp; // back up SP so we can restore if needed
+        state.sp = sp; // back up SP so we can restore if needed
     }
     
     void FullscreenEffect2::reset_composite_program(void)
     {
-        auto sp = game->get_shaders()->get_program(default_vsh, default_fsh);
-        game->get_renderer()->set_composite_program(sp);
-    }
-    
-    void FullscreenEffect2::restore_composite_program(void)
-    {
-        if (last_sp != nullptr)
-            game->get_renderer()->set_composite_program(last_sp, composite_binder);
+        state.sp = game->get_shaders()->get_program(default_vsh, default_fsh);
+        game->get_renderer()->set_composite_program(state.sp);
+        state.color = Color{ 1, 1, 1, 1 };
+        state.alpha = 0.0f;
+        state.anim = nullptr;
     }
 }
