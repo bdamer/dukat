@@ -58,15 +58,15 @@ namespace dukat
 		ParticleEmitter::Recipe::Type::Explosion, 
 		Particle::Alive | Particle::Linear | Particle::Dampened,
 		100.f, 1.f, 6.f, 1.f, 5.f,
-		Vector2{ 0, 25 }, Vector2{ 0, 35 },		// x used to adjust initial position in particle direction 
+		Vector2{ 0, 25 }, Vector2{ 10, 35 },	// x used to adjust initial position in particle direction 
 												// y used to determine particle velocity
 		{
-			Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Initial color
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+			Color{ 1.0f, 0.78f, 0.14f, 1.0f },	// Inner color (at min_dp.x)
+			Color{ 1.0f, 0.31f, 0.0f, 1.0f },	// Outer color (at max_dp.x)
 			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
 			Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
 		},
-		Color{ 0.0f, -1.0f, 0.0f, -0.1f }		// Color reduction over time
+		Color{ 0.0f, -0.25f, -0.05f, -0.05f }	// Color reduction over time
 	};
 
 	const ParticleEmitter::Recipe ParticleEmitter::Recipe::SpiralRecipe{
@@ -430,6 +430,7 @@ namespace dukat
 			em.accumulator = static_cast<float>(idx);
 		}
 
+		const auto scale_delta = em.recipe.max_dp.x - em.recipe.min_dp.x;
 		static const Vector2 base_vector{ 0.0f, -1.0f };
 		for (auto i = 0; i < static_cast<int>(em.recipe.rate); i++)
 		{
@@ -444,15 +445,21 @@ namespace dukat
 			const auto offset = base_vector.rotate(angle);
 			p->pos = em.pos + base_offset;
 
-			if (em.recipe.min_dp.x != 0.0f || em.recipe.max_dp.x != 0.0f)
-				p->pos += offset * random(em.recipe.min_dp.x, em.recipe.max_dp.x);
-
+			if (scale_delta != 0.0f)
+			{
+				const auto init_scale = random(0.0f, 1.0f);
+				p->pos += offset * (em.recipe.min_dp.x + init_scale * scale_delta);
+				p->color = lerp(em.recipe.colors[0], em.recipe.colors[1], init_scale);
+			}
+			else
+			{
+				p->color = em.recipe.colors[0];
+			}
+			
 			p->dp = offset * random(em.recipe.min_dp.y, em.recipe.max_dp.y);
 
 			const auto n_size = random(0.0f, 1.0f);
 			p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
-
-			p->color = em.recipe.colors[0];
 			p->dc = em.recipe.dc;
 			p->dc.a -= n_size;
 
