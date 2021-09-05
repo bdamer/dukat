@@ -82,7 +82,7 @@ namespace dukat
 
 	void DeviceManager::update(void)
 	{
-		if (active != nullptr)
+		if (active != nullptr && enabled)
 		{
 			active->update();
 			if (recording && recorder != nullptr)

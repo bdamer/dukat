@@ -18,6 +18,7 @@ namespace dukat
 		const Settings& settings;
 		std::vector<std::unique_ptr<InputDevice>> controllers;
 		std::unique_ptr<InputRecorder> recorder;
+		bool enabled;
 		bool recording;
 		bool replaying;
 
@@ -25,7 +26,7 @@ namespace dukat
 		InputDevice* active;
 
 		DeviceManager(const Window& window, const Settings& settings) : window(window), settings(settings), 
-			recorder(nullptr), recording(false), replaying(false), active(nullptr) { }
+			recorder(nullptr), enabled(true), recording(false), replaying(false), active(nullptr) { }
 		~DeviceManager(void) { }
 
 		void add_keyboard(void);
@@ -33,6 +34,8 @@ namespace dukat
 		void add_joystick(int index);
 		void remove_joystick(SDL_JoystickID id);
 		void update(void);
+		void enable(void) { enabled = true; }
+		void disable(void) { enabled = false; }
 
 		void start_record(const std::string& filename);
 		void stop_record(void);
