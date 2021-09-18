@@ -26,6 +26,9 @@ namespace dukat
 		SDL_Window* window;
 		SDL_GLContext context;
 
+		void set_context_attributes(void);
+		void create_window(void);
+
 	public:
 		Window(const Settings& settings);
 		~Window(void);

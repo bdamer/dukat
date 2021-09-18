@@ -8,8 +8,8 @@ namespace dukat
 {
 	Window::Window(const Settings& settings)
 	{
-		this->width = settings.get_int("window.width", 640);
-		this->height = settings.get_int("window.height", 480);
+		this->width = settings.get_int("window.width", -1);
+		this->height = settings.get_int("window.height", -1);
 		this->fullscreen = settings.get_bool("window.fullscreen");
 		this->resizable = settings.get_bool("window.resizable");
 
@@ -22,52 +22,11 @@ namespace dukat
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
 		}
 #endif
-
-		// Create OpenGL context with desired profile version
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
-#ifdef OPENGL_CORE
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-#elif OPENGL_ES
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-#endif
-
-#ifdef __ANDROID__
-		// Ignore provided width & height - reuse existing dimensions
-		SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeRight");
-		SDL_DisplayMode display_mode;
-		SDL_GetCurrentDisplayMode(0, &display_mode);
-		log->debug("Creating Android window.");
-		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-			display_mode.w, display_mode.h, SDL_WINDOW_SHOWN);
-		this->width = display_mode.w;
-		this->height = display_mode.h;
-#else
-		// Create the window with the requested resolution
-		log->debug("Creating window with size: {}x{}", width, height);
-		Uint32 window_flags = SDL_WINDOW_OPENGL;
-		if (fullscreen)
-		{
-			window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-		}
-		else
-		{
-			window_flags |= SDL_WINDOW_OPENGL;
-			if (resizable)
-				window_flags |= SDL_WINDOW_RESIZABLE;
-		}
-		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-			width, height, window_flags);
-#endif
-		if (window == nullptr)
-        {
-            sdl_check_result(-1, "Create SDL Window");
-        }
+		set_context_attributes();
+		create_window();
 		context = SDL_GL_CreateContext(window);
 		if (context == nullptr)
-		{
 			sdl_check_result(-1, "Create OpenGL Context");
-		}
 		int major, minor;
 		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
 		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
@@ -116,6 +75,59 @@ namespace dukat
 			SDL_DestroyWindow(window);
 			window = nullptr;
 		}
+	}
+
+	void Window::set_context_attributes(void)
+	{
+		// Create OpenGL context with desired profile version
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
+#ifdef OPENGL_CORE
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#elif OPENGL_ES
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#endif
+	}
+
+	void Window::create_window(void)
+	{
+#ifdef __ANDROID__
+		// Ignore provided width & height - reuse existing dimensions
+		width = height = -1;
+#endif
+
+		if (width == -1 || height == -1)
+		{
+			SDL_DisplayMode display_mode;
+			SDL_GetCurrentDisplayMode(0, &display_mode);
+			width = display_mode.w;
+			height = display_mode.h;
+		}
+
+		log->debug("Creating window with size: {}x{}", width, height);
+		Uint32 window_flags;
+#ifdef __ANDROID__
+		// Ignore provided width & height - reuse existing dimensions
+		SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeRight");
+		window_flags = SDL_WINDOW_SHOWN;
+#else
+		window_flags = SDL_WINDOW_OPENGL;
+		if (fullscreen)
+		{
+			window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+		}
+		else
+		{
+			window_flags |= SDL_WINDOW_OPENGL;
+			if (resizable)
+				window_flags |= SDL_WINDOW_RESIZABLE;
+		}
+#endif
+		// Create the window with the requested resolution
+		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			width, height, window_flags);
+		if (window == nullptr)
+			sdl_check_result(-1, "Create SDL Window");
 	}
 
 	void Window::resize(int width, int height)
