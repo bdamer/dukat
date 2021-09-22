@@ -67,7 +67,9 @@ namespace dukat
 			RenderText = 8,
 			// If set will force synchronization of OpenGL when
 			// running in fullscreen mode.
-			ForceSync = 16
+			ForceSync = 16,
+			// If set, will call glClear before rendering screen buffer
+			ForceClear = 32
 		};
 
 #if OPENGL_VERSION <= 30
@@ -112,5 +114,7 @@ namespace dukat
 		bool is_render_text(void) const { return check_flag(render_flags, RenderText); }
 		void set_force_sync(bool val) { set_flag(render_flags, ForceSync, val); }
 		bool is_force_sync(void) { return check_flag(render_flags, ForceSync); }
+		void set_force_clear(bool val) { set_flag(render_flags, ForceClear, val); }
+		bool is_force_clear(void) { return check_flag(render_flags, ForceClear); }
 	};
 }

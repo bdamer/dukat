@@ -14,7 +14,7 @@
 namespace dukat
 {
 	Renderer2::Renderer2(Window* window, ShaderCache* shader_cache) : Renderer(window, shader_cache), 
-		composite_program(nullptr), composite_binder(nullptr), render_flags(RenderFx | RenderSprites | RenderParticles | RenderText)
+		composite_program(nullptr), composite_binder(nullptr), render_flags(RenderFx | RenderSprites | RenderParticles | RenderText | ForceClear)
 	{
 		// Enable transparency
 		set_blending(true);
@@ -251,7 +251,8 @@ namespace dukat
 	void Renderer2::render_screenbuffer(void)
 	{
 		screen_buffer->unbind();
-		clear(); // clean actual screen
+		if (check_flag(render_flags, ForceClear))
+			clear(); // clean actual screen
 		switch_shader(composite_program);
 		screen_buffer->texture->bind(0, composite_program);
 		if (composite_binder != nullptr)
