@@ -42,6 +42,11 @@ namespace dukat
 	{
 		window->unsubscribe(this, Events::WindowResized);
 		device_manager->active->unbind(InputDevice::VirtualButton::Debug);
+
+		// explicitely free resources
+		scenes.clear();
+		for (auto it = managers.cbegin(); it != managers.cend(); )
+			it = managers.erase(it);
 	}
 
 	void GameBase::handle_event(const SDL_Event& e)
