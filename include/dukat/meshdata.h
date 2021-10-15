@@ -45,11 +45,11 @@ namespace dukat
 
 		// Sets vertices and indices. If not provided, count is assumed to be 
 		// max count as provided during mesh construction.
-		void set_vertices(const std::vector<GLfloat>& vertices, int vertex_count = 0);
-		void set_vertices(const std::vector<GLshort>& vertices, int vertex_count = 0);
-		void set_vertices(const GLvoid* vertices, int vertex_count = 0);
-		void set_indices(const std::vector<GLushort>& indicies, int index_count = 0);
-		void set_indices(const GLvoid* indices, int index_count = 0);
+		void set_vertices(const std::vector<GLfloat>& vertices, int vertex_count = -1);
+		void set_vertices(const std::vector<GLshort>& vertices, int vertex_count = -1);
+		void set_vertices(const GLvoid* vertices, int vertex_count = -1);
+		void set_indices(const std::vector<GLushort>& indicies, int index_count = -1);
+		void set_indices(const GLvoid* indices, int index_count = -1);
 		int vertex_count(void) const { return buffer->counts[0]; }
 		void set_vertex_count(int count) { buffer->counts[0] = count; }
 

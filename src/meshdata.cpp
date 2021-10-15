@@ -54,7 +54,7 @@ namespace dukat
 
 	void MeshData::set_vertices(const GLvoid* vertices, int vertex_count)
 	{
-		buffer->counts[0] = vertex_count > 0 ? vertex_count : max_vertices;
+		buffer->counts[0] = vertex_count >= 0 ? vertex_count : max_vertices;
 		glBindBuffer(GL_ARRAY_BUFFER, buffer->buffers[0]);
 		if (static_mesh)
 		{
@@ -77,7 +77,7 @@ namespace dukat
 	void MeshData::set_indices(const GLvoid* indices, int index_count)
 	{
 		assert(buffer->buffer_count > 1);
-		buffer->counts[1] = index_count > 0 ? index_count : max_indices;
+		buffer->counts[1] = index_count >= 0 ? index_count : max_indices;
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->buffers[1]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer->counts[1] * buffer->strides[1], indices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
