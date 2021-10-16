@@ -70,11 +70,12 @@ namespace dukat
 	private:
 		// Map of subscribers, indexed by event type
 		robin_hood::unordered_map<Event, std::list<Recipient*>> subscriptions;
+		Event active_trigger;
 
 		void do_unsubscribe(Recipient* recipient, std::list<Recipient*>& list);
 
 	public:
-		Messenger(void) { }
+		Messenger(void) : active_trigger(Events::None) { }
 		virtual ~Messenger(void) { }
 
 		// Triggers an event for all recievers subscribed to this entity.

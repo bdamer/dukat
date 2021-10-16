@@ -155,8 +155,13 @@ namespace dukat
 	{
 		switch (message.event) {
 		case Events::WindowResized:
-			if (!scene_stack.empty())
-				scene_stack.top()->resize(*message.get_param1<int>(), *message.get_param2<int>());
+			// delay resize notification to avoid subscription inside event notification
+			const auto width = *message.get_param1<int>();
+			const auto height = *message.get_param2<int>();
+			delay_action([&, width, height](void) {
+				if (!scene_stack.empty())
+					scene_stack.top()->resize(width, height);
+			});
 			break;
 		}
 	}
