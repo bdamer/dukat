@@ -1,6 +1,7 @@
 #pragma once
 
 #include "color.h"
+#include "vector2.h"
 #include "vector3.h"
 
 namespace dukat
@@ -21,13 +22,23 @@ namespace dukat
 	//	325 	1.0 	0.014 	0.0007
 	//	600 	1.0 	0.007 	0.0002
 	//	3250 	1.0 	0.0014 	0.000007
-	struct Light
+	struct Light3
 	{
 		Vector3 position;	// position (point light) or direction (directional light)
 		Color ambient;		// ambient color
 		Color diffuse;		// diffuse color
 		Color specular;		// specular color
-		GLfloat k0, k1, k2; // attenuation coefficinets 
+		GLfloat k0, k1, k2; // attenuation coefficients 
 		GLfloat reserved1;	// padding
 	};
+
+	struct Light2
+	{
+		Vector2 position;	// position in world space
+		GLfloat k1, k2;		// attenuation coefficients
+		Color color;		// color
+	};
+
+	template<typename T>
+	inline void set_light_range(T& light, float range) { light.k1 = 4.5f / range; light.k2 = 75.f / (range * range); }
 }

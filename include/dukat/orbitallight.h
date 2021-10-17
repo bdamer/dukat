@@ -14,7 +14,7 @@ namespace dukat
 
         OrbitalLight(float period) : period(period), theta(0.0f) { }
 
-        void update(float delta, Light& light)
+        void update(float delta, Light3& light)
         {
 			// TODO: currently only working for directional light
             theta += delta * two_pi / period;

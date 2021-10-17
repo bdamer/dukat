@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <map>
 #include <memory>
 #include <string>
@@ -27,6 +28,26 @@ namespace dukat
 	// towards the bottom of the screen.
 	class Renderer2 : public Renderer
 	{
+	public:
+		static constexpr auto max_particles = 2048;
+		static constexpr auto max_lights = 16;
+#if OPENGL_VERSION <= 30
+		static constexpr auto u_cam_dimension = "u_cam_dimension";
+#endif
+
+		enum Flags
+		{
+			RenderFx = 1,
+			RenderSprites = 2,
+			RenderParticles = 4,
+			RenderText = 8,
+			// If set will force synchronization of OpenGL when
+			// running in fullscreen mode.
+			ForceSync = 16,
+			// If set, will call glClear before rendering screen buffer
+			ForceClear = 32
+		};
+
 	private:
 		std::unique_ptr<Camera2> camera;
 		// Buffers for sprite and particle rendering shared by al layers.
@@ -43,8 +64,8 @@ namespace dukat
 		std::unique_ptr<MeshData> quad;
 		// list of layers ordered by priority
 		std::vector<std::unique_ptr<RenderLayer2>> layers;
-		// just a single light for now
-		Light light;
+		// array of lights
+		std::array<Light2, max_lights> lights;
 		// Render flags
 		int render_flags;
 
@@ -57,30 +78,13 @@ namespace dukat
 		void resize_window(void);
 
 	public:
-		static const int max_particles = 2048;
-
-		enum Flags
-		{
-			RenderFx = 1,
-			RenderSprites = 2,
-			RenderParticles = 4,
-			RenderText = 8,
-			// If set will force synchronization of OpenGL when
-			// running in fullscreen mode.
-			ForceSync = 16,
-			// If set, will call glClear before rendering screen buffer
-			ForceClear = 32
-		};
-
-#if OPENGL_VERSION <= 30
-		static constexpr const char* u_cam_dimension = "u_cam_dimension";
-#endif
 		Renderer2(Window* window, ShaderCache* shader_cache);
 		~Renderer2(void) { };
 
 		// Draws the scene.
 		void render(void);
-		// Creates a new composite with a given priority.
+		// Creates a new composite with a given priority. If a render target is requested, layer will
+		// have access to a dedicated texture to render to, before compositing to screen buffer.
 		RenderLayer2* create_composite_layer(const std::string& id, float priority, float parallax = 1.0f, bool has_render_target = false);
 		// Creates a new layer that will render directly to screen.
 		RenderLayer2* create_direct_layer(const std::string& id, float priority);
@@ -100,7 +104,8 @@ namespace dukat
 		Camera2* get_camera(void) const { return camera.get(); }
 		// Updates uniform buffers for camera and lighting.
 		void update_uniforms(void);
-		void set_light(const Light& light) { this->light = light; }
+		// Retrieves light by index	
+		Light2* get_light(int idx) { assert((idx >= 0) && (idx < max_lights)); return &lights[idx]; }
 		// Updates program used to composite final image to screen.
 		void set_composite_program(ShaderProgram* composite_program, std::function<void(ShaderProgram*)> composite_binder = nullptr);
 		// Gets / sets flags

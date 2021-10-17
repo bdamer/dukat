@@ -22,7 +22,7 @@ namespace dukat
                           // diffuse Zenith color
                           // specular Corona color
                           // custom.r Extent of corona (large values decrease extent)
-            Light light; // directional light
+            Light3 light; // directional light
 
             std::function<void(float,float,const Color&, const Color&, Color&)> color_trans; // transition for colors
             std::function<void(float,float,const Vector3&, const Vector3&, Vector3&)> light_pos_trans; // transition for light position

@@ -199,7 +199,7 @@ namespace dukat
 		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Camera), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Camera)]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform3), &camera->transform, GL_STREAM_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Light), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Light)]);
-		glBufferData(GL_UNIFORM_BUFFER, num_lights * sizeof(Light), &lights, GL_STREAM_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, num_lights * sizeof(Light3), &lights, GL_STREAM_DRAW);
 #else
 		// Update individual uniforms.
 		glUniformMatrix4fv(active_program->attr(Renderer3::u_cam_proj_pers), 1, false, camera->transform.mat_proj_pers.m);

@@ -1,8 +1,8 @@
 #pragma once
 
+#include <array>
 #include <list>
 #include <memory>
-#include <array>
 
 #ifndef OPENGL_VERSION
 #include "version.h"
@@ -44,7 +44,7 @@ namespace dukat
 	private:
 		std::unique_ptr<Camera3> camera;
 		// By convention, the 1st light is a directional light. All other lights are positional lights.
-		std::array<Light, num_lights> lights;
+		std::array<Light3, num_lights> lights;
 
 		// Framebuffer effects
 		bool effects_enabled;
@@ -79,6 +79,6 @@ namespace dukat
 
 		void set_camera(std::unique_ptr<Camera3> camera) { this->camera = std::move(camera); }
 		Camera3* get_camera(void) const { return camera.get(); }
-		Light* get_light(int idx) { assert((idx >= 0) && (idx < num_lights)); return &lights[idx]; }
+		Light3* get_light(int idx) { assert((idx >= 0) && (idx < num_lights)); return &lights[idx]; }
 	};
 }

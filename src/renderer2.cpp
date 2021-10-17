@@ -35,7 +35,12 @@ namespace dukat
 		MeshBuilder2 builder;
 		quad = builder.build_textured_quad();
 
-		light.position = Vector3(0.0f, 0.0f, 0.0f);
+		for (auto& l : lights)
+		{
+			l.position = Vector2{ 0, 0 };
+			l.k1 = l.k2 = 0.0f;
+		}
+
 		gl_check_error();
 	}
 
@@ -312,7 +317,7 @@ namespace dukat
 		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Camera), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Camera)]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraTransform2), &camera->transform, GL_STREAM_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(UniformBuffer::Light), uniform_buffers->buffers[static_cast<int>(UniformBuffer::Light)]);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(Light), &light, GL_STREAM_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, max_lights * sizeof(Light2), &lights, GL_STREAM_DRAW);
 #else
 		// Update uniform variables
 		glUniformMatrix4fv(active_program->attr(Renderer2::u_cam_proj_orth), 1, false, camera->transform.mat_proj_orth.m);
