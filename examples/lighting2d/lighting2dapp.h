@@ -5,7 +5,7 @@
 
 namespace dukat
 {
-	class LightmapApp : public Scene2, public Controller
+	class LightingApp : public Scene2, public Controller
 	{
 	private:
 		static constexpr auto camera_height = 180;
@@ -22,8 +22,8 @@ namespace dukat
 		void create_lights(void);
 
 	public:
-		LightmapApp(Game2* game2);
-		~LightmapApp(void) { }
+		LightingApp(Game2* game2);
+		~LightingApp(void) { }
 
 		void update(float delta);
 

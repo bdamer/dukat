@@ -52,19 +52,11 @@ namespace dukat
 		void compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, Matrix4& mat_model);
 
 	public:
-		enum Stage
-		{
-			Composite,
-			Direct
-		};
-
 		const std::string id;
 		// value for parallax projection
 		const float parallax;
 		// base rendering priority
 		const float priority;	
-		// Determines during which stage to render this layer.
-		Stage stage;
 
 		// Constructor
 		RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,

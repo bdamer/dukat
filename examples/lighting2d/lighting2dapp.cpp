@@ -6,26 +6,36 @@
 
 namespace dukat
 {
-	LightmapApp::LightmapApp(Game2* game2) : Scene2(game2)
+	LightingApp::LightingApp(Game2* game2) : Scene2(game2)
 	{
 		auto settings = game->get_settings();
-		auto layer = game->get_renderer()->create_composite_layer("main", 1.0f);
+
+		auto window = game->get_window();
+		auto renderer = game->get_renderer();
+
+		// Adjust scene render stage to use custom composition
+		auto scene_stage = renderer->get_stage(RenderStage::Scene);
+		scene_stage->composite_program = game->get_shaders()->get_program("fx_default.vsh", "fx_lighting.fsh");;
+		scene_stage->composite_binder = [&](ShaderProgram* p) {
+			p->set("u_ambient", 0.05f, 0.05f, 0.05f, 1.0f);
+		};
+		scene_stage->frame_buffer = std::make_unique<FrameBuffer>(window->get_width(), window->get_height(),
+			true, false, TextureFilterProfile::ProfileNearest);
 
 		// Set up default camera centered around origin
 		auto camera = std::make_unique<Camera2>(game);
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->set_resize_handler(fixed_height_camera(camera_height));
 		camera->refresh();
-		game->get_renderer()->set_camera(std::move(camera));
+		renderer->set_camera(std::move(camera));
 
-		auto window = game->get_window();
 		const auto ratio = static_cast<float>(window->get_height()) / static_cast<float>(window->get_width());
 		// adjust width to nearest multiple of 2
 		auto camera_width = static_cast<int>(std::round(static_cast<float>(camera_height) / ratio));
 		camera_width += camera_width % 2;
 
 		// Set up info text
-		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
+		auto info_layer = renderer->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.25f * (float)camera_width, 0.0f, 0.0f);
@@ -37,7 +47,7 @@ namespace dukat
 		info_layer->hide();
 		
 		// Set up debug layer
-		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
+		auto debug_layer = renderer->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)camera_width, -0.5f * (float)camera_height, 0.0f);
@@ -63,7 +73,7 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	void LightmapApp::create_layers(void)
+	void LightingApp::create_layers(void)
 	{
 		auto renderer = game->get_renderer();
 
@@ -72,11 +82,10 @@ namespace dukat
 
 		// Set up layers
 		auto ground_layer = game->get_renderer()->create_composite_layer("ground", 0.0f);
-		ground_layer->set_composite_program(game->get_shaders()->get_program("fx_default.vsh", "fx_lighting.fsh"));
+		ground_layer->set_composite_program(game->get_shaders()->get_program("fx_default.vsh", "fx_ground.fsh"));
 		ground_layer->set_composite_binder([&](ShaderProgram* p) {
 			ground_texture->bind(1, p);
 			p->set("u_scale", 8.0f);
-			p->set("u_ambient", 0.25f, 0.25f, 0.25f, 0.25f);
 		});
 
 		auto lights_layer = renderer->create_composite_layer("lights", 10.0f);
@@ -91,7 +100,7 @@ namespace dukat
 		lights_layer->add(light_sprites[3].get());
 	}
 
-	void LightmapApp::create_lights(void)
+	void LightingApp::create_lights(void)
 	{
 		auto renderer = game->get_renderer();
 
@@ -116,7 +125,7 @@ namespace dukat
 		set_light_range(*light3, 400.0f);
 	}
 
-	void LightmapApp::update(float delta)
+	void LightingApp::update(float delta)
 	{
 		static auto accu = 0.0f;
 		accu += delta;
@@ -136,7 +145,7 @@ namespace dukat
 			renderer->get_light(i)->position = light_sprites[i]->p;
 	}
 
-	void LightmapApp::handle_keyboard(const SDL_Event& e)
+	void LightingApp::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
@@ -158,7 +167,7 @@ int main(int argc, char** argv)
 		}
 		dukat::Settings settings(config);
 		dukat::Game2 app(settings);
-		app.add_scene("main", std::make_unique<dukat::LightmapApp>(&app));
+		app.add_scene("main", std::make_unique<dukat::LightingApp>(&app));
 		app.push_scene("main");
 		return app.run();
 	}

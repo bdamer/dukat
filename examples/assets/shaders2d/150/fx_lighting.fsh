@@ -1,6 +1,6 @@
 #version 150
 ///
-// Ground sampler with light computation.
+// Lighting fragment shader
 ///
 in vec2 v_tex_coord;
 
@@ -27,13 +27,9 @@ layout(std140) uniform Lights
 
 // scene texture
 uniform sampler2D u_tex0;
-// ground texture
-uniform sampler2D u_tex1;
 
 // aspect ratio
 uniform float u_aspect;
-// scale factor
-uniform float u_scale;
 // ambient light
 uniform vec4 u_ambient;
 
@@ -48,8 +44,8 @@ vec4 compute_light(vec2 pos, Light light)
 
 void main()
 {
-	// Sample ground texture
-	vec4 base_color = texture(u_tex1, v_tex_coord * vec2(u_scale, u_scale / u_aspect));	
+	// Sample base texture
+	vec4 base_color = texture(u_tex0, v_tex_coord);
 	
 	// convert screen position into cam space 
 	// denormalize [ from 0..1 to -0.5..0.5 ]

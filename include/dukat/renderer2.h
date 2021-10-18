@@ -16,6 +16,8 @@
 #include "matrix4.h"
 #include "renderer.h"
 #include "renderlayer2.h"
+#include "renderstage2.h"
+#include "shaderprogram.h"
 
 namespace dukat
 {
@@ -59,11 +61,13 @@ namespace dukat
 		std::unique_ptr<FrameBuffer> screen_buffer;
 		// Composite program to render screenbuffer to screen.
 		ShaderProgram* composite_program;
-		std::function<void(ShaderProgram*)> composite_binder;
+		ShaderBinder composite_binder;
 		// Used to compose layers into a single image.
 		std::unique_ptr<MeshData> quad;
-		// list of layers ordered by priority
-		std::vector<std::unique_ptr<RenderLayer2>> layers;
+		// Ordered list of render stages
+		std::list<std::unique_ptr<RenderStage2>> stages;
+		// Lookup map for layers
+		std::unordered_map<std::string, RenderLayer2*> layer_map;
 		// array of lights
 		std::array<Light2, max_lights> lights;
 		// Render flags
@@ -72,8 +76,10 @@ namespace dukat
 		void initialize_sprite_buffers(void);
 		void initialize_particle_buffers(void);
 		void initialize_frame_buffers(void);
-		RenderLayer2* create_layer(const std::string& id, float priority, float parallax);
-		void render_layer(RenderLayer2& layer);
+		void initialize_render_stages(void);
+		RenderLayer2* create_layer(const std::string& id, RenderStage2* stage, float priority, float parallax);
+		void render_layer(RenderLayer2& layer, FrameBuffer* target_buffer);
+		void render_composite(FrameBuffer* target_buffer, ShaderProgram* comp_program, ShaderBinder comp_binder, Texture* source_tex);
 		void render_screenbuffer(void);
 		void resize_window(void);
 
@@ -83,6 +89,8 @@ namespace dukat
 
 		// Draws the scene.
 		void render(void);
+		// Returns a pointer to a specific render stage.
+		RenderStage2* get_stage(RenderStage id) const;
 		// Creates a new composite with a given priority. If a render target is requested, layer will
 		// have access to a dedicated texture to render to, before compositing to screen buffer.
 		RenderLayer2* create_composite_layer(const std::string& id, float priority, float parallax = 1.0f, bool has_render_target = false);

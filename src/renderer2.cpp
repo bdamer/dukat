@@ -29,6 +29,7 @@ namespace dukat
 		initialize_sprite_buffers();
 		initialize_particle_buffers();
 		initialize_frame_buffers();
+		initialize_render_stages();
 
 		composite_program = shader_cache->get_program("fx_default.vsh", "fx_default.fsh");
 
@@ -83,47 +84,60 @@ namespace dukat
 			log->trace("Resizing frame buffers: {}x{}", static_cast<int>(dim.x), static_cast<int>(dim.y));
 			frame_buffer->resize(static_cast<int>(dim.x), static_cast<int>(dim.y));
 
-			for (auto& layer : layers)
+			// recreate intermediate render targets
+			for (auto& stage : stages)
 			{
-				if (layer->get_render_target() != nullptr)
+				if (stage->frame_buffer != nullptr)
+					stage->frame_buffer->resize(static_cast<int>(dim.x), static_cast<int>(dim.y));
+
+				for (auto& layer : stage->layers)
 				{
-					// recreate render target
-					auto texture = std::make_unique<Texture>(frame_buffer->width, frame_buffer->height);
-					frame_buffer->initialize_draw_buffer(texture.get());
-					layer->set_render_target(std::move(texture));
+					if (layer->get_render_target() != nullptr)
+					{
+						auto texture = std::make_unique<Texture>(frame_buffer->width, frame_buffer->height);
+						frame_buffer->initialize_draw_buffer(texture.get());
+						layer->set_render_target(std::move(texture));
+					}
 				}
 			}
 		}
 	}
 
-	RenderLayer2* Renderer2::create_layer(const std::string& id, float priority, float parallax)
+	void Renderer2::initialize_render_stages(void)
+	{
+		// For now, we'll just have a hard-coded list of 2 stages.
+		stages.push_back(std::make_unique<RenderStage2>(static_cast<int>(RenderStage::Scene)));
+		stages.push_back(std::make_unique<RenderStage2>(static_cast<int>(RenderStage::Overlay)));
+	}
+
+	RenderLayer2* Renderer2::create_layer(const std::string& id, RenderStage2* stage, float priority, float parallax)
 	{
 		log->debug("Creating layer: {} [{} {}]", id, priority, parallax);
 		auto layer = std::make_unique<RenderLayer2>(shader_cache,
 			sprite_buffer.get(), particle_buffer.get(), id, priority, parallax);
 		auto res = layer.get();
 		bool inserted = false;
+		layer_map.emplace(id, res);
 		// find position to insert based on priority
-		for (auto it = layers.begin(); it != layers.end(); ++it)
+		for (auto it = stage->layers.begin(); it != stage->layers.end(); ++it)
 		{
 			if ((*it)->priority > layer->priority)
 			{
-				layers.insert(it, std::move(layer));
+				stage->layers.insert(it, std::move(layer));
 				inserted = true;
 				break;
 			}
 		}
 		// insert at the end
 		if (!inserted)
-		{
-			layers.push_back(std::move(layer));
-		}
+			stage->layers.push_back(std::move(layer));
 		return res;
 	}
 
 	RenderLayer2* Renderer2::create_composite_layer(const std::string& id, float priority, float parallax, bool has_render_target)
 	{
-		auto layer = create_layer(id, priority, parallax);
+		auto stage = stages.front().get(); // ok for now, since we're only supporting 2 stages
+		auto layer = create_layer(id, stage, priority, parallax);
 		if (has_render_target)
 		{
 			// create render target compatible with current frame buffer
@@ -136,64 +150,61 @@ namespace dukat
 
 	RenderLayer2* Renderer2::create_direct_layer(const std::string& id, float priority)
 	{
-		auto layer = create_layer(id, priority, 1.0f);
-		layer->stage = RenderLayer2::Direct;
+		auto stage = stages.back().get(); // ok for now, since we're only supporting 2 stages
+		auto layer = create_layer(id, stage, priority, 1.0f);
 		layer->set_composite_program(nullptr); // by default overlay doesn't use compositing
 		return layer;
 	}
 
 	void Renderer2::destroy_layer(const std::string& id)
 	{
-		auto it = std::find_if(layers.begin(), layers.end(), [&id](const std::unique_ptr<RenderLayer2>& layer) {
-			return layer->id == id;
-		});
-		if (it != layers.end())
+		if (!layer_map.erase(id))
+			return; // layer not found
+
+		for (auto& stage : stages)
 		{
-			layers.erase(it);
+			auto it = std::find_if(stage->layers.begin(), stage->layers.end(), [&id](const std::unique_ptr<RenderLayer2>& layer) {
+				return layer->id == id;
+			});
+			if (it != stage->layers.end())
+			{
+				stage->layers.erase(it);
+				break;
+			}
 		}
 	}
 
 	void Renderer2::destroy_layers(void)
 	{
-		layers.clear();
+		layer_map.clear();
+		for (auto& stage : stages)
+			stage->layers.clear();
 	}
 
 	RenderLayer2* Renderer2::get_layer(const std::string& id) const
 	{
-		for (auto it = layers.begin(); it != layers.end(); ++it)
-		{
-			if ((*it)->id == id)
-			{
-				return it->get();
-			}
-		}
-		return nullptr;
+		if (layer_map.count(id))
+			return layer_map.at(id);
+		else
+			return nullptr;
 	}
 
 	void Renderer2::add_to_layer(const std::string& id, Sprite* sprite)
 	{
 		auto layer = get_layer(id);
 		if (layer == nullptr)
-		{
 			log->warn("Invalid layer: {}", id);
-		}
 		else
-		{
 			layer->add(sprite);
-		}
 	}
 
 	void Renderer2::remove_from_layer(const std::string& id, Sprite* sprite)
 	{
 		auto layer = get_layer(id);
 		if (layer == nullptr)
-		{
 			log->warn("Invalid layer: {}", id);
-		}
 		else
-		{
 			layer->remove(sprite);
-		}
 	}
 
 	void Renderer2::set_camera(std::unique_ptr<Camera2> camera)
@@ -213,7 +224,7 @@ namespace dukat
 		screen_buffer->resize(window->get_width(), window->get_height());
 	}
 
-	void Renderer2::render_layer(RenderLayer2& layer)
+	void Renderer2::render_layer(RenderLayer2& layer, FrameBuffer* target_buffer)
 	{
 		// Each layer can either render directly to the global screen buffer,
 		// or alternatively render to a dedicated frame buffer followed by
@@ -235,35 +246,24 @@ namespace dukat
 		{
 			if (render_target != nullptr)
 				frame_buffer->detach_draw_buffer();
-			// Swith to screen buffer
-			screen_buffer->bind();
-			switch_shader(comp_program);
-			auto id = comp_program->attr("u_aspect");
-			if (id != -1)
-				comp_program->set(id, camera->get_aspect_ratio());
-			if (render_target != nullptr)
-				render_target->bind(0, comp_program);
-			else
-				frame_buffer->texture->bind(0, comp_program);
-			const auto& binder = layer.get_composite_binder();
-			if (binder)
-				binder(comp_program);
-			// Finally, render composite image to screen buffer
-			quad->render(comp_program);
+			render_composite(target_buffer, comp_program, layer.get_composite_binder(),
+				render_target ? render_target : frame_buffer->texture.get());
 		}
 	}
 
-	void Renderer2::render_screenbuffer(void)
+	void Renderer2::render_composite(FrameBuffer* target_buffer, ShaderProgram* comp_program, ShaderBinder comp_binder, Texture* source_tex)
 	{
-		screen_buffer->unbind();
-		if (check_flag(render_flags, ForceClear))
-			clear(); // clean actual screen
-		switch_shader(composite_program);
-		screen_buffer->texture->bind(0, composite_program);
-		if (composite_binder != nullptr)
-			composite_binder(composite_program);
-		quad->render(composite_program);
-		window->present();
+		// Swith to screen buffer
+		target_buffer->bind();
+		switch_shader(comp_program);
+		auto id = comp_program->attr("u_aspect");
+		if (id != -1)
+			comp_program->set(id, camera->get_aspect_ratio());
+		source_tex->bind(0, comp_program);
+		if (comp_binder)
+			comp_binder(comp_program);
+		// Finally, render composite image to screen buffer
+		quad->render(comp_program);
 	}
 
 	void Renderer2::render(void)
@@ -283,22 +283,45 @@ namespace dukat
 		// using uniform buffers, this will only be done once each frame.
 		update_uniforms();
 #endif
-		// Composite pass - rendered to screenbuffer via framebuffer
-		for (auto& layer : layers)
-		{
-			if (!layer->visible() || layer->stage != RenderLayer2::Composite)
-				continue;
-			render_layer(*layer);
-		}
 
-		// Direct pass - rendered directly to screen buffer
-		for (auto& layer : layers)
+		// Rendering of layers supports the following use case:
+		// 1. Direct layer in a stage without composite program
+		//	  Will render the layer directly to the screen buffer.
+		// 2. Composite layer in a stage without composite program
+		//    Will render the layer to the internal frame buffer before 
+		//    using the layer's program to composite it onto the screen buffer.
+		// 3. Composite layer in a stage with a composite program.
+		//	  Similar to #2, but will render all layers within the same stage
+		//    onto a shared frame buffer. Then, will use the stage's program
+		//    to composite the buffer onto the screen buffer.
+
+		for (auto& stage : stages)
 		{
-			if (!layer->visible() || layer->stage != RenderLayer2::Direct)
-				continue;
-			if (layer->id == "fade_mask")
-				continue;
-			render_layer(*layer);
+			FrameBuffer* target_buffer;
+			if (stage->composite_program != nullptr)
+			{
+				target_buffer = stage->frame_buffer.get();
+				target_buffer->bind();
+				clear();
+			}
+			else
+			{
+				target_buffer = screen_buffer.get();
+			}
+
+			for (auto& layer : stage->layers)
+			{
+				if (!layer->visible())
+					continue;
+				render_layer(*layer, target_buffer);
+			}
+
+			if (stage->composite_program != nullptr)
+			{
+				// render from stage fbo to screen buffer
+				render_composite(screen_buffer.get(), stage->composite_program, stage->composite_binder, 
+					stage->frame_buffer->texture.get());
+			}
 		}
 
 		render_screenbuffer();
@@ -308,6 +331,29 @@ namespace dukat
 		// next frame
 		active_program = 0;
 #endif
+	}
+
+	void Renderer2::render_screenbuffer(void)
+	{
+		screen_buffer->unbind();
+		if (check_flag(render_flags, ForceClear))
+			clear(); // clean actual screen
+		switch_shader(composite_program);
+		screen_buffer->texture->bind(0, composite_program);
+		if (composite_binder != nullptr)
+			composite_binder(composite_program);
+		quad->render(composite_program);
+		window->present();
+	}
+
+	RenderStage2* Renderer2::get_stage(RenderStage id) const
+	{
+		for (auto& it = stages.begin(); it != stages.end(); ++it)
+		{
+			if (static_cast<int>(id) == (*it)->id)
+				return (*it).get();
+		}
+		return nullptr;
 	}
 
 	void Renderer2::update_uniforms(void)

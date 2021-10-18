@@ -42,4 +42,6 @@ namespace dukat
 		// Binds a named uniform buffer. Returns true if the operation was successful.
 		bool bind(const std::string& block_name, GLuint block_binding);
 	};
+
+	typedef std::function<void(ShaderProgram*)> ShaderBinder;
 }
