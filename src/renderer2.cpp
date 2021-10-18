@@ -348,10 +348,10 @@ namespace dukat
 
 	RenderStage2* Renderer2::get_stage(RenderStage id) const
 	{
-		for (auto& it = stages.begin(); it != stages.end(); ++it)
+		for (const auto& stage : stages)
 		{
-			if (static_cast<int>(id) == (*it)->id)
-				return (*it).get();
+			if (static_cast<int>(id) == stage->id)
+				return stage.get();
 		}
 		return nullptr;
 	}
