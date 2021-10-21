@@ -47,7 +47,9 @@ namespace dukat
 			// running in fullscreen mode.
 			ForceSync = 16,
 			// If set, will call glClear before rendering screen buffer
-			ForceClear = 32
+			ForceClear = 32,
+			// If set, will gamma correct final rendered scene
+			GammaCorrect = 64
 		};
 
 	private:
@@ -116,6 +118,7 @@ namespace dukat
 		Light2* get_light(int idx) { assert((idx >= 0) && (idx < max_lights)); return &lights[idx]; }
 		// Updates program used to composite final image to screen.
 		void set_composite_program(ShaderProgram* composite_program, std::function<void(ShaderProgram*)> composite_binder = nullptr);
+		
 		// Gets / sets flags
 		void set_render_particles(bool val) { set_flag(render_flags, RenderParticles, val); }
 		bool is_render_particles(void) const { return check_flag(render_flags, RenderParticles); }
@@ -129,5 +132,7 @@ namespace dukat
 		bool is_force_sync(void) { return check_flag(render_flags, ForceSync); }
 		void set_force_clear(bool val) { set_flag(render_flags, ForceClear, val); }
 		bool is_force_clear(void) { return check_flag(render_flags, ForceClear); }
+		void set_gamma_correct(bool val) { set_flag(render_flags, GammaCorrect, val); }
+		bool is_gamma_correct(void) { return check_flag(render_flags, GammaCorrect); }
 	};
 }

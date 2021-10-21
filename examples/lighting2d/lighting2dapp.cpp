@@ -15,7 +15,7 @@ namespace dukat
 
 		// Adjust scene render stage to use custom composition
 		auto scene_stage = renderer->get_stage(RenderStage::Scene);
-		scene_stage->composite_program = game->get_shaders()->get_program("fx_default.vsh", "fx_lighting.fsh");;
+		scene_stage->composite_program = game->get_shaders()->get_program("fx_default.vsh", "fx_lighting.fsh");
 		scene_stage->composite_binder = [&](ShaderProgram* p) {
 			p->set("u_ambient", 0.05f, 0.05f, 0.05f, 1.0f);
 		};
@@ -37,15 +37,15 @@ namespace dukat
 		// Set up info text
 		auto info_layer = renderer->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
-		info_text->set_size(8.0f);
-		info_text->transform.position = Vector3(-0.25f * (float)camera_width, 0.0f, 0.0f);
+		info_text->set_size(2.0f);
+		info_text->transform.position = Vector3(-0.45f * (float)camera_width, 0.4f * (float)camera_height, 0.0f);
 		info_text->transform.update();
 		std::stringstream ss;
-		ss << "Lighting Example" << std::endl;
+		ss << "Lighting Example" << std::endl
+			<< "G - Toggle gamma correction" << std::endl;
 		info_text->set_text(ss.str());
 		info_layer->add(info_text.get());
-		info_layer->hide();
-		
+
 		// Set up debug layer
 		auto debug_layer = renderer->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
@@ -151,6 +151,9 @@ namespace dukat
 		{
 		case SDLK_ESCAPE:
 			game->set_done(true);
+			break;
+		case SDLK_g:
+			game->get_renderer()->set_gamma_correct(!game->get_renderer()->is_gamma_correct());
 			break;
 		}
 	}

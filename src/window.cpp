@@ -21,7 +21,12 @@ namespace dukat
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
 		}
+
+		// Request sRGB capable frame buffer to support gamma correction on Intel cards
+		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
 #endif
+
 		set_context_attributes();
 		create_window();
 		context = SDL_GL_CreateContext(window);
