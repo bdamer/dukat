@@ -32,7 +32,7 @@ namespace dukat
 	{
 	public:
 		static constexpr auto max_particles = 2048;
-		static constexpr auto max_lights = 16;
+		static constexpr auto max_lights = 24;
 #if OPENGL_VERSION <= 30
 		static constexpr auto u_cam_dimension = "u_cam_dimension";
 #endif
