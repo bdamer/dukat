@@ -55,8 +55,23 @@ void main()
 
 	// compute contribution of each light source
 	vec4 ambient = u_ambient;
-	for (int i = 0; i < 16; i++)
-		ambient += compute_light(pos, u_lights.l[i]);
+	// unrolled light loop to avoid visual artifacts on older Intel hardware
+	ambient += compute_light(pos, u_lights.l[0]);
+	ambient += compute_light(pos, u_lights.l[1]);
+	ambient += compute_light(pos, u_lights.l[2]);
+	ambient += compute_light(pos, u_lights.l[3]);
+	ambient += compute_light(pos, u_lights.l[4]);
+	ambient += compute_light(pos, u_lights.l[5]);
+	ambient += compute_light(pos, u_lights.l[6]);
+	ambient += compute_light(pos, u_lights.l[7]);
+	ambient += compute_light(pos, u_lights.l[8]);
+	ambient += compute_light(pos, u_lights.l[9]);
+	ambient += compute_light(pos, u_lights.l[10]);
+	ambient += compute_light(pos, u_lights.l[11]);
+	ambient += compute_light(pos, u_lights.l[12]);
+	ambient += compute_light(pos, u_lights.l[13]);
+	ambient += compute_light(pos, u_lights.l[14]);
+	ambient += compute_light(pos, u_lights.l[15]);
 
 	// Clamp value
 	ambient = min(vec4(1,1,1,1), ambient);
