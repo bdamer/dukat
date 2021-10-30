@@ -172,4 +172,9 @@ namespace dukat
 		log->debug("Window resized to: {}x{}", width, height);
 		trigger(Message{Events::WindowResized, &width, &height});
 	}
+
+	void Window::present(void)
+	{
+		SDL_GL_SwapWindow(window); 
+	}
 }

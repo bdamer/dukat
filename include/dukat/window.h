@@ -34,7 +34,7 @@ namespace dukat
 		~Window(void);
 
 		// Called by application to update screen buffer.
-		void present(void) { SDL_GL_SwapWindow(window); }
+		void present(void);
 		
 		void set_title(const std::string& title) { SDL_SetWindowTitle(window, title.c_str()); }
 		void set_vsync(bool vsync);
