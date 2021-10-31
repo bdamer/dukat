@@ -12,6 +12,9 @@
 #include <dukat/settings.h>
 #include <ctime>
 
+// Define to enable slow frame tracing
+// #define PERF_TRACE
+
 namespace dukat
 {
 	constexpr float Application::max_frame_delta;
@@ -63,11 +66,16 @@ namespace dukat
 	{
 		log->info("Entering application loop.");
 		uint32_t ticks, last_frame = 0u;
+#ifdef PERF_TRACE
+		uint64_t start_ticks, update_ticks, render_ticks;
+#endif
 		SDL_Event e;
 		while (!done)
 		{
 			ticks = SDL_GetTicks();
-
+#ifdef PERF_TRACE
+			start_ticks = SDL_GetPerformanceCounter();
+#endif
 			if (paused || !active)
 			{
 				SDL_Delay(static_cast<Uint32>(1000 / 15));
@@ -101,8 +109,22 @@ namespace dukat
 
 			device_manager->update();
 
+#ifdef PERF_TRACE
+			update_ticks = SDL_GetPerformanceCounter();
+#endif
+
 			// render to screen
 			render();
+
+#ifdef PERF_TRACE
+			render_ticks = SDL_GetPerformanceCounter();
+			const auto freq = static_cast<double>(SDL_GetPerformanceFrequency());
+			const auto update_time = static_cast<double>(update_ticks - start_ticks) / freq;
+			const auto render_time = static_cast<double>(render_ticks - update_ticks) / freq;
+			const auto total_time = update_time + render_time;
+			if (!paused && active && total_time > 0.02)
+				log->warn("Slow frame: {} [{} {}]", total_time, update_time, render_time);
+#endif
 			perfc.inc(PerformanceCounter::FRAMES);
 			perfc.reset();
 		}
