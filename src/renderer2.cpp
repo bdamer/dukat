@@ -336,8 +336,6 @@ namespace dukat
 	void Renderer2::render_screenbuffer(void)
 	{
 		screen_buffer->unbind();
-		if (check_flag(render_flags, ForceClear))
-			clear(); // clean actual screen
 		if (check_flag(render_flags, GammaCorrect))
 			glEnable(GL_FRAMEBUFFER_SRGB);
 		switch_shader(composite_program);
@@ -348,6 +346,8 @@ namespace dukat
 		if (check_flag(render_flags, GammaCorrect))
 			glDisable(GL_FRAMEBUFFER_SRGB);
 		window->present();
+		if (check_flag(render_flags, ForceClear))
+			clear(); // clean actual screen
 	}
 
 	RenderStage2* Renderer2::get_stage(RenderStage id) const
