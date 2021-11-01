@@ -13,6 +13,7 @@ namespace dukat
 {
 	class ShaderCache;
 	class ShaderProgram;
+	class Surface;
 	struct GenericBuffer;
 	struct Color;
 
@@ -106,6 +107,8 @@ namespace dukat
 		virtual void update_uniforms(void) = 0;
 		// Binds data to a uniform buffer.
 		void bind_uniform(UniformBuffer buffer, GLsizeiptr size, const GLvoid * data);
+		// Copies screenbuffer to surface.
+		virtual std::unique_ptr<Surface> copy_screen_buffer(void);
 
 		// Checks if a given extension is supported.
 		inline bool is_ext_supported(const std::string& extension) const { return SDL_GL_ExtensionSupported(extension.c_str()) == SDL_TRUE; }

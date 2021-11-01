@@ -4,6 +4,7 @@
 #include <dukat/perfcounter.h>
 #include <dukat/renderer.h>
 #include <dukat/shadercache.h>
+#include <dukat/surface.h>
 #include <dukat/sysutil.h>
 #include <dukat/buffers.h>
 
@@ -120,6 +121,16 @@ namespace dukat
 	{
 		glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(buffer), uniform_buffers->buffers[static_cast<int>(buffer)]);
 		glBufferData(GL_UNIFORM_BUFFER, size, data, GL_STREAM_DRAW);
+	}
+
+	std::unique_ptr<Surface> Renderer::copy_screen_buffer(void)
+	{
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		auto surface = std::make_unique<Surface>(viewport[2], viewport[3], SDL_PIXELFORMAT_RGB24);
+		glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, surface->get_surface()->pixels);
+		surface->flip_vertical();
+		return std::move(surface);
 	}
 
 	void Renderer::receive(const Message& msg)

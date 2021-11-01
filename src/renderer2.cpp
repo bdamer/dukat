@@ -324,7 +324,11 @@ namespace dukat
 			}
 		}
 
+		screen_buffer->unbind();
 		render_screenbuffer();
+
+		if (check_flag(render_flags, ForceClear))
+			clear(); // clean actual screen
 
 #if OPENGL_VERSION < 30
 		// invalidate active program to force uniforms rebind during
@@ -335,7 +339,6 @@ namespace dukat
 
 	void Renderer2::render_screenbuffer(void)
 	{
-		screen_buffer->unbind();
 		if (check_flag(render_flags, GammaCorrect))
 			glEnable(GL_FRAMEBUFFER_SRGB);
 		switch_shader(composite_program);
@@ -346,8 +349,6 @@ namespace dukat
 		if (check_flag(render_flags, GammaCorrect))
 			glDisable(GL_FRAMEBUFFER_SRGB);
 		window->present();
-		if (check_flag(render_flags, ForceClear))
-			clear(); // clean actual screen
 	}
 
 	RenderStage2* Renderer2::get_stage(RenderStage id) const
@@ -380,5 +381,17 @@ namespace dukat
 	{
 		this->composite_program = composite_program;
 		this->composite_binder = composite_binder;
+	}
+
+	std::unique_ptr<Surface> Renderer2::copy_screen_buffer(void)
+	{
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		auto surface = std::make_unique<Surface>(viewport[2], viewport[3], SDL_PIXELFORMAT_RGB24);
+		if (check_flag(render_flags, ForceClear))
+			render_screenbuffer(); // re-render in case screen buffer has already been cleared
+		glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, surface->get_surface()->pixels);
+		surface->flip_vertical();
+		return std::move(surface);
 	}
 }

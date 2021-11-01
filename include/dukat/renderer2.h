@@ -118,7 +118,9 @@ namespace dukat
 		Light2* get_light(int idx) { assert((idx >= 0) && (idx < max_lights)); return &lights[idx]; }
 		// Updates program used to composite final image to screen.
 		void set_composite_program(ShaderProgram* composite_program, std::function<void(ShaderProgram*)> composite_binder = nullptr);
-		
+		// Copies screenbuffer to surface.
+		std::unique_ptr<Surface> copy_screen_buffer(void);
+
 		// Gets / sets flags
 		void set_render_particles(bool val) { set_flag(render_flags, RenderParticles, val); }
 		bool is_render_particles(void) const { return check_flag(render_flags, RenderParticles); }

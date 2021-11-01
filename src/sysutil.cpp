@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <dukat/sysutil.h>
 #include <dukat/log.h>
-#include <dukat/surface.h>
 
 namespace dukat
 {
@@ -42,16 +41,5 @@ namespace dukat
 			}
 			log->error("glError: {}", error);
 		}
-	}
-
-	void save_screenshot(const std::string& filename)
-	{
-		log->info("Saving screenshot to: {}", filename);
-		GLint viewport[4];
-		glGetIntegerv(GL_VIEWPORT, viewport);
-		Surface surface(viewport[2], viewport[3], SDL_PIXELFORMAT_RGB24);
-		glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, surface.get_surface()->pixels);
-		surface.flip_vertical();
-		surface.save_to_file(filename);
 	}
 }

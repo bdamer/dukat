@@ -15,6 +15,7 @@ namespace dukat
 		virtual void update(float delta);
 		virtual void update_debug_text(void);
 		void toggle_debug(void);
+		void save_screenshot(const std::string& filename);
 
 	public:
 		Game3(Settings& settings);

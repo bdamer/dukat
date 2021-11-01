@@ -38,6 +38,13 @@ namespace dukat
 			debug_layer->hide();
 	}
 
+	void Game2::save_screenshot(const std::string& filename)
+	{
+		log->info("Saving screenshot to: {}", filename);
+		auto surface = renderer->copy_screen_buffer();
+		surface->save_to_file(filename);
+	}
+
 	std::unique_ptr<TextMeshInstance> Game2::create_text_mesh(void)
 	{
 		auto tex = texture_cache->get("font_256.png", ProfileNearest);

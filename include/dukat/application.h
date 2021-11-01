@@ -44,6 +44,8 @@ namespace dukat
 		virtual void update(float delta) = 0;
 		// Called to render to the screen.
 		virtual void render(void) = 0;
+		// Takes a screenshot of current frame.
+		virtual void save_screenshot(const std::string& filename) = 0;
 
 	public:
 		// Called to initialize the application.

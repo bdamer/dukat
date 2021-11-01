@@ -2,6 +2,7 @@
 #include <dukat/game3.h>
 #include <dukat/renderer3.h>
 #include <dukat/settings.h>
+#include <dukat/log.h>
 
 namespace dukat
 {
@@ -12,9 +13,7 @@ namespace dukat
 
 		renderer = std::make_unique<dukat::Renderer3>(window.get(), shader_cache.get(), texture_cache.get());
 		if (settings.get_bool("rendere.effects.enabled")) 
-		{
 			renderer->enable_effects();
-		}
 
 		debug_meshes.stage = RenderStage::Overlay;
 		debug_meshes.visible = debug;
@@ -38,6 +37,13 @@ namespace dukat
 	{
 		GameBase::toggle_debug();
 		debug_meshes.visible = debug;
+	}
+
+	void Game3::save_screenshot(const std::string& filename)
+	{
+		log->info("Saving screenshot to: {}", filename);
+		auto surface = renderer->copy_screen_buffer();
+		surface->save_to_file(filename);
 	}
 
 	void Game3::update_debug_text(void)

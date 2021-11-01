@@ -40,13 +40,13 @@ namespace dukat
 		std::stack<Scene*> scene_stack;
 		std::queue<std::function<void(void)>> delayed_actions;
 		Controller* controller;
+		bool debug;
 
 		virtual void handle_event(const SDL_Event& e);
 		virtual void handle_keyboard(const SDL_Event& e);
 		virtual void update(float delta);
 		virtual void render(void);
 
-		bool debug;
 		// Called on a timer to output debug information.
 		virtual void update_debug_text(void) { }
 

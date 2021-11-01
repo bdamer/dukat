@@ -17,6 +17,7 @@ namespace dukat
 		float speed_factor; // global speed factor used for updates
 		virtual void update(float delta);
 		void toggle_debug(void);
+		void save_screenshot(const std::string& filename);
 
 	public:
 		Game2(Settings& settings);

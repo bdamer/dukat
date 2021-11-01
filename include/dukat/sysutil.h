@@ -25,9 +25,6 @@ namespace dukat
 		return reinterpret_cast<float_t&>(val);
 	}
 
-	// Writes the content of the current screen buffer to a file.
-	void save_screenshot(const std::string& filename);
-
 	inline std::string file_extension(const std::string& filename)
 	{
 		return filename.substr(filename.rfind('.') + 1);
