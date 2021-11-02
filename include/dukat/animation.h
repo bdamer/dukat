@@ -25,6 +25,7 @@ namespace dukat
 	class Animation
 	{
 	public:
+		typedef std::function<void(void)> Callback;
 		uint8_t group; // animation group
 
 		Animation(void) : group(0u) { }
@@ -57,7 +58,7 @@ namespace dukat
 		// if true, animation is paused
 		bool paused; 
 		// called when animation is done
-		std::function<void(void)> callback;
+		Callback callback;
 
 	public:
 		// Creates a new animation for the attribute provided.
@@ -69,7 +70,7 @@ namespace dukat
 		}
 		~ValueAnimation(void) { }
 
-		void set_callback(const std::function<void(void)>& callback) { this->callback = callback; }
+		void set_callback(const Callback& callback) { this->callback = callback; }
 		void set_loop(bool loop) { this->loop = loop; }
 		bool is_loop(void) const { return loop; }
 		bool is_running(void) const { return next_key > -1 && !is_done(); }
@@ -146,7 +147,7 @@ namespace dukat
 		// if true, animation is paused
 		bool paused;
 		// called when animation is done
-		std::function<void(void)> callback;
+		Callback callback;
 
 	public:
 		// Creates a new animation for the attribute provided.
@@ -158,7 +159,7 @@ namespace dukat
 		}
 		~MultiValueAnimation(void) { }
 
-		void set_callback(const std::function<void(void)>& callback) { this->callback = callback; }
+		void set_callback(const Callback& callback) { this->callback = callback; }
 		void set_loop(bool loop) { this->loop = loop; }
 		bool is_loop(void) const { return loop; }
 		bool is_running(void) const { return next_key > -1 && !is_done(); }

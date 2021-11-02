@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\dukat\animationsequence.h" />
     <ClInclude Include="..\include\dukat\assetloader.h" />
     <ClInclude Include="..\include\dukat\audiocache.h" />
     <ClInclude Include="..\include\dukat\audiomanager.h" />
@@ -291,6 +292,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\dukat\playbackdevice.h" />
+    <ClCompile Include="..\src\animationsequence.cpp" />
     <ClCompile Include="..\src\assetloader.cpp" />
     <ClCompile Include="..\src\audiocache.cpp" />
     <ClCompile Include="..\src\audiomanager.cpp" />

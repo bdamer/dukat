@@ -70,6 +70,7 @@
 
 // System
 #include "animation.h"
+#include "animationsequence.h"
 #include "animationmanager.h"
 #include "application.h"
 #include "assetloader.h"
