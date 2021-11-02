@@ -5,7 +5,7 @@ include_directories(../include)
 file(GLOB SOURCE_FILES *.cpp)
 if(ANDROID)
 	file (GLOB SOURCE_FILES
-		aabb2.cpp aabb3.cpp animationmanager.cpp application.cpp assetloader.cpp
+		aabb2.cpp aabb3.cpp animationmanager.cpp animationsequence.cpp application.cpp assetloader.cpp
 		bit.cpp blockbuilder.cpp boundingcircle.cpp boundingsphere.cpp buffers.cpp
 		camera2.cpp camera3.cpp collisionmanager2.cpp
 		debugeffect2.cpp devicemanager.cpp
