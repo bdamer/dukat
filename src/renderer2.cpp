@@ -40,6 +40,7 @@ namespace dukat
 		{
 			l.position = Vector2{ 0, 0 };
 			l.k1 = l.k2 = 0.0f;
+			l.color = Color{ 0, 0, 0, 0 };
 		}
 
 		gl_check_error();

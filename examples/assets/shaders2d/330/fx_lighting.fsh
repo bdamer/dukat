@@ -40,7 +40,7 @@ vec4 compute_light(vec2 pos, Light light)
 {
 	float distance = length(pos - light.position);
 	float attenuation = 1.0 / (1.0 + light.k1 * distance + light.k2 * (distance * distance));    
-	return light.color * attenuation;
+	return step(0.001, light.k1) * light.color * attenuation;
 }
 
 void main()
