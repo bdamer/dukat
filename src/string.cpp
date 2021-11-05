@@ -37,4 +37,34 @@ namespace dukat
 		}
 		return res;
 	}
+
+	std::string add_line_breaks(const std::string& input, int num_cols)
+	{
+		std::stringstream ss;
+		auto processed = 0;
+		while (true)
+		{
+			if (static_cast<int>(input.length()) - processed < num_cols) // end of string
+			{
+				ss << input.substr(processed);
+				break;
+			}
+
+			// find last space before next break
+			auto i = num_cols;
+			for (; i >= 0; i--)
+			{
+				const auto& c = input[processed + i];
+				if (c == ' ')
+					break;
+			}
+			assert(i >= 0);
+
+			// copy string
+			ss << input.substr(processed, i) << std::endl;
+			processed += i + 1; // acount for the space
+		}
+
+		return ss.str();
+	}
 }

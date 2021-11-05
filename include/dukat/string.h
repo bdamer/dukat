@@ -38,4 +38,8 @@ namespace dukat
 
 	// Computes hash value of provided string.
 	uint32_t compute_hash(const std::string&);
+
+	// Returns a version of the input string with line breaks added
+	// so that no line is longer than num_cols.
+	std::string add_line_breaks(const std::string& input, int num_cols);
 }
