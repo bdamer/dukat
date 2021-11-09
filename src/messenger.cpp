@@ -3,15 +3,29 @@
 
 namespace dukat
 {
+	struct EventLock
+	{
+		Event& active_event;
+
+		EventLock(Event& active_event, const Event& event_trigger) : active_event(active_event)
+		{
+			active_event = event_trigger;
+		}
+
+		~EventLock(void)
+		{
+			active_event = Events::None;
+		}
+	};
+
 	void Messenger::trigger(const Message& message)
 	{
 		if (!subscriptions.count(message.event))
 			return;
-		active_trigger = message.event;
+		EventLock lock(active_trigger, message.event);
 		const auto& subs = subscriptions.at(message.event);
 		for (const auto& r : subs)
 			r->receive(message);
-		active_trigger = Events::None;
 	}
 
 	void Messenger::subscribe(Recipient* recipient, Event ev)
