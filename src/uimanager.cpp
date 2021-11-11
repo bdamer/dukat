@@ -116,6 +116,17 @@ namespace dukat
 		}
 	}
 
+	void UIManager::focus_on(UIControl* control)
+	{
+		if (controls.empty() || focus == control)
+			return;
+
+		if (focus != nullptr)
+			focus->set_focus(false);
+		focus = control;
+		focus->set_focus(true);
+	}
+
 	bool UIManager::trigger_focus(void)
 	{
 		if (focus != nullptr)

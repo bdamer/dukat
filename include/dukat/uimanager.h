@@ -33,6 +33,7 @@ namespace dukat
 		void first_control(void);
 		void prev_control(void);
 		void next_control(void);
+		void focus_on(UIControl* control);
 		// Triggers click on control in focus, if any.
 		bool trigger_focus(void); 
 		// Cycles current control in focus, if any.
