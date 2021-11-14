@@ -128,19 +128,24 @@ namespace dukat
 		last_update = SDL_GetTicks();
 	}
 
-	void GameBase::pop_scene(void)
+	void GameBase::pop_scene(int n)
 	{
-		if (!scene_stack.empty())
+		assert(n > 0);
+		assert(!scene_stack.empty()); // invalid call
+
+		scene_stack.top()->deactivate();
+
+		while (n > 0 && !scene_stack.empty())
 		{
-			scene_stack.top()->deactivate();
 			scene_stack.pop();
-			if (!scene_stack.empty())
-			{
-				scene_stack.top()->activate();
-				// Reset last update whenever scene changes.
-				last_update = SDL_GetTicks();
-			}
+			n--;
 		}
+
+		// Reset last update whenever scene changes.
+		last_update = SDL_GetTicks();
+
+		if (!scene_stack.empty())
+			scene_stack.top()->activate();
 	}
 
 	Scene* GameBase::get_scene(const std::string& id) const

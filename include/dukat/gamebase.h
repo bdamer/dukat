@@ -60,8 +60,10 @@ namespace dukat
 		virtual std::unique_ptr<TextMeshInstance> create_text_mesh(void) = 0;
 
 		void add_scene(const std::string& id, std::unique_ptr<Scene> scene);
+		// Pushes a new scene onto the stack.
 		void push_scene(const std::string& id);
-		void pop_scene(void);
+		// Pops the n topmost scenes off the stack.
+		void pop_scene(int n = 1);
 		Scene* get_scene(const std::string& id) const;
 		Scene* get_scene(void) const { return scene_stack.top(); }
 		void set_controller(Controller* controller) { this->controller = controller; }
