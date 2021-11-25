@@ -59,6 +59,7 @@ namespace dukat
 		float get_width(void) const { return width * transform.scale.x; }
 		float get_height(void) const { return height * transform.scale.x; }
 		void set_font(BitmapFont* font);
+		BitmapFont* get_font(void) const { return font; }
 
 		void update(float delta = 0.0f);
 	};
