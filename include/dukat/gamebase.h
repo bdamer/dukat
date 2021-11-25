@@ -10,6 +10,7 @@
 #endif
 #include "animationmanager.h"
 #include "application.h"
+#include "fontcache.h"
 #include "meshcache.h"
 #include "messenger.h"
 #include "textmeshinstance.h"
@@ -35,6 +36,7 @@ namespace dukat
 		std::unique_ptr<ShaderCache> shader_cache;
 		std::unique_ptr<TextureCache> texture_cache;
 		std::unique_ptr<MeshCache> mesh_cache;
+		std::unique_ptr<FontCache> font_cache;
 		std::map<std::type_index, std::unique_ptr<Manager>> managers;
 		std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
 		std::stack<Scene*> scene_stack;
@@ -50,14 +52,14 @@ namespace dukat
 		// Called on a timer to output debug information.
 		virtual void update_debug_text(void) { }
 
-		std::unique_ptr<TextMeshInstance> build_text_mesh(Texture* texture, ShaderProgram* sp, float size, float yorientation);
+		std::unique_ptr<TextMeshInstance> build_text_mesh(BitmapFont* font, ShaderProgram* sp, float size, float yorientation);
 
 	public:
 		GameBase(Settings& settings);
 		virtual ~GameBase(void);
 		virtual void toggle_debug(void);
 		bool is_debug(void) const { return debug; }
-		virtual std::unique_ptr<TextMeshInstance> create_text_mesh(void) = 0;
+		virtual std::unique_ptr<TextMeshInstance> create_text_mesh(BitmapFont* font = nullptr) = 0;
 
 		void add_scene(const std::string& id, std::unique_ptr<Scene> scene);
 		// Pushes a new scene onto the stack.
@@ -88,6 +90,7 @@ namespace dukat
 		ShaderCache* get_shaders(void) const { return shader_cache.get(); }
 		TextureCache* get_textures(void) const { return texture_cache.get(); }
 		MeshCache* get_meshes(void) const { return mesh_cache.get(); }
+		FontCache* get_fonts(void) const { return font_cache.get(); }
 		TimerManager* get_timers(void) const { return get<TimerManager>(); }
 		AnimationManager* get_animations(void) const { return get<AnimationManager>(); }
 	};

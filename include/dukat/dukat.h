@@ -85,10 +85,14 @@
 
 // Util
 #include "bit.h"
+#include "bitmapfont.h"
 #ifndef __ANDROID__
 #include "dds.h"
 #include "diamondsquaregenerator.h"
+#endif
+#include "fontcache.h"
 #include "fsm.h"
+#ifndef __ANDROID__
 #include "heightmap.h"
 #include "heightmapgenerator.h"
 #include "mapgraph.h"

@@ -45,11 +45,10 @@ namespace dukat
 		surface->save_to_file(filename);
 	}
 
-	std::unique_ptr<TextMeshInstance> Game2::create_text_mesh(void)
+	std::unique_ptr<TextMeshInstance> Game2::create_text_mesh(BitmapFont* font)
 	{
-		auto tex = texture_cache->get("font_256.png", ProfileNearest);
 		auto sp = shader_cache->get_program("sc_text.vsh", "sc_text.fsh");
-		return build_text_mesh(tex, sp, 1.0f, -1.0f);
+		return build_text_mesh(font, sp, 1.0f, -1.0f);
 	}
 		
 	std::unique_ptr<Sprite> Game2::create_sprite(const std::string& filename, Rect rect)

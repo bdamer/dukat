@@ -27,6 +27,7 @@ namespace dukat
 		shader_cache = std::make_unique<ShaderCache>(settings.get_string("resources.shaders"));
 		texture_cache = std::make_unique<TextureCache>(settings.get_string("resources.textures"));
 		mesh_cache = std::make_unique<MeshCache>();
+		font_cache = std::make_unique<FontCache>(settings.get_string("resources.fonts"));
 		add_manager<ParticleManager>();
 		add_manager<TimerManager>();
 		add_manager<AnimationManager>();
@@ -93,12 +94,12 @@ namespace dukat
 		trigger(Message{Events::ToggleDebug});
 	}
 
-	std::unique_ptr<TextMeshInstance> GameBase::build_text_mesh(Texture* texture, ShaderProgram* sp, float size, float yorientation)
+	std::unique_ptr<TextMeshInstance> GameBase::build_text_mesh(BitmapFont* font, ShaderProgram* sp, float size, float yorientation)
 	{
-		TextMeshBuilder mb;
-		auto mesh_instance = std::make_unique<TextMeshInstance>(mb.build_text_mesh(), yorientation);
+		if (font == nullptr)
+			font = font_cache->get("generic.fnt");
+		auto mesh_instance = std::make_unique<TextMeshInstance>(font, yorientation);
 		mesh_instance->transform.update();
-		mesh_instance->set_texture(texture);
 		mesh_instance->set_program(sp);
 		mesh_instance->set_size(size);
 		return mesh_instance;

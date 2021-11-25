@@ -4,37 +4,46 @@
 
 namespace dukat
 {
-	TextMeshInstance::TextMeshInstance(std::unique_ptr<MeshData> text_mesh, float yorientation)
+	TextMeshInstance::TextMeshInstance(BitmapFont* font, float yorientation)
 		: text(""), char_width(1.0f), line_height(1.2f), halign(Align::Left), valign(Align::Bottom), yorientation(yorientation),
-		  num_vertices(0), scroll_delay(0.0f), scroll_accumulator(0.0f), scroll_callback(nullptr)
+		  num_vertices(0), font(font), scroll_delay(0.0f), scroll_accumulator(0.0f), scroll_callback(nullptr)
 	{
-		this->text_mesh = std::move(text_mesh);
+		TextMeshBuilder mb(font);
+		this->text_mesh = mb.build_text_mesh();
 		set_mesh(this->text_mesh.get());
+		set_texture(font->get_texture());
 	}
 
 	void TextMeshInstance::set_text(const std::string& text)
 	{
 		if (this->text == text)
 			return;
-
 		this->text = text;
-		TextMeshBuilder mb;
+		rebuild();
+	}
+
+	void TextMeshInstance::rebuild(void)
+	{
+		TextMeshBuilder mb(font);
 		mb.rebuild_text_mesh(get_mesh(), text, char_width, line_height, width, height);
 		update(0.0f);
+
+		// if scroll is active, reset number of characters on screen
+		if (scroll_delay > 0.0f)
+		{
+			auto md = this->get_mesh();
+			num_vertices = md->vertex_count();
+			md->set_vertex_count(vertices_per_char);
+		}
 	}
 
 	void TextMeshInstance::set_text_scroll(const std::string& text, float delay, const std::function<void(void)>& callback)
 	{
-		set_text(text);
-
-		// Start with a single character
-		auto md = this->get_mesh();
-		num_vertices = md->vertex_count();
-		md->set_vertex_count(vertices_per_char);
-
 		scroll_delay = delay;
 		scroll_accumulator = 0.0f;
 		scroll_callback = callback;
+
+		set_text(text);
 	}
 
 	void TextMeshInstance::set_alpha(float alpha)
@@ -79,7 +88,14 @@ namespace dukat
 		}
 	}
 
-	void TextMeshInstance::update(float delta) 
+	void TextMeshInstance::set_font(BitmapFont* font)
+	{
+		this->font = font; 
+		set_texture(font->get_texture());
+		rebuild();
+	}
+
+	void TextMeshInstance::update(float delta)
 	{
 		update_scroll(delta);
 

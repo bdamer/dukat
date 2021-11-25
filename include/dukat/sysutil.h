@@ -27,6 +27,28 @@ namespace dukat
 
 	inline std::string file_extension(const std::string& filename)
 	{
-		return filename.substr(filename.rfind('.') + 1);
+		const auto idx = filename.rfind('.');
+		if (idx != std::string::npos)
+			return filename.substr(idx + 1);
+		else
+			return "";
+	}
+
+	inline std::string file_name(const std::string& filename)
+	{
+		const auto idx = filename.find_last_of("\\/");
+		if (idx != std::string::npos)
+			return filename.substr(idx + 1);
+		else
+			return "";
+	}
+
+	inline std::string dir_name(const std::string& filename)
+	{
+		const auto idx = filename.find_last_of("\\/");
+		if (idx != std::string::npos)
+			return filename.substr(0, idx + 1);
+		else
+			return "";
 	}
 }

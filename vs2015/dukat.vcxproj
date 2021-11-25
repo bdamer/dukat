@@ -151,6 +151,7 @@
     <ClInclude Include="..\include\dukat\audiocache.h" />
     <ClInclude Include="..\include\dukat\audiomanager.h" />
     <ClInclude Include="..\include\dukat\bit.h" />
+    <ClInclude Include="..\include\dukat\bitmapfont.h" />
     <ClInclude Include="..\include\dukat\boundingcircle.h" />
     <ClInclude Include="..\include\dukat\box2dmanager.h" />
     <ClInclude Include="..\include\dukat\cameraeffect2.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="..\include\dukat\effectpass.h" />
     <ClInclude Include="..\include\dukat\followercamera2.h" />
     <ClInclude Include="..\include\dukat\followercamera3.h" />
+    <ClInclude Include="..\include\dukat\fontcache.h" />
     <ClInclude Include="..\include\dukat\fsm.h" />
     <ClInclude Include="..\include\dukat\fullscreeneffect2.h" />
     <ClInclude Include="..\include\dukat\gridmesh.h" />
@@ -297,12 +299,14 @@
     <ClCompile Include="..\src\audiocache.cpp" />
     <ClCompile Include="..\src\audiomanager.cpp" />
     <ClCompile Include="..\src\bit.cpp" />
+    <ClCompile Include="..\src\bitmapfont.cpp" />
     <ClCompile Include="..\src\boundingcircle.cpp" />
     <ClCompile Include="..\src\box2dmanager.cpp" />
     <ClCompile Include="..\src\box2deffect2.cpp" />
     <ClCompile Include="..\src\collisionmanager2.cpp" />
     <ClCompile Include="..\src\debugeffect2.cpp" />
     <ClCompile Include="..\src\effectpass.cpp" />
+    <ClCompile Include="..\src\fontcache.cpp" />
     <ClCompile Include="..\src\fullscreeneffect2.cpp" />
     <ClCompile Include="..\src\gridmesh.cpp" />
     <ClCompile Include="..\src\inputrecorder.cpp" />

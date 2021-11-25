@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/textmeshbuilder.h>
+#include <dukat/bitmapfont.h>
 #include <dukat/buffers.h>
 #include <dukat/log.h>
 #include <dukat/meshdata.h>
@@ -68,14 +69,14 @@ namespace dukat
 	{
 		assert(text.length() <= max_length);
 
+		auto tex = font->get_texture();
+
 		// build up vertices
 		auto x = 0.0f, y = 0.0f;
-		const auto tw = 1.0f / static_cast<float>(cols);
-		const auto th = 1.0f / static_cast<float>(rows);
 		auto max_x = 0.0f;
 		std::vector<Vertex2PCT> verts;
 		auto color = default_color;
-		for (size_t i = 0; i < text.length(); i++)
+		for (auto i = 0u; i < text.length(); i++)
 		{
 			char c = text[i];
 			if (c == '<' && (i < text.length() - 1))
@@ -90,18 +91,27 @@ namespace dukat
 				continue;
 			}
 
-			// Create vertex for this character
-			auto u = static_cast<float>((c - 32) % 16) * tw;
-			auto v = static_cast<float>((c - 32) / 16) * th;
+			const auto& glyph = font->get_glyph(c);
+
+			// Texture coordinates
+			const auto u = glyph.x;
+			const auto v = glyph.y;
+			const auto tw = glyph.width;
+			const auto th = glyph.height;
+
+			// Vertex size based texture size 
+			const auto w = (tw * tex->w) / font->size;
+			const auto h = 1.0f;
+
 			verts.push_back({ x, y, color.r, color.g, color.b, color.a, u, v }); // top-left
-			verts.push_back({ x, y + 1.0f, color.r, color.g, color.b, color.a, u, v + th }); // bottom-left
-			verts.push_back({ x + 1.0f, y, color.r, color.g, color.b, color.a, u + tw, v }); // top-right
-			verts.push_back({ x + 1.0f, y, color.r, color.g, color.b, color.a, u + tw, v }); // top-right
-			verts.push_back({ x, y + 1.0f, color.r, color.g, color.b, color.a, u, v + th }); // bottom-left
-			verts.push_back({ x + 1.0f, y + 1.0f, color.r, color.g, color.b, color.a, u + tw, v + th }); // bottom-right
+			verts.push_back({ x, y + h, color.r, color.g, color.b, color.a, u, v + th }); // bottom-left
+			verts.push_back({ x + w, y, color.r, color.g, color.b, color.a, u + tw, v }); // top-right
+			verts.push_back({ x + w, y, color.r, color.g, color.b, color.a, u + tw, v }); // top-right
+			verts.push_back({ x, y + h, color.r, color.g, color.b, color.a, u, v + th }); // bottom-left
+			verts.push_back({ x + w, y + h, color.r, color.g, color.b, color.a, u + tw, v + th }); // bottom-right
 
 			max_x = std::max(x, max_x);
-			x += char_width;
+			x += glyph.x_advance * char_width;
 		}
 
 		width = max_x + char_width;

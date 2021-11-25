@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "bitmapfont.h"
 #include "meshinstance.h"
 
 namespace dukat
@@ -28,12 +29,14 @@ namespace dukat
 		float width, height;
 		// number of vertices in current mesh
 		int num_vertices;
+		BitmapFont* font;
 		// delay between characters
 		float scroll_delay;
 		float scroll_accumulator;
 		std::function<void(void)> scroll_callback;
 
 		void update_scroll(float delta);
+		void rebuild(void);
 
 	public:
 		Align halign; // Valid values: Center, Left, Right
@@ -41,14 +44,13 @@ namespace dukat
 		float char_width; // scales space allocated for characters and lines
 		float line_height;
 
-		TextMeshInstance(std::unique_ptr<MeshData> text_mesh, float yorientation = 1.0f);
+		TextMeshInstance(BitmapFont* font, float yorientation = 1.0f);
 		~TextMeshInstance(void) { }
 
 		// Accessors
 		void set_text(const std::string& text);
 		std::string get_text(void) const { return text; }
 		void set_text_scroll(const std::string& text, float delay, const std::function<void(void)>& callback = nullptr);
-
 		void set_alpha(float alpha);
 		float get_alpha(void) const;
 		void set_color(const Color& color) { set_ambient(color); }
@@ -56,6 +58,8 @@ namespace dukat
 		void set_size(float size);
 		float get_width(void) const { return width * transform.scale.x; }
 		float get_height(void) const { return height * transform.scale.x; }
+		void set_font(BitmapFont* font);
+
 		void update(float delta = 0.0f);
 	};
 }

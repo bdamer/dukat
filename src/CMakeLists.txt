@@ -6,11 +6,12 @@ file(GLOB SOURCE_FILES *.cpp)
 if(ANDROID)
 	file (GLOB SOURCE_FILES
 		aabb2.cpp aabb3.cpp animationmanager.cpp animationsequence.cpp application.cpp assetloader.cpp
-		bit.cpp blockbuilder.cpp boundingcircle.cpp boundingsphere.cpp buffers.cpp
+		bit.cpp bitmapfont.cpp blockbuilder.cpp boundingcircle.cpp boundingsphere.cpp buffers.cpp
 		camera2.cpp camera3.cpp collisionmanager2.cpp
 		debugeffect2.cpp devicemanager.cpp
 		effectpass.cpp environment.cpp eulerangles.cpp
-		firstpersoncamera3.cpp fixedcamera3.cpp fullscreeneffect2.cpp game2.cpp game3.cpp gamebase.cpp gamepaddevice.cpp geometry.cpp
+		firstpersoncamera3.cpp fixedcamera3.cpp fontcache.cpp fullscreeneffect2.cpp 
+		game2.cpp game3.cpp gamebase.cpp gamepaddevice.cpp geometry.cpp
 		inputdevice.cpp inputrecorder.cpp json.cpp keyboarddevice.cpp log.cpp mathutil.cpp matrix2.cpp matrix4.cpp meshbuilder2.cpp meshbuilder3.cpp
 		meshcache.cpp meshdata.cpp meshgroup.cpp meshinstance.cpp messenger.cpp model3.cpp obb2.cpp orbitcamera3.cpp 
 		particleemitter.cpp particlemanager.cpp perfcounter.cpp quaternion.cpp

@@ -22,7 +22,7 @@ namespace dukat
 	public:
 		Game2(Settings& settings);
 		virtual ~Game2(void);
-		std::unique_ptr<TextMeshInstance> create_text_mesh(void);
+		std::unique_ptr<TextMeshInstance> create_text_mesh(BitmapFont* font = nullptr);
 		std::unique_ptr<Sprite> create_sprite(const std::string& filename, Rect rect = { });
 		float get_speed_factor(void) const { return speed_factor; }
 		void set_speed_factor(float factor) { this->speed_factor = factor; }

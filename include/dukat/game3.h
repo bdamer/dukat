@@ -20,7 +20,7 @@ namespace dukat
 	public:
 		Game3(Settings& settings);
 		virtual ~Game3(void) { }
-		std::unique_ptr<TextMeshInstance> create_text_mesh(void);
+		std::unique_ptr<TextMeshInstance> create_text_mesh(BitmapFont* font = nullptr);
 
 		Renderer3* get_renderer(void) const { return renderer.get(); }
 		MeshGroup* get_debug_meshes(void) { return &debug_meshes; }

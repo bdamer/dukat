@@ -6,25 +6,45 @@
 
 namespace dukat
 {
-	TextScene::TextScene(Game2* game2) : Scene2(game2)
+	TextScene::TextScene(Game2* game2) : Scene2(game2), font_size(16)
 	{
-		auto layer = game->get_renderer()->create_direct_layer("main", 1.0f);
-
 		auto settings = game->get_settings();
+		auto renderer = game->get_renderer();
+		renderer->set_clear_color(Color{ 0.3f, 0.3f, 0.3f, 0.0f });
+		auto layer = renderer->create_direct_layer(layer_name, 1.0f);
 
 		// Set up default camera centered around origin
 		auto window = game->get_window();
 		auto camera = std::make_unique<Camera2>(game);
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_resize_handler(fixed_height_camera(window->get_height()));
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));
 
+		// Set up center text
+		center_text = game->create_text_mesh();
+		center_text->halign = TextMeshInstance::Center;
+		center_text->valign = TextMeshInstance::Center;
+		center_text->set_size(static_cast<float>(font_size));
+
+		reset_text();
+		center_text->update(0.0f);
+		layer->add(center_text.get());
+
 		// Set up info text
 		info_text = game->create_text_mesh();
-		info_text->halign = TextMeshInstance::Center;
-		info_text->valign = TextMeshInstance::Center;
-		info_text->set_size(10.0f);
-		reset_text();
+		info_text->set_size(16.0f);
+		info_text->transform.position = Vector3(
+			-0.45f * static_cast<float>(window->get_width()),
+			0.3f * static_cast<float>(window->get_height()),
+			0.0f);
+		std::stringstream ss;
+		ss << "<0-5> Change font" << std::endl
+			<< "<-+> Change font size" << std::endl
+			<< "<LEFT,RIGHT> Change horizontal spacing" << std::endl
+			<< "<DOWN,UP> Change line height" << std::endl
+			<< "<F11> Toggle info";
+		info_text->set_text(ss.str());
 		info_text->update(0.0f);
 		layer->add(info_text.get());
 
@@ -32,7 +52,10 @@ namespace dukat
 		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(12.0f);
-		debug_text->transform.position = Vector3(-0.5f * (float)window->get_width(), -0.5f * (float)window->get_height(), 0.0f);
+		debug_text->transform.position = Vector3(
+			-0.5f * static_cast<float>(window->get_width()), 
+			-0.5f * static_cast<float>(window->get_height()), 
+			0.0f);
 		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
@@ -48,6 +71,8 @@ namespace dukat
 				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
 			debug_text->set_text(ss.str());
 		}, true);
+
+		game->set_controller(this);
 	}
 
 	void TextScene::reset_text(void)
@@ -61,12 +86,75 @@ namespace dukat
 			<< "And if those who defile the <#90713a>living</> are as bad as they who defile the <#562c05>dead</> ?" << std::endl
 			<< "And if the body does not do <#c0c0c0>fully</> as much as the <#808080>soul</> ?" << std::endl
 			<< "And if the body were not the <#006412>soul</>, what is the <#404040>soul</> ?" << std::endl;
-		info_text->set_text_scroll(ss.str(), 0.05f, std::bind(&TextScene::reset_text, this));
+		center_text->set_text_scroll(ss.str(), 0.05f, std::bind(&TextScene::reset_text, this));
 	}
 
 	void TextScene::update(float delta)
 	{
-		info_text->update(delta);
+		center_text->update(delta);
+	}
+	
+	void TextScene::handle_keyboard(const SDL_Event& e)
+	{
+		switch (e.key.keysym.sym)
+		{
+		case SDLK_ESCAPE:
+			game->set_done(true);
+			break;
+		case SDLK_F11:
+			info_text->visible = !info_text->visible;
+			break;
+
+		case SDLK_0:
+			center_text->set_font(game->get_fonts()->get("generic.fnt"));
+			break;
+		case SDLK_1:
+			center_text->set_font(game->get_fonts()->get("alagard.fnt"));
+			break;
+		case SDLK_2:
+			center_text->set_font(game->get_fonts()->get("arcadealternate.fnt"));
+			break;
+		case SDLK_3:
+			center_text->set_font(game->get_fonts()->get("blocktopia.fnt"));
+			break;
+		case SDLK_4:
+			center_text->set_font(game->get_fonts()->get("chronotype.fnt"));
+			break;
+		case SDLK_5:
+			center_text->set_font(game->get_fonts()->get("pixeloperator.fnt"));
+			break;
+
+		case SDLK_LEFT:
+			center_text->char_width *= 0.9f;
+			break;
+		case SDLK_RIGHT:
+			center_text->char_width *= 1.1f;
+			break;
+
+		case SDLK_UP:
+			center_text->line_height *= 0.9f;
+			break;
+		case SDLK_DOWN:
+			center_text->line_height *= 1.1f;
+			break;
+
+		case SDLK_PLUS:
+		case SDLK_EQUALS:
+			if (font_size < 32)
+			{
+				font_size++;
+				center_text->set_size(static_cast<float>(font_size));
+			}
+			break;
+
+		case SDLK_MINUS:
+			if (font_size > 1)
+			{
+				font_size--;
+				center_text->set_size(static_cast<float>(font_size));
+			}
+			break;
+		}
 	}
 }
 
