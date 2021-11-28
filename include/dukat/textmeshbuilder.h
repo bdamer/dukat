@@ -14,18 +14,22 @@ namespace dukat
 	{
 	private:
 		// Max length in characters
-		static const auto max_length = 1024;
-		uint32_t simple_hash(const std::string& name) const;
 		BitmapFont* font;
+		float char_width;
+		float line_height;
+		float max_line_width;
 
+		uint32_t simple_hash(const std::string& name) const;
 		// attempts to parse color from tag
 		bool parse_color(size_t& i, const std::string& text, Color& color) const;
+		std::string add_line_breaks(const std::string& text) const;
 
 	public:
 		// Creates a new text mesh builder for a given font.
-		TextMeshBuilder(BitmapFont* font) : font(font) { }
+		TextMeshBuilder(BitmapFont* font, float char_width, float line_height, float max_line_width) 
+			: font(font), char_width(char_width), line_height(line_height), max_line_width(max_line_width) { }
 		~TextMeshBuilder(void) { }
-		std::unique_ptr<MeshData> build_text_mesh(const std::string& text = "") const;
-		void rebuild_text_mesh(MeshData* mesh, const std::string& text, const float char_width, const float line_height, float& width, float& height) const;
+		
+		void rebuild_text_mesh(MeshData* mesh, const std::string& text, float& width, float& height) const;
 	};
 }

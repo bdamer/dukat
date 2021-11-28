@@ -167,7 +167,7 @@ namespace dukat
 		// This assumes surface is already in 32 bit format
 		auto texture = std::make_unique<Texture>(*surface, filter_profile);
 
-		auto res = std::make_unique<BitmapFont>(file.font_name,
+		auto res = std::make_unique<BitmapFont>(file.font_name, font_file,
 			static_cast<float>(file.info.font_size),
 			std::move(texture)
 		);

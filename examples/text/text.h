@@ -15,7 +15,8 @@ namespace dukat
 		std::unique_ptr<TextMeshInstance> info_text;
 		std::unique_ptr<TextMeshInstance> debug_text;
 
-		void reset_text(void);
+		void reset_text_scroll(void);
+		void reset_line_breaks(void);
 
 	public:
 		TextScene(Game2* game);

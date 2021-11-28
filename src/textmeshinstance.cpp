@@ -5,12 +5,12 @@
 namespace dukat
 {
 	TextMeshInstance::TextMeshInstance(BitmapFont* font, float yorientation)
-		: text(""), char_width(1.0f), line_height(1.2f), halign(Align::Left), valign(Align::Bottom), yorientation(yorientation),
-		  num_vertices(0), font(font), scroll_delay(0.0f), scroll_accumulator(0.0f), scroll_callback(nullptr)
+		: text(""), char_width(1.0f), line_height(1.2f), max_line_width(0.0f),
+		halign(Align::Left), valign(Align::Bottom), yorientation(yorientation), 
+		num_vertices(0), font(font), scroll_delay(0.0f), 
+		scroll_accumulator(0.0f), scroll_callback(nullptr), rebuild_required(false)
 	{
-		TextMeshBuilder mb(font);
-		this->text_mesh = mb.build_text_mesh();
-		set_mesh(this->text_mesh.get());
+		create_mesh();
 		set_texture(font->get_texture());
 	}
 
@@ -18,23 +18,9 @@ namespace dukat
 	{
 		if (this->text == text)
 			return;
+		assert(text.length() <= max_length);
 		this->text = text;
-		rebuild();
-	}
-
-	void TextMeshInstance::rebuild(void)
-	{
-		TextMeshBuilder mb(font);
-		mb.rebuild_text_mesh(get_mesh(), text, char_width, line_height, width, height);
-		update(0.0f);
-
-		// if scroll is active, reset number of characters on screen
-		if (scroll_delay > 0.0f)
-		{
-			auto md = this->get_mesh();
-			num_vertices = md->vertex_count();
-			md->set_vertex_count(vertices_per_char);
-		}
+		rebuild_required = true;
 	}
 
 	void TextMeshInstance::set_text_scroll(const std::string& text, float delay, const std::function<void(void)>& callback)
@@ -59,9 +45,38 @@ namespace dukat
 		return mat.ambient.a;
 	}
 
-	void TextMeshInstance::set_size(float size)
+	void TextMeshInstance::set_font(BitmapFont* font)
 	{
-		transform.scale = { size, size, size };
+		this->font = font;
+		set_texture(font->get_texture());
+		rebuild_required = true;
+	}
+
+	void TextMeshInstance::rebuild(void)
+	{
+		TextMeshBuilder mb(font, char_width, line_height, max_line_width);
+		mb.rebuild_text_mesh(get_mesh(), text, width, height);
+		// update(0.0f);
+
+		// if scroll is active, reset number of characters on screen
+		if (scroll_delay > 0.0f)
+		{
+			auto md = this->get_mesh();
+			num_vertices = md->vertex_count();
+			md->set_vertex_count(vertices_per_char);
+		}
+
+		rebuild_required = false;
+	}
+
+	void TextMeshInstance::create_mesh(void)
+	{
+		std::vector<VertexAttribute> attr;
+		attr.push_back(dukat::VertexAttribute(Renderer::at_pos, 2));
+		attr.push_back(dukat::VertexAttribute(Renderer::at_color, 4));
+		attr.push_back(dukat::VertexAttribute(Renderer::at_texcoord, 2));
+		this->text_mesh = std::make_unique<MeshData>(GL_TRIANGLES, max_length * 6, 0, attr);
+		set_mesh(this->text_mesh.get());
 	}
 
 	void TextMeshInstance::update_scroll(float delta)
@@ -88,15 +103,11 @@ namespace dukat
 		}
 	}
 
-	void TextMeshInstance::set_font(BitmapFont* font)
-	{
-		this->font = font; 
-		set_texture(font->get_texture());
-		rebuild();
-	}
-
 	void TextMeshInstance::update(float delta)
 	{
+		if (rebuild_required)
+			rebuild();
+
 		update_scroll(delta);
 
 		auto x_offset = 0.0f;

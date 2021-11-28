@@ -64,9 +64,9 @@ namespace dukat
 		debug_text->set_text(ss.str());
 	}
 
-	std::unique_ptr<TextMeshInstance> Game3::create_text_mesh(BitmapFont* font)
+	std::unique_ptr<TextMeshInstance> Game3::create_text_mesh(const std::string& font_name)
 	{
 		auto sp = shader_cache->get_program("sc_text.vsh", "sc_text.fsh");
-		return build_text_mesh(font, sp, 1.0f, 1.0f);
+		return build_text_mesh(font_name, sp, 1.0f, 1.0f);
 	}
 }

@@ -94,10 +94,9 @@ namespace dukat
 		trigger(Message{Events::ToggleDebug});
 	}
 
-	std::unique_ptr<TextMeshInstance> GameBase::build_text_mesh(BitmapFont* font, ShaderProgram* sp, float size, float yorientation)
+	std::unique_ptr<TextMeshInstance> GameBase::build_text_mesh(const std::string& font_name, ShaderProgram* sp, float size, float yorientation)
 	{
-		if (font == nullptr)
-			font = font_cache->get("generic.fnt");
+		auto font = font_cache->get(font_name);
 		auto mesh_instance = std::make_unique<TextMeshInstance>(font, yorientation);
 		mesh_instance->transform.update();
 		mesh_instance->set_program(sp);

@@ -6,6 +6,23 @@
 
 namespace dukat
 {
+	static const auto sample_text1 = 
+		"I sing the <#dd0907>body electric</>,\n"
+		"The <#fbf305>armies</> of those I <#f20884>love</> engirth me and I engirth them,\n"
+		"They will not let me off till I go with them, <#02abea>respond</> to them,\n"
+		"And <#ff6403>discorrupt</> them, and charge them full with the <#0000d3>charge</> of the soul.\n\n"
+		"Was it <#4700a5>doubted</> that those who corrupt their own bodies <#1fb714>conceal</> themselves ?\n"
+		"And if those who defile the <#90713a>living</> are as bad as they who defile the <#562c05>dead</> ?\n"
+		"And if the body does not do <#c0c0c0>fully</> as much as the <#808080>soul</> ?\n"
+		"And if the body were not the <#006412>soul</>, what is the <#404040>soul</> ?";
+	static const auto sample_text2 =
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras interdum fringilla erat, et consectetur urna ultricies vel. "
+		"Nulla vitae euismod lacus. Mauris id leo id sem congue euismod at non tellus. Donec luctus, nunc ac scelerisque eleifend, "
+		"eros ante venenatis lectus, nec feugiat nunc lectus vitae lacus. Sed condimentum id augue vel posuere. Pellentesque sodales "
+		"risus malesuada metus lobortis porta. Pellentesque a congue nisl. Pellentesque habitant morbi tristique senectus et netus et "
+		"malesuada fames ac turpis egestas. Mauris eleifend pellentesque enim, nec euismod erat aliquet eu. Etiam eget condimentum "
+		"libero, at posuere nunc. Duis sit amet nulla sed nulla iaculis molestie.";
+
 	TextScene::TextScene(Game2* game2) : Scene2(game2), font_size(16)
 	{
 		auto settings = game->get_settings();
@@ -27,7 +44,7 @@ namespace dukat
 		center_text->valign = TextMeshInstance::Center;
 		center_text->set_size(static_cast<float>(font_size));
 
-		reset_text();
+		reset_text_scroll();
 		center_text->update(0.0f);
 		layer->add(center_text.get());
 
@@ -35,16 +52,18 @@ namespace dukat
 		info_text = game->create_text_mesh();
 		info_text->set_size(16.0f);
 		info_text->transform.position = Vector3(
-			-0.45f * static_cast<float>(window->get_width()),
-			0.3f * static_cast<float>(window->get_height()),
+			-0.475f * static_cast<float>(window->get_width()),
+			0.225f * static_cast<float>(window->get_height()),
 			0.0f);
-		std::stringstream ss;
-		ss << "<0-5> Change font" << std::endl
-			<< "<-+> Change font size" << std::endl
-			<< "<LEFT,RIGHT> Change horizontal spacing" << std::endl
-			<< "<DOWN,UP> Change line height" << std::endl
-			<< "<F11> Toggle info";
-		info_text->set_text(ss.str());
+		const auto info_str =
+			"<F1>Scrolling text\n"
+			"<F2>Line Breaks\n"
+			"<0-5> Change font\n"
+			"<-+> Change font size\n"
+			"<LEFT,RIGHT> Change horizontal spacing\n"
+			"<DOWN,UP> Change line height\n"
+			"<F11> Toggle info";
+		info_text->set_text(info_str);
 		info_text->update(0.0f);
 		layer->add(info_text.get());
 
@@ -75,18 +94,17 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	void TextScene::reset_text(void)
+	void TextScene::reset_text_scroll(void)
 	{
-		std::stringstream ss;
-		ss << "I sing the <#dd0907>body electric</>," << std::endl
-			<< "The <#fbf305>armies</> of those I <#f20884>love</> engirth me and I engirth them," << std::endl
-			<< "They will not let me off till I go with them, <#02abea>respond</> to them," << std::endl
-			<< "And <#ff6403>discorrupt</> them, and charge them full with the <#0000d3>charge</> of the soul." << std::endl << std::endl
-			<< "Was it <#4700a5>doubted</> that those who corrupt their own bodies <#1fb714>conceal</> themselves ?" << std::endl
-			<< "And if those who defile the <#90713a>living</> are as bad as they who defile the <#562c05>dead</> ?" << std::endl
-			<< "And if the body does not do <#c0c0c0>fully</> as much as the <#808080>soul</> ?" << std::endl
-			<< "And if the body were not the <#006412>soul</>, what is the <#404040>soul</> ?" << std::endl;
-		center_text->set_text_scroll(ss.str(), 0.05f, std::bind(&TextScene::reset_text, this));
+		center_text->set_max_line_width(0.0f);
+		center_text->set_text_scroll(sample_text1, 0.05f, std::bind(&TextScene::reset_text_scroll, this));
+	}
+
+	void TextScene::reset_line_breaks(void)
+	{
+		center_text->cancel_scroll();
+		center_text->set_max_line_width(24.0f);
+		center_text->set_text(sample_text2);
 	}
 
 	void TextScene::update(float delta)
@@ -101,6 +119,13 @@ namespace dukat
 		case SDLK_ESCAPE:
 			game->set_done(true);
 			break;
+		case SDLK_F1:
+			reset_text_scroll();
+			break;
+		case SDLK_F2:
+			reset_line_breaks();
+			break;
+
 		case SDLK_F11:
 			info_text->visible = !info_text->visible;
 			break;
@@ -125,17 +150,17 @@ namespace dukat
 			break;
 
 		case SDLK_LEFT:
-			center_text->char_width *= 0.9f;
+			center_text->set_char_width(0.9f * center_text->get_char_width());
 			break;
 		case SDLK_RIGHT:
-			center_text->char_width *= 1.1f;
+			center_text->set_char_width(1.1f * center_text->get_char_width());
 			break;
 
 		case SDLK_UP:
-			center_text->line_height *= 0.9f;
+			center_text->set_line_height(0.9f * center_text->get_line_height());
 			break;
 		case SDLK_DOWN:
-			center_text->line_height *= 1.1f;
+			center_text->set_line_height(1.1f * center_text->get_line_height());
 			break;
 
 		case SDLK_PLUS:

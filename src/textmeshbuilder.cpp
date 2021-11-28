@@ -21,18 +21,6 @@ namespace dukat
 		return id;
 	}
 
-	std::unique_ptr<MeshData> TextMeshBuilder::build_text_mesh(const std::string& text) const
-	{
-		std::vector<VertexAttribute> attr;
-		attr.push_back(dukat::VertexAttribute(Renderer::at_pos, 2));
-		attr.push_back(dukat::VertexAttribute(Renderer::at_color, 4));
-		attr.push_back(dukat::VertexAttribute(Renderer::at_texcoord, 2));
-		auto mesh = std::make_unique<MeshData>(GL_TRIANGLES, max_length * 6, 0, attr);
-		float width, height;
-		rebuild_text_mesh(mesh.get(), text, 1.0f, 1.0f, width, height);
-		return mesh;
-	}
-
 	bool TextMeshBuilder::parse_color(size_t& i, const std::string& text, Color& color) const
 	{
 		i++;
@@ -64,10 +52,54 @@ namespace dukat
 		}
 	}
 
-	void TextMeshBuilder::rebuild_text_mesh(MeshData* mesh, const std::string& text, 
-		const float char_width, const float line_height, float& width, float& height) const
+	std::string TextMeshBuilder::add_line_breaks(const std::string& text) const
 	{
-		assert(text.length() <= max_length);
+		std::stringstream ss;
+
+		auto processed = 0;
+		while (true)
+		{
+			auto last_space = -1;
+			auto cur_width = 0.0f;
+
+			auto line_break = false;
+			for (auto i = 0u; (processed + i) < text.length(); i++)
+			{
+				const auto c = text[processed + i];
+				if (c == ' ')
+				{
+					last_space = processed + i;
+				}
+				else
+				{
+					const auto& glyph = font->get_glyph(c);
+					cur_width += glyph.x_advance;
+					if (cur_width > max_line_width)
+					{
+						assert(last_space >= 0);
+						// need to break
+						ss << text.substr(processed, last_space - processed) << std::endl;
+						processed = last_space + 1; // acount for the space
+						line_break = true;
+						break;
+					}
+				}
+			}
+
+			// handle last chunk
+			if (!line_break)
+			{
+				ss << text.substr(processed);
+				break;
+			}
+		}
+
+		return ss.str();
+	}
+
+	void TextMeshBuilder::rebuild_text_mesh(MeshData* mesh, const std::string& text, float& width, float& height) const
+	{
+		const auto processed_text = max_line_width > 0.0f ? add_line_breaks(text) : text;
 
 		auto tex = font->get_texture();
 
@@ -76,12 +108,12 @@ namespace dukat
 		auto max_x = 0.0f;
 		std::vector<Vertex2PCT> verts;
 		auto color = default_color;
-		for (auto i = 0u; i < text.length(); i++)
+		for (auto i = 0u; i < processed_text.length(); i++)
 		{
-			char c = text[i];
-			if (c == '<' && (i < text.length() - 1))
+			char c = processed_text[i];
+			if (c == '<' && (i < processed_text.length() - 1))
 			{
-				if (parse_color(i, text, color))
+				if (parse_color(i, processed_text, color))
 					continue;
 			}
 			else if (c == '\n')

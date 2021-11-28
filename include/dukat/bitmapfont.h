@@ -30,10 +30,11 @@ namespace dukat
 
 	public:
 		const std::string name;
+		const std::string font_file;
 		const float size; // base size in pixels
 
-		BitmapFont(const std::string& name, const float size, std::unique_ptr<Texture>& texture) 
-			: name(name), size(size) { this->texture = std::move(texture); }
+		BitmapFont(const std::string& name, const std::string& font_file, const float size, std::unique_ptr<Texture>& texture)
+			: name(name), font_file(font_file), size(size) { this->texture = std::move(texture); }
 		~BitmapFont(void) { }
 
 		Texture* get_texture(void) const { return texture.get(); }
