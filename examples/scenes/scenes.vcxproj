@@ -22,7 +22,7 @@
     <ProjectGuid>{1270B9EB-9630-494A-9DBB-6CF3CD391D29}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>scenes</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

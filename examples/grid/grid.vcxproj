@@ -22,7 +22,7 @@
     <ProjectGuid>{E393C321-32FD-4B83-893F-A6347B21C620}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>grid</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

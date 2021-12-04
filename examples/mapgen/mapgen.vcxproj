@@ -22,7 +22,7 @@
     <ProjectGuid>{CDEA8FD1-5487-491C-828F-5D18B490C66A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>mapgen</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

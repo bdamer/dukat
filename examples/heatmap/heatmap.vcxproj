@@ -22,7 +22,7 @@
     <ProjectGuid>{CB154FCE-824E-4CBC-A1D2-A51663701DCB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>heat</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

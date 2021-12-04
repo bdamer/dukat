@@ -22,7 +22,7 @@
     <ProjectGuid>{F172A060-0539-4853-A4A2-B4A1172A7ABD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>collision</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

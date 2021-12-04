@@ -22,7 +22,7 @@
     <ProjectGuid>{B70D658E-64A0-4E78-95E6-98BD1A4D0A9D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>waves</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

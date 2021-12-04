@@ -22,7 +22,7 @@
     <ProjectGuid>{CE6B4C48-3A3A-4E5C-BF6A-8498CB902A17}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>dukat</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
