@@ -10,7 +10,7 @@ namespace dukat
 {
 	OrbitCamera3::OrbitCamera3(GameBase* game, const Vector3& target, float distance, float longitude, float latitude)
 		: Camera3(game->get_window()), distance(distance), min_distance(0.0f), max_distance(1000.0f),
-		longitude(longitude), latitude(latitude), game(game), look_at(target)
+		longitude(longitude), latitude(latitude), game(game), look_at(target), rot_speed(1.0f)
 	{
 	}
 
@@ -19,8 +19,8 @@ namespace dukat
 		auto dev = game->get_devices()->active;
 		if (dev->is_pressed(InputDevice::VirtualButton::Button2))
 		{
-			longitude -= dev->rx * delta;
-			latitude += dev->ry * delta;
+			longitude -= dev->rx * rot_speed * delta;
+			latitude += dev->ry * rot_speed * delta;
 			clamp(latitude, -pi_over_two, pi_over_two);
 		}
 

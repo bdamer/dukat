@@ -61,17 +61,17 @@ namespace dukat
 
 		auto info_text = game->create_text_mesh();
 		info_text->set_size(1.0f / 20.0f);
-		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
+		info_text->transform.position = { -1.6f, -0.3f, 0.0f };
 		std::stringstream ss;
-		ss << "<#f20884><F1> Show land / water" << std::endl
-			<< "<F2> Show elevation" << std::endl
-			<< "<F3> Show moisture" << std::endl
-			<< "<F4> Show biomes" << std::endl
-			<< "<F11> Toggle Info" << std::endl
+		ss << "<#f20884><1> Show land / water" << std::endl
+			<< "<2> Show elevation" << std::endl
+			<< "<3> Show moisture" << std::endl
+			<< "<4> Show biomes" << std::endl
 			<< "<R>ender mode 2D / 3D" << std::endl
 			<< "<D>ecrease number of polygons" << std::endl
 			<< "<I>ecrease number of polygons" << std::endl
 			<< "<G>enerate new map</>" << std::endl
+			<< "<F11> Toggle Info" << std::endl
 			<< std::endl;
 		info_text->set_text(ss.str());
 		info_text->transform.update();
@@ -161,19 +161,19 @@ namespace dukat
 			generate_map();
 			switch_mode();
 			break;
-		case SDLK_F1: // show land / water
+		case SDLK_1: // show land / water
 			map_mode = LandWater;
 			switch_mode();
 			break;
-		case SDLK_F2: // show elevation mesh
+		case SDLK_2: // show elevation mesh
 			map_mode = Elevation;
 			switch_mode();
 			break;
-		case SDLK_F3: // show moisture mesh
+		case SDLK_3: // show moisture mesh
 			map_mode = Moisture;
 			switch_mode();
 			break;
-		case SDLK_F4: // show biomes mesh
+		case SDLK_4: // show biomes mesh
 			map_mode = Biomes;
 			switch_mode();
 			break;

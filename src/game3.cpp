@@ -13,14 +13,14 @@ namespace dukat
 		font_cache->set_texture_filter_profile(TextureFilterProfile::ProfileMipMapped);
 
 		renderer = std::make_unique<dukat::Renderer3>(window.get(), shader_cache.get(), texture_cache.get());
-		if (settings.get_bool("rendere.effects.enabled")) 
+		if (settings.get_bool("renderer.effects.enabled")) 
 			renderer->enable_effects();
 
 		debug_meshes.stage = RenderStage::Overlay;
 		debug_meshes.visible = debug;
 
 		auto debug_text = create_text_mesh();
-		debug_text->set_size(1.0f / 30.0f);
+		debug_text->set_size(1.0f / 16.0f);
 		debug_text->halign = TextMeshInstance::Align::Center;
 		debug_text->transform.position.y = 0.75f;
 		debug_text->transform.update();

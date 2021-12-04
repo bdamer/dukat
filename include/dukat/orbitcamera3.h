@@ -15,6 +15,7 @@ namespace dukat
 		float min_distance, max_distance; // distance limits
 		float longitude; // 0 to 2 pi
 		float latitude; // from 0 (equator) to pi/2
+		float rot_speed;
 		GameBase* game;
 		Vector3 look_at;
 
@@ -40,5 +41,6 @@ namespace dukat
 		void set_latitude(float latitude) { this->latitude = latitude; }
 		float get_longitude(void) const { return longitude; }
 		void set_longitude(float longitude) { this->longitude = longitude; }
+		void set_rot_speed(float speed) { rot_speed = speed; }
 	};
 }

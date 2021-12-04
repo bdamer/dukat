@@ -70,25 +70,26 @@ namespace dukat
 
 		auto info_text = game->create_text_mesh();
 		info_text->set_size(1.0f / 20.0f);
-		info_text->transform.position = { -1.5f, -0.5f, 0.0f };
-		std::stringstream ss;
-		ss << "<F1> Toggle Wirframe" << std::endl
-		   << "<F2> Toggle Culling" << std::endl
-		   << "<F3> Toggle Blending" << std::endl
-		   << "<F4> Toggle Stitching" << std::endl
-		   << "<F5> Toggle Normals" << std::endl
-		   << "<F11> Toggle Info" << std::endl
-		   << "<1-4> Switch Terain" << std::endl
-		   << "<WASD> Move Camera" << std::endl
-		   << "<QE> Change altitude" << std::endl
-			<< std::endl;
-		info_text->set_text(ss.str());
+		info_text->transform.position = { -1.6f, -0.3f, 0.0f };
+
+		const auto info =
+			"<1-4> Switch Terain\n"
+			"<C> Switch Camera View\n"
+			"<WASD> Move Camera\n"
+			"<QE> Change Altitude\n"
+			"<F2> Toggle Wirframe\n"
+			"<F3> Toggle Culling\n"
+			"<F4> Toggle Blending\n"
+			"<F5> Toggle Stitching\n"
+			"<F6> Toggle Normals\n"
+			"<F11> Toggle Info";
+		info_text->set_text(info);
 		info_text->transform.update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 
 		auto options_text = game->create_text_mesh();
 		options_text->set_size(1.0f / 20.0f);
-		options_text->transform.position = { -1.5f, -0.4f, 0.0f };
+		options_text->transform.position = { -1.6f, -0.2f, 0.0f };
 		auto options_mesh = static_cast<TextMeshInstance*>(game->get_debug_meshes()->add_instance(std::move(options_text)));
 		game->get<TimerManager>()->create_timer(1.0f, [this,options_mesh]() {
 			std::stringstream ss;
@@ -293,19 +294,19 @@ namespace dukat
 		case SDLK_ESCAPE:
 			game->set_done(true);
 			break;
-		case SDLK_F1:
+		case SDLK_F2:
 			game->get_renderer()->toggle_wireframe();
 			break;		
-		case SDLK_F2:
+		case SDLK_F3:
 			clip_map->culling = !clip_map->culling;
 			break;
-		case SDLK_F3:
+		case SDLK_F4:
 			clip_map->blending = !clip_map->blending;
 			break;
-		case SDLK_F4:
+		case SDLK_F5:
 			clip_map->stitching = !clip_map->stitching;
 			break;
-		case SDLK_F5:
+		case SDLK_F6:
 			clip_map->lighting = !clip_map->lighting;
 			break;
 		case SDLK_F11:
@@ -387,6 +388,7 @@ namespace dukat
 			observer_mesh->transform.position += offset;
 			observer_mesh->transform.position.y = z + 1.0f;
 			cam->set_look_at(observer_mesh->transform.position);
+			cam->set_rot_speed(4.0f);
 		}
 		break;
 
