@@ -169,7 +169,7 @@ namespace dukat
 
 		auto res = std::make_unique<BitmapFont>(file.font_name, font_file,
 			static_cast<float>(file.info.font_size),
-			std::move(texture)
+			texture
 		);
 
 		const auto tex_w = static_cast<float>(file.common.scale_w);

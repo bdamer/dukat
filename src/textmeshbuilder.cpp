@@ -108,7 +108,7 @@ namespace dukat
 		auto max_x = 0.0f;
 		std::vector<Vertex2PCT> verts;
 		auto color = default_color;
-		for (auto i = 0u; i < processed_text.length(); i++)
+		for (std::size_t i = 0u; i < processed_text.length(); i++)
 		{
 			char c = processed_text[i];
 			if (c == '<' && (i < processed_text.length() - 1))
