@@ -210,11 +210,18 @@ namespace dukat
 
 	void Renderer2::set_camera(std::unique_ptr<Camera2> camera)
 	{
-		this->camera = std::move(camera);
-		if (frame_buffer == nullptr || frame_buffer->texture->w != this->camera->transform.dimension.x
-			|| frame_buffer->texture->h != this->camera->transform.dimension.y)
+		if (camera == nullptr)
 		{
-			initialize_frame_buffers();
+			this->camera = nullptr;
+		}
+		else
+		{
+			this->camera = std::move(camera);
+			if (frame_buffer == nullptr || frame_buffer->texture->w != this->camera->transform.dimension.x
+				|| frame_buffer->texture->h != this->camera->transform.dimension.y)
+			{
+				initialize_frame_buffers();
+			}
 		}
 	}
 
