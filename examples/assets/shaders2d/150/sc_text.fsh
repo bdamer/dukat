@@ -21,5 +21,5 @@ out vec4 o_color;
 void main()
 {
 	vec4 c = texture(u_tex0, v_tex_coord);
-    o_color = vec4(v_color.rgb, u_material.ambient.a) * c.rgba;
+    o_color = vec4(v_color.rgb * u_material.ambient.rgb, u_material.ambient.a) * c.rgba;
 }
