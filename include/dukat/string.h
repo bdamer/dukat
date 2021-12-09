@@ -17,14 +17,14 @@ namespace dukat
 		return needle.length() <= haystack.length() && equal(needle.begin(), needle.end(), haystack.end() - needle.size());
 	}
 
-	template<typename T>
-	std::string join(const std::vector<T>& items, const char* delim = ",")
+	template<typename Iterator>
+	std::string join(Iterator first, Iterator last, const char* delim = ",")
 	{
 		std::ostringstream oss;
-		if (!items.empty())
+		if (first != last)
 		{
-			std::copy(items.begin(), items.end() - 1, std::ostream_iterator<int>(oss, delim));
-			oss << items.back();
+			std::copy(first, last - 1, std::ostream_iterator<int>(oss, delim));
+			oss << std::to_string(*(last - 1));
 		}
 		return oss.str();
 	}
