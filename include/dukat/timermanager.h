@@ -3,6 +3,7 @@
 #include <functional>
 #include <list>
 #include <memory>
+#include <set>
 
 #include "manager.h"
 #include "objectpool.h"
@@ -31,13 +32,14 @@ namespace dukat
 		uint32_t generation;
 		uint8_t active_group;
 		ObjectPool<Timer, max_timers> timers;
+		std::set<Timer*> free_list; // list of timers pending release
 
     public:
 		TimerManager(GameBase* game) : Manager(game), generation(0u), active_group(0u) { }
 		~TimerManager(void) { }
 
 		Timer* create(float interval, std::function<void(void)> callback, bool recurring = false);
-		void cancel(Timer* timer) { if (timer != nullptr) timers.release(timer); }
+		void cancel(Timer* timer) { if (timer != nullptr) free_list.insert(timer); }
 		void update(float delta);
 		void set_active_group(uint8_t group) { this->active_group = group; }
 
@@ -47,6 +49,6 @@ namespace dukat
 		void cancel_timer(Timer* timer) { cancel(timer); }
 
 		// Cancels all active timers.
-		void clear(void) { timers.clear(); }
+		void clear(void) { timers.clear(); free_list.clear(); }
     };
 }

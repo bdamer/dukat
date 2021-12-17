@@ -25,6 +25,10 @@ namespace dukat
     
     void TimerManager::update(float delta)
     {
+		for (auto it : free_list)
+			timers.release(*it);
+		free_list.clear();
+
 		generation++;
 
 		auto alive = 0;
@@ -48,10 +52,10 @@ namespace dukat
                 if (t.callback)
                     t.callback();
 
-                if (t.recurring) // reset timer, accounting for any time over interval
-                    t.runtime = t.runtime - t.interval;
-                else
-					timers.release(t);
+				if (t.recurring) // reset timer, accounting for any time over interval
+					t.runtime = t.runtime - t.interval;
+				else
+					free_list.insert(&t);
             }
         }
 		perfc.inc(PerformanceCounter::TIMERS, alive);
