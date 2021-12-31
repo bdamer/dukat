@@ -82,7 +82,7 @@ namespace dukat
 		ss << "<#ffffff>" << multiplier << "x" << std::endl
 			<< "00:00</>";
 		multiplier_text->set_text(ss.str());
-		multiplier_text->transform.update();
+		multiplier_text->update();
 		mult_mesh = static_cast<TextMeshInstance*>(overlay_meshes.add_instance(std::move(multiplier_text)));
 
 		game->get<TimerManager>()->create_timer(1.0f, [&]() {
@@ -108,7 +108,7 @@ namespace dukat
 			<< "<F11> Toggle Info" << std::endl
 			<< std::endl;
 		info_text->set_text(ss.str());
-		info_text->transform.update();
+		info_text->update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 
 		// Sun

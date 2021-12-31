@@ -37,7 +37,6 @@ namespace dukat
 		info_text = game->create_text_mesh();
 		info_text->set_size(16.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)texture_width, 0.0f, 0.0f);
-		info_text->transform.update();
 		std::stringstream ss;
 		ss << "FullscreenFX" << std::endl
 			<< "Press 1: Invert colors" << std::endl
@@ -47,6 +46,7 @@ namespace dukat
 			<< "Press 0: Reset" << std::endl
 			<< std::endl;
 		info_text->set_text(ss.str());
+		info_text->update();
 		info_layer->add(info_text.get());
 	}
 
@@ -58,7 +58,6 @@ namespace dukat
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(8.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.5f * (float)texture_height, 0.0f);
-		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		if (!game->is_debug())
 			debug_layer->hide();
@@ -73,6 +72,7 @@ namespace dukat
 				<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
 				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
 			debug_text->set_text(ss.str());
+			debug_text->update();
 			}, true);
 	}
 

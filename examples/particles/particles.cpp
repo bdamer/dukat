@@ -24,15 +24,14 @@ namespace dukat
 		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.5f * static_cast<float>(camera_width), 
 			0.4f * static_cast<float>(camera_height), 0.0f);
-		info_text->transform.update();
+		info_text->update();
 		info_layer->add(info_text.get());
 
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
-		debug_text->set_size(4.0f);
+		debug_text->set_size(8.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)camera_width, -0.5f * (float)camera_height, 0.0f);
-		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 	
@@ -48,6 +47,7 @@ namespace dukat
 				<< " PART: " << perfc.avg(PerformanceCounter::PARTICLES)
 				<< std::endl;
 			debug_text->set_text(ss.str());
+			debug_text->update();
 		}, true);
 
 		game->set_controller(this);
@@ -258,6 +258,7 @@ namespace dukat
 		   << "Left: Previous Mode" << std::endl
 		   << "Right: Next Mode" << std::endl;
 		info_text->set_text(ss.str());
+		info_text->update();
 
 		modes[cur_mode].init();
 	}

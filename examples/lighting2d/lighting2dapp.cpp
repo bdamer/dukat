@@ -37,21 +37,20 @@ namespace dukat
 		// Set up info text
 		auto info_layer = renderer->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
-		info_text->set_size(2.0f);
+		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.45f * (float)camera_width, 0.4f * (float)camera_height, 0.0f);
-		info_text->transform.update();
 		std::stringstream ss;
 		ss << "Lighting Example" << std::endl
 			<< "G - Toggle gamma correction" << std::endl;
 		info_text->set_text(ss.str());
+		info_text->update();
 		info_layer->add(info_text.get());
 
 		// Set up debug layer
 		auto debug_layer = renderer->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
-		debug_text->set_size(4.0f);
+		debug_text->set_size(8.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)camera_width, -0.5f * (float)camera_height, 0.0f);
-		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 	
@@ -65,6 +64,7 @@ namespace dukat
 				<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
 				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
 			debug_text->set_text(ss.str());
+			debug_text->update();
 		}, true);
 
 		create_layers();

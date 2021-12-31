@@ -29,12 +29,12 @@ namespace dukat
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)window_width, 0.4f * (float)window_height, 0.0f);
-		info_text->transform.update();
 		std::stringstream ss;
 		ss << "Sprite Test" << std::endl
 			<< "<WASD> to move sprite" << std::endl
 			<< "<T>oggle particles" << std::endl;
 		info_text->set_text(ss.str());
+		info_text->update();
 		info_layer->add(info_text.get());
 
 		// Play some tunes
@@ -44,9 +44,8 @@ namespace dukat
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
-		debug_text->set_size(4.0f);
+		debug_text->set_size(8.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window_width, -0.5f * (float)window_height, 0.0f);
-		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 
@@ -60,6 +59,7 @@ namespace dukat
 				<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
 				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
 			debug_text->set_text(ss.str());
+			debug_text->update();
 		}, true);
 
 		game->set_controller(this);

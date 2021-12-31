@@ -74,7 +74,7 @@ namespace dukat
 			<< "<F11> Toggle Info" << std::endl
 			<< std::endl;
 		info_text->set_text(ss.str());
-		info_text->transform.update();
+		info_text->update();
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 
 		game->set_controller(this);

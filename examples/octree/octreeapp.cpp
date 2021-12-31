@@ -45,10 +45,9 @@ namespace dukat
 
 		// Set up info text
 		info_text = game->create_text_mesh();
-		info_text->set_size(12.0f);
+		info_text->set_size(16.0f);
 		info_text->transform.position = Vector3(
 			-0.5f * (float)texture_width, 0.35f * (float)texture_height, 0.0f);
-		info_text->transform.update();
 		std::stringstream ss;
 		ss << "Octree Test" << std::endl
 			<< "WASD: Move camera position" << std::endl
@@ -56,14 +55,14 @@ namespace dukat
 			<< "B: Show bounding sphere" << std::endl
 			<< "1,2,3: Load different model" << std::endl;
 		info_text->set_text(ss.str());
+		info_text->update();
 		layer->add(info_text.get());
 
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_composite_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
-		debug_text->set_size(10.0f);
+		debug_text->set_size(16.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.45f * (float)texture_height, 0.0f);
-		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 		game->get<TimerManager>()->create_timer(0.25f, std::bind(&OctreeScene::update_debug_text, this), true);
@@ -163,6 +162,7 @@ namespace dukat
 			<< " SAMPL: " << dukat::perfc.avg(dukat::PerformanceCounter::SAMPLES)
 			<< " BB: " << dukat::perfc.avg(dukat::PerformanceCounter::BB_CHECKS) << std::endl;
 		debug_text->set_text(ss.str());
+		debug_text->update();
 	}
 	
 	void OctreeScene::update_texture(void)

@@ -23,10 +23,10 @@ namespace dukat
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
 		info_text->transform.position = Vector3(-0.25f * (float)camera_width, 0.0f, 0.0f);
-		info_text->transform.update();
 		std::stringstream ss;
 		ss << "Hello Dukat!" << std::endl;
 		info_text->set_text(ss.str());
+		info_text->update();
 		info_layer->add(info_text.get());
 
 		// Set up debug layer
@@ -34,7 +34,6 @@ namespace dukat
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)camera_width, -0.5f * (float)camera_height, 0.0f);
-		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 	
@@ -48,6 +47,7 @@ namespace dukat
 				<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
 				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
 			debug_text->set_text(ss.str());
+			debug_text->update();
 		}, true);
 
 		game->set_controller(this);

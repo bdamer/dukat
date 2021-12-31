@@ -58,9 +58,8 @@ namespace dukat
 
 		// Set up info text
 		info_text = game->create_text_mesh();
-		info_text->set_size(16.0f);
+		info_text->set_size(32.0f);
 		info_text->transform.position = Vector3(-0.5f * (float)window_width, 0.3f * (float)window_height, 0.0f);
-		info_text->transform.update();
 		main_layer->add(info_text.get());
 
 		game->get<TimerManager>()->create_timer(0.25f, [&]() {
@@ -73,6 +72,7 @@ namespace dukat
 				<< "<g> Toggle grid" << std::endl
 				<< "<-,+> Remove / Add object" << std::endl;
 			info_text->set_text(ss.str());
+			info_text->update();
 		}, true);
 
 		// Set up debug layer
@@ -80,7 +80,6 @@ namespace dukat
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(16.0f);
 		debug_text->transform.position = Vector3(-0.5f * (float)window_width, -0.5f * (float)window_height, 0.0f);
-		debug_text->transform.update();
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 
@@ -96,6 +95,7 @@ namespace dukat
 				<< " BB: " << perfc.avg(PerformanceCounter::BB_CHECKS)
 				<< std::endl;
 			debug_text->set_text(ss.str());
+			debug_text->update();
 		}, true);
 
 		game->set_controller(this);
