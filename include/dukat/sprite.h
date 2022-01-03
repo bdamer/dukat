@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include "aabb2.h"
 #include "color.h"
 #include "texturecache.h"
 #include "vector2.h"
@@ -67,6 +68,8 @@ namespace dukat
 		bool operator<(const Sprite& s) const { return z < s.z; }
 		bool operator>(const Sprite& s) const { return z > s.z; }
 	};
+
+	extern AABB2 compute_sprite_bb(const Sprite& sprite);
 
 	// Used to order entities by z value. For sprites with the same z value,
 	// this will additionally order by texture ID to reduce the number of

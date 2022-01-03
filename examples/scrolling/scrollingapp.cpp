@@ -131,7 +131,6 @@ namespace dukat
 		}
 	}
 
-	
 	void ScrollingScene::update(float delta)
 	{
 		// Update player based on user input
@@ -141,6 +140,9 @@ namespace dukat
 		player->pos = Vector2{ std::round(player->pos.x), std::round(player->pos.y) };
 		// Update player sprite
 		player_sprite->p = player->pos;
+
+		// Rotate star sprite
+		star_sprite->rot += delta;
 
 		Scene2::update(delta);
 

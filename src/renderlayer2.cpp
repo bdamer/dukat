@@ -132,35 +132,7 @@ namespace dukat
 			}
 			else
 			{
-				Vector2 half_dim(sprite->scale * sprite->w / 2.0f, sprite->scale * sprite->h / 2.0f);
-				auto min_p = sprite->p - half_dim;
-				auto max_p = sprite->p + half_dim;
-				const auto center = sprite->flags & (Sprite::align_bottom | Sprite::align_left | Sprite::align_right | Sprite::align_top);
-				if (center > 0)
-				{
-					if (check_flag(center, Sprite::align_bottom))
-					{
-						min_p.y -= (sprite->h / 2) * sprite->scale;
-						max_p.y -= (sprite->h / 2) * sprite->scale;
-					}
-					else if (check_flag(center, Sprite::align_top))
-					{
-						min_p.y += (sprite->h / 2) * sprite->scale;
-						max_p.y += (sprite->h / 2) * sprite->scale;
-					}
-					if (check_flag(center, Sprite::align_right))
-					{
-						min_p.x -= (sprite->w / 2) * sprite->scale;
-						max_p.x -= (sprite->w / 2) * sprite->scale;
-					}
-					else if (check_flag(center, Sprite::align_left))
-					{
-						min_p.x += (sprite->w / 2) * sprite->scale;
-						max_p.x += (sprite->w / 2) * sprite->scale;
-					}
-				}
-
-				AABB2 sprite_bb(min_p, max_p);
+				const auto sprite_bb = compute_sprite_bb(*sprite);
 				if (camera_bb.overlaps(sprite_bb))
 					queue.push(sprite);
 			}
@@ -286,7 +258,7 @@ namespace dukat
 
 	void RenderLayer2::compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, Matrix4& mat_model)
 	{
-		Vector2 pos = sprite.p;
+		auto pos = sprite.p;
 
 		// adjust position based on alignment
 		const auto center = sprite.flags & (Sprite::align_bottom | Sprite::align_left | Sprite::align_right | Sprite::align_top);

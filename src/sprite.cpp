@@ -78,4 +78,42 @@ namespace dukat
 		tex[1] = (index / cols) * tex[3];
 		return *this;
 	}
+
+	AABB2 compute_sprite_bb(const Sprite& sprite)
+	{
+		const Vector2 half_dim(sprite.scale * sprite.w / 2.0f, sprite.scale * sprite.h / 2.0f);
+
+		// Adjust center pos based on alignment
+		auto pos = sprite.p;
+		const auto center = sprite.flags
+			& (Sprite::align_bottom | Sprite::align_left | Sprite::align_right | Sprite::align_top);
+		if (center > 0)
+		{
+			if (check_flag(center, Sprite::align_bottom))
+				pos.y -= half_dim.y;
+			else if (check_flag(center, Sprite::align_top))
+				pos.y += half_dim.y;
+			if (check_flag(center, Sprite::align_right))
+				pos.x -= half_dim.x;
+			else if (check_flag(center, Sprite::align_left))
+				pos.x += half_dim.x;
+		}
+
+		// If sprite is axis-aligned, we can use top-left and bottom-right to construct BB
+		if (sprite.rot == 0.0f)
+		{
+			return AABB2(pos - half_dim, pos + half_dim);
+		}
+		// Otherwise, need to rotate all 4 corners
+		else
+		{
+			auto rotated = half_dim.rotate(sprite.rot);
+			AABB2 bb;
+			bb.add(pos + Vector2{ -rotated.x, -rotated.y });
+			bb.add(pos + Vector2{ rotated.x, -rotated.y });
+			bb.add(pos + Vector2{ -rotated.x, rotated.y });
+			bb.add(pos + Vector2{ rotated.x, rotated.y });
+			return bb;
+		}
+	}
 }
