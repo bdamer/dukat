@@ -9,7 +9,7 @@ namespace dukat
     VoronoiDiagram::VoronoiDiagram(const std::vector<Vector2>& sites, const AABB2& bb) : sites(sites), bb(bb),
         max_scale_extent((float)std::numeric_limits<uint16_t>::max())
     {
-        scale_factor = bb.max - bb.min;
+        scale_factor = bb.max() - bb.min();
         inv_scale_factor = Vector2{1.0f / scale_factor.x, 1.0f / scale_factor.y};
     }
 
@@ -46,10 +46,10 @@ namespace dukat
             reset();
 
             // seed border list
-            vertices.push_back(std::make_unique<Point>(bb.min));
-            vertices.push_back(std::make_unique<Point>(bb.max.x, bb.min.y));
-            vertices.push_back(std::make_unique<Point>(bb.max));
-            vertices.push_back(std::make_unique<Point>(bb.min.x, bb.max.y));
+            vertices.push_back(std::make_unique<Point>(bb.min()));
+            vertices.push_back(std::make_unique<Point>(bb.max().x, bb.min().y));
+            vertices.push_back(std::make_unique<Point>(bb.max()));
+            vertices.push_back(std::make_unique<Point>(bb.min().x, bb.max().y));
             for (auto it = vertices.begin(); it != vertices.end(); ++it)
                 add_border_vertex(it->get());
 
@@ -59,8 +59,8 @@ namespace dukat
             for (auto i = 0u; i < num_sites; i++)
             {
                 // normalize input values [0..1]
-                auto tx = (this->sites[i].x - bb.min.x) * inv_scale_factor.x;
-                auto ty = (this->sites[i].y - bb.min.y) * inv_scale_factor.y;
+                auto tx = (this->sites[i].x - bb.min().x) * inv_scale_factor.x;
+                auto ty = (this->sites[i].y - bb.min().y) * inv_scale_factor.y;
                 // scale to [0..max_val]
                 in_sites[i] = boost::polygon::point_data<int>{ 
                     (int)std::round(tx * max_scale_extent), (int)std::round(ty * max_scale_extent) };
@@ -188,11 +188,11 @@ namespace dukat
 
     int VoronoiDiagram::check_side(Point* point) const
     {
-        if (point->y == bb.min.y)
+        if (point->y == bb.min().y)
             return 0; // bottom
-        else if (point->x == bb.max.x)
+        else if (point->x == bb.max().x)
             return 1; // left
-        else if (point->y == bb.max.y)
+        else if (point->y == bb.max().y)
             return 2; // top
         else
             return 3; // right
@@ -284,14 +284,14 @@ namespace dukat
         {
             outv = inv + dir * t;
             const float min_delta = 0.0001f;
-            if (std::abs(outv.x - bb.min.x) < min_delta)
-                outv.x = bb.min.x;
-            if (std::abs(outv.y - bb.min.y) < min_delta)
-                outv.y = bb.min.y;
-            if (std::abs(outv.x - bb.max.x) < min_delta)
-                outv.x = bb.max.x;
-            if (std::abs(outv.y - bb.max.y) < min_delta)
-                outv.y = bb.max.y;
+            if (std::abs(outv.x - bb.min().x) < min_delta)
+                outv.x = bb.min().x;
+            if (std::abs(outv.y - bb.min().y) < min_delta)
+                outv.y = bb.min().y;
+            if (std::abs(outv.x - bb.max().x) < min_delta)
+                outv.x = bb.max().x;
+            if (std::abs(outv.y - bb.max().y) < min_delta)
+                outv.y = bb.max().y;
             return true;
         }
     }
@@ -305,13 +305,13 @@ namespace dukat
         auto vs0 = src_edge.vertex0();
         if (vs0 != nullptr)
         {
-            tmpv0 = bb.min + Vector2{ ((float)vs0->x() / max_scale_extent) * scale_factor.x, 
+            tmpv0 = bb.min() + Vector2{ ((float)vs0->x() / max_scale_extent) * scale_factor.x,
                 ((float)vs0->y() / max_scale_extent) * scale_factor.y };
         }
         auto vs1 = src_edge.vertex1();
         if (vs1 != nullptr)
         {
-            tmpv1 = bb.min + Vector2{ ((float)vs1->x() / max_scale_extent) * scale_factor.x, 
+            tmpv1 = bb.min() + Vector2{ ((float)vs1->x() / max_scale_extent) * scale_factor.x,
                 ((float)vs1->y() / max_scale_extent) * scale_factor.y };
         }
 

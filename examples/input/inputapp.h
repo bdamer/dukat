@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <dukat/dukat.h>
 
 namespace dukat
@@ -19,12 +18,17 @@ namespace dukat
 		std::unique_ptr<Sprite> start_sprite;
 		std::unique_ptr<Sprite> ltrigger_sprite;
 		std::unique_ptr<Sprite> rtrigger_sprite;
+		FeedbackSequence* feedback;
 
 		std::unique_ptr<TextMeshInstance> info_text;
 		std::unique_ptr<TextMeshInstance> debug_text;
 
 		void create_sprites(void);
 		void bind_events(void);
+		void update_info_text(void);
+
+		void feedback_heartbeat(void);
+		void feedback_hi_lo(void);
 
 	public:
 		InputScene(Game2* game2);

@@ -4,27 +4,27 @@
 #include <dukat/mathutil.h>
 #include <dukat/window.h>
 
-#ifdef XBOX_SUPPORT
+#ifdef XINPUT_SUPPORT
 
 namespace dukat
 {
 	const float XBoxDevice::sensitivity = 1.0f;
 
-	XBoxDevice::XBoxDevice(const Window& window, const Settings& settings, int joystick_index) : InputDevice(window, settings, false), joystick_index(joystick_index)
+	XBoxDevice::XBoxDevice(const Window& window, const Settings& settings, int device_index) : InputDevice(window, settings, false), device_index(device_index)
 	{
-		name = SDL_JoystickNameForIndex(joystick_index);
+		name = SDL_JoystickNameForIndex(device_index);
 		log->debug("Initializing XInput device: {}", name);
 		
 		// Temporarily open SDL joystick so we can get instance ID
-		auto joystick = SDL_JoystickOpen(joystick_index);
-		if (joystick == nullptr)
+		auto device = SDL_JoystickOpen(device_index);
+		if (device == nullptr)
 		{
 			std::ostringstream ss;
 			ss << "Could not open joystick: " << SDL_GetError();
 			throw std::runtime_error(ss.str());
 		}
-		joystick_id = SDL_JoystickInstanceID(joystick);
-		SDL_JoystickClose(joystick);
+		device_id = SDL_JoystickInstanceID(device);
+		SDL_JoystickClose(device);
 
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
 		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_LEFT_SHOULDER;
@@ -42,15 +42,35 @@ namespace dukat
 		mapping[VirtualButton::Left] = XINPUT_GAMEPAD_DPAD_LEFT;
 		mapping[VirtualButton::Up] = XINPUT_GAMEPAD_DPAD_UP;
 
-		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(joystick_index);
+		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(device_index);
 		char buffer[33];
 		SDL_JoystickGetGUIDString(guid, buffer, 33);
 		log->debug("Device GUID: {}", buffer);
+
+		XINPUT_CAPABILITIES caps;
+		ZeroMemory(&caps, sizeof(XINPUT_CAPABILITIES));
+		XInputGetCapabilities(static_cast<DWORD>(device_index), XINPUT_FLAG_GAMEPAD, &caps);
+
+		std::stringstream ss;
+		if (caps.Flags & XINPUT_CAPS_VOICE_SUPPORTED)
+			ss << "XINPUT_CAPS_VOICE_SUPPORTED|";
+		// Device caps reported depend on XInput version
+#if(_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+		if (caps.Flags & XINPUT_CAPS_FFB_SUPPORTED)
+			ss << "XINPUT_CAPS_FFB_SUPPORTED|";
+		if (caps.Flags & XINPUT_CAPS_WIRELESS)
+			ss << "XINPUT_CAPS_WIRELESS|";
+		if (caps.Flags & XINPUT_CAPS_PMD_SUPPORTED)
+			ss << "XINPUT_CAPS_PMD_SUPPORTED|";
+		if (caps.Flags & XINPUT_CAPS_NO_NAVIGATION)
+			ss << "XINPUT_CAPS_NO_NAVIGATION|";
+#endif
+		log->debug("Device caps: {}", ss.str());
 	}
 
 	void XBoxDevice::update(void)
 	{
-		if (XInputGetState(static_cast<DWORD>(joystick_index), &state) != ERROR_SUCCESS)
+		if (XInputGetState(static_cast<DWORD>(device_index), &state) != ERROR_SUCCESS)
 			return; // could not poll
 
 		// Update button states
@@ -131,6 +151,16 @@ namespace dukat
 		}
 	}
 
+	void XBoxDevice::start_feedback(float low_freq, float hi_freq, float duration)
+	{
+		// We are ignoring duration - client will have to call cancel_feedback to stop effect
+		XINPUT_VIBRATION vibration;
+		ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+		vibration.wLeftMotorSpeed = static_cast<uint16_t>(low_freq * 65535.0f);
+		vibration.wRightMotorSpeed = static_cast<uint16_t>(hi_freq * 65535.0f);
+		XInputSetState(static_cast<DWORD>(device_index), &vibration);
+	}
+
 	void XBoxDevice::normalize_axis(SHORT ix, SHORT iy, float& ox, float& oy, SHORT deadzone)
 	{
 		// determine how far the controller is pushed
@@ -149,14 +179,7 @@ namespace dukat
 
 	void XBoxDevice::normalize_trigger(BYTE i, float& o, BYTE deadzone)
 	{
-		if (i <= deadzone)
-		{
-			o = 0.0f;
-		}
-		else
-		{
-			o = normalize(i);
-		}
+		o = (i <= deadzone) ? 0.0f : normalize(i);
 	}
 }
 #endif

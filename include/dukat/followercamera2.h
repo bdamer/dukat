@@ -75,8 +75,8 @@ namespace dukat
 		auto dy = pos.y - transform.position.y;
 
 		// Limit coordinates
-		transform.position.x = std::max(std::min(pos.x, limits.max.x), limits.min.x);
-		transform.position.y = std::max(std::min(pos.y, limits.max.y), limits.min.y);
+		transform.position.x = std::max(std::min(pos.x, limits.max().x), limits.min().x);
+		transform.position.y = std::max(std::min(pos.y, limits.max().y), limits.min().y);
 
 		if (std::abs(dx) > jump_threshold || std::abs(dy) > jump_threshold)
 		{

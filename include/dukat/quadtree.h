@@ -16,12 +16,12 @@ namespace dukat
 		std::unique_ptr<QuadTree<T>> children[4];
 
 	public:
-		const Vector2 min;
-		const Vector2 max;
+		const Vector2 min_v;
+		const Vector2 max_v;
 		const Vector2 center;
 
-		QuadTree(const Vector2& min, const Vector2& max, int max_depth, int depth = 0)
-			: max_depth(max_depth), depth(depth), min(min), max(max), center(min + (max - min) * 0.5f)
+		QuadTree(const Vector2& min_v, const Vector2& max_v, int max_depth, int depth = 0)
+			: max_depth(max_depth), depth(depth), min_v(min_v), max_v(max_v), center(min_v + (max_v - min_v) * 0.5f)
 		{
 			children[0] = nullptr;
 			children[1] = nullptr;
@@ -52,16 +52,16 @@ namespace dukat
 				switch (idx)
 				{
 				case 0:
-					children[0] = std::make_unique<QuadTree<T>>(Vector2{ center.x, min.y }, Vector2{ max.x, center.y }, max_depth, depth + 1);
+					children[0] = std::make_unique<QuadTree<T>>(Vector2{ center.x, min_v.y }, Vector2{ max_v.x, center.y }, max_depth, depth + 1);
 					break;
 				case 1:
-					children[1] = std::make_unique<QuadTree<T>>(Vector2{ center.x, center.y }, Vector2{ max.x, max.y }, max_depth, depth + 1);
+					children[1] = std::make_unique<QuadTree<T>>(Vector2{ center.x, center.y }, Vector2{ max_v.x, max_v.y }, max_depth, depth + 1);
 					break;
 				case 2:
-					children[2] = std::make_unique<QuadTree<T>>(Vector2{ min.x, center.y }, Vector2{ center.x, max.y }, max_depth, depth + 1);
+					children[2] = std::make_unique<QuadTree<T>>(Vector2{ min_v.x, center.y }, Vector2{ center.x, max_v.y }, max_depth, depth + 1);
 					break;
 				case 3:
-					children[3] = std::make_unique<QuadTree<T>>(Vector2{ min.x, min.y }, Vector2{ center.x, center.y }, max_depth, depth + 1);
+					children[3] = std::make_unique<QuadTree<T>>(Vector2{ min_v.x, min_v.y }, Vector2{ center.x, center.y }, max_depth, depth + 1);
 					break;
 				}
 			}
@@ -102,24 +102,24 @@ namespace dukat
 	int QuadTree<T>::get_index(T* value) const
 	{
 		auto res = -1;
-		if (value->bb.max.x < center.x) // value is in left quadrants
+		if (value->bb.max().x < center.x) // value is in left quadrants
 		{
-			if (value->bb.max.y < center.y) // value is in top-left quadrant
+			if (value->bb.max().y < center.y) // value is in top-left quadrant
 			{
 				res = 3;
 			}
-			else if (value->bb.min.y >= center.y) // value is in bottom-left quadrant
+			else if (value->bb.min().y >= center.y) // value is in bottom-left quadrant
 			{
 				res = 2;
 			}
 		}
-		else if (value->bb.min.x >= center.x) // value is in right quadrants
+		else if (value->bb.min().x >= center.x) // value is in right quadrants
 		{
-			if (value->bb.max.y < center.y) // value is in top-right quadrant
+			if (value->bb.max().y < center.y) // value is in top-right quadrant
 			{
 				res = 0;
 			}
-			else if (value->bb.min.y >= center.y) // value is in bottom-right quadrant
+			else if (value->bb.min().y >= center.y) // value is in bottom-right quadrant
 			{
 				res = 1;
 			}

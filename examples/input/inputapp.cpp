@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-	InputScene::InputScene(Game2* game2) : Scene2(game2)
+	InputScene::InputScene(Game2* game2) : Scene2(game2), feedback(nullptr)
 	{
 		auto settings = game->get_settings();
 
@@ -23,11 +23,8 @@ namespace dukat
 		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
-		info_text->transform.position = Vector3(-0.5f * (float)320, 0.4f * (float)180, 0.0f);
-		std::stringstream ss;
-		ss << "Device: " << game->get_devices()->active->get_name() << std::endl;
-		info_text->set_text(ss.str());
-		info_text->update();
+		info_text->transform.position = Vector3(-0.45f * (float)320, 0.25f * (float)180, 0.0f);
+		update_info_text();
 		info_layer->add(info_text.get());
 
 		// Set up debug layer
@@ -200,12 +197,67 @@ namespace dukat
 		}
 	}
 
+	void InputScene::feedback_heartbeat(void)
+	{
+		if (feedback != nullptr)
+			game->get_devices()->cancel_feedback(feedback);
+
+		log->info("Starting heartbeat.");
+
+		std::vector<FeedbackKey> keys = {
+			FeedbackKey{ 0.0f, 0.0f, 0.0f },
+			FeedbackKey{ 1.0f, 1.0f, 0.0f },
+			FeedbackKey{ 1.2f, 0.0f, 0.0f },
+			FeedbackKey{ 1.4f, 1.0f, 0.0f },
+			FeedbackKey{ 1.6f, 0.0f, 0.0f },
+		};
+		auto seq = std::make_unique<FeedbackSequence>(30.0f, keys);
+		feedback = game->get_devices()->start_feedback(std::move(seq));
+	}
+
+	void InputScene::feedback_hi_lo(void)
+	{
+		if (feedback != nullptr)
+			game->get_devices()->cancel_feedback(feedback);
+
+		log->info("Starting hi-lo.");
+
+		std::vector<FeedbackKey> keys = {
+			FeedbackKey{ 0.0f, 0.0f, 0.0f },
+			FeedbackKey{ 0.5f, 1.0f, 0.0f },
+			FeedbackKey{ 1.0f, 0.0f, 1.0f },
+			FeedbackKey{ 1.5f, 1.0f, 0.0f },
+			FeedbackKey{ 2.0f, 0.0f, 1.0f },
+			FeedbackKey{ 2.5f, 0.0f, 0.0f },
+		};
+		auto seq = std::make_unique<FeedbackSequence>(30.0f, keys);
+		feedback = game->get_devices()->start_feedback(std::move(seq));
+	}
+
+	void InputScene::update_info_text(void)
+	{
+		std::stringstream ss;
+		ss << "Device: " << game->get_devices()->active->get_name() << std::endl
+			<< "1,2 - Test Rumble Effects" << std::endl
+			<< "F5 - Toggle recording" << std::endl
+			<< "F6 - Toggle replay" << std::endl;
+		info_text->set_text(ss.str());
+		info_text->update();
+	}
+
 	void InputScene::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_ESCAPE:
 			game->set_done(true);
+			break;
+
+		case SDLK_1:
+			feedback_heartbeat();
+			break;
+		case SDLK_2:
+			feedback_hi_lo();
 			break;
 
 		case SDLK_F5:
@@ -261,12 +313,8 @@ namespace dukat
 		switch (msg.event)
 		{
 		case Events::DeviceBound:
-		{
-			std::stringstream ss;
-			ss << "Device: " << game->get_devices()->active->get_name() << std::endl;
-			info_text->set_text(ss.str());
+			update_info_text();
 			break;
-		}
 		}
 	}
 }

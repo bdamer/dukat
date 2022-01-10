@@ -24,7 +24,7 @@ namespace dukat
 		std::vector<Vector2> points(count);
 		for (int i = 0; i < count; i++)
 		{
-			points[i] = random(limits.min, limits.max);
+			points[i] = random(limits.min(), limits.max());
 		}
 		return points;
 	}

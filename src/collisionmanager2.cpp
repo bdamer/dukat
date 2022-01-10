@@ -64,7 +64,7 @@ namespace dukat
 
 		// Check if collision has already been detected during this frame
 		const auto id = hash(this_body, other_body);
-		const auto contact_exists = contacts.count(id) > 0;
+		const auto contact_exists = contacts.contains(id);
 		if (contact_exists && contacts[id].generation == generation)
 			return;
 
@@ -231,7 +231,7 @@ namespace dukat
 	std::list<CollisionManager2::Body*> CollisionManager2::get_bodies(const Vector2& p) const
 	{
 		Body b{ 0 };
-		b.bb.min = b.bb.max = p;
+		b.bb = AABB2{ p, p };
 		candidates.clear();
 		collect_collisions(*tree, &b, candidates);
 

@@ -36,10 +36,10 @@ namespace dukat
 		Vector2 x(std::cos(transform.rot), std::sin(transform.rot));
 		Vector2 y(-std::sin(transform.rot), std::cos(transform.rot));
 
-		auto half_dim = (box.max - box.min) * 0.5f;
+		auto half_dim = (box.max() - box.min()) * 0.5f;
 		x *= half_dim.x;
 		y *= half_dim.y;
-		auto center = box.min + half_dim;
+		const auto& center = box.center();
 
 		corners[0] = transform.pos + center - x - y;
 		corners[1] = transform.pos + center + x - y;

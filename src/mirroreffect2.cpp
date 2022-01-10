@@ -12,8 +12,8 @@ namespace dukat
 		if (target_layer == nullptr)
 			return;
 
-		const AABB2 shifted_bb{ camera_bb.min + shift, camera_bb.max + shift };
-
+		const auto shifted_bb = camera_bb + shift;
+		
 		// swap sprite program and render sprites
 		auto sp = target_layer->get_sprite_program();
 		target_layer->set_sprite_program(sprite_program);

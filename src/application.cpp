@@ -69,6 +69,7 @@ namespace dukat
 #ifdef PERF_TRACE
 		uint64_t start_ticks, update_ticks, render_ticks;
 #endif
+		float delta;
 		SDL_Event e;
 		while (!done)
 		{
@@ -78,16 +79,18 @@ namespace dukat
 #endif
 			if (paused || !active)
 			{
+				delta = 1.0f / 15.0f;
 				SDL_Delay(static_cast<Uint32>(1000 / 15));
 			}
 			else if (fixed_frame_rate > 0.0f)
 			{
+				delta = fixed_frame_rate;
 				runtime += fixed_frame_rate;
 				update(std::min(fixed_frame_rate, max_frame_delta));
 			}
 			else
 			{
-				const auto delta = static_cast<float>(ticks - last_update) / 1000.0f;
+				delta = static_cast<float>(ticks - last_update) / 1000.0f;
 				runtime += delta;
 				update(std::min(delta, max_frame_delta));
 			}
@@ -106,8 +109,8 @@ namespace dukat
 			{
 				handle_event(e);
 			}
-
-			device_manager->update();
+			
+			device_manager->update(delta);
 
 #ifdef PERF_TRACE
 			update_ticks = SDL_GetPerformanceCounter();

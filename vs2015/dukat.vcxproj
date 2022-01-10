@@ -94,7 +94,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);XBOX_SUPPORT;BOX2D_SUPPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);XINPUT_SUPPORT;BOX2D_SUPPORT</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);XBOX_SUPPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);XINPUT_SUPPORT</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -167,6 +167,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\include\dukat\effectpass.h" />
+    <ClInclude Include="..\include\dukat\feedback.h" />
     <ClInclude Include="..\include\dukat\followercamera2.h" />
     <ClInclude Include="..\include\dukat\followercamera3.h" />
     <ClInclude Include="..\include\dukat\fontcache.h" />
@@ -273,7 +274,6 @@
     <ClInclude Include="..\include\dukat\sprite.h" />
     <ClInclude Include="..\include\dukat\surface.h" />
     <ClInclude Include="..\include\dukat\sysutil.h" />
-    <ClInclude Include="..\include\dukat\targetver.h" />
     <ClInclude Include="..\include\dukat\textmeshinstance.h" />
     <ClInclude Include="..\include\dukat\textmeshbuilder.h" />
     <ClInclude Include="..\include\dukat\texture.h" />
@@ -291,6 +291,7 @@
     <ClInclude Include="..\include\dukat\window.h" />
     <ClInclude Include="..\include\dukat\xboxdevice.h" />
     <ClInclude Include="..\src\stdafx.h" />
+    <ClInclude Include="..\src\targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\dukat\playbackdevice.h" />
@@ -306,6 +307,7 @@
     <ClCompile Include="..\src\collisionmanager2.cpp" />
     <ClCompile Include="..\src\debugeffect2.cpp" />
     <ClCompile Include="..\src\effectpass.cpp" />
+    <ClCompile Include="..\src\feedback.cpp" />
     <ClCompile Include="..\src\fontcache.cpp" />
     <ClCompile Include="..\src\fullscreeneffect2.cpp" />
     <ClCompile Include="..\src\gridmesh.cpp" />

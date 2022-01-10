@@ -58,8 +58,8 @@ namespace dukat
 		divide(level, level.size);
 
 		// Normalize data in [min_val..max_val] range
-		auto min_z = level.min();
-		auto max_z = level.max();
+		auto min_z = level.min_element();
+		auto max_z = level.max_element();
 		const auto factor = 1.0f / (max_z - min_z);
 		const auto half_size = 0.5f * (float)level.size;
 		for (int y = 0; y < level.size; y++)

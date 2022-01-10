@@ -304,7 +304,7 @@ namespace dukat
 		// increase camera bb slightly to avoid culling particles with size > 1
 		// which fall just outside of screen rect; otherwise these will cause flickering
 		const Vector2 padding{ 4, 4 };
-		const auto bb = AABB2{ camera_bb.min - padding, camera_bb.max + padding };
+		const auto bb = AABB2{ camera_bb.min() - padding, camera_bb.max() + padding };
 		auto particle_count = 0;
 		for (auto it = particles.begin(); it != particles.end(); )
 		{

@@ -15,6 +15,7 @@
 #endif 
 
 // STL
+#include <algorithm>
 #include <assert.h>
 #include <fstream>
 #include <iomanip>

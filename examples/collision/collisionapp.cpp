@@ -154,8 +154,7 @@ namespace dukat
 		auto seed_pos = screen_dim - Vector2{ wall_size + 0.5f * size, wall_size + 0.5f * size };
 		auto pos = random(-seed_pos, seed_pos);
 		auto body = game->get<CollisionManager2>()->create_body();
-		body->bb.min = pos - Vector2{ size, size };
-		body->bb.max = pos + Vector2{ size, size };
+		body->bb = AABB2{ pos - Vector2{ size, size }, pos + Vector2{ size, size } };
 		body->mass = static_cast<float>(size * size);
 		objects.push_back(std::make_unique<GameObject>(dir, body));
 	}
@@ -164,8 +163,7 @@ namespace dukat
 	{
 		for (auto& o : objects)
 		{
-			o->body->bb.min += o->dir * delta;
-			o->body->bb.max += o->dir * delta;
+			o->body->bb += o->dir * delta;
 		}
 	}
 

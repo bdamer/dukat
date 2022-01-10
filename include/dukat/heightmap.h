@@ -23,8 +23,8 @@ namespace dukat
 
             float& operator[](int index) { return data[index]; }
             float operator[](int index) const { return data[index]; }
-            float min(void) const { return *std::min_element(data.begin(), data.end()); }
-            float max(void) const { return *std::max_element(data.begin(), data.end()); }
+            float min_element(void) const { return *std::min_element(data.begin(), data.end()); }
+            float max_element(void) const { return *std::max_element(data.begin(), data.end()); }
         };
 
     private:

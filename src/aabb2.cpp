@@ -8,27 +8,21 @@ namespace dukat
 	bool AABB2::overlaps(const AABB2& another) const
 	{
 		// Using exclusive check so adjacent BBs don't overlap
-		if (max.x <= another.min.x) return false; // a is left of b
-		if (min.x >= another.max.x) return false; // a is right of b
-		if (max.y <= another.min.y) return false; // a is above b
-		if (min.y >= another.max.y) return false; // a is below b
+		if (_max.x <= another._min.x) return false; // a is left of b
+		if (_min.x >= another._max.x) return false; // a is right of b
+		if (_max.y <= another._min.y) return false; // a is above b
+		if (_min.y >= another._max.y) return false; // a is below b
 		return true; // boxes overlap
 	}
 
 	bool AABB2::overlaps(const BoundingBody2& another) const
 	{
 		if (auto ptr = dynamic_cast<const AABB2*>(&another))
-		{
 			return overlaps(*ptr);
-		}
 		else if (auto ptr = dynamic_cast<const BoundingCircle*>(&another))
-		{
 			return intersect_circle(*ptr);
-		}
 		else 
-		{
 			return false;
-		}
 	}
 
 	bool AABB2::intersect(const AABB2& another, Collision& collision) const
@@ -36,7 +30,7 @@ namespace dukat
 		const auto this_c = center();
 		const auto that_c = another.center();
 		const auto d = this_c - that_c;
-		const auto p = ((max - min) + (another.max - another.min)) * 0.5f - abs(d);
+		const auto p = ((_max - _min) + (another._max - another._min)) * 0.5f - abs(d);
 		if (p.x <= 0.0f || p.y <= 0.0f)
 			return false;
 
@@ -45,7 +39,7 @@ namespace dukat
 			const auto sx = sgn(d.x);
 			collision.delta.x = p.x * sx;
 			collision.normal.x = static_cast<float>(sx);
-			collision.pos.x = sx < 0 ? min.x : max.x;
+			collision.pos.x = sx < 0 ? _min.x : _max.x;
 			collision.pos.y = that_c.y;
 		}
 		else
@@ -54,7 +48,7 @@ namespace dukat
 			collision.delta.y = p.y * sy;
 			collision.normal.y = static_cast<float>(sy);
 			collision.pos.x = that_c.x;			
-			collision.pos.y = sy < 0 ? min.y : max.y;
+			collision.pos.y = sy < 0 ? _min.y : _max.y;
 		}
 		return true;
 	}
@@ -63,19 +57,18 @@ namespace dukat
 	{
 		// check for overlap on each axis
 		return
-			(p.x >= min.x) && (p.x <= max.x) &&
-			(p.y >= min.y) && (p.y <= max.y);
+			(p.x >= _min.x) && (p.x <= _max.x) &&
+			(p.y >= _min.y) && (p.y <= _max.y);
 	}
 
 	bool AABB2::intersect_circle(const BoundingCircle& bc) const
 	{
-		const auto center = this->center();
-		auto v = center - bc.center;
+		auto v = _center - bc.center;
 		const auto dist2_centers = v.mag2();
 
 		// compute inner & outer radius of bounding box
-		auto outer_rad = (center - min).mag2();
-		auto inner_rad = (max - center).mag2();
+		auto outer_rad = (_center - _min).mag2();
+		auto inner_rad = (_max - _center).mag2();
 		if (outer_rad < inner_rad)
 			std::swap(outer_rad, inner_rad);
 
@@ -87,62 +80,55 @@ namespace dukat
 			return true;
 		// Case #3 - test point on circle on vector between centers
 		v.normalize();
-		return contains(center + v * bc.radius);
+		return contains(_center + v * bc.radius);
 	}
 
 	void AABB2::clear()
 	{
-		min.x = min.y = big_number;
-		max.x = max.y = -big_number;
+		_min.x = _min.y = big_number;
+		_max.x = _max.y = -big_number;
 	}
 
 	void AABB2::add(const Vector2& p)
 	{
-		if (p.x < min.x)
-		{
-			min.x = p.x;
-		}
-		if (p.y < min.y)
-		{
-			min.y = p.y;
-		}
-		if (p.x > max.x)
-		{
-			max.x = p.x;
-		}
-		if (p.y > max.y)
-		{
-			max.y = p.y;
-		}
+		if (p.x < _min.x)
+			_min.x = p.x;
+		if (p.y < _min.y)
+			_min.y = p.y;
+		if (p.x > _max.x)
+			_max.x = p.x;
+		if (p.y > _max.y)
+			_max.y = p.y;
+		compute_center();
 	}
 
 	void AABB2::add(const AABB2& box)
 	{
-		add(box.min);
-		add(box.max);
+		add(box._min);
+		add(box._max);
 	}
 
 	bool AABB2::empty(void) const
 	{
 		// check if we're inverted on any axis
-		return (min.x > max.x) || (min.y > max.y);
+		return (_min.x > _max.x) || (_min.y > _max.y);
 	}
 
 	void AABB2::set_to_transformed_box(const AABB2& box, const Transform2& t)
 	{
 		clear();
-		add(t.pos + box.min.rotate(t.rot));
-		add(t.pos + box.max.rotate(t.rot));
+		add(t.pos + box._min.rotate(t.rot));
+		add(t.pos + box._max.rotate(t.rot));
 	}
 
 	float AABB2::intersect_ray(const Ray2& ray, float near_z, float far_z) const 
 	{
-		auto tmin = (min.x - ray.origin.x) / ray.dir.x;
-		auto tmax = (max.x - ray.origin.x) / ray.dir.x;
+		auto tmin = (_min.x - ray.origin.x) / ray.dir.x;
+		auto tmax = (_max.x - ray.origin.x) / ray.dir.x;
 		if (tmin > tmax) 
 			std::swap(tmin, tmax);
-		auto tymin = (min.y - ray.origin.y) / ray.dir.y;
-		auto tymax = (max.y - ray.origin.y) / ray.dir.y;
+		auto tymin = (_min.y - ray.origin.y) / ray.dir.y;
+		auto tymax = (_max.y - ray.origin.y) / ray.dir.y;
 		if (tymin > tymax) 
 			std::swap(tymin, tymax);
 		if ((tmin > tymax) || (tymin > tmax))
@@ -170,24 +156,24 @@ namespace dukat
 
 		if (n.x > 0.0f)
 		{
-			mind = n.x * min.x;
-			maxd = n.x * max.x;
+			mind = n.x * _min.x;
+			maxd = n.x * _max.x;
 		}
 		else
 		{
-			mind = n.x * max.x;
-			maxd = n.x * min.x;
+			mind = n.x * _max.x;
+			maxd = n.x * _min.x;
 		}
 
 		if (n.y > 0.0f)
 		{
-			mind += n.y * min.y;
-			maxd += n.y * max.y;
+			mind += n.y * _min.y;
+			maxd += n.y * _max.y;
 		}
 		else
 		{
-			mind += n.y * max.y;
-			maxd += n.y * min.y;
+			mind += n.y * _max.y;
+			maxd += n.y * _min.y;
 		}
 
 		// check if completely on the front side of the plane

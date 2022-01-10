@@ -23,7 +23,7 @@ namespace dukat
 
 	void DebugEffect2::render_bounding_box(const AABB2& bb, const Color& color) const
 	{
-		render_rect(bb.min, bb.max, color);
+		render_rect(bb.min(), bb.max(), color);
 	}
 
 	void DebugEffect2::render_rect(const Vector2& min, const Vector2& max, const Color& color) const
@@ -81,9 +81,9 @@ namespace dukat
 						queue.push(t->child(i));
 				}
 
-				if (world_bb.contains(t->min) || world_bb.contains(Vector2{ t->min.x, t->max.y }) || 
-					world_bb.contains(t->max) || world_bb.contains(Vector2{ t->max.x, t->min.y }))
-					render_rect(t->min, t->max, tree_color);
+				if (world_bb.contains(t->min_v) || world_bb.contains(Vector2{ t->min_v.x, t->max_v.y }) ||
+					world_bb.contains(t->max_v) || world_bb.contains(Vector2{ t->max_v.x, t->min_v.y }))
+					render_rect(t->min_v, t->max_v, tree_color);
 			}
 		}
 

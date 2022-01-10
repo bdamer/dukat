@@ -8,7 +8,7 @@
 #include <dukat/mathutil.h>
 #include <dukat/settings.h>
 
-#ifdef XBOX_SUPPORT
+#ifdef XINPUT_SUPPORT
 #include <dukat/xboxdevice.h>
 #endif
 
@@ -40,8 +40,7 @@ namespace dukat
 			log->warn("Already using joystick device, ignoring new device.");
 			return;
 		}
-
-#ifdef XBOX_SUPPORT
+#ifdef XINPUT_SUPPORT
 		const std::string xinput = "XInput Controller";
 		if (name.rfind(xinput, 0) == 0 || 
 			name == "Controller (Xbox 360 Wireless Receiver for Windows)")
@@ -52,12 +51,13 @@ namespace dukat
 		{
 #endif
 			controllers.push_back(std::make_unique<GamepadDevice>(window, settings, joystick_index));
-#ifdef XBOX_SUPPORT
+#ifdef XINPUT_SUPPORT
 		}
 #endif		
 		trigger(Message{ Events::DeviceUnbound });
 		active = controllers.back().get();
 		trigger(Message{ Events::DeviceBound });
+		apply_feedback(true);
 	}
 
 	void DeviceManager::remove_joystick(SDL_JoystickID id)
@@ -65,29 +65,111 @@ namespace dukat
 		if (!settings.get_bool("input.joystick.support", true))
 			return;
 		log->info("Joystick device removed: {}", id);
-		std::vector<std::unique_ptr<InputDevice>>::size_type i = 0;
-		while (i < controllers.size())
-		{
-			if (controllers[i]->id() == id)
-			{
-				controllers.erase(controllers.begin() + i);
-				break;
-			}
-			++i;
-		}
+		auto it = std::find_if(controllers.begin(), controllers.end(),
+			[id](const std::unique_ptr<InputDevice>& dev) { return dev->id() == id; });
+		if (it == controllers.end())
+			return; // device not found
+		controllers.erase(it);
 		trigger(Message{ Events::DeviceUnbound });
 		active = controllers.back().get();
 		trigger(Message{ Events::DeviceBound });
+		apply_feedback(true);
 	}
 
-	void DeviceManager::update(void)
+	void DeviceManager::update(float delta)
 	{
 		if (active != nullptr && enabled)
 		{
 			active->update();
 			if (recording && recorder != nullptr)
 				recorder->record_frame(active->get_state());
+
+			update_feedback_stack(delta);
 		}
+	}
+
+	void DeviceManager::update_feedback_stack(float delta)
+	{
+		if (feedback_paused || feedback_stack.empty())
+			return;
+
+		auto it = feedback_stack.begin();
+		while (it != feedback_stack.end())
+		{
+			(*it)->update(delta);
+			if ((*it)->is_done()) 
+			{
+				log->debug("Feedback sequence is done.");
+				it = feedback_stack.erase(it);
+			}
+			else
+				++it;
+		}
+
+		apply_feedback(false);
+	}
+
+	void DeviceManager::apply_feedback(bool force)
+	{
+		auto duration = 0.0f;
+		auto low = 0.0f, high = 0.0f;
+
+		if (!feedback_stack.empty())
+		{
+			const auto& f = feedback_stack.front();
+			duration = f->keys[f->next_key].index - f->index; // how long till next transition
+			low = f->keys[f->cur_key].value.low;
+			high = f->keys[f->cur_key].value.high;
+		}
+
+		if (force || low != feedback_val.low || high != feedback_val.high)
+		{
+			active->start_feedback(low, high, duration);
+			feedback_val.low = low;
+			feedback_val.high = high;
+		}
+	}
+
+	FeedbackSequence* DeviceManager::start_feedback(std::unique_ptr<FeedbackSequence>& feedback)
+	{
+		log->debug("Starting feedback sequence.");
+		feedback_stack.push_front(std::move(feedback));
+		return feedback_stack.front().get();
+	}
+
+	void DeviceManager::cancel_feedback(FeedbackSequence* feedback)
+	{
+		auto it = std::find_if(feedback_stack.begin(), feedback_stack.end(),
+			[&](const std::unique_ptr<FeedbackSequence>& seq) { return seq.get() == feedback; });
+		if (it != feedback_stack.end())
+		{
+			log->debug("Cancelling feedback sequence.");
+			feedback_stack.erase(it);
+			if (feedback_stack.empty())
+				active->cancel_feedback();
+			else
+				apply_feedback(false);
+		}
+	}
+
+	void DeviceManager::pause_feedback(void)
+	{
+		if (feedback_paused) return;
+		feedback_paused = true;
+		active->cancel_feedback();
+	}
+
+	void DeviceManager::resume_feedback(void)
+	{
+		if (!feedback_paused) return;
+		feedback_paused = false;
+		apply_feedback(true);
+	}
+
+	void DeviceManager::reset_feedback(void)
+	{
+		feedback_stack.clear();
+		active->cancel_feedback();
 	}
 
 	void DeviceManager::start_record(const std::string& filename)

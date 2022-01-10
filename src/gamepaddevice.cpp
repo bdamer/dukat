@@ -7,7 +7,8 @@
 
 namespace dukat
 {
-	GamepadDevice::GamepadDevice(const Window& window, const Settings& settings, int joystick_index) : InputDevice(window, settings, false)
+	GamepadDevice::GamepadDevice(const Window& window, const Settings& settings, int device_index) 
+		: InputDevice(window, settings, false)
 	{
 		invert_y = settings.get_bool("input.gamepad.inverty", true);
 
@@ -26,12 +27,12 @@ namespace dukat
 		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", dpad_left);
 		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", dpad_up);
 
-		if (!SDL_IsGameController(joystick_index))
+		if (!SDL_IsGameController(device_index))
 		{
-			log->warn("Attempting to use incompatible device as gamepad: {}", joystick_index);
+			log->warn("Attempting to use incompatible device as gamepad: {}", device_index);
 		}
 
-		device = SDL_GameControllerOpen(joystick_index);
+		device = SDL_GameControllerOpen(device_index);
 		if (device == nullptr)
 		{
 			std::ostringstream ss;
@@ -41,10 +42,12 @@ namespace dukat
 		name = SDL_GameControllerName(device);
 		log->info("Gamepad connected: {}", name);
 
-		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(joystick_index);
+		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(device_index);
 		char buffer[33];
 		SDL_JoystickGetGUIDString(guid, buffer, 33);
 		log->debug("Device GUID: {}", buffer);
+		log->debug("Rumble support: {}", SDL_GameControllerHasRumble(device));
+		log->debug("Rumble triggers support: {}", SDL_GameControllerHasRumbleTriggers(device));
 	}
 
 	GamepadDevice::~GamepadDevice(void)
@@ -97,6 +100,15 @@ namespace dukat
 		clamp(lya, 0.0f, static_cast<float>(window.get_height()));
 		clamp(rxa, 0.0f, static_cast<float>(window.get_width()));
 		clamp(rya, 0.0f, static_cast<float>(window.get_height()));
+	}
+
+	void GamepadDevice::start_feedback(float low_freq, float hi_freq, float duration)
+	{
+		const auto lo = static_cast<uint16_t>(low_freq * 65535.0f);
+		const auto hi = static_cast<uint16_t>(hi_freq * 65535.0f);
+		const auto duration_ms = static_cast<uint32_t>(1000.0f * duration);
+		if (SDL_GameControllerRumble(device, lo, hi, duration_ms) != 0)
+			log->warn("Device doesn't support rumble: {}", name);
 	}
 
 	int GamepadDevice::id(void) const

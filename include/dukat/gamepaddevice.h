@@ -25,17 +25,22 @@ namespace dukat
 		static constexpr auto dpad_left = 13;
 		static constexpr auto dpad_right = 14;
 		static constexpr float sensitivity = 1.0f;
+
 		SDL_GameController* device;
 		// For some reason generic SDL inverts y axis - this fixes it.
 		bool invert_y;
 
 	public:
-		GamepadDevice(const Window& window, const Settings& settings, int joystick_index);
+		GamepadDevice(const Window& window, const Settings& settings, int device_index);
 		~GamepadDevice(void);
 
-		void update(void);
-		bool is_inverted(void) const { return invert_y; }
 		int id(void) const;
+		bool is_inverted(void) const { return invert_y; }
 		std::string get_button_name(VirtualButton button) const;
+		void update(void);
+
+		// Controls haptic feedback
+		void start_feedback(float low_freq, float hi_freq, float duration);
+		void cancel_feedback(void) { start_feedback(0.0f, 0.0f, 0.0f); }
 	};
 }

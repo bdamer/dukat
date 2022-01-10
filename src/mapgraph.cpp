@@ -118,7 +118,7 @@ namespace dukat
                 {
                     corner = create_corner();
                     corner->pos = *point;
-                    corner->border = (point->x == bb.min.x || point->x == bb.max.x || point->y == bb.min.y || point->y == bb.max.y);
+                    corner->border = (point->x == bb.min().x || point->x == bb.max().x || point->y == bb.min().y || point->y == bb.max().y);
                     corner_map[point] = corner;
                 }
                 else

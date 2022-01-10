@@ -12,19 +12,24 @@ namespace dukat
 	// 2D Axis-aligned bounding body.
 	class AABB2 : public BoundingBody2
 	{
-	public:
-		Vector2 min;
-		Vector2 max;
+	private:
+		Vector2 _min;
+		Vector2 _max;
+		Vector2 _center;
+		void compute_center(void) { _center = _min + (_max - _min) * 0.5f; }
 
+	public:
 		// Constructors
 		AABB2(void) { clear(); }
-		AABB2(const Vector2& min, const Vector2& max) : min(min), max(max) { }
+		AABB2(const Vector2& min, const Vector2& max) : _min(min), _max(max) { compute_center(); }
 
 		// Dimension queries
-		float size(void) const { return (max.x - min.x) * (max.y - min.y); }
-		Vector2 center(void) const { return min + (max - min) * 0.5f; }
-		float width(void) const { return max.x - min.x; }
-		float height(void) const { return max.y - min.y; }
+		float size(void) const { return (_max.x - _min.x) * (_max.y - _min.y); }
+		const Vector2& min(void) const { return _min; }
+		const Vector2& max(void) const { return _max; }
+		const Vector2& center(void) const { return _center; }
+		float width(void) const { return _max.x - _min.x; }
+		float height(void) const { return _max.y - _min.y; }
 
 		// Box operations
 		void clear(void);
@@ -50,37 +55,46 @@ namespace dukat
 		int classify_ray(const Ray2& ray) const;
 
 		// Operators
-		AABB2 operator+(const Vector2& v) const { return AABB2(min + v, max + v); }
-		AABB2 operator-(const Vector2& v) const { return AABB2(min - v, max - v); }
-		AABB2 operator*(float s) const { return AABB2(min * s, max * s); }
-		AABB2 operator/(float s) const { return AABB2(min / s, max / s); }
+		AABB2 operator+(const Vector2& v) const { return AABB2(_min + v, _max + v); }
+		AABB2 operator-(const Vector2& v) const { return AABB2(_min - v, _max - v); }
+		AABB2 operator*(float s) const { return AABB2(_min * s, _max * s); }
+		AABB2 operator/(float s) const { return AABB2(_min / s, _max / s); }
+
+		friend AABB2& operator+=(AABB2& bb, const Vector2& v);
+		friend AABB2& operator-=(AABB2& bb, const Vector2& v);
+		friend AABB2& operator*=(AABB2& bb, float s);
+		friend AABB2& operator/=(AABB2& bb, float s);
 	};
 
 	inline AABB2& operator+=(AABB2& bb, const Vector2& v)
 	{
-		bb.min += v;
-		bb.max += v;
+		bb._min += v;
+		bb._max += v;
+		bb.compute_center();
 		return bb;
 	}
 
 	inline AABB2& operator-=(AABB2& bb, const Vector2& v)
 	{
-		bb.min -= v;
-		bb.max -= v;
+		bb._min -= v;
+		bb._max -= v;
+		bb.compute_center();
 		return bb;
 	}
 
 	inline AABB2& operator*=(AABB2& bb, float s)
 	{
-		bb.min *= s;
-		bb.max *= s;
+		bb._min *= s;
+		bb._max *= s;
+		bb.compute_center();
 		return bb;
 	}
 
 	inline AABB2& operator/=(AABB2& bb, float s)
 	{
-		bb.min /= s;
-		bb.max /= s;
+		bb._min /= s;
+		bb._max /= s;
+		bb.compute_center();
 		return bb;
 	}
 }
