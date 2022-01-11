@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 namespace dukat
@@ -29,7 +30,7 @@ namespace dukat
 		int cur_key; // index of current key
 		int next_key; // index of next key
 
-		struct FeedbackSequence(float duration, const std::vector<FeedbackKey>& keys)
+		FeedbackSequence(float duration, const std::vector<FeedbackKey>& keys)
 			: duration(duration), keys(keys), runtime(0.0f), index(0.0f), cur_key(0), next_key(1)
 		{
 		}

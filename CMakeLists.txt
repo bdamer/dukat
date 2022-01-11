@@ -9,16 +9,19 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 # Libraries
-# FIXME
-set(SDL2_LIBRARY /opt/SDL2/lib/libSDL2.so)
+list(APPEND CMAKE_MODULE_PATH "/usr/lib/x86_64-linux-gnu/cmake")
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
 set(SDL2_IMAGE_LIBRARIES /opt/SDL2/lib/libSDL2_image.so)
 set(SDL2_MIXER_LIBRARIES /opt/SDL2/lib/libSDL2_mixer.so)
-set(BOX2D_LIBRARY /usr/lib/x86_64-linux-gnu/libBox2D.so.2.3.0)
-
-#find_package(SDL2 REQUIRED)
+# FIXME
 #find_package(SDL2_Image REQUIRED)
 #find_package(SDL2_ttf REQUIRED)
+set(BOX2D_LIBRARY /usr/lib/x86_64-linux-gnu/libBox2D.so.2.3.0)
+
 find_package(GLEW REQUIRED)
+# Set OpenGL preference
+cmake_policy(SET CMP0072 NEW)
 find_package(OpenGL REQUIRED)
 find_package(X11 REQUIRED)
 find_package(Threads REQUIRED)

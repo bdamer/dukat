@@ -46,8 +46,10 @@ namespace dukat
 		char buffer[33];
 		SDL_JoystickGetGUIDString(guid, buffer, 33);
 		log->debug("Device GUID: {}", buffer);
+#if SDL_VERSION_ATLEAST(2, 0, 18)
 		log->debug("Rumble support: {}", SDL_GameControllerHasRumble(device));
 		log->debug("Rumble triggers support: {}", SDL_GameControllerHasRumbleTriggers(device));
+#endif
 	}
 
 	GamepadDevice::~GamepadDevice(void)
