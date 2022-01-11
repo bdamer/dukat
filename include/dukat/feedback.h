@@ -37,4 +37,13 @@ namespace dukat
 		void update(float delta);
 		bool is_done(void) const { return duration > 0.0f && runtime > duration; }
 	};
+
+	inline std::unique_ptr<FeedbackSequence> make_sequence(float duration, float low, float high)
+	{
+		std::vector<FeedbackKey> keys = {
+			FeedbackKey{ 0.0f, low, high },
+			FeedbackKey{ duration, 0.0f, 0.0f },
+		};
+		return std::make_unique<FeedbackSequence>(duration, keys);
+	}
 }
