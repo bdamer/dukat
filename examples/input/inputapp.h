@@ -19,13 +19,19 @@ namespace dukat
 		std::unique_ptr<Sprite> ltrigger_sprite;
 		std::unique_ptr<Sprite> rtrigger_sprite;
 		FeedbackSequence* feedback;
+		Animation* anim;
+		float text_alpha;
 
 		std::unique_ptr<TextMeshInstance> info_text;
+		std::unique_ptr<TextMeshInstance> action_text;
 		std::unique_ptr<TextMeshInstance> debug_text;
 
 		void create_sprites(void);
 		void bind_events(void);
 		void update_info_text(void);
+		void toggle_record(void);
+		void toggle_replay(void);
+		void start_animation(void);
 
 		void feedback_heartbeat(void);
 		void feedback_hi_lo(void);

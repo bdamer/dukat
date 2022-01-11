@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-	InputScene::InputScene(Game2* game2) : Scene2(game2), feedback(nullptr)
+	InputScene::InputScene(Game2* game2) : Scene2(game2), feedback(nullptr), anim(nullptr), text_alpha(0.0f)
 	{
 		auto settings = game->get_settings();
 
@@ -19,19 +19,28 @@ namespace dukat
 
 		create_sprites();
 
-		// Set up info text
 		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
+
+		// Set up info text
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
-		info_text->transform.position = Vector3(-0.45f * (float)320, 0.25f * (float)180, 0.0f);
+		info_text->transform.position = Vector3(-0.45f * 320.0f, 0.25f * 180.0f, 0.0f);
 		update_info_text();
 		info_layer->add(info_text.get());
+
+		// Set up recording text
+		action_text = game->create_text_mesh();
+		action_text->set_size(16.0f);
+		action_text->transform.position = Vector3(0.0f, -0.25f * 180.0f, 0.0f);
+		action_text->valign = TextMeshInstance::Top;
+		action_text->halign = TextMeshInstance::Center;
+		info_layer->add(action_text.get());
 
 		// Set up debug layer
 		auto debug_layer = game->get_renderer()->create_direct_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(4.0f);
-		debug_text->transform.position = Vector3(-0.5f * (float)640, -0.5f * (float)360, 0.0f);
+		debug_text->transform.position = Vector3(-0.5f * 320.0f, -0.5f * 180.0f, 0.0f);
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 	
@@ -211,7 +220,7 @@ namespace dukat
 			FeedbackKey{ 1.4f, 1.0f, 0.0f },
 			FeedbackKey{ 1.6f, 0.0f, 0.0f },
 		};
-		auto seq = std::make_unique<FeedbackSequence>(30.0f, keys);
+		auto seq = std::make_unique<FeedbackSequence>(10.0f, keys);
 		feedback = game->get_devices()->start_feedback(std::move(seq));
 	}
 
@@ -230,7 +239,7 @@ namespace dukat
 			FeedbackKey{ 2.0f, 0.0f, 1.0f },
 			FeedbackKey{ 2.5f, 0.0f, 0.0f },
 		};
-		auto seq = std::make_unique<FeedbackSequence>(30.0f, keys);
+		auto seq = std::make_unique<FeedbackSequence>(10.0f, keys);
 		feedback = game->get_devices()->start_feedback(std::move(seq));
 	}
 
@@ -243,6 +252,77 @@ namespace dukat
 			<< "F6 - Toggle replay" << std::endl;
 		info_text->set_text(ss.str());
 		info_text->update();
+	}
+
+	void InputScene::toggle_record(void)
+	{
+		auto devs = game->get_devices();
+
+		if (devs->is_replaying())
+			devs->stop_replay();
+
+		if (devs->is_recording())
+			devs->stop_record();
+		else
+			devs->start_record("recording");
+
+		if (anim != nullptr)
+		{
+			game->get_animations()->cancel(anim);
+			anim = nullptr;
+		}
+
+		if (devs->is_recording())
+		{
+			action_text->set_color(Color{ 1.0f, 0.0f, 0.0f, 1.0f });
+			action_text->set_text("RECORDING");
+			action_text->update();
+			start_animation();
+		}
+		else
+		{
+			action_text->set_alpha(0.0f);
+		}
+	}
+
+	void InputScene::toggle_replay(void)
+	{
+		auto devs = game->get_devices();
+
+		if (devs->is_recording())
+			devs->stop_record();
+
+		if (devs->is_replaying())
+			devs->stop_replay();
+		else
+			devs->start_replay("recording");
+
+		if (anim != nullptr)
+		{
+			game->get_animations()->cancel(anim);
+			anim = nullptr;
+		}
+
+		if (devs->is_replaying())
+		{
+			action_text->set_color(Color{ 1.0f, 0.0f, 0.0f, 1.0f });
+			action_text->set_text("REPLAY");
+			action_text->update();
+			start_animation();
+		}
+		else
+		{
+			action_text->set_alpha(0.0f);
+		}
+	}
+
+	void InputScene::start_animation(void)
+	{
+		auto animation = std::make_unique<ValueAnimation<float>>(&text_alpha);
+		animation->set_loop(true);
+		animation->add_key(AnimationKey<float>(0.25f, 1.0f));
+		animation->add_key(AnimationKey<float>(0.75f, 0.0f));
+		anim = game->get_animations()->add(std::move(animation));
 	}
 
 	void InputScene::handle_keyboard(const SDL_Event& e)
@@ -261,17 +341,10 @@ namespace dukat
 			break;
 
 		case SDLK_F5:
-			if (game->get_devices()->is_recording())
-				game->get_devices()->stop_record();
-			else
-				game->get_devices()->start_record("recording");
+			toggle_record();
 			break;
-
 		case SDLK_F6:
-			if (game->get_devices()->is_replaying())
-				game->get_devices()->stop_replay();
-			else
-				game->get_devices()->start_replay("recording");
+			toggle_replay();
 			break;
 		}
 	}
@@ -306,6 +379,8 @@ namespace dukat
 		right_sprites[3]->color.a = dev->ry > 0.0f ? std::abs(dev->ry) : 0.0f;
 		ltrigger_sprite->color.a = dev->lt;
 		rtrigger_sprite->color.a = dev->rt;
+
+		action_text->set_alpha(text_alpha);
 	}
 
 	void InputScene::receive(const Message & msg)
