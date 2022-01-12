@@ -185,16 +185,12 @@ namespace dukat
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
 			active = true;
 			if (settings.get_bool("input.mouse.lock", true))
-			{
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
-			}
 			break;
         case SDL_WINDOWEVENT_FOCUS_LOST:
 			active = false;
 			if (settings.get_bool("input.mouse.lock", true))
-			{
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
-			}
 	        break;
 		case SDL_WINDOWEVENT_SHOWN:
 			active = true;
@@ -202,8 +198,8 @@ namespace dukat
 		case SDL_WINDOWEVENT_HIDDEN:
 			active = false;
 			break;
-		case SDL_WINDOWEVENT_RESIZED:
-			window->on_resize();			
+		case SDL_WINDOWEVENT_SIZE_CHANGED:
+			window->on_resize();
 			if (paused) // run a single frame update to fix display if paused
 				update(1.0f / 60.0f);
 			break;

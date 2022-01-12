@@ -145,6 +145,7 @@ namespace dukat
 	void Window::set_fullscreen(bool fullscreen)
 	{
 		this->fullscreen = fullscreen;
+		log->debug("Switching to {}", (fullscreen ? "fullscreen" : "window"));
 		sdl_check_result(SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0),
 			"Change screen mode");
 		// On Linux, seeing duplicate SDL events get sent after window resize. 
