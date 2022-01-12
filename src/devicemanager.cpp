@@ -130,7 +130,7 @@ namespace dukat
 		}
 	}
 
-	FeedbackSequence* DeviceManager::start_feedback(std::unique_ptr<FeedbackSequence>& feedback)
+	FeedbackSequence* DeviceManager::start_feedback(std::unique_ptr<FeedbackSequence> feedback)
 	{
 		log->debug("Starting feedback sequence.");
 		feedback_stack.push_front(std::move(feedback));

@@ -47,7 +47,7 @@ namespace dukat
 		void disable(void) { enabled = false; }
 
 		// Haptic feedback
-		FeedbackSequence* start_feedback(std::unique_ptr<FeedbackSequence>& feedback);
+		FeedbackSequence* start_feedback(std::unique_ptr<FeedbackSequence> feedback);
 		void cancel_feedback(FeedbackSequence* feedback);
 		// Pauses all feedback.
 		void pause_feedback(void);

@@ -220,8 +220,7 @@ namespace dukat
 			FeedbackKey{ 1.4f, 1.0f, 0.0f },
 			FeedbackKey{ 1.6f, 0.0f, 0.0f },
 		};
-		auto seq = std::make_unique<FeedbackSequence>(10.0f, keys);
-		feedback = game->get_devices()->start_feedback(seq);
+		feedback = game->get_devices()->start_feedback(std::make_unique<FeedbackSequence>(10.0f, keys));
 	}
 
 	void InputScene::feedback_hi_lo(void)
@@ -239,8 +238,7 @@ namespace dukat
 			FeedbackKey{ 2.0f, 0.0f, 1.0f },
 			FeedbackKey{ 2.5f, 0.0f, 0.0f },
 		};
-		auto seq = std::make_unique<FeedbackSequence>(10.0f, keys);
-		feedback = game->get_devices()->start_feedback(seq);
+		feedback = game->get_devices()->start_feedback(std::make_unique<FeedbackSequence>(10.0f, keys));
 	}
 
 	void InputScene::update_info_text(void)

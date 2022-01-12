@@ -106,11 +106,13 @@ namespace dukat
 
 	void GamepadDevice::start_feedback(float low_freq, float hi_freq, float duration)
 	{
+#if SDL_VERSION_ATLEAST(2, 0, 9)
 		const auto lo = static_cast<uint16_t>(low_freq * 65535.0f);
 		const auto hi = static_cast<uint16_t>(hi_freq * 65535.0f);
 		const auto duration_ms = static_cast<uint32_t>(1000.0f * duration);
 		if (SDL_GameControllerRumble(device, lo, hi, duration_ms) != 0)
 			log->warn("Device doesn't support rumble: {}", name);
+#endif
 	}
 
 	int GamepadDevice::id(void) const
