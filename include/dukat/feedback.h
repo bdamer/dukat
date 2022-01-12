@@ -39,12 +39,8 @@ namespace dukat
 		bool is_done(void) const { return duration > 0.0f && runtime > duration; }
 	};
 
-	inline std::unique_ptr<FeedbackSequence> make_sequence(float duration, float low, float high)
-	{
-		std::vector<FeedbackKey> keys = {
-			FeedbackKey{ 0.0f, low, high },
-			FeedbackKey{ duration, 0.0f, 0.0f },
-		};
-		return std::make_unique<FeedbackSequence>(duration, keys);
-	}
+	// Sequence factory methods
+	std::unique_ptr<FeedbackSequence> make_sequence(float duration, float low, float high);
+	std::unique_ptr<FeedbackSequence> make_step_sequence(float duration, float on_duration, float off_duration,
+		float lo_on, float lo_off, float hi_on, float hi_off);
 }
