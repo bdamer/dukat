@@ -86,6 +86,7 @@
 // Util
 #include "bit.h"
 #include "bitmapfont.h"
+#include "circularbuffer.h"
 #ifndef __ANDROID__
 #include "dds.h"
 #include "diamondsquaregenerator.h"
