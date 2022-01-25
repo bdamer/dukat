@@ -14,14 +14,14 @@ namespace dukat
 
 		virtual void update(float delta);
 		virtual void update_debug_text(void);
-		void toggle_debug(void);
 		void save_screenshot(const std::string& filename);
 
 	public:
 		Game3(Settings& settings);
 		virtual ~Game3(void) { }
 		std::unique_ptr<TextMeshInstance> create_text_mesh(const std::string& font_name = "generic.fnt");
-		
+		void toggle_debug(void);
+
 		Renderer3* get_renderer(void) const { return renderer.get(); }
 		MeshGroup* get_debug_meshes(void) { return &debug_meshes; }
 	};

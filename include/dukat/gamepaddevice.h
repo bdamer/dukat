@@ -27,8 +27,12 @@ namespace dukat
 		static constexpr float sensitivity = 1.0f;
 
 		SDL_GameController* device;
+		int16_t deadzone;
 		// For some reason generic SDL inverts y axis - this fixes it.
 		bool invert_y;
+
+		void initialize_mapping(const Settings& settings);
+		void normalize_axis(int16_t ix, int16_t iy, float& ox, float& oy, int16_t deadzone);
 
 	public:
 		GamepadDevice(const Window& window, const Settings& settings, int device_index);

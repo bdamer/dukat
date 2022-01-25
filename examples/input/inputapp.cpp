@@ -41,18 +41,22 @@ namespace dukat
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(4.0f);
 		debug_text->transform.position = Vector3(-0.5f * 320.0f, -0.5f * 180.0f, 0.0f);
+		debug_text->set_color(Color{ 0.0f, 1.0f, 1.0f, 1.0f });
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 	
-		game->get<TimerManager>()->create_timer(1.0f, [&]() {
+		game->get<TimerManager>()->create_timer(0.1f, [&]() {
 			std::stringstream ss;
 			auto window = game->get_window();
 			auto cam = game->get_renderer()->get_camera();
+			auto dev = game->get_devices()->active;
 			ss << "WIN: " << window->get_width() << "x" << window->get_height()
 				<< " VIR: " << cam->transform.dimension.x << "x" << cam->transform.dimension.y
 				<< " FPS: " << game->get_fps()
 				<< " MESH: " << dukat::perfc.avg(dukat::PerformanceCounter::MESHES)
-				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl;
+				<< " VERT: " << dukat::perfc.avg(dukat::PerformanceCounter::VERTICES) << std::endl
+				<< "LX: " << dev->lx << " LY: " << dev->ly 
+				<< " RX: " << dev->rx << " RY: " << dev->ry << std::endl;
 			debug_text->set_text(ss.str());
 			debug_text->update();
 		}, true);
@@ -244,7 +248,8 @@ namespace dukat
 	void InputScene::update_info_text(void)
 	{
 		std::stringstream ss;
-		ss << "Device: " << game->get_devices()->active->get_name() << std::endl
+		auto dev = game->get_devices()->active;
+		ss << "Device: " << dev->get_name() << " [" << dev->id() << "]" << std::endl
 			<< "1,2 - Test Rumble Effects" << std::endl
 			<< "F5 - Toggle recording" << std::endl
 			<< "F6 - Toggle replay" << std::endl;
@@ -338,6 +343,9 @@ namespace dukat
 			feedback_hi_lo();
 			break;
 
+		case SDLK_F1:
+			game->toggle_debug();
+			break;
 		case SDLK_F5:
 			toggle_record();
 			break;

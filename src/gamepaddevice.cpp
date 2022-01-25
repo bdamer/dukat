@@ -7,11 +7,44 @@
 
 namespace dukat
 {
-	GamepadDevice::GamepadDevice(const Window& window, const Settings& settings, int device_index) 
+	GamepadDevice::GamepadDevice(const Window& window, const Settings& settings, int device_index)
 		: InputDevice(window, settings, false)
 	{
-		invert_y = settings.get_bool("input.gamepad.inverty", true);
+		if (!SDL_IsGameController(device_index))
+			log->warn("Attempting to use incompatible device as gamepad: {}", device_index);
 
+		device = SDL_GameControllerOpen(device_index);
+		if (device == nullptr)
+		{
+			std::ostringstream ss;
+			ss << "Could not open gamepad: " << SDL_GetError();
+			throw std::runtime_error(ss.str());
+		}
+		name = SDL_GameControllerName(device);
+		log->info("Gamepad connected: {} [{}]", name, device_index);
+
+#if SDL_VERSION_ATLEAST(2, 0, 18)
+		log->debug("Rumble support: {}", SDL_GameControllerHasRumble(device));
+		log->debug("Rumble triggers support: {}", SDL_GameControllerHasRumbleTriggers(device));
+#endif
+
+		invert_y = settings.get_bool("input.gamepad.inverty", true);
+		deadzone = static_cast<int16_t>(settings.get_int("input.gamepad.inverty", 8000));
+
+		initialize_mapping(settings);
+	}
+
+	GamepadDevice::~GamepadDevice(void)
+	{
+		if (device != nullptr)
+		{
+			SDL_GameControllerClose(device);
+			device = nullptr;
+		}
+	}
+
+	void GamepadDevice::initialize_mapping(const Settings& settings)
+	{
 		mapping[VirtualButton::Button1] = settings.get_int("input.gamepad.button1", button_left_shoulder);
 		mapping[VirtualButton::Button2] = settings.get_int("input.gamepad.button2", button_right_shoulder);
 		mapping[VirtualButton::Button3] = settings.get_int("input.gamepad.button3", button_a);
@@ -26,39 +59,12 @@ namespace dukat
 		mapping[VirtualButton::Right] = settings.get_int("input.gamepad.right", dpad_right);
 		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", dpad_left);
 		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", dpad_up);
-
-		if (!SDL_IsGameController(device_index))
-		{
-			log->warn("Attempting to use incompatible device as gamepad: {}", device_index);
-		}
-
-		device = SDL_GameControllerOpen(device_index);
-		if (device == nullptr)
-		{
-			std::ostringstream ss;
-			ss << "Could not open gamepad: " << SDL_GetError();
-			throw std::runtime_error(ss.str());
-		}
-		name = SDL_GameControllerName(device);
-		log->info("Gamepad connected: {}", name);
-
-		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(device_index);
-		char buffer[33];
-		SDL_JoystickGetGUIDString(guid, buffer, 33);
-		log->debug("Device GUID: {}", buffer);
-#if SDL_VERSION_ATLEAST(2, 0, 18)
-		log->debug("Rumble support: {}", SDL_GameControllerHasRumble(device));
-		log->debug("Rumble triggers support: {}", SDL_GameControllerHasRumbleTriggers(device));
-#endif
 	}
 
-	GamepadDevice::~GamepadDevice(void)
+	void GamepadDevice::normalize_axis(int16_t ix, int16_t iy, float& ox, float& oy, int16_t deadzone)
 	{
-		if (device != nullptr)
-		{
-			SDL_GameControllerClose(device);
-			device = nullptr;
-		}
+		ox = std::abs(ix) < deadzone ? 0.0f : normalize(ix);
+		oy = std::abs(iy) < deadzone ? 0.0f : normalize(iy);
 	}
 
 	void GamepadDevice::update(void)
@@ -66,11 +72,15 @@ namespace dukat
 		if (device == nullptr)
 			return;
 
-		lx = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTX));
-		ly = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTY));
+		normalize_axis(
+			SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTX),
+			SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_LEFTY),
+			lx, ly, deadzone);
+		normalize_axis(
+			SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTX),
+			SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTY),
+			rx, ry, deadzone);
 		lt = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_TRIGGERLEFT));
-		rx = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTX));
-		ry = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_RIGHTY));
 		rt = normalize(SDL_GameControllerGetAxis(device, SDL_CONTROLLER_AXIS_TRIGGERRIGHT));
 
 		if (invert_y)

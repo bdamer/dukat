@@ -29,21 +29,20 @@ namespace dukat
 
 	void DeviceManager::add_joystick(int joystick_index)
 	{
-		if (!settings.get_bool("input.joystick.support", true))
+		if (!settings.get_bool("input.gamepad.support", true))
 			return;
 
-		const std::string name = SDL_JoystickNameForIndex(joystick_index);
-		log->info("Joystick device @ index [{}] added: {}", joystick_index, name);
-		
-		if (active != nullptr && active->id() != KeyboardDevice::keyboard_id)
-		{
-			log->warn("Already using joystick device, ignoring new device.");
-			return;
-		}
+		const std::string name(SDL_JoystickNameForIndex(joystick_index));
+		const auto device_id = SDL_JoystickGetDeviceInstanceID(joystick_index);
+		log->info("Joystick device @ index [{}] added: {} [{}]", joystick_index, name, device_id);
+
+		const auto guid = SDL_JoystickGetDeviceGUID(joystick_index);
+		char buffer[33];
+		SDL_JoystickGetGUIDString(guid, buffer, 33);
+		log->debug("Device GUID: {}", buffer);
+
 #ifdef XINPUT_SUPPORT
-		const std::string xinput = "XInput Controller";
-		if (name.rfind(xinput, 0) == 0 || 
-			name == "Controller (Xbox 360 Wireless Receiver for Windows)")
+		if (is_xinput_device(joystick_index))
 		{
 			controllers.push_back(std::make_unique<XBoxDevice>(window, settings, joystick_index));
 		}
@@ -53,7 +52,7 @@ namespace dukat
 			controllers.push_back(std::make_unique<GamepadDevice>(window, settings, joystick_index));
 #ifdef XINPUT_SUPPORT
 		}
-#endif		
+#endif
 		trigger(Message{ Events::DeviceUnbound });
 		active = controllers.back().get();
 		trigger(Message{ Events::DeviceBound });
@@ -62,13 +61,14 @@ namespace dukat
 
 	void DeviceManager::remove_joystick(SDL_JoystickID id)
 	{
-		if (!settings.get_bool("input.joystick.support", true))
+		if (!settings.get_bool("input.gamepad.support", true))
 			return;
 		log->info("Joystick device removed: {}", id);
 		auto it = std::find_if(controllers.begin(), controllers.end(),
 			[id](const std::unique_ptr<InputDevice>& dev) { return dev->id() == id; });
 		if (it == controllers.end())
 			return; // device not found
+		log->info("Removing: {}", (*it)->get_name());
 		controllers.erase(it);
 		trigger(Message{ Events::DeviceUnbound });
 		active = controllers.back().get();
@@ -111,6 +111,9 @@ namespace dukat
 
 	void DeviceManager::apply_feedback(bool force)
 	{
+		if (!settings.get_bool("input.gamepad.feedback", true))
+			return; 
+
 		auto duration = 0.0f;
 		auto low = 0.0f, high = 0.0f;
 

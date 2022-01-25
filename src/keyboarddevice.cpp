@@ -7,9 +7,10 @@
 
 namespace dukat
 {
-	KeyboardDevice::KeyboardDevice(const Window& window, const Settings& settings) : InputDevice(window, settings, true), mouse_buttons({ 0, 0, 0 })
+	KeyboardDevice::KeyboardDevice(const Window& window, const Settings& settings) 
+		: InputDevice(window, settings, true), mouse_buttons({ 0, 0, 0 })
 	{
-		name = "keyboard";
+		name = "Keyboard";
 		sensitivity = settings.get_int("input.mouse.sensitivity", 128);
 		// Initialize key mapping
 		mapping[VirtualButton::Button1] = settings.get_int("input.keyboard.button1", -1);

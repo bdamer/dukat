@@ -8,12 +8,14 @@
 
 namespace dukat
 {
+	std::array<bool, XUSER_MAX_COUNT> XBoxDevice::user_slots = { false, false, false, false };
 	const float XBoxDevice::sensitivity = 1.0f;
 
-	XBoxDevice::XBoxDevice(const Window& window, const Settings& settings, int device_index) : InputDevice(window, settings, false), device_index(device_index)
+	XBoxDevice::XBoxDevice(const Window& window, const Settings& settings, int device_index) 
+		: InputDevice(window, settings, false), device_index(-1)
 	{
 		name = SDL_JoystickNameForIndex(device_index);
-		log->debug("Initializing XInput device: {}", name);
+		log->debug("XInput device connected: {} [{}]", name, device_index);
 		
 		// Temporarily open SDL joystick so we can get instance ID
 		auto device = SDL_JoystickOpen(device_index);
@@ -26,30 +28,41 @@ namespace dukat
 		device_id = SDL_JoystickInstanceID(device);
 		SDL_JoystickClose(device);
 
-		ZeroMemory(&state, sizeof(XINPUT_STATE));
-		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_LEFT_SHOULDER;
-        mapping[VirtualButton::Button2] = XINPUT_GAMEPAD_RIGHT_SHOULDER;
-		mapping[VirtualButton::Button3] = XINPUT_GAMEPAD_A;
-		mapping[VirtualButton::Button4] = XINPUT_GAMEPAD_B;
-		mapping[VirtualButton::Button5] = XINPUT_GAMEPAD_X;
-		mapping[VirtualButton::Button6] = XINPUT_GAMEPAD_Y;
-		mapping[VirtualButton::Button7] = XINPUT_GAMEPAD_LEFT_THUMB;
-		mapping[VirtualButton::Button8] = XINPUT_GAMEPAD_RIGHT_THUMB;
-		mapping[VirtualButton::Select] = XINPUT_GAMEPAD_BACK;
-		mapping[VirtualButton::Start] = XINPUT_GAMEPAD_START;
-		mapping[VirtualButton::Down] = XINPUT_GAMEPAD_DPAD_DOWN;
-		mapping[VirtualButton::Right] = XINPUT_GAMEPAD_DPAD_RIGHT;
-		mapping[VirtualButton::Left] = XINPUT_GAMEPAD_DPAD_LEFT;
-		mapping[VirtualButton::Up] = XINPUT_GAMEPAD_DPAD_UP;
+		select_device_index();
+		initialize_mapping();
+	}
 
-		SDL_JoystickGUID guid = SDL_JoystickGetDeviceGUID(device_index);
-		char buffer[33];
-		SDL_JoystickGetGUIDString(guid, buffer, 33);
-		log->debug("Device GUID: {}", buffer);
+	XBoxDevice::~XBoxDevice(void)
+	{
+		if (device_index > -1)
+			user_slots[device_index] = false;
+	}
 
+	void XBoxDevice::select_device_index(void)
+	{
+		for (auto i = 0; i < XUSER_MAX_COUNT; i++)
+		{
+			if (user_slots[i])
+				continue; // slot already taken
+			if (check_device_caps(i))
+			{
+				device_index = i;
+				user_slots[i] = true; // mark slot as used
+				break; // we've found our index
+			}
+		}
+		if (device_index == -1)
+			log->warn("Unable to find index for xinput device.");
+		else
+			log->debug("Using xinput device @ {}", device_index);
+	}
+
+	bool XBoxDevice::check_device_caps(int index) const
+	{
 		XINPUT_CAPABILITIES caps;
 		ZeroMemory(&caps, sizeof(XINPUT_CAPABILITIES));
-		XInputGetCapabilities(static_cast<DWORD>(device_index), XINPUT_FLAG_GAMEPAD, &caps);
+		if (XInputGetCapabilities(static_cast<DWORD>(index), XINPUT_FLAG_GAMEPAD, &caps) != ERROR_SUCCESS)
+			return false;
 
 		std::stringstream ss;
 		if (caps.Flags & XINPUT_CAPS_VOICE_SUPPORTED)
@@ -66,6 +79,27 @@ namespace dukat
 			ss << "XINPUT_CAPS_NO_NAVIGATION|";
 #endif
 		log->debug("Device caps: {}", ss.str());
+
+		return true;
+	}
+
+	void XBoxDevice::initialize_mapping(void)
+	{
+		ZeroMemory(&state, sizeof(XINPUT_STATE));
+		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_LEFT_SHOULDER;
+		mapping[VirtualButton::Button2] = XINPUT_GAMEPAD_RIGHT_SHOULDER;
+		mapping[VirtualButton::Button3] = XINPUT_GAMEPAD_A;
+		mapping[VirtualButton::Button4] = XINPUT_GAMEPAD_B;
+		mapping[VirtualButton::Button5] = XINPUT_GAMEPAD_X;
+		mapping[VirtualButton::Button6] = XINPUT_GAMEPAD_Y;
+		mapping[VirtualButton::Button7] = XINPUT_GAMEPAD_LEFT_THUMB;
+		mapping[VirtualButton::Button8] = XINPUT_GAMEPAD_RIGHT_THUMB;
+		mapping[VirtualButton::Select] = XINPUT_GAMEPAD_BACK;
+		mapping[VirtualButton::Start] = XINPUT_GAMEPAD_START;
+		mapping[VirtualButton::Down] = XINPUT_GAMEPAD_DPAD_DOWN;
+		mapping[VirtualButton::Right] = XINPUT_GAMEPAD_DPAD_RIGHT;
+		mapping[VirtualButton::Left] = XINPUT_GAMEPAD_DPAD_LEFT;
+		mapping[VirtualButton::Up] = XINPUT_GAMEPAD_DPAD_UP;
 	}
 
 	void XBoxDevice::update(void)
@@ -161,25 +195,25 @@ namespace dukat
 		XInputSetState(static_cast<DWORD>(device_index), &vibration);
 	}
 
-	void XBoxDevice::normalize_axis(SHORT ix, SHORT iy, float& ox, float& oy, SHORT deadzone)
+	void XBoxDevice::normalize_axis(int16_t ix, int16_t iy, float& ox, float& oy, int16_t deadzone)
 	{
-		// determine how far the controller is pushed
-		const auto magnitude = std::sqrt(static_cast<float>(ix * ix + iy * iy));
-		if (magnitude <= deadzone)
-		{
-			ox = 0.0f;
-			oy = 0.0f;
-		}
-		else
-		{
-			ox = normalize(static_cast<short>(ix));
-			oy = normalize(static_cast<short>(iy));
-		}
+		ox = std::abs(ix) < deadzone ? 0.0f : normalize(ix);
+		oy = std::abs(iy) < deadzone ? 0.0f : normalize(iy);
 	}
 
-	void XBoxDevice::normalize_trigger(BYTE i, float& o, BYTE deadzone)
+	void XBoxDevice::normalize_trigger(uint8_t i, float& o, uint8_t deadzone)
 	{
 		o = (i <= deadzone) ? 0.0f : normalize(i);
+	}
+
+	bool is_xinput_device(int device_index)
+	{
+		const std::string device_name = SDL_JoystickNameForIndex(device_index);
+		const std::string xinput = "XInput Controller";
+		return device_name == "Controller (Xbox 360 Wireless Receiver for Windows)"
+			|| device_name == "Controller (XBOX 360 For Windows)"
+			|| device_name == "Xbox 360 Controller"
+			|| device_name.rfind(xinput, 0) == 0;
 	}
 }
 #endif

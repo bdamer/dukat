@@ -113,24 +113,10 @@ namespace dukat
 			value = max;
 	}
 
-	inline float normalize(int value, int max_value = INT_MAX)
+	template <typename T>
+	inline float normalize(T value, T max_value = std::numeric_limits<T>::max())
 	{
 		return static_cast<float>(value) / static_cast<float>(max_value);
-	}
-
-	inline float normalize(short value, short max_value = SHRT_MAX)
-	{
-		return static_cast<float>(value) / static_cast<float>(max_value);
-	}
-
-	inline float normalize(char value, char max_value = CHAR_MAX)
-	{
-		return static_cast<float>(value) / static_cast<float>(max_value);
-	}
-
-	inline float normalize(unsigned char value)
-	{
-		return static_cast<float>(value) / 255.0f;
 	}
 
 	template <typename T>
