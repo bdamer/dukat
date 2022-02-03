@@ -38,6 +38,14 @@ namespace dukat
 			uint32_t age;
 		};
 
+		// Filter predicates
+		typedef std::function<bool(Body*)> predicate;
+		static const predicate pred_active;
+		static const predicate pred_solid;
+		static const predicate pred_sensor;
+		static const predicate pred_static;
+		static const predicate pred_dynamic;
+
 	private:
 		Vector2 world_origin;
 		float world_size;
@@ -60,6 +68,10 @@ namespace dukat
 		// Attempts to resolve active collisions and notifies at the end of collisions.
 		void resolve_collisions(void);
 
+		// Collects ray collisions
+		void find(QuadTree<Body>* tree, const Ray2& ray, float min_t, float max_t, std::list<Body*>& list, const predicate& p = pred_active) const;
+		Body* find_closest(QuadTree<Body>* tree, const Ray2& ray, float min_t, float max_t, float& t, const predicate& p) const;
+
 		// Generate a hash for a contact between two bodies.
 		inline uint32_t hash(const Body* b1, const Body* b2) const { return 65536u * static_cast<uint32_t>(std::min(b1->id, b2->id)) + static_cast<uint32_t>(std::max(b1->id, b2->id)); }
 
@@ -77,6 +89,7 @@ namespace dukat
 		Body* create_body(bool dynamic = true);
 		void destroy_body(Body* body);
 		void invalidate_contacts(Body* body);
+		void update(float delta);
 
 		// Returns the number of collision bodies.
 		int body_count(void) const { return static_cast<int>(bodies.size()); }
@@ -88,9 +101,16 @@ namespace dukat
 		bool has_contact(Body* b) const;
 		// Returns all contacts for a given body.
 		std::list<Contact*> get_contacts(Body* b) const;
-		// Returns all bodies at point p.
-		std::list<Body*> get_bodies(const Vector2& p) const;
 
-		void update(float delta);
+		// Spatial queries
+
+		// Returns all bodies at a given point.
+		std::list<Body*> find(const Vector2& pos, const predicate& p = pred_active) const;
+		// Returns all bodies which are intersected by a given bounding box.
+		std::list<Body*> find(const AABB2& bb, const predicate& p = pred_active) const;
+		// Returns all bodies which are intersected by a given ray.
+		std::list<Body*> find(const Ray2& ray, float min_t, float max_t, const predicate& p = pred_active) const;
+		// Returns closest body intersected by a given ray.
+		Body* find_closest(const Ray2& ray, float min_t, float max_t, float& t, const predicate& p = pred_active) const;
 	};
 }

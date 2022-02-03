@@ -1,10 +1,16 @@
 #include "stdafx.h"
 #include <dukat/collisionmanager2.h>
 #include <dukat/debugeffect2.h>
+#include <dukat/mathutil.h>
 
 namespace dukat
 {
 	static std::vector<CollisionManager2::Body*> candidates;
+	const CollisionManager2::predicate CollisionManager2::pred_active = [](CollisionManager2::Body* b) { return b->active; };
+	const CollisionManager2::predicate CollisionManager2::pred_solid = [](CollisionManager2::Body* b) { return b->active && b->solid; };
+	const CollisionManager2::predicate CollisionManager2::pred_sensor = [](CollisionManager2::Body* b) { return b->active && !b->solid; };
+	const CollisionManager2::predicate CollisionManager2::pred_static = [](CollisionManager2::Body* b) { return b->active && b->solid && !b->dynamic; };
+	const CollisionManager2::predicate CollisionManager2::pred_dynamic = [](CollisionManager2::Body* b) { return b->active && b->solid && b->dynamic; };
 
 	CollisionManager2::CollisionManager2(GameBase* game) : Manager(game), 
 		world_origin({ 0,0 }), world_size(1000.0f), world_depth(5), generation(0)
@@ -228,22 +234,114 @@ namespace dukat
 		return res;
 	}
 
-	std::list<CollisionManager2::Body*> CollisionManager2::get_bodies(const Vector2& p) const
+	std::list<CollisionManager2::Body*> CollisionManager2::find(const Vector2& pos, const predicate& p) const
 	{
 		Body b{ 0 };
-		b.bb = AABB2{ p, p };
+		b.bb = AABB2{ pos, pos };
 		candidates.clear();
 		collect_collisions(*tree, &b, candidates);
 
 		std::list<Body*> res;
 		for (Body* b : candidates)
 		{
-			if (b->bb.contains(p))
-			{
+			if ((p == nullptr || p(b)) && b->bb.contains(pos))
 				res.push_back(b);
+		}
+		return res;
+	}
+
+	std::list<CollisionManager2::Body*> CollisionManager2::find(const AABB2& bb, const predicate& p) const
+	{
+		Body b{ 0 };
+		b.bb = bb;
+		candidates.clear();
+		collect_collisions(*tree, &b, candidates);
+
+		std::list<Body*> res;
+		for (Body* b : candidates)
+		{
+			if ((p == nullptr || p(b)) && b->bb.overlaps(bb))
+				res.push_back(b);
+		}
+		return res;
+	}
+
+	void CollisionManager2::find(QuadTree<Body>* tree, const Ray2& ray, float min_t, float max_t, std::list<Body*>& list, const predicate& p) const
+	{
+		if (tree == nullptr)
+			return;
+
+		const AABB2 bb{ tree->min_v, tree->max_v };
+		const auto tree_t = bb.intersect_ray(ray, min_t, max_t);
+		if (tree_t == no_intersection)
+			return; // no intersection with tree
+
+		// check values at this level
+		for (const auto& it : tree->get_values())
+		{
+			if (p == nullptr || p(it))
+			{
+				const auto t = it->bb.intersect_ray(ray, min_t, max_t);
+				if (t != no_intersection)
+					list.push_back(it);
 			}
 		}
 
+		// check lower levels of the tree
+		for (auto i = 0; i < 4; i++)
+			find(tree->child(i), ray, min_t, max_t, list, p);
+	}
+
+	std::list<CollisionManager2::Body*> CollisionManager2::find(const Ray2& ray, float min_t, float max_t, const predicate& p) const
+	{
+		std::list<Body*> res;
+		find(tree.get(), ray, min_t, max_t, res, p);
 		return res;
+	}
+
+	CollisionManager2::Body* CollisionManager2::find_closest(QuadTree<Body>* tree, const Ray2& ray, float min_t, float max_t, float& t, const predicate& p) const
+	{
+		if (tree == nullptr)
+			return nullptr;
+
+		const AABB2 bb{ tree->min_v, tree->max_v };
+		const auto tree_t = bb.intersect_ray(ray, min_t, max_t);
+		if (tree_t == no_intersection)
+			return nullptr; // no intersection with tree
+
+		// check values at this level
+		t = max_t;
+		Body* best_body = nullptr;
+		for (const auto& it : tree->get_values())
+		{
+			if (p == nullptr || p(it))
+			{
+				const auto body_t = it->bb.intersect_ray(ray, min_t, max_t);
+				if (body_t < t)
+				{
+					t = body_t;
+					best_body = it;
+				}
+			}
+		}
+
+		// check lower levels of the tree
+		for (auto i = 0; i < 4; i++)
+		{
+			float child_t;
+			auto res = find_closest(tree->child(i), ray, min_t, t, child_t, p);
+			if (res != nullptr && child_t < t)
+			{
+				best_body = res;
+				t = child_t;
+			}
+		}
+
+		return best_body;
+	}
+
+	CollisionManager2::Body* CollisionManager2::find_closest(const Ray2& ray, float min_t, float max_t, float& t, const predicate& p) const
+	{
+		return find_closest(tree.get(), ray, min_t, max_t, t, p);
 	}
 }

@@ -49,7 +49,7 @@ namespace dukat
 			auto ctrl = game->get_devices()->active;
 			auto pos = Vector2{ ctrl->rxa, ctrl->rya } - screen_dim;
 			auto cm = game->get<CollisionManager2>();
-			auto res = cm->get_bodies(pos);
+			auto res = cm->find(pos);
 			for (auto b : res)
 			{
 				log->info("Click on {}", b->id);
