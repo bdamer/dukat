@@ -75,6 +75,8 @@ namespace dukat
 		{
 			++it; // skip current element in focus
 		}
+		if (it == controls.rend()) // if we're at the first element, roll to end of list
+			it = controls.rbegin();
 		it = std::find_if(it, controls.rend(),
 			[](UIControl* c) { return c->is_enabled() && c->get_index() >= 0; });
 		if (it != controls.rend())
@@ -102,6 +104,8 @@ namespace dukat
 		{
 			++it; // skip current element in focus
 		}
+		if (it == controls.end()) // if we're at the last element, roll to the start of list
+			it = controls.begin();
 		it = std::find_if(it, controls.end(), 
 			[](UIControl* c) { return c->is_enabled() && c->get_index() >= 0; });
 		if (it != controls.end())
