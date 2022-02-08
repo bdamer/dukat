@@ -32,7 +32,6 @@ namespace dukat
 		generation++;
 
 		auto alive = 0;
-		timers.free_index = 0;
 		for (auto& t : timers.data)
 		{
 			// only process live timers

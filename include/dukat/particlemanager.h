@@ -14,7 +14,7 @@ namespace dukat
 	class ParticleManager : public Manager
 	{
 	private:
-		struct ParticleAllocator 
+		struct ParticleAllocator
 		{
 			void init(Particle& p) 
 			{ 
@@ -41,7 +41,7 @@ namespace dukat
 
 		// Global limit to number of particles.
 		static constexpr auto max_particles = 4096;
-		static constexpr auto max_emitters = 512;
+		static constexpr auto max_emitters = 256;
 		// Particle pool
 		ObjectPool<Particle, max_particles, ParticleAllocator> particles;
 		// Emitter pool

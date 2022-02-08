@@ -28,7 +28,7 @@ namespace dukat
     {
     private:
 		// max number of timers
-		static constexpr auto max_timers = 1024;
+		static constexpr auto max_timers = 256;
 		uint32_t generation;
 		uint8_t active_group;
 		ObjectPool<Timer, max_timers> timers;

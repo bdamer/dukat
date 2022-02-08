@@ -15,7 +15,6 @@ namespace dukat
 
 	void ParticleManager::update(float delta)
 	{
-		emitters.free_index = 0;
 		for (auto& e : emitters.data)
 		{
 			if (!e.alive)
@@ -30,7 +29,6 @@ namespace dukat
 		}
 
 		// Reset free index
-		particles.free_index = 0;
 		for (auto& p : particles.data)
 		{
 			if (!check_flag(p.flags, Particle::Alive))
