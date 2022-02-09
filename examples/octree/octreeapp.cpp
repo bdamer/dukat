@@ -65,7 +65,7 @@ namespace dukat
 		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.45f * (float)texture_height, 0.0f);
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
-		game->get<TimerManager>()->create_timer(0.25f, std::bind(&OctreeScene::update_debug_text, this), true);
+		game->get<TimerManager>()->create(0.25f, std::bind(&OctreeScene::update_debug_text, this), true);
 
 		// Create entity 
 		entity = std::make_unique<Entity>();

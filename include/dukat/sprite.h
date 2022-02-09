@@ -3,6 +3,7 @@
 #include <memory>
 #include "aabb2.h"
 #include "color.h"
+#include "memorypool.h"
 #include "texturecache.h"
 #include "vector2.h"
 
@@ -67,6 +68,11 @@ namespace dukat
 
 		bool operator<(const Sprite& s) const { return z < s.z; }
 		bool operator>(const Sprite& s) const { return z > s.z; }
+
+		// Custom memory allocation
+		static MemoryPool<Sprite> _pool;
+		static void* operator new(std::size_t size) { return _pool.allocate(size); }
+		static void operator delete(void* ptr, std::size_t size) { return _pool.free(ptr, size); }
 	};
 
 	extern AABB2 compute_sprite_bb(const Sprite& sprite);

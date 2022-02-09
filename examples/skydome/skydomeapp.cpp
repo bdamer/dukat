@@ -85,7 +85,7 @@ namespace dukat
 		multiplier_text->update();
 		mult_mesh = static_cast<TextMeshInstance*>(overlay_meshes.add_instance(std::move(multiplier_text)));
 
-		game->get<TimerManager>()->create_timer(1.0f, [&]() {
+		game->get<TimerManager>()->create(1.0f, [&]() {
 			// Compute wallclock time from absolute counter
 			std::stringstream ss;
 			float wallclock_time = (total_time * time_factor) + 6.0f * 60.0f * 60.0f;

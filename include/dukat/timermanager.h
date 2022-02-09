@@ -3,10 +3,9 @@
 #include <functional>
 #include <list>
 #include <memory>
-#include <set>
 
 #include "manager.h"
-#include "objectpool.h"
+#include "memorypool.h"
 
 namespace dukat
 {
@@ -21,34 +20,31 @@ namespace dukat
         std::function<void(void)> callback;
 
         Timer(void) : generation(0u), group(0u), interval(0.0f), runtime(0.0f), 
-			recurring(false), alive(false), callback(nullptr) { }
+			recurring(false), alive(true), callback(nullptr) { }
+
+		// Custom memory allocation
+		static MemoryPool<Timer> _pool;
+		static void* operator new(std::size_t size) { return _pool.allocate(size); }
+		static void operator delete(void* ptr, std::size_t size) { return _pool.free(ptr, size); }
     };
 
     class TimerManager : public Manager
     {
     private:
-		// max number of timers
-		static constexpr auto max_timers = 256;
 		uint32_t generation;
 		uint8_t active_group;
-		ObjectPool<Timer, max_timers> timers;
-		std::set<Timer*> free_list; // list of timers pending release
+		std::list<std::unique_ptr<Timer>> timers;
 
     public:
 		TimerManager(GameBase* game) : Manager(game), generation(0u), active_group(0u) { }
 		~TimerManager(void) { }
 
 		Timer* create(float interval, std::function<void(void)> callback, bool recurring = false);
-		void cancel(Timer* timer) { if (timer != nullptr) free_list.insert(timer); }
+		void cancel(Timer* timer) { if (timer != nullptr) timer->alive = false; }
 		void update(float delta);
 		void set_active_group(uint8_t group) { this->active_group = group; }
 
-		// Deprecated - use create instead
-		Timer* create_timer(float interval, std::function<void(void)> callback, bool recurring = false) { return create(interval, callback, recurring); }
-		// Deprecated - use cancel instead
-		void cancel_timer(Timer* timer) { cancel(timer); }
-
 		// Cancels all active timers.
-		void clear(void) { timers.clear(); free_list.clear(); }
+		void clear(void) { timers.clear(); }
     };
 }

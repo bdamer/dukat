@@ -6,6 +6,7 @@
 
 #include "game2.h"
 #include "manager.h"
+#include "memorypool.h"
 #include "messenger.h"
 #include "quadtree.h"
 
@@ -27,6 +28,11 @@ namespace dukat
 			Messenger* owner;
 
 			Body(uint16_t id) : id(id), dynamic(true), solid(true), active(true), mass(1.0f), owner(nullptr) { }
+
+			// Custom memory allocation
+			static MemoryPool<Body> _pool;
+			static void* operator new(std::size_t size) { return _pool.allocate(size); }
+			static void operator delete(void* ptr, std::size_t size) { return _pool.free(ptr, size); }
 		};
 
 		struct Contact

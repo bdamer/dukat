@@ -2,6 +2,7 @@
 
 #include <array>
 #include "color.h"
+#include "memorypool.h"
 #include "vector2.h"
 #include "particle.h"
 
@@ -88,12 +89,15 @@ namespace dukat
 		float value;
 		// Will only generate particles if active
 		bool active;
-		// Used by object pool
-		bool alive;
 
         ParticleEmitter(void) : update(nullptr), mirror_offset(0.0f), target_layer(nullptr), ttl(0.0f), 
-			age(0.0f), accumulator(0.0f), value(0.0f), active(true), alive(false) { }
+			age(0.0f), accumulator(0.0f), value(0.0f), active(true) { }
         ~ParticleEmitter(void) { }
+
+		// Custom memory allocation
+		static MemoryPool<ParticleEmitter> _pool;
+		static void* operator new(std::size_t size) { return _pool.allocate(size); }
+		static void operator delete(void* ptr, std::size_t size) { return _pool.free(ptr, size); }
     };
 
 	// Factory method for particle emitters.

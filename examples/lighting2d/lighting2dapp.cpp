@@ -38,7 +38,7 @@ namespace dukat
 		auto info_layer = renderer->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
-		info_text->transform.position = Vector3(-0.45f * (float)camera_width, 0.4f * (float)camera_height, 0.0f);
+		info_text->transform.position = Vector3(-0.45f * (float)camera_width, 0.3f * (float)camera_height, 0.0f);
 		std::stringstream ss;
 		ss << "Lighting Example" << std::endl
 			<< "G - Toggle gamma correction" << std::endl;
@@ -54,7 +54,7 @@ namespace dukat
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 	
-		game->get<TimerManager>()->create_timer(1.0f, [&]() {
+		game->get<TimerManager>()->create(1.0f, [&]() {
 			std::stringstream ss;
 			auto window = game->get_window();
 			auto cam = game->get_renderer()->get_camera();

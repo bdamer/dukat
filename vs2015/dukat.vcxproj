@@ -181,6 +181,7 @@
     <ClInclude Include="..\include\dukat\manager.h" />
     <ClInclude Include="..\include\dukat\mapgraph.h" />
     <ClInclude Include="..\include\dukat\mapshape.h" />
+    <ClInclude Include="..\include\dukat\memorypool.h" />
     <ClInclude Include="..\include\dukat\meshdata.h" />
     <ClInclude Include="..\include\dukat\mirroreffect2.h" />
     <ClInclude Include="..\include\dukat\objectpool.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="..\src\mapgraph.cpp" />
     <ClCompile Include="..\src\meshdata.cpp" />
     <ClCompile Include="..\src\mirroreffect2.cpp" />
+    <ClCompile Include="..\src\particle.cpp" />
     <ClCompile Include="..\src\particleemitter.cpp" />
     <ClCompile Include="..\src\playbackdevice.cpp" />
     <ClCompile Include="..\src\scene2.cpp" />

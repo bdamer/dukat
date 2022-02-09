@@ -24,6 +24,7 @@ namespace dukat
 			MESHES,			// No# of meshes rendered
 			VERTICES,		// No# of vertices rendered
 			PARTICLES,		// No# of particles rendered
+			EMITTERS,		// No# of active particle emitters
 			TEXTURES,		// No# of texture switches
 			SHADERS,		// No# of shader switches
 			BUFFER_FREE,	// No# of freed buffers

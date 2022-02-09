@@ -516,6 +516,9 @@
     <ClInclude Include="..\include\dukat\circularbuffer.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\memorypool.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -814,6 +817,9 @@
     </ClCompile>
     <ClCompile Include="..\src\feedback.cpp">
       <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\particle.cpp">
+      <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

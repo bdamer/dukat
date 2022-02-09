@@ -6,10 +6,10 @@
 #include <dukat/rand.h>
 #include <dukat/renderlayer2.h>
 
-#include <dukat/log.h>
-
 namespace dukat
 {
+	MemoryPool<ParticleEmitter> ParticleEmitter::_pool(256);
+
 	const ParticleEmitter::Recipe ParticleEmitter::Recipe::FlameRecipe{
 		ParticleEmitter::Recipe::Type::Flame, 
 		Particle::Alive | Particle::Linear,
@@ -143,7 +143,6 @@ namespace dukat
 		em.accumulator += em.recipe.rate * delta;
 		if (em.accumulator < 1.0f || em.target_layer == nullptr)
 			return;
-
 		if (em.offsets.size() < 2)
 			return; 
 

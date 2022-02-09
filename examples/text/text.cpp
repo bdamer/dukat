@@ -79,7 +79,7 @@ namespace dukat
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 
-		game->get<TimerManager>()->create_timer(1.0f, [&]() {
+		game->get<TimerManager>()->create(1.0f, [&]() {
 			std::stringstream ss;
 			auto window = game->get_window();
 			auto cam = game->get_renderer()->get_camera();

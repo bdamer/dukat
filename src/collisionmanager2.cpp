@@ -5,6 +5,8 @@
 
 namespace dukat
 {
+	MemoryPool<CollisionManager2::Body> CollisionManager2::Body::_pool(1024);
+
 	static std::vector<CollisionManager2::Body*> candidates;
 	const CollisionManager2::predicate CollisionManager2::pred_active = [](CollisionManager2::Body* b) { return b->active; };
 	const CollisionManager2::predicate CollisionManager2::pred_solid = [](CollisionManager2::Body* b) { return b->active && b->solid; };

@@ -45,7 +45,7 @@ namespace dukat
 		// Set up info text
 		info_text = game->create_text_mesh();
 		info_text->set_size(24.0f);
-		info_text->transform.position = Vector3(-0.5f * (float)window_width, 0.4f * (float)window_height, 0.0f);
+		info_text->transform.position = Vector3(-0.5f * (float)window_width, 0.3f * (float)window_height, 0.0f);
 		std::stringstream ss;
 		ss << "<Left Button> Add to flock" << std::endl
 			<< "<Right Button> Add predator" << std::endl
@@ -63,7 +63,7 @@ namespace dukat
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 
-		game->get<TimerManager>()->create_timer(1.0f, [&]() {
+		game->get<TimerManager>()->create(1.0f, [&]() {
 			std::stringstream ss;
 			auto window = game->get_window();
 			auto cam = game->get_renderer()->get_camera();

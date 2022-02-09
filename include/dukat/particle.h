@@ -2,6 +2,7 @@
 
 #include "vector2.h"
 #include "color.h"
+#include "memorypool.h"
 
 namespace dukat
 {
@@ -26,6 +27,12 @@ namespace dukat
 		float ry;		// Axis of reflection
 		uint8_t	flags;	// Flags
 
-		Particle() : pos(), ry(0.0f), color(), size(1.0f), dp(), dc(), dsize(0.0f), ttl(0.0f), flags(0x4) { }	
+		Particle(void) : pos(), ry(0.0f), color(), size(1.0f), dp(), dc(), 
+			dsize(0.0f), ttl(0.0f), flags(Particle::Alive | Particle::Linear) { }
+
+		// Custom memory allocation
+		static MemoryPool<Particle> _pool;
+		static void* operator new(std::size_t size) { return _pool.allocate(size); }
+		static void operator delete(void* ptr, std::size_t size) { return _pool.free(ptr, size); }
 	};
 }

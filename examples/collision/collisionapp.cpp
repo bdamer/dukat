@@ -62,7 +62,7 @@ namespace dukat
 		info_text->transform.position = Vector3(-0.5f * (float)window_width, 0.3f * (float)window_height, 0.0f);
 		main_layer->add(info_text.get());
 
-		game->get<TimerManager>()->create_timer(0.25f, [&]() {
+		game->get<TimerManager>()->create(0.25f, [&]() {
 			auto cm = game->get<CollisionManager2>();
 			std::stringstream ss;
 			ss << "Bodies: " << perfc.avg(PerformanceCounter::BODIES) << std::endl
@@ -83,7 +83,7 @@ namespace dukat
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 
-		game->get<TimerManager>()->create_timer(1.0f, [&]() {
+		game->get<TimerManager>()->create(1.0f, [&]() {
 			std::stringstream ss;
 			auto window = game->get_window();
 			auto cam = game->get_renderer()->get_camera();

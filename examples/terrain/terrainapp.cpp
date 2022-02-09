@@ -91,7 +91,7 @@ namespace dukat
 		options_text->set_size(1.0f / 20.0f);
 		options_text->transform.position = { -1.6f, -0.2f, 0.0f };
 		auto options_mesh = static_cast<TextMeshInstance*>(game->get_debug_meshes()->add_instance(std::move(options_text)));
-		game->get<TimerManager>()->create_timer(1.0f, [this,options_mesh]() {
+		game->get<TimerManager>()->create(1.0f, [this,options_mesh]() {
 			std::stringstream ss;
 			ss << " CULL: " << clip_map->culling << " BLND: " << clip_map->blending << " LIGH: " << clip_map->lighting << std::endl;
 			options_mesh->set_text(ss.str());

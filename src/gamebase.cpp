@@ -33,7 +33,7 @@ namespace dukat
 		add_manager<AnimationManager>();
 		add_manager<UIManager>();
 		device_manager->active->on_press(InputDevice::VirtualButton::Debug, std::bind(&GameBase::toggle_debug, this));
-		get<TimerManager>()->create_timer(1.0f, std::bind(&GameBase::update_debug_text, this), true);
+		get<TimerManager>()->create(1.0f, std::bind(&GameBase::update_debug_text, this), true);
 		window->subscribe(this, Events::WindowResized);
 	}
 
