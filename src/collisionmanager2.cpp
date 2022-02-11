@@ -153,17 +153,6 @@ namespace dukat
 		}
 	}
 
-	void CollisionManager2::collect_collisions(const QuadTree<Body>& t, Body * body, std::vector<Body*>& res) const
-	{
-		auto idx = t.get_index(body);
-		if (idx > -1 && t.has_child(idx))
-		{
-			collect_collisions(*t.child(idx), body, res);
-		}
-		const auto& values = t.get_values();
-		res.insert(res.end(), values.begin(), values.end());
-	}
-
 	void CollisionManager2::update(float delta)
 	{
 		// broad phase - determine all possible collisions
@@ -234,6 +223,47 @@ namespace dukat
 				res.push_back(const_cast<Contact*>(&it.second));
 		}
 		return res;
+	}
+
+	// Index direction flags
+	static constexpr auto dir_left = 1;
+	static constexpr auto dir_right = 2;
+	static constexpr auto dir_top = 4;
+	static constexpr auto dir_bottom = 8;
+
+	int get_index_flags(const QuadTree<CollisionManager2::Body>& t, CollisionManager2::Body* body)
+	{
+		auto res = dir_left | dir_right | dir_top | dir_bottom;
+		if (body->bb.max().x < t.center.x)
+			res &= ~dir_right; // value is in left quadrants
+		else if (body->bb.min().x >= t.center.x)
+			res &= ~dir_left; // value is in right quadrants
+		if (body->bb.max().y < t.center.y)
+			res &= ~dir_bottom; // value is in top quadrants
+		else if (body->bb.min().y >= t.center.y)
+			res &= ~dir_top; // value is in bottom quadrants
+		return res;
+	}
+
+	void CollisionManager2::collect_collisions(const QuadTree<Body>& t, Body* body, std::vector<Body*>& res) const
+	{
+		const auto flags = get_index_flags(t, body);
+		if (flags & dir_right)
+		{
+			if ((flags & dir_top) != 0 && t.has_child(0))
+				collect_collisions(*t.child(0), body, res); // check top-right
+			if ((flags & dir_bottom) != 0 && t.has_child(1))
+				collect_collisions(*t.child(1), body, res); // check bottom-right
+		}
+		if (flags & dir_left)
+		{
+			if ((flags & dir_top) != 0 && t.has_child(3))
+				collect_collisions(*t.child(3), body, res); // check top-left
+			if ((flags & dir_bottom) != 0 && t.has_child(2))
+				collect_collisions(*t.child(2), body, res); // check bottom-left
+		}
+		const auto& values = t.get_values();
+		res.insert(res.end(), values.begin(), values.end());
 	}
 
 	std::list<CollisionManager2::Body*> CollisionManager2::find(const Vector2& pos, const predicate& p) const
