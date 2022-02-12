@@ -8,7 +8,7 @@
 
 namespace dukat
 {
-	MemoryPool<ParticleEmitter> ParticleEmitter::_pool(256);
+	MemoryPool<ParticleEmitter> ParticleEmitter::_pool(512);
 
 	const ParticleEmitter::Recipe ParticleEmitter::Recipe::FlameRecipe{
 		ParticleEmitter::Recipe::Type::Flame, 

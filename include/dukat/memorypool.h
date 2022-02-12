@@ -53,6 +53,7 @@ namespace dukat
 		{
 			if (size != sizeof(T))
 				return ::operator new(size);
+			assert(free_list != nullptr);
 			if (free_list == nullptr)
 				throw std::bad_alloc();
 			auto res = free_list;
