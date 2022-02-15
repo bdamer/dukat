@@ -190,27 +190,46 @@ namespace dukat
 		this->unsubscribe(this, Events::CollisionBegin);
 	}
 
+	void GameObject::handle_dynamic_collision(const CollisionManager2::Body* other_body, const Collision* collision)
+	{
+		// only process one side of the collision
+		if (body->id > other_body->id)
+			return;
+
+		// Performs perfectly elastic collision
+		auto other_obj = static_cast<GameObject*>(other_body->owner);
+		const auto m1 = body->mass;
+		const auto m2 = other_body->mass;
+		const auto v1 = dir;
+		const auto v2 = other_obj->dir;
+		dir = v1 * (m1 - m2) / (m1 + m2) + v2 * (2.f * m2) / (m1 + m2);
+		other_obj->dir = v2 * (m2 - m1) / (m1 + m2) + v1 * (2.f * m1) / (m1 + m2);
+	}
+
+	void GameObject::handle_static_collision(const Collision* collision)
+	{
+		auto nx = std::abs(collision->normal.x);
+		auto ny = std::abs(collision->normal.y);
+		if (nx > ny)
+			dir.x = -dir.x;
+		else
+			dir.y = -dir.y;
+	}
+
 	void GameObject::receive(const Message& msg)
 	{
 		switch (msg.event)
 		{
 		case Events::CollisionBegin:
 		{
+			if (!body->dynamic)
+				return; // nothing to do
 			auto other_body = static_cast<const CollisionManager2::Body*>(msg.param1);
 			auto collision = static_cast<const Collision*>(msg.param2);
-			if (body->dynamic && body->solid && other_body->solid)
-			{
-				auto nx = std::abs(collision->normal.x);
-				auto ny = std::abs(collision->normal.y);
-				if (nx > ny)
-				{
-					dir.x = -dir.x;
-				}
-				else
-				{
-					dir.y = -dir.y;
-				}
-			}
+			if (!other_body->dynamic)
+				handle_static_collision(collision);
+			else
+				handle_dynamic_collision(other_body, collision);
 			break;
 		}
 		}

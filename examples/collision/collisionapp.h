@@ -14,6 +14,9 @@ namespace dukat
 		GameObject(const Vector2& dir, CollisionManager2::Body* body);
 		~GameObject(void);
 
+		void handle_dynamic_collision(const CollisionManager2::Body* other_body, const Collision* collision);
+		void handle_static_collision(const Collision* collision);
+
 		void receive(const Message& msg);
 	};
 
@@ -22,7 +25,7 @@ namespace dukat
 	private:
 		static constexpr auto window_width = 1280;
 		static constexpr auto window_height = 720;
-		static constexpr auto max_speed = 50.0f;
+		static constexpr auto max_speed = 75.0f;
 		static constexpr auto wall_size = 16.0f;
 		Vector2 screen_dim;
 
