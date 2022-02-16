@@ -119,9 +119,10 @@ namespace dukat
 		const auto vel_offset = 5.0f;
 
 		// Create a new particle
+		auto pm = game->get<ParticleManager>();
 		if (particles_enabled && (input.x != 0.0f || input.y != 0.0f))
 		{
-			auto p = game->get<ParticleManager>()->create_particle();
+			auto p = pm->create_particle();
 			p->pos = sprite->p + Vector2{ random(-pos_offset, pos_offset), random(-pos_offset, pos_offset) }; 
 			p->color = { std::abs(input.x), std::abs(input.y), 1.0f, 1.0f };
 			p->size = random(5.0f, 10.0f);

@@ -29,6 +29,17 @@ namespace dukat
 
 	class RenderLayer2
 	{
+	public:
+		enum Flags
+		{
+			Visible = 1,	// Show layer
+			Relative = 2,	// Render relative to cmaera
+			RenderFx = 4,	// Render effects
+			RenderSprites = 8,	// Render sprites
+			RenderParticles = 16,	// Render particles
+			RenderText = 32	// Render text
+		};
+
 	private:
 		ShaderProgram* sprite_program;
 		ShaderProgram* particle_program;
@@ -41,13 +52,13 @@ namespace dukat
 		std::vector<Sprite*> sprites;
 		std::deque<Particle*> particles;
 		std::vector<TextMeshInstance*> texts;
-		bool is_visible;
 		int render_flags;
 
 		// Fills up priority queue with visible sprites.
 		void fill_sprite_queue(const AABB2& camera_bb, std::function<bool(Sprite*)> predicate,
 			std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator>& queue);
-
+		void bind_sprite_buffers(GLint pos_id, GLint uv_id);
+		void unbind_sprite_buffers(GLint pos_id, GLint uv_id);
 		// Generates sprite model matrix.
 		void compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, Matrix4& mat_model);
 
@@ -83,9 +94,10 @@ namespace dukat
 		void render_particles(Renderer2* renderer, const AABB2& camera_bb);
 		void render_text(Renderer2* renderer, const AABB2& camera_bb);
 
-		void show(void) { is_visible = true; }
-		void hide(void) { is_visible = false; }
-		bool visible(void) const { return is_visible; }
+		void show(void) { render_flags |= Flags::Visible; }
+		void hide(void) { render_flags &= ~Flags::Visible; }
+		bool visible(void) const { return (render_flags & Flags::Visible) == Flags::Visible; }
+		bool relative(void) const { return (render_flags & Flags::Relative) == Flags::Relative; }
 		// Removes all renderables from this layer.
 		void clear(void);
 

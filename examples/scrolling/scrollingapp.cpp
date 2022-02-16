@@ -26,7 +26,7 @@ namespace dukat
 		// Set up layers
 		auto bg_layer = game->get_renderer()->create_composite_layer("background", 10.0f);
 		auto scene_layer = game->get_renderer()->create_composite_layer("scene", 20.0f);
-		auto ui_layer = game->get_renderer()->create_composite_layer("ui", 40.0f);
+		auto ui_layer = game->get_renderer()->create_direct_layer("ui", 40.0f);
 
 		// Load sprites
 		init_background(bg_layer);
@@ -135,7 +135,8 @@ namespace dukat
 	{
 		// Update player based on user input
 		auto dev = game->get_devices()->active;
-		player->pos += Vector2{ dev->lx, -dev->ly } * 64.0f * delta * static_cast<float>(tile_scale);
+		auto dir = Vector2{ dev->lx, -dev->ly };
+		player->pos += dir * 64.0f * delta * static_cast<float>(tile_scale);
 		// Round to nearest pixel
 		player->pos = Vector2{ std::round(player->pos.x), std::round(player->pos.y) };
 		// Update player sprite

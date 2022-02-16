@@ -23,8 +23,8 @@ namespace dukat
 
 	RenderLayer2::RenderLayer2(ShaderCache* shader_cache, VertexBuffer* sprite_buffer, VertexBuffer* particle_buffer,
 		const std::string& id, float priority, float parallax) : render_target(nullptr), composite_binder(nullptr),
-		sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), is_visible(true), id(id), parallax(parallax), priority(priority), 
-		render_flags(Renderer2::RenderFx | Renderer2::RenderSprites | Renderer2::RenderParticles | Renderer2::RenderText)
+		sprite_buffer(sprite_buffer), particle_buffer(particle_buffer), id(id), parallax(parallax), priority(priority), 
+		render_flags(Visible | RenderFx | RenderSprites | RenderParticles | RenderText)
 	{
 		sprite_program = shader_cache->get_program("sc_sprite.vsh", "sc_sprite.fsh");
 		particle_program = shader_cache->get_program("sc_particle.vsh", "sc_particle.fsh");
@@ -90,22 +90,14 @@ namespace dukat
 		auto camera = renderer->get_camera();
 		const auto camera_bb = camera->get_bb(parallax);
 
-		if (has_effects() && check_flag(render_flags, Renderer2::RenderFx) && renderer->is_render_effects())
-		{
+		if (has_effects() && check_flag(render_flags, RenderFx) && renderer->is_render_effects())
 			render_effects(renderer, camera_bb);
-		}
-		if (has_sprites() && check_flag(render_flags, Renderer2::RenderSprites) && renderer->is_render_sprites())
-		{
+		if (has_sprites() && check_flag(render_flags, RenderSprites) && renderer->is_render_sprites())
 			render_sprites(renderer, camera_bb);
-		}
-		if (has_particles() && check_flag(render_flags, Renderer2::RenderParticles) && renderer->is_render_particles())
-		{
+		if (has_particles() && check_flag(render_flags, RenderParticles) && renderer->is_render_particles())
 			render_particles(renderer, camera_bb);
-		}
-		if (has_text() && check_flag(render_flags, Renderer2::RenderText) && renderer->is_render_text())
-		{
+		if (has_text() && check_flag(render_flags, RenderText) && renderer->is_render_text())
 			render_text(renderer, camera_bb);
-		}
 	}
 
 	void RenderLayer2::clear(void)
@@ -120,12 +112,13 @@ namespace dukat
 		std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator>& queue)
 	{
 		// Fill queue with sprites ordered by priority from low to high
+		const auto layer_relative = check_flag(render_flags, Relative);
 		for (auto sprite : sprites)
 		{
 			if (predicate != nullptr && !predicate(sprite))
 				continue; // exclude sprites which fail predicate
 
-			if (check_flag(sprite->flags, Sprite::relative))
+			if (layer_relative || check_flag(sprite->flags, Sprite::relative))
 			{
 				// TODO: perform occlusion check against untranslated camera bounding box
 				queue.push(sprite);
@@ -151,44 +144,16 @@ namespace dukat
 
 		renderer->switch_shader(sprite_program);
 
-		// Set parallax value for this layer
-		glUniform1f(sprite_program->attr("u_parallax"), parallax);
-
-		// bind sprite vertex buffers
-#if OPENGL_VERSION >= 30
-		glBindVertexArray(sprite_buffer->vao);
-		glBindBuffer(GL_ARRAY_BUFFER, sprite_buffer->buffers[0]);
-
-		// bind vertex position
-		auto pos_id = sprite_program->attr(Renderer::at_pos);
-		glEnableVertexAttribArray(pos_id);
-		glVertexAttribPointer(pos_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2PT),
-			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, px)));
-		// bind texture position
-		auto uv_id = sprite_program->attr(Renderer::at_texcoord);
-		glEnableVertexAttribArray(uv_id);
-		glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2PT),
-			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, tu)));
-#else
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, sprite_buffer->buffers[0]);
-
-		// bind vertex position
-		glVertexPointer(2, GL_FLOAT, sizeof(Vertex2PT),
-			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, px)));
-		// bind texture position
-		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex2PT),
-			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, tu)));
-#endif
-
-		// set texture unit 0 
-		glUniform1i(sprite_program->attr(Renderer::uf_tex0), 0);
-
 		// Get uniforms that will be set for each sprite
-		auto uvwh_id = sprite_program->attr("u_uvwh");
-		auto color_id = sprite_program->attr(Renderer::uf_color);
-		auto model_id = sprite_program->attr(Renderer::uf_model);
+		const auto pos_id = sprite_program->attr(Renderer::at_pos);
+		const auto uv_id = sprite_program->attr(Renderer::at_texcoord);
+		const auto uvwh_id = sprite_program->attr("u_uvwh");
+		const auto color_id = sprite_program->attr(Renderer::uf_color);
+		const auto model_id = sprite_program->attr(Renderer::uf_model);
+
+		bind_sprite_buffers(pos_id, uv_id);
+
+		const auto& cam_pos = renderer->get_camera()->transform.position;
 
 		// Render in order
 		GLuint last_texture = -1;
@@ -211,7 +176,7 @@ namespace dukat
 				last_texture = sprite->texture_id;
 			}
 
-			compute_model_matrix(*sprite, renderer->get_camera()->transform.position, mat_m);
+			compute_model_matrix(*sprite, cam_pos, mat_m);
 			glUniformMatrix4fv(model_id, 1, false, &mat_m.m[0]);
 			glUniform4fv(color_id, 1, &sprite->color.r);
 
@@ -241,6 +206,46 @@ namespace dukat
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}
 
+		unbind_sprite_buffers(pos_id, uv_id);
+	}
+
+	void RenderLayer2::bind_sprite_buffers(GLint pos_id, GLint uv_id)
+	{
+		// Set parallax value for this layer
+		glUniform1f(sprite_program->attr("u_parallax"), parallax);
+
+		// bind sprite vertex buffers
+#if OPENGL_VERSION >= 30
+		glBindVertexArray(sprite_buffer->vao);
+		glBindBuffer(GL_ARRAY_BUFFER, sprite_buffer->buffers[0]);
+
+		// bind vertex position
+		glEnableVertexAttribArray(pos_id);
+		glVertexAttribPointer(pos_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2PT),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, px)));
+		// bind texture position
+		glEnableVertexAttribArray(uv_id);
+		glVertexAttribPointer(uv_id, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2PT),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, tu)));
+#else
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, sprite_buffer->buffers[0]);
+
+		// bind vertex position
+		glVertexPointer(2, GL_FLOAT, sizeof(Vertex2PT),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, px)));
+		// bind texture position
+		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex2PT),
+			reinterpret_cast<const GLvoid*>(offsetof(Vertex2PT, tu)));
+#endif
+
+		// set texture unit 0 
+		glUniform1i(sprite_program->attr(Renderer::uf_tex0), 0);
+	}
+
+	void RenderLayer2::unbind_sprite_buffers(GLint pos_id, GLint uv_id)
+	{
 #ifdef _DEBUG
 #if OPENGL_VERSION >= 30
 		// unbind buffers
@@ -284,7 +289,7 @@ namespace dukat
 
 		// if we're in relative addressing mode, transpose sprite
 		// position by camera position.
-		if (check_flag(sprite.flags, Sprite::relative))
+		if (check_flag(render_flags, Flags::Relative) || check_flag(sprite.flags, Sprite::relative))
 			pos += camera_position;
 
 		// scale * rotation * translation
@@ -304,11 +309,13 @@ namespace dukat
 		// increase camera bb slightly to avoid culling particles with size > 1
 		// which fall just outside of screen rect; otherwise these will cause flickering
 		const Vector2 padding{ 4, 4 };
+		const auto layer_relative = check_flag(render_flags, Relative);
 		const auto bb = AABB2{ camera_bb.min() - padding, camera_bb.max() + padding };
+		const auto& cam_pos = renderer->get_camera()->transform.position;
 		auto particle_count = 0;
 		for (auto it = particles.begin(); it != particles.end(); )
 		{
-			Particle* p = (*it);
+			auto p = (*it);
 			// remove dead particles
 			if (p->ttl <= 0)
 			{
@@ -317,11 +324,19 @@ namespace dukat
 			}
 
 			// check if particle visible and store result in ->rendered
-			if (bb.contains(p->pos))
+			if (layer_relative || bb.contains(p->pos))
 			{
 				p->flags |= Particle::Rendered;
-				particle_data[particle_count].px = p->pos.x;
-				particle_data[particle_count].py = p->pos.y;
+				if (layer_relative)
+				{
+					particle_data[particle_count].px = p->pos.x + cam_pos.x;
+					particle_data[particle_count].py = p->pos.y + cam_pos.y;
+				}
+				else
+				{
+					particle_data[particle_count].px = p->pos.x;
+					particle_data[particle_count].py = p->pos.y;
+				}
 				particle_data[particle_count].size = p->size;
 				particle_data[particle_count].ry = p->ry;
 				particle_data[particle_count].cr = p->color.r;
