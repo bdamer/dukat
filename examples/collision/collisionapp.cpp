@@ -16,14 +16,14 @@ namespace dukat
 		// Set up default camera centered around origin
 		auto camera = std::make_unique<Camera2>(game);
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
-		camera->set_resize_handler(fixed_camera(window_width, window_height));
+		camera->set_resize_handler(fixed_height_camera(window_height));
 		camera->refresh();
 		game->get_renderer()->set_camera(std::move(camera));
 
 		screen_dim = Vector2{ 0.5f * window_width, 0.5f * window_height };
 
 		main_layer = game->get_renderer()->create_direct_layer("main", 20.0f);
-		debug_effect = static_cast<DebugEffect2*>(main_layer->add(std::make_unique<DebugEffect2>(game, 1.0f)));
+		debug_effect = static_cast<DebugEffect2*>(main_layer->add(std::make_unique<DebugEffect2>(game)));
 
 		// Add cursor
 		auto texture = game->get_textures()->get("cursor32.png");

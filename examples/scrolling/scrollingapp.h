@@ -32,12 +32,16 @@ namespace dukat
 		std::unique_ptr<Player> player;
 		std::unique_ptr<Sprite> heart_sprite;
 		std::unique_ptr<Sprite> star_sprite;
+		int game_height, game_width;
 		int world_x;
 
 		void init_background(RenderLayer2* layer);
 		void init_row(int index, Texture* tex, const Rect& rect, RenderLayer2* layer);
 
 		void update_tiles(void);
+		void switch_to_fixed_camera(void);
+		void switch_to_follower_camera(void);
+		void switch_to_delayed_camera(void);
 
 	public:
 		ScrollingScene(Game2* game2);

@@ -60,7 +60,8 @@ namespace dukat
 		void bind_sprite_buffers(GLint pos_id, GLint uv_id);
 		void unbind_sprite_buffers(GLint pos_id, GLint uv_id);
 		// Generates sprite model matrix.
-		void compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, Matrix4& mat_model);
+		void compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, float camera_mag, Matrix4& mat_model);
+		std::size_t fill_particle_queue(Camera2* cam, const AABB2& camera_bb);
 
 	public:
 		const std::string id;

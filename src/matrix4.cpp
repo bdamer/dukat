@@ -109,20 +109,17 @@ namespace dukat
 		m[12] = v.x;  m[13] = v.y;  m[14] = v.z;  m[15] = 1.0f;
 	}
 
-	void Matrix4::setup_scale(const Vector3& v)
+	void Matrix4::setup_scale(float sx, float sy, float sz)
 	{
-		m[0 ] = v.x;  m[ 1] = 0.0f; m[ 2] = 0.0f; m[ 3] = 0.0f;
-		m[4 ] = 0.0f; m[ 5] = v.y;  m[ 6] = 0.0f; m[ 7] = 0.0f;
-		m[8 ] = 0.0f; m[ 9] = 0.0f; m[10] = v.z;  m[11] = 0.0f;
+		m[0] = sx;  m[1] = 0.0f; m[2] = 0.0f; m[3] = 0.0f;
+		m[4] = 0.0f; m[5] = sy;  m[6] = 0.0f; m[7] = 0.0f;
+		m[8] = 0.0f; m[9] = 0.0f; m[10] = sz;  m[11] = 0.0f;
 		m[12] = 0.0f; m[13] = 0.0f; m[14] = 0.0f; m[15] = 1.0f;
 	}
 
-	void Matrix4::setup_scale(float k)
+	void Matrix4::setup_scale(const Vector3& v)
 	{
-		m[ 0] = k;	  m[ 1] = 0.0f; m[ 2] = 0.0f; m[ 3] = 0.0f;
-		m[ 4] = 0.0f; m[ 5] = k;    m[ 6] = 0.0f; m[ 7] = 0.0f;
-		m[ 8] = 0.0f; m[ 9] = 0.0f; m[10] = k;    m[11] = 0.0f;
-		m[12] = 0.0f; m[13] = 0.0f; m[14] = 0.0f; m[15] = 1.0f;
+		setup_scale(v.x, v.y, v.z);
 	}
 
 	void Matrix4::setup_orthographic(float left, float top, float right, float bottom, float near, float far)

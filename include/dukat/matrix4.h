@@ -48,9 +48,10 @@ namespace dukat
 		void setup_translation(const Vector3& v);
 
 		// Sets up a new scale matrix.
-		void setup_scale(const Vector3& v);		
+		void setup_scale(float sx, float sy, float sz);
+		void setup_scale(const Vector3& v);
 		// Sets up a new uniform scale matrix.
-		void setup_scale(float k);
+		void setup_scale(float k) { setup_scale(k, k, k); }
 
 		// Sets up a new rotation matrix around an arbitrary axis.
 		void setup_rotation(const Vector3& axis, float theta);

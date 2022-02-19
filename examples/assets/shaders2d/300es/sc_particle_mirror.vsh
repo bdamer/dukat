@@ -16,6 +16,7 @@ layout(std140) uniform Camera
 } u_cam;
 
 uniform float u_parallax;
+uniform mat4 u_model;
 
 // outputs
 out vec4 v_color;
@@ -30,7 +31,7 @@ void main()
 	// compute offset to reflection axis
 	float offset = a_position.y - a_position.w;
 	
-	gl_Position = u_cam.proj_orth * view * vec4(a_position.x, a_position.w - offset, 0.0, 1.0); 
-	gl_PointSize = a_position.z;	
+	gl_Position = u_cam.proj_orth * view * u_model * vec4(a_position.x, a_position.w - offset, 0.0, 1.0); 
+	gl_PointSize = u_model[2][2] * a_position.z;	
 	v_color = a_color;
 }

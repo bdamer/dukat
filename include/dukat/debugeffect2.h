@@ -18,7 +18,7 @@ namespace dukat
 
 	private:
 		static constexpr int circle_segments = 15;
-		const float scale;
+		float scale;
 
 		Game2* game;
 		ShaderProgram* program;
@@ -26,7 +26,7 @@ namespace dukat
 		Flags flags;
 
 	public:
-		DebugEffect2(Game2* game, float scale);
+		DebugEffect2(Game2* game);
 		~DebugEffect2(void);
 		
 		void render_bounding_box(const AABB2& bb, const Color& color) const;

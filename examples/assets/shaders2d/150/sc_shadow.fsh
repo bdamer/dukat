@@ -7,13 +7,18 @@ in vec2 v_tex_coord;
 uniform vec4 u_color;
 uniform float u_radius;
 uniform float u_alpha;
+uniform vec2 u_size;
 
 out vec4 o_color;
 
 void main()
 {
+	// Adjust height to account for pinching done in vertex shader
+	vec2 size = vec2(u_size.x, u_size.y * 0.5);
+	// Quantize to pixel size
+	vec2 uv = round(v_tex_coord * size) / size;
 	// Offset uv with the center of the circle.
-	vec2 uv = v_tex_coord - vec2(0.5, 0.5);
+	uv = uv - vec2(0.5, 0.5);
 	  
 	float dist = sqrt(dot(uv, uv));
 	if (dist < u_radius)

@@ -10,8 +10,9 @@ namespace dukat
 	const float Camera2::default_near_clip = 0.0f;
 	const float Camera2::default_far_clip = 1000.0f;
 
-	Camera2::Camera2(GameBase* game) : window(game->get_window()), near_clip(default_near_clip), far_clip(default_far_clip), 
-		effect(nullptr), handler(nullptr)
+	Camera2::Camera2(GameBase* game) : window(game->get_window()), 
+		near_clip(default_near_clip), far_clip(default_far_clip), 
+		mag_factor(1.f), effect(nullptr), handler(nullptr)
 	{
 		window->subscribe(this, Events::WindowResized);
 	}
@@ -31,7 +32,7 @@ namespace dukat
 		}
 	}
 
-	void Camera2::resize(int width, int height)
+	void Camera2::resize(int window_width, int window_height)
 	{
 		if (handler != nullptr)
 		{
@@ -39,16 +40,19 @@ namespace dukat
 		}
 		else
 		{
-			transform.dimension.x = static_cast<float>(width);
-			transform.dimension.y = static_cast<float>(height);
+			transform.dimension.x = static_cast<float>(window_width);
+			transform.dimension.y = static_cast<float>(window_height);
 		}
 		log->debug("Resizing camera to: {}x{}", static_cast<int>(transform.dimension.x), static_cast<int>(transform.dimension.y));
 
 		aspect_ratio = transform.dimension.x / transform.dimension.y;
-	
-		// Set up projection matrix to logical dimensions of window
-		transform.mat_proj_orth.setup_orthographic(-transform.dimension.x / 2.0f, -transform.dimension.y / 2.0f,
-			transform.dimension.x / 2.0f, transform.dimension.y / 2.0f, near_clip, far_clip);
+
+		mag_factor = std::round(static_cast<float>(window_width) / transform.dimension.x);
+		log->debug("Camera magnification: {}", mag_factor);
+
+		// Set up projection matrix to physical dimensions of window
+		transform.mat_proj_orth.setup_orthographic(-static_cast<float>(window_width) / 2.0f, -static_cast<float>(window_height) / 2.0f,
+			static_cast<float>(window_width) / 2.0f, static_cast<float>(window_height) / 2.0f, near_clip, far_clip);
 	}
 
 	void Camera2::set_effect(std::unique_ptr<CameraEffect2> effect)
@@ -87,7 +91,7 @@ namespace dukat
 		}
 
 		// Rebuild camera / view matrix
-		transform.mat_view.setup_translation(Vector3(-transform.position.x, -transform.position.y, 0.0f));
+		transform.mat_view.setup_translation(Vector3(-transform.position.x * mag_factor, -transform.position.y * mag_factor, 0.0f));
 	}
 
 	Camera2::resize_handler fixed_camera(int width, int height)

@@ -71,34 +71,33 @@ namespace dukat
 
 	void Renderer2::initialize_frame_buffers(void)
 	{
-		if (camera == nullptr)
+		const auto width = window->get_width();
+		const auto height = window->get_height();
+		if (screen_buffer == nullptr)
 		{
-			const auto width = window->get_width();
-			const auto height = window->get_height();
 			log->trace("Initializing frame buffers: {}x{}", width, height);
 			frame_buffer = std::make_unique<FrameBuffer>(width, height, true, false, TextureFilterProfile::ProfileNearest);
 			screen_buffer = std::make_unique<FrameBuffer>(width, height, true, false, TextureFilterProfile::ProfileNearest);
 		}
 		else
 		{
-			const auto& dim = camera->transform.dimension;
-			log->trace("Resizing frame buffers: {}x{}", static_cast<int>(dim.x), static_cast<int>(dim.y));
-			frame_buffer->resize(static_cast<int>(dim.x), static_cast<int>(dim.y));
+			log->trace("Resizing frame buffers: {}x{}", width, height);
+			frame_buffer->resize(width, height);
+		}
 
-			// recreate intermediate render targets
-			for (auto& stage : stages)
+		// recreate intermediate render targets
+		for (auto& stage : stages)
+		{
+			if (stage->frame_buffer != nullptr)
+				stage->frame_buffer->resize(frame_buffer->width, frame_buffer->height);
+
+			for (auto& layer : stage->layers)
 			{
-				if (stage->frame_buffer != nullptr)
-					stage->frame_buffer->resize(static_cast<int>(dim.x), static_cast<int>(dim.y));
-
-				for (auto& layer : stage->layers)
+				if (layer->get_render_target() != nullptr)
 				{
-					if (layer->get_render_target() != nullptr)
-					{
-						auto texture = std::make_unique<Texture>(frame_buffer->width, frame_buffer->height);
-						frame_buffer->initialize_draw_buffer(texture.get());
-						layer->set_render_target(std::move(texture));
-					}
+					auto texture = std::make_unique<Texture>(frame_buffer->width, frame_buffer->height);
+					frame_buffer->initialize_draw_buffer(texture.get());
+					layer->set_render_target(std::move(texture));
 				}
 			}
 		}

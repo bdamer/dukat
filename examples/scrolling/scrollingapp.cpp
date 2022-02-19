@@ -9,19 +9,8 @@ namespace dukat
 	ScrollingScene::ScrollingScene(Game2* game2) : Scene2(game2), world_x(0)
 	{
 		// Set up default camera centered around origin
-		auto settings = game->get_settings();
-		const auto game_width = settings.get_int("game.width", 320);
-
 		player = std::make_unique<Player>();
-		player->pos = Vector2{ game_width / 2, 0 };
-
-		auto camera = std::make_unique<FollowerCamera2<Player>>(game);
-		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
-		camera->set_resize_handler(fixed_width_camera(game_width));
-		camera->set_target(player.get());
-		camera->refresh();
-		const auto game_height = static_cast<int>(camera->transform.dimension.y);
-		game->get_renderer()->set_camera(std::move(camera));
+		switch_to_delayed_camera();
 
 		// Set up layers
 		auto bg_layer = game->get_renderer()->create_composite_layer("background", 10.0f);
@@ -52,10 +41,13 @@ namespace dukat
 		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
-		info_text->transform.position = Vector3(-0.5f * (float)game_width, 0.25f * (float)game_height, 0.0f);
+		info_text->transform.position = Vector3(-0.45f * (float)game_width, 0.20f * (float)game_height, 0.0f);
 		std::stringstream ss;
 		ss << "Scrolling Example" << std::endl
-			<< "<W,A,S,D> Movement" << std::endl;
+			<< "<W,A,S,D> Movement" << std::endl
+			<< "<F2> Fixed camera" << std::endl
+			<< "<F3> Follower camera" << std::endl
+			<< "<F4> Follower camera (delayed)";
 		info_text->set_text(ss.str());
 		info_text->update();
 		info_layer->add(info_text.get());
@@ -137,8 +129,6 @@ namespace dukat
 		auto dev = game->get_devices()->active;
 		auto dir = Vector2{ dev->lx, -dev->ly };
 		player->pos += dir * 64.0f * delta * static_cast<float>(tile_scale);
-		// Round to nearest pixel
-		player->pos = Vector2{ std::round(player->pos.x), std::round(player->pos.y) };
 		// Update player sprite
 		player_sprite->p = player->pos;
 
@@ -172,10 +162,61 @@ namespace dukat
 		}
 	}
 
+	void ScrollingScene::switch_to_fixed_camera(void)
+	{
+		const auto& settings = game->get_settings();
+
+		auto camera = std::make_unique<Camera2>(game);
+		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_resize_handler(fixed_width_camera(game_width));
+		camera->refresh();
+		game_height = static_cast<int>(camera->transform.dimension.y);
+		game->get_renderer()->set_camera(std::move(camera));
+	}
+
+	void ScrollingScene::switch_to_follower_camera(void)
+	{
+		const auto& settings = game->get_settings();
+		game_width = settings.get_int("game.width", 320);
+
+		auto camera = std::make_unique<FollowerCamera2<Player>>(game);
+		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_resize_handler(fixed_width_camera(game_width));
+		camera->set_target(player.get());
+		camera->refresh();
+		game_height = static_cast<int>(camera->transform.dimension.y);
+		game->get_renderer()->set_camera(std::move(camera));
+	}
+
+	void ScrollingScene::switch_to_delayed_camera(void)
+	{
+		const auto& settings = game->get_settings();
+		game_width = settings.get_int("game.width", 320);
+
+		auto camera = std::make_unique<FollowerCamera2<Player>>(game);
+		camera->set_sharpness(0.2f);
+		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_resize_handler(fixed_width_camera(game_width));
+		camera->set_target(player.get());
+		camera->refresh();
+		game_height = static_cast<int>(camera->transform.dimension.y);
+		game->get_renderer()->set_camera(std::move(camera));
+	}
+
 	void ScrollingScene::handle_keyboard(const SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_F2:
+			switch_to_fixed_camera();
+			break;
+		case SDLK_F3:
+			switch_to_follower_camera();
+			break;
+		case SDLK_F4:
+			switch_to_delayed_camera();
+			break;
+
 		case SDLK_ESCAPE:
 			game->set_done(true);
 			break;

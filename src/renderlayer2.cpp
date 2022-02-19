@@ -10,6 +10,7 @@
 #include <dukat/perfcounter.h>
 #include <dukat/shadercache.h>
 #include <dukat/sprite.h>
+#include <dukat/sysutil.h>
 #include <dukat/textmeshinstance.h>
 #include <dukat/renderer2.h>
 #include <dukat/vertextypes2.h>
@@ -148,12 +149,15 @@ namespace dukat
 		const auto pos_id = sprite_program->attr(Renderer::at_pos);
 		const auto uv_id = sprite_program->attr(Renderer::at_texcoord);
 		const auto uvwh_id = sprite_program->attr("u_uvwh");
+		const auto size_id = sprite_program->attr("u_size");
 		const auto color_id = sprite_program->attr(Renderer::uf_color);
 		const auto model_id = sprite_program->attr(Renderer::uf_model);
 
 		bind_sprite_buffers(pos_id, uv_id);
 
-		const auto& cam_pos = renderer->get_camera()->transform.position;
+		auto cam = renderer->get_camera();
+		const auto& cam_pos = cam->transform.position;
+		const auto cam_mag = cam->get_mag_factor();
 
 		// Render in order
 		GLuint last_texture = -1;
@@ -168,40 +172,43 @@ namespace dukat
 			// switch texture if necessary
 			if (last_texture != sprite->texture_id)
 			{
-				perfc.inc(PerformanceCounter::TEXTURES);
-
-				// glActiveTextureARB(GL_TEXTURE0);
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, sprite->texture_id);
 				last_texture = sprite->texture_id;
+				perfc.inc(PerformanceCounter::TEXTURES);
 			}
 
-			compute_model_matrix(*sprite, cam_pos, mat_m);
+			compute_model_matrix(*sprite, cam_pos, cam_mag, mat_m);
 			glUniformMatrix4fv(model_id, 1, false, &mat_m.m[0]);
 			glUniform4fv(color_id, 1, &sprite->color.r);
+			if (size_id >= 0)
+				glUniform2f(size_id, static_cast<float>(sprite->w), static_cast<float>(sprite->h));
 
-			if ((sprite->flags & Sprite::flip_h) == 0)
+			if (uvwh_id >= 0)
 			{
-				uvwh[0] = sprite->tex[0];
-				uvwh[2] = sprite->tex[2];
-			}
-			else
-			{
-				uvwh[0] = sprite->tex[0] + sprite->tex[2];
-				uvwh[2] = -sprite->tex[2];
-			}
+				if ((sprite->flags & Sprite::flip_h) == 0)
+				{
+					uvwh[0] = sprite->tex[0];
+					uvwh[2] = sprite->tex[2];
+				}
+				else
+				{
+					uvwh[0] = sprite->tex[0] + sprite->tex[2];
+					uvwh[2] = -sprite->tex[2];
+				}
 
-			if ((sprite->flags & Sprite::flip_v) == 0)
-			{
-				uvwh[1] = sprite->tex[1];
-				uvwh[3] = sprite->tex[3];
+				if ((sprite->flags & Sprite::flip_v) == 0)
+				{
+					uvwh[1] = sprite->tex[1];
+					uvwh[3] = sprite->tex[3];
+				}
+				else
+				{
+					uvwh[1] = sprite->tex[1] + sprite->tex[3];
+					uvwh[3] = -sprite->tex[3];
+				}
+				glUniform4fv(uvwh_id, 1, uvwh);
 			}
-			else
-			{
-				uvwh[1] = sprite->tex[1] + sprite->tex[3];
-				uvwh[3] = -sprite->tex[3];
-			}
-			glUniform4fv(uvwh_id, 1, uvwh);
 
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}
@@ -258,10 +265,11 @@ namespace dukat
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 #endif
+		gl_check_error();
 #endif
 	}
 
-	void RenderLayer2::compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, Matrix4& mat_model)
+	void RenderLayer2::compute_model_matrix(const Sprite& sprite, const Vector2& camera_position, float camera_mag, Matrix4& mat_model)
 	{
 		auto pos = sprite.p;
 
@@ -294,25 +302,28 @@ namespace dukat
 
 		// scale * rotation * translation
 		static Matrix4 tmp;
-		mat_model.setup_translation(Vector3(pos.x, pos.y, 0.0f));
+		mat_model.setup_translation(Vector3(pos.x * camera_mag, pos.y * camera_mag, 0.0f));
 		if (sprite.rot != 0.0f)
 		{
 			tmp.setup_rotation(Vector3::unit_z, sprite.rot);
 			mat_model *= tmp;
 		}
-		tmp.setup_scale(Vector3(sprite.scale * sprite.w, sprite.scale * sprite.h, 1.0f));
+		tmp.setup_scale(Vector3(sprite.scale * sprite.w * camera_mag, sprite.scale * sprite.h * camera_mag, 1.0f));
 		mat_model *= tmp;
 	}
 
-	void RenderLayer2::render_particles(Renderer2* renderer, const AABB2& camera_bb)
+	std::size_t RenderLayer2::fill_particle_queue(Camera2* cam, const AABB2& camera_bb)
 	{
 		// increase camera bb slightly to avoid culling particles with size > 1
 		// which fall just outside of screen rect; otherwise these will cause flickering
 		const Vector2 padding{ 4, 4 };
 		const auto layer_relative = check_flag(render_flags, Relative);
 		const auto bb = AABB2{ camera_bb.min() - padding, camera_bb.max() + padding };
-		const auto& cam_pos = renderer->get_camera()->transform.position;
-		auto particle_count = 0;
+
+		const auto& cam_pos = cam->transform.position;
+		const auto cam_mag = cam->get_mag_factor();
+
+		auto particle_count = 0u;
 		for (auto it = particles.begin(); it != particles.end(); )
 		{
 			auto p = (*it);
@@ -352,16 +363,25 @@ namespace dukat
 			++it;
 		}
 		perfc.inc(PerformanceCounter::PARTICLES, particle_count);
+		return particle_count;
+	}
 
-		if (particle_count == 0)
-		{
+	void RenderLayer2::render_particles(Renderer2* renderer, const AABB2& camera_bb)
+	{
+		auto cam = renderer->get_camera();
+		const auto particle_count = fill_particle_queue(cam, camera_bb);
+		if (particle_count == 0u)
 			return; // no particles left to render
-		}
 
 		renderer->switch_shader(particle_program);
 
 		// Set parallax value for this layer
-		glUniform1f(particle_program->attr("u_parallax"), parallax);
+		particle_program->set("u_parallax", parallax);
+
+		// Bind model matrix
+		Matrix4 mat_m;
+		mat_m.setup_scale(cam->get_mag_factor());
+		particle_program->set_matrix4(Renderer::uf_model, mat_m);
 
 #if OPENGL_VERSION >= 30
 		// bind particle vertex buffers
@@ -371,12 +391,12 @@ namespace dukat
 		glBufferData(GL_ARRAY_BUFFER, Renderer2::max_particles * sizeof(PVertex), nullptr, GL_STREAM_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, particle_count * sizeof(PVertex), particle_data);
 		// bind vertex position
-		auto pos_id = particle_program->attr(Renderer::at_pos);
+		const auto pos_id = particle_program->attr(Renderer::at_pos);
 		glEnableVertexAttribArray(pos_id);
 		glVertexAttribPointer(pos_id, 4, GL_FLOAT, GL_FALSE, sizeof(PVertex),
 			reinterpret_cast<const GLvoid*>(offsetof(PVertex, px)));
 		// bind color position
-		auto color_id = particle_program->attr(Renderer::at_color);
+		const auto color_id = particle_program->attr(Renderer::at_color);
 		glEnableVertexAttribArray(color_id);
 		glVertexAttribPointer(color_id, 4, GL_FLOAT, GL_FALSE, sizeof(PVertex),
 			reinterpret_cast<const GLvoid*>(offsetof(PVertex, cr)));
@@ -409,6 +429,7 @@ namespace dukat
 		glDisableClientState(GL_COLOR_ARRAY);
 #endif
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		gl_check_error();
 #endif
 	}
 
@@ -416,22 +437,18 @@ namespace dukat
 	{
 		// set up matrix once
 		Matrix4 mat_identity;
-		mat_identity.identity();
+		const auto camera_mag = renderer->get_camera()->get_mag_factor();
+		mat_identity.setup_scale(Vector3(camera_mag, camera_mag, 1.0f));
 		for (const auto& text : texts)
 		{
 			if (text->visible)
-			{
-				// TODO: perform boundary check
 				text->render(renderer, mat_identity);
-			}
 		}
 	}
 
 	void RenderLayer2::render_effects(Renderer2* renderer, const AABB2& camera_bb)
 	{
 		for (const auto& fx : effects)
-		{
 			fx->render(renderer, camera_bb);
-		}
 	}
 }

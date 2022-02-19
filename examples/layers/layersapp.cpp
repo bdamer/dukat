@@ -10,13 +10,9 @@ namespace dukat
 	{
 		auto settings = game->get_settings();
 
-		// Set up default camera centered around origin
-		auto camera = std::make_unique<Camera2>(game);
-		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
-		camera->set_resize_handler(fixed_width_camera(game_width));
-		camera->refresh();
-		const auto game_height = static_cast<int>(camera->transform.dimension.y);
-		game->get_renderer()->set_camera(std::move(camera));
+		auto window = game->get_window();
+		resize(window->get_width(), window->get_height());
+		const auto game_height = static_cast<int>(game->get_renderer()->get_camera()->transform.dimension.y);
 
 		// Mirror mask 
 		mask_texture = game->get_textures()->get("mask2.png");
@@ -44,14 +40,17 @@ namespace dukat
 
 		auto scene_shadow = game->get_renderer()->create_composite_layer("scene_shadow", 19.0f);
 		auto ssp = game->get_shaders()->get_program("sc_shadow.vsh", "sc_shadow.fsh");
-		scene_shadow->add(std::make_unique<ShadowEffect2>(ssp, "scene"));
+		auto fx = std::make_unique<ShadowEffect2>(ssp, "scene");
+		fx->set_radius(0.35f);
+		fx->set_alpha(0.3f);
+		scene_shadow->add(std::move(fx));
 
 		auto scene_layer = game->get_renderer()->create_composite_layer("scene", 20.0f);
 
 		// Load sprites
 		water_sprite = std::make_unique<Sprite>(game->get_textures()->get("white.png"));
 		water_sprite->w = 60;
-		water_sprite->h = 60;
+		water_sprite->h = 45;
 		water_sprite->z = 20;
 		water_sprite->color = color_rgb(0x3484b0);
 		bg_layer->add(water_sprite.get());
@@ -62,6 +61,8 @@ namespace dukat
 
 		barrel_sprite = std::make_unique<Sprite>(game->get_textures()->get("barrel16.png"));
 		barrel_sprite->flags |= Sprite::align_bottom;
+		barrel_sprite->p.x = 20.0f;
+		barrel_sprite->p.y = -10.0f;
 		scene_layer->add(barrel_sprite.get());
 
 		// Set up info text
@@ -121,12 +122,13 @@ namespace dukat
 		// spawn particles
 		auto pm = game->get<ParticleManager>();
 		auto p = pm->create_particle();
-		p->pos = Vector2{ random(-4.0f, 4.0f), -random(32.0f, 34.0f) };
-		p->ry = -32.0f;
+		p->flags |= Particle::Gravitational;
+		p->pos = barrel_sprite->p + Vector2{ random(-4.0f, 4.0f), -random(12.0f, 14.0f) };
+		p->ry = barrel_sprite->p.y;
 		p->dp = Vector2{ random(-4.0f, 4.0f), -random(12.0f, 16.0f) };
 		p->color = Color{ 1.0f, 1.0f, 1.0f, random(0.75f, 1.0f) };
 		p->dc = Color{ 0.0f, 0.0f, 0.0f, -0.1f };
-		p->ttl = 1.0f;
+		p->ttl = 2.0f;
 		game->get_renderer()->get_layer("scene")->add(p);
 
 		Scene2::update(delta);

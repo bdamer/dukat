@@ -8,6 +8,7 @@ uniform vec2 u_cam_position;
 uniform	vec2 u_cam_dimension;
 
 uniform float u_parallax;
+uniform mat4 u_model;
 
 void main()
 {
@@ -16,7 +17,7 @@ void main()
 	view[3][0] *= u_parallax;
 	view[3][1] *= u_parallax;	
 
-	gl_Position = u_cam_proj_orth * view * vec4(gl_Vertex.xy, 0.0, 1.0); 
-	gl_PointSize = gl_Vertex.z;	
+	gl_Position = u_cam_proj_orth * view * u_model * vec4(gl_Vertex.xy, 0.0, 1.0); 
+	gl_PointSize = u_model[2][2] * gl_Vertex.z;	
 	gl_FrontColor = gl_Color;
 }

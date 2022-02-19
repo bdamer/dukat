@@ -14,9 +14,9 @@ namespace dukat
 	struct CameraTransform2
 	{
 		Matrix4 mat_proj_orth; // orthographic projection matrix
-		Matrix4 mat_view; // view matrix - not used because 
-		Vector2 position; // Position in camera space
-		Vector2 dimension; // Width / height of screen
+		Matrix4 mat_view; // view matrix 
+		Vector2 position; // Position in world space
+		Vector2 dimension; // Width / height in world space
 		CameraTransform2(void) : position(Vector2::origin) { }
 	};
 
@@ -25,14 +25,14 @@ namespace dukat
 	public:
 		typedef std::function<void(Camera2 * camera, Window * window)> resize_handler;
 
-	private:
+	protected:
 		static const float default_near_clip;
 		static const float default_far_clip;
 		Window* window;
 		float aspect_ratio;
 		float near_clip;
 		float far_clip;
-		bool fixed_dimension;
+		float mag_factor;
 		std::unique_ptr<CameraEffect2> effect;
 		resize_handler handler;
 
@@ -47,10 +47,12 @@ namespace dukat
 		void set_clip(float near_clip, float far_clip) { this->near_clip = near_clip; this->far_clip = far_clip; }
 		void refresh(void) { resize(window->get_width(), window->get_height()); }
 		float get_aspect_ratio(void) const { return aspect_ratio; }
+		float get_mag_factor(void) const { return mag_factor; }
 		void set_effect(std::unique_ptr<CameraEffect2> effect);
 		void set_resize_handler(const resize_handler& func) { handler = func; }
 
-		// Returns bounding box for camera. If parallax value is provided, will adjust camera
+		// Returns bounding box for camera in world space. 
+		// If parallax value is provided, will adjust camera
 		// position accordingly.
 		AABB2 get_bb(float parallax = 1.0f);
 

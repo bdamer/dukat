@@ -36,7 +36,7 @@ namespace dukat
 		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(16.0f);
-		info_text->transform.position = Vector3(-0.5f * (float)texture_width, 0.0f, 0.0f);
+		info_text->transform.position = Vector3(-0.4f * (float)texture_width, 0.0f, 0.0f);
 		std::stringstream ss;
 		ss << "FullscreenFX" << std::endl
 			<< "Press 1: Invert colors" << std::endl

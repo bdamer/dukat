@@ -9,7 +9,7 @@ namespace dukat
 {
 	static std::vector<Vertex2P> buffer;
 
-	DebugEffect2::DebugEffect2(Game2* game, float scale) : scale(scale), game(game), flags(static_cast<Flags>(Flags::BODIES | Flags::GRID))
+	DebugEffect2::DebugEffect2(Game2* game) : scale(1.0f), game(game), flags(static_cast<Flags>(Flags::BODIES | Flags::GRID))
 	{
 		program = game->get_shaders()->get_program("fx_debug.vsh", "fx_debug.fsh");
 		std::vector<VertexAttribute> attr;
@@ -58,9 +58,9 @@ namespace dukat
 
 	void DebugEffect2::render(Renderer2* renderer, const AABB2& camera_bb)
 	{
-		renderer->switch_shader(program);
+		scale = renderer->get_camera()->get_mag_factor();
 
-		auto world_bb = camera_bb / scale;
+		renderer->switch_shader(program);
 
 		auto cm = game->get<CollisionManager2>();
 
@@ -81,8 +81,8 @@ namespace dukat
 						queue.push(t->child(i));
 				}
 
-				if (world_bb.contains(t->min_v) || world_bb.contains(Vector2{ t->min_v.x, t->max_v.y }) ||
-					world_bb.contains(t->max_v) || world_bb.contains(Vector2{ t->max_v.x, t->min_v.y }))
+				if (camera_bb.contains(t->min_v) || camera_bb.contains(Vector2{ t->min_v.x, t->max_v.y }) ||
+					camera_bb.contains(t->max_v) || camera_bb.contains(Vector2{ t->max_v.x, t->min_v.y }))
 					render_rect(t->min_v, t->max_v, tree_color);
 			}
 		}
@@ -96,7 +96,7 @@ namespace dukat
 			const Color contact_color{ 1.0f, 0.0f, 0.0f, 0.8f };
 			for (const auto& b : cm->bodies)
 			{
-				if (!world_bb.overlaps(b->bb))
+				if (!camera_bb.overlaps(b->bb))
 					continue;
 
 				if (!b->active)

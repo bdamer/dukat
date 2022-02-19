@@ -14,28 +14,33 @@ namespace dukat
 
 		GameBase* game;
         T* target;
+		Vector2 actual_pos; // unsmoothed position
         Vector2 actual_offset;
         Vector2 target_offset;
+		float sharpness; // determines how closely we follow target [0..1]
 		AABB2 limits; // limits camera movement
 
     public:
-        FollowerCamera2(GameBase* game)
-            : Camera2(game), game(game), target(nullptr), actual_offset{ 0, 0 }, target_offset{ 0, 0 }, 
+        FollowerCamera2(GameBase* game) : Camera2(game), game(game), target(nullptr), 
+			actual_pos{ 0, 0 }, actual_offset{ 0, 0 }, target_offset{ 0, 0 }, sharpness(1.0f),
 			limits(Vector2{ -big_number, -big_number }, Vector2{ big_number, big_number }) { }
         ~FollowerCamera2(void) { }
 
         void set_target(T* target);
         void set_offset(const Vector2& offset, bool immediate = true);
 		void set_limits(const AABB2& bb) { this->limits = bb; }
+		void set_sharpness(float sharpness) { this->sharpness = sharpness; }
         void update(float delta);
     };
 
     template <typename T>
     void FollowerCamera2<T>::set_target(T* target)
     {
-        this->target = target;
-        // reset position to trigger jump notification during next update
-        transform.position = Vector2{ 0.0f, 0.0f };
+		if (this->target != target)
+		{
+			this->target = target;
+			actual_pos = transform.position = (target->get_world_pos() + actual_offset);
+		}
     }
 
 	template <typename T>
@@ -67,12 +72,14 @@ namespace dukat
 			}
 		}
 
-		auto tx = target->get_world_pos() + actual_offset;
+		auto target_pos = target->get_world_pos() + actual_offset;
+		const auto blend = 1.f - std::pow(1.f - sharpness, delta * 30.f);
+		actual_pos = lerp(actual_pos, target_pos, blend);
 
-		// Round coordinates to nearest pixel. 
-		auto pos = Vector2{ std::round(tx.x), std::round(tx.y) };
-		auto dx = pos.x - transform.position.x;
-		auto dy = pos.y - transform.position.y;
+		// Round coordinates to nearest (sub)pixel. 
+		auto pos = Vector2{ std::round(actual_pos.x * mag_factor) / mag_factor, std::round(actual_pos.y * mag_factor) / mag_factor };
+		auto dx = target_pos.x - transform.position.x;
+		auto dy = target_pos.y - transform.position.y;
 
 		// Limit coordinates
 		transform.position.x = std::max(std::min(pos.x, limits.max().x), limits.min().x);

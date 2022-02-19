@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <dukat/collisionmanager2.h>
-#include <dukat/debugeffect2.h>
 #include <dukat/mathutil.h>
 
 namespace dukat
