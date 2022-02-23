@@ -26,7 +26,7 @@ namespace dukat
 			limits(Vector2{ -big_number, -big_number }, Vector2{ big_number, big_number }) { }
         ~FollowerCamera2(void) { }
 
-        void set_target(T* target);
+        void set_target(T* target, bool immediate = true);
         void set_offset(const Vector2& offset, bool immediate = true);
 		void set_limits(const AABB2& bb) { this->limits = bb; }
 		void set_sharpness(float sharpness) { this->sharpness = sharpness; }
@@ -34,13 +34,11 @@ namespace dukat
     };
 
     template <typename T>
-    void FollowerCamera2<T>::set_target(T* target)
+    void FollowerCamera2<T>::set_target(T* target, bool immediate)
     {
-		if (this->target != target)
-		{
-			this->target = target;
+		this->target = target;
+		if (immediate)
 			actual_pos = transform.position = (target->get_world_pos() + actual_offset);
-		}
     }
 
 	template <typename T>
