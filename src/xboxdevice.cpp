@@ -197,8 +197,18 @@ namespace dukat
 
 	void XBoxDevice::normalize_axis(int16_t ix, int16_t iy, float& ox, float& oy, int16_t deadzone)
 	{
-		ox = std::abs(ix) < deadzone ? 0.0f : normalize(ix);
-		oy = std::abs(iy) < deadzone ? 0.0f : normalize(iy);
+		// determine how far the controller is pushed
+		const auto magnitude = std::sqrt(static_cast<float>(ix * ix + iy * iy));
+		if (magnitude <= deadzone)
+		{
+			ox = 0.0f;
+			oy = 0.0f;
+		}
+		else
+		{
+			ox = normalize(static_cast<short>(ix));
+			oy = normalize(static_cast<short>(iy));
+		}
 	}
 
 	void XBoxDevice::normalize_trigger(uint8_t i, float& o, uint8_t deadzone)
