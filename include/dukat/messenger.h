@@ -40,7 +40,13 @@ namespace dukat
 		static constexpr Event Selected = 14;
 		static constexpr Event Deselected = 15;
 		static constexpr Event ParentChanged = 16;
+		// Explicitly notification that entity transform has changed.
+		// This message is only sent if the requested by the function which
+		// changed the entity's transform.
+		// param1: Entity* The entity whose transform was changed.
 		static constexpr Event TransformChanged = 17;
+		// Called after entity visibility has changed.
+		// param1: Entity* The entity whose visibility was changed.
 		static constexpr Event VisibilityChanged = 18;
 		static constexpr Event LayerChanged = 19;
 		// Marks begin of a collision.
