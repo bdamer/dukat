@@ -22,8 +22,8 @@ namespace dukat
 
 	Texture::Texture(const Surface& surface, TextureFilterProfile profile) : target(GL_TEXTURE_2D), id(0)
 	{
-		w = surface.get_width();
-		h = surface.get_height();
+		w = surface.width();
+		h = surface.height();
 		load_data(surface, profile);
 	}
 
@@ -41,8 +41,8 @@ namespace dukat
 		surface.query_pixel_format(format, type);
 
 		// Handle surface that is smaller than texture
-		auto min_width = std::min(w, surface.get_width());
-		auto min_height = std::min(h, surface.get_height());
+		auto min_width = std::min(w, surface.width());
+		auto min_height = std::min(h, surface.height());
 
 		load_data(GL_RGBA8, min_width, min_height, surface.get_surface()->pixels, format, type, profile);
 		gl_check_error();

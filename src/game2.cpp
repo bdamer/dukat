@@ -42,7 +42,7 @@ namespace dukat
 	{
 		log->info("Saving screenshot to: {}", filename);
 		auto surface = renderer->copy_screen_buffer();
-		surface->save_to_file(filename);
+		save_surface(*surface, filename);
 	}
 
 	std::unique_ptr<TextMeshInstance> Game2::create_text_mesh(const std::string& font_name)

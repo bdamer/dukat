@@ -10,6 +10,7 @@
 #include "version.h"
 #endif // !OPENGL_VERSION
 
+#include "bit.h"
 #include "color.h"
 #include "sprite.h"
 #include "renderer.h"

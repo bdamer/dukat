@@ -8,7 +8,7 @@ if(ANDROID)
 		aabb2.cpp aabb3.cpp animationmanager.cpp animationsequence.cpp application.cpp assetloader.cpp
 		bit.cpp bitmapfont.cpp blockbuilder.cpp boundingcircle.cpp boundingsphere.cpp buffers.cpp
 		camera2.cpp camera3.cpp collisionmanager2.cpp
-		debugeffect2.cpp devicemanager.cpp
+		debugeffect2.cpp devicemanager.cpp draw.cpp
 		effectpass.cpp environment.cpp eulerangles.cpp
 		feedback.cpp firstpersoncamera3.cpp fixedcamera3.cpp fontcache.cpp fullscreeneffect2.cpp 
 		game2.cpp game3.cpp gamebase.cpp gamepaddevice.cpp geometry.cpp

@@ -20,8 +20,8 @@ namespace dukat
 	class OctreeScene : public Scene, public Controller
 	{
 	private:
-		const int texture_width = 800;
-		const int texture_height = 600;
+		int texture_width;
+		const int texture_height = 360;
 		Game2* game;
 		// number of render threads.
 		int thread_count; 

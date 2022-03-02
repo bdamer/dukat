@@ -20,8 +20,8 @@ namespace dukat
 	{
 		if (surfaces.count(filename) == 0)
 		{
-			auto fqn = resource_dir + "/" + filename;
-			auto surface = Surface::from_file(fqn);
+			const auto fqn = resource_dir + "/" + filename;
+			auto surface = dukat::load_surface(fqn);
 			// Perform necessary conversion
  			switch (surface->get_surface()->format->format)
 			{
@@ -60,7 +60,7 @@ namespace dukat
 	{
 		log->debug("Loading texture [{}]", filename);
 		auto surface = load_surface(filename, hflip, vflip);
-		log->trace("Created {}x{} {} surface.", surface->get_width(), surface->get_height(),
+		log->trace("Created {}x{} {} surface.", surface->width(), surface->height(),
 			SDL_GetPixelFormatName(surface->get_surface()->format->format));
 		return std::make_unique<Texture>(*surface, profile);
 	}
@@ -110,6 +110,18 @@ namespace dukat
 			}
 		}
 		return nullptr;
+	}
+
+	Texture* TextureCache::put(const std::string& filename, std::unique_ptr<Texture> texture)
+	{
+		put(compute_hash(filename), std::move(texture)); 
+		return get(filename);
+	}
+
+	Texture* TextureCache::put(uint32_t id, std::unique_ptr<Texture> texture)
+	{
+		textures[id] = std::move(texture);
+		return get(id);
 	}
 
 	void TextureCache::free(uint32_t id)

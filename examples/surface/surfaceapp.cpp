@@ -85,7 +85,7 @@ namespace dukat
 		case SDLK_b:
 			if (surface != nullptr)
 			{
-				auto img = Surface::from_file("../assets/textures/test_rgb24.png");
+				auto img = load_surface("../assets/textures/test_rgb24.png");
 				surface->blend(*img);
 				texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 			}
@@ -109,7 +109,7 @@ namespace dukat
 	
 	void SurfaceScene::test_load_image(void)
 	{
-		surface = Surface::from_file("../assets/textures/test_rgb24.png");
+		surface = load_surface("../assets/textures/test_rgb24.png");
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 
@@ -124,7 +124,7 @@ namespace dukat
 					+ (y - texture_height / 2) * (y - texture_height / 2);
 				auto grad = 2 * 100;
 				auto alpha = (Uint8)(255.0f * (1.0f - (float)dist / (float)grad));
-				surface->set_pixel(x, y, surface->color(0xff, 0xff, 0xff, alpha));
+				(*surface)(x, y) = surface->color(0xff, 0xff, 0xff, alpha);
 			}
 		}
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
@@ -133,22 +133,22 @@ namespace dukat
 	void SurfaceScene::test_color_image(void)
 	{
 		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
-		surface->fill_rect(0, 0, 64, 64, surface->color(0, 0, 0, 255));
-		surface->fill_rect(64, 0, 64, 64, surface->color(255, 0, 0, 255));
-		surface->fill_rect(128, 0, 64, 64, surface->color(0, 255, 0, 255));
-		surface->fill_rect(192, 0, 64, 64, surface->color(0, 0, 255, 255));
-		surface->fill_rect(0, 64, 64, 64, surface->color(255, 255, 0, 255));
-		surface->fill_rect(64, 64, 64, 64, surface->color(255, 0, 255, 255));
-		surface->fill_rect(128, 64, 64, 64, surface->color(0, 255, 255, 255));
-		surface->fill_rect(192, 64, 64, 64, surface->color(255, 255, 255, 255));
-		surface->fill_rect(0, 128, 64, 64, surface->color(0, 0, 0, 127));
-		surface->fill_rect(64, 128, 64, 64, surface->color(255, 0, 0, 127));
-		surface->fill_rect(128, 128, 64, 64, surface->color(0, 255, 0, 127));
-		surface->fill_rect(192, 128, 64, 64, surface->color(0, 0, 255, 127));
-		surface->fill_rect(0, 192, 64, 64, surface->color(255, 255, 0, 127));
-		surface->fill_rect(64, 192, 64, 64, surface->color(255, 0, 255, 127));
-		surface->fill_rect(128, 192, 64, 64, surface->color(0, 255, 255, 127));
-		surface->fill_rect(192, 192, 64, 64, surface->color(255, 255, 255, 127));
+		fill_rect(*surface, 0, 0, 64, 64, surface->color(0, 0, 0, 255));
+		fill_rect(*surface, 64, 0, 64, 64, surface->color(255, 0, 0, 255));
+		fill_rect(*surface, 128, 0, 64, 64, surface->color(0, 255, 0, 255));
+		fill_rect(*surface, 192, 0, 64, 64, surface->color(0, 0, 255, 255));
+		fill_rect(*surface, 0, 64, 64, 64, surface->color(255, 255, 0, 255));
+		fill_rect(*surface, 64, 64, 64, 64, surface->color(255, 0, 255, 255));
+		fill_rect(*surface, 128, 64, 64, 64, surface->color(0, 255, 255, 255));
+		fill_rect(*surface, 192, 64, 64, 64, surface->color(255, 255, 255, 255));
+		fill_rect(*surface, 0, 128, 64, 64, surface->color(0, 0, 0, 127));
+		fill_rect(*surface, 64, 128, 64, 64, surface->color(255, 0, 0, 127));
+		fill_rect(*surface, 128, 128, 64, 64, surface->color(0, 255, 0, 127));
+		fill_rect(*surface, 192, 128, 64, 64, surface->color(0, 0, 255, 127));
+		fill_rect(*surface, 0, 192, 64, 64, surface->color(255, 255, 0, 127));
+		fill_rect(*surface, 64, 192, 64, 64, surface->color(255, 0, 255, 127));
+		fill_rect(*surface, 128, 192, 64, 64, surface->color(0, 255, 255, 127));
+		fill_rect(*surface, 192, 192, 64, 64, surface->color(255, 255, 255, 127));
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 }

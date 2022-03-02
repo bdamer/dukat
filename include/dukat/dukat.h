@@ -125,6 +125,7 @@
 #endif
 #include "color.h"
 #include "debugeffect2.h"
+#include "draw.h"
 #include "effect2.h"
 #include "effect3.h"
 #include "effectpass.h"

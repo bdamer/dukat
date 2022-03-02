@@ -44,7 +44,7 @@ namespace dukat
 	{
 		log->info("Saving screenshot to: {}", filename);
 		auto surface = renderer->copy_screen_buffer();
-		surface->save_to_file(filename);
+		save_surface(*surface, filename);
 	}
 
 	void Game3::update_debug_text(void)

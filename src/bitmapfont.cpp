@@ -163,7 +163,7 @@ namespace dukat
 
 		const auto texture_file = dir_name(font_file) + file.pages[0];
 		log->debug("Loading font texture: {}", texture_file);
-		auto surface = Surface::from_file(texture_file);
+		auto surface = load_surface(texture_file);
 		// This assumes surface is already in 32 bit format
 		auto texture = std::make_unique<Texture>(*surface, filter_profile);
 

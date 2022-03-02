@@ -17,8 +17,9 @@ namespace dukat
 		// Set up default camera centered around origin
 		auto camera = std::make_unique<Camera2>(game);
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
-		camera->set_resize_handler(fixed_camera(texture_width, texture_height));
+		camera->set_resize_handler(fixed_height_camera(texture_height));
 		camera->refresh();
+		texture_width = camera->transform.dimension.x;
 		game->get_renderer()->set_camera(std::move(camera));
 
 		// Set up "fake" camera for raytracer
@@ -47,7 +48,7 @@ namespace dukat
 		info_text = game->create_text_mesh();
 		info_text->set_size(16.0f);
 		info_text->transform.position = Vector3(
-			-0.5f * (float)texture_width, 0.35f * (float)texture_height, 0.0f);
+			-0.45f * static_cast<float>(texture_width), 0.2f * static_cast<float>(texture_height), 0.0f);
 		std::stringstream ss;
 		ss << "Octree Test" << std::endl
 			<< "WASD: Move camera position" << std::endl
@@ -62,7 +63,7 @@ namespace dukat
 		auto debug_layer = game->get_renderer()->create_composite_layer("debug", 1000.0f);
 		debug_text = game->create_text_mesh();
 		debug_text->set_size(16.0f);
-		debug_text->transform.position = Vector3(-0.5f * (float)texture_width, -0.45f * (float)texture_height, 0.0f);
+		debug_text->transform.position = Vector3(-0.5f * static_cast<float>(texture_width), -0.4f * static_cast<float>(texture_height), 0.0f);
 		debug_layer->add(debug_text.get());
 		debug_layer->hide();
 		game->get<TimerManager>()->create(0.25f, std::bind(&OctreeScene::update_debug_text, this), true);
@@ -170,7 +171,7 @@ namespace dukat
 		GLenum format, type;
 		surface->query_pixel_format(format, type);
 		glBindTexture(GL_TEXTURE_2D, texture->id);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->get_width(), surface->get_height(),
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->width(), surface->height(),
 			format, type, surface->get_surface()->pixels);
 #ifdef _DEBUG
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -198,7 +199,7 @@ namespace dukat
 		for (int i = 0; i < chunk_count; i++)
 		{
 			std::lock_guard<std::mutex> lk(mtx);
-			work_queue.push(dukat::Rect{ 0, i * segment_height, texture_width, (i + 1) * segment_height });
+			work_queue.push(dukat::Rect{ 0, i * segment_height, texture_width, segment_height });
 			cond1.notify_one();
 		}
 
@@ -215,7 +216,7 @@ namespace dukat
 #endif
 
 		// Render white dot at center of screen and update screen buffer
-		surface->set_pixel(texture_width / 2, texture_height / 2, 0xffffffff);
+		(*surface)(texture_width / 2, texture_height / 2) = 0xffffffff;
 		update_texture();
 	}
 
@@ -289,7 +290,7 @@ namespace dukat
 					best_z = t;
 				}
 
-				surface->set_pixel(u, v, *data);
+				(*surface)(u, v) = surface->color(*data);
 			}
 		}
 	}
