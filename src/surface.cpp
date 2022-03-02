@@ -194,7 +194,7 @@ namespace dukat
 
 	void Surface::blend_flip_h(const Surface& another, const Rect& src, const Rect& dest)
 	{
-		auto tmp_surface = Surface(SDL_CreateRGBSurface(0, src.w, src.h, surface->format->BitsPerPixel,
+		Surface tmp_surface(SDL_CreateRGBSurface(0, src.w, src.h, surface->format->BitsPerPixel,
 			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask));
 		tmp_surface.blend(*this, src, src);
 		tmp_surface.flip_horizontal();
@@ -203,7 +203,7 @@ namespace dukat
 
 	void Surface::blend_flip_v(const Surface& another, const Rect& src, const Rect& dest)
 	{
-		auto tmp_surface = Surface(SDL_CreateRGBSurface(0, src.w, src.h, surface->format->BitsPerPixel,
+		Surface tmp_surface(SDL_CreateRGBSurface(0, src.w, src.h, surface->format->BitsPerPixel,
 			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask));
 		tmp_surface.blend(*this, src, src);
 		tmp_surface.flip_vertical();

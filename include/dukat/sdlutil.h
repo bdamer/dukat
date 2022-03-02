@@ -8,11 +8,21 @@ namespace dukat
 
 	inline SDL_Color sdl_color_rgb(uint32_t rgb)
 	{
-		return SDL_Color{ (rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb) & 0xff, 0xff };
+		SDL_Color c;
+		c.r = static_cast<uint8_t>((rgb >> 16) & 0xff);
+		c.g = static_cast<uint8_t>((rgb >> 8) & 0xff);
+		c.b = static_cast<uint8_t>((rgb) & 0xff);
+		c.a = static_cast<uint8_t>(0xff);
+		return c;
 	}
 
 	inline SDL_Color sdl_color_rgba(uint32_t rgba)
 	{
-		return SDL_Color{ (rgba >> 24) & 0xff, (rgba >> 16) & 0xff, (rgba >> 8) & 0xff, (rgba) & 0xff };
+		SDL_Color c;
+		c.r = static_cast<uint8_t>((rgba >> 24) & 0xff);
+		c.g = static_cast<uint8_t>((rgba >> 16) & 0xff);
+		c.b = static_cast<uint8_t>((rgba >> 8) & 0xff);
+		c.a = static_cast<uint8_t>((rgba) & 0xff);
+		return c;
 	}
 }
