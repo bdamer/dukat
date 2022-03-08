@@ -12,7 +12,9 @@ namespace dukat
 
 		// initialize timer
 		auto t = std::make_unique<Timer>();
-		t->callback = callback;
+		t->deferred = std::make_unique<Deferred>();
+		if (callback != nullptr)
+			t->deferred->then(callback);
 		t->generation = generation;
 		t->group = active_group;
 		t->interval = interval;
@@ -23,6 +25,12 @@ namespace dukat
 		timers.push_back(std::move(t));
 		return res;
     }
+
+	void TimerManager::cancel(Timer* timer)
+	{
+		if (timer != nullptr) 
+			timer->alive = false;
+	}
     
     void TimerManager::update(float delta)
     {
@@ -46,8 +54,7 @@ namespace dukat
 				// check if timer has expired
 				if (t.runtime >= t.interval)
 				{
-					if (t.callback)
-						t.callback();
+					t.deferred->resolve();
 
 					if (t.recurring) // reset timer, accounting for any time over interval
 						t.runtime = t.runtime - t.interval;

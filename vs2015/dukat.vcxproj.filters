@@ -522,6 +522,9 @@
     <ClInclude Include="..\include\dukat\draw.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\deferred.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">

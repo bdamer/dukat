@@ -161,6 +161,7 @@
     <ClInclude Include="..\include\dukat\controller.h" />
     <ClInclude Include="..\include\dukat\box2deffect2.h" />
     <ClInclude Include="..\include\dukat\debugeffect2.h" />
+    <ClInclude Include="..\include\dukat\deferred.h" />
     <ClInclude Include="..\include\dukat\draw.h" />
     <ClInclude Include="..\include\dukat\dukat.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

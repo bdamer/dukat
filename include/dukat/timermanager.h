@@ -4,6 +4,7 @@
 #include <list>
 #include <memory>
 
+#include "deferred.h"
 #include "manager.h"
 #include "memorypool.h"
 
@@ -17,10 +18,10 @@ namespace dukat
 		float runtime; 
         bool recurring;
 		bool alive;
-        std::function<void(void)> callback;
+		std::unique_ptr<Deferred> deferred;
 
         Timer(void) : generation(0u), group(0u), interval(0.0f), runtime(0.0f), 
-			recurring(false), alive(true), callback(nullptr) { }
+			recurring(false), alive(true), deferred(nullptr) { }
 
 		// Custom memory allocation
 		static MemoryPool<Timer> _pool;
@@ -40,7 +41,7 @@ namespace dukat
 		~TimerManager(void) { }
 
 		Timer* create(float interval, std::function<void(void)> callback, bool recurring = false);
-		void cancel(Timer* timer) { if (timer != nullptr) timer->alive = false; }
+		void cancel(Timer* timer);
 		void update(float delta);
 		void set_active_group(uint8_t group) { this->active_group = group; }
 
