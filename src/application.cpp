@@ -9,6 +9,7 @@
 #include <dukat/devicemanager.h>
 #include <dukat/inputrecorder.h>
 #include <dukat/keyboarddevice.h>
+#include <dukat/rand.h>
 #include <dukat/settings.h>
 #include <ctime>
 
@@ -47,6 +48,9 @@ namespace dukat
 		audio_manager->set_music_volume(settings.get_float("audio.music.volume", 1.0f));
 		audio_manager->set_sample_volume(settings.get_float("audio.sample.volume", 1.0f));
 #endif
+
+		// Initialize random generator once
+		rand::seed(time(nullptr));
 
 		device_manager = std::make_unique<DeviceManager>(*window, settings);
 		device_manager->add_keyboard();

@@ -333,7 +333,7 @@ namespace dukat
 			if (offset_count == 0)
 				p->pos = em.pos + offset;
 			else
-				p->pos = em.pos + em.offsets[rand() % offset_count] + offset;
+				p->pos = em.pos + em.offsets[random(0, static_cast<int>(offset_count))] + offset;
 			
             p->dp.x = offset.x * em.recipe.max_dp.x;
             p->dp.y = -random(em.recipe.min_dp.y, em.recipe.max_dp.y);

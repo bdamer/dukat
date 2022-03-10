@@ -34,6 +34,7 @@ namespace dukat
 			<< "Press 1: Load test image" << std::endl
 			<< "Press 2: B/W test image" << std::endl
 			<< "Press 3: Color test image" << std::endl
+			<< "Press 4: Random image" << std::endl
 			<< std::endl
 			<< "Press B: Blend image" << std::endl
 			<< "Press H: Flip image horizontally" << std::endl
@@ -81,6 +82,9 @@ namespace dukat
 			break;
 		case SDLK_3:
 			test_color_image();
+			break;
+		case SDLK_4:
+			test_random_image();
 			break;
 		case SDLK_b:
 			if (surface != nullptr)
@@ -149,6 +153,23 @@ namespace dukat
 		fill_rect(*surface, 64, 192, 64, 64, surface->color(255, 0, 255, 127));
 		fill_rect(*surface, 128, 192, 64, 64, surface->color(0, 255, 255, 127));
 		fill_rect(*surface, 192, 192, 64, 64, surface->color(255, 255, 255, 127));
+		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
+	}
+
+	void SurfaceScene::test_random_image(void)
+	{
+		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
+
+		for (auto y = 0; y < texture_height; y++)
+		{
+			for (auto x = 0; x < texture_width; x++)
+			{
+				//const auto color = random(0, 0xff);
+				const auto color = static_cast<uint8_t>(rand::next());
+				(*surface)(x, y) = (color << 24) | (color << 16) | (color << 8) | 0xff;
+			}
+		}
+
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 }

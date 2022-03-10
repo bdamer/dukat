@@ -830,5 +830,8 @@
     <ClCompile Include="..\src\draw.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\rand.cpp">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

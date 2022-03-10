@@ -4,19 +4,20 @@
 
 namespace dukat
 {
-	inline float random(float min, float max)
+	namespace rand
 	{
-		if (min == max)
-			return min;
-		else
-			return min + (max - min) * (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX));
+		// Seeds the random generator.
+		void seed(uint64_t seed);
+		// Returns next random value.
+		uint64_t next(void);
+		// Jump function for generator. Equivalent to 2^64 calls to next.
+		void jump(void);
+		// Long-jump function for generator. Equivalent to 2^96 calls to next.
+		void long_jump(void);
 	}
 
-	inline int random(int min, int max)
-	{
-		if (min == max) // protect against / 0
-			return min;
-		else
-			return min + std::rand() % (max - min);
-	}
+	// Utility methods for returning a random value within a range.
+	float random(float min, float max);
+	int random(int min, int max);
+
 }
