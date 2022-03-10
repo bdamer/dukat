@@ -160,12 +160,12 @@ namespace dukat
 	{
 		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
 
+		rand::Generator<uint8_t> gen;
 		for (auto y = 0; y < texture_height; y++)
 		{
 			for (auto x = 0; x < texture_width; x++)
 			{
-				//const auto color = random(0, 0xff);
-				const auto color = static_cast<uint8_t>(rand::next());
+				const auto color = gen.operator()();
 				(*surface)(x, y) = (color << 24) | (color << 16) | (color << 8) | 0xff;
 			}
 		}

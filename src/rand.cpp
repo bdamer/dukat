@@ -16,8 +16,6 @@ namespace dukat
 		{
 			s[0] = seed >> 32;
 			s[1] = seed - (s[0] << 32);
-			// TODO: remove
-			std::srand(seed);
 		}
 
 		uint64_t next(void)
@@ -85,8 +83,7 @@ namespace dukat
 		if (min == max)
 			return min;
 		else
-			//return min + (max - min) * (static_cast<float>(static_cast<uint16_t>(rand::next())) / static_cast<float>(std::numeric_limits<uint16_t>::max()));
-			return min + (max - min) * (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX));
+			return min + (max - min) * (static_cast<float>(static_cast<uint16_t>(rand::next())) / static_cast<float>(std::numeric_limits<uint16_t>::max()));
 	}
 	
 	int random(int min, int max)
@@ -94,8 +91,6 @@ namespace dukat
 		if (min == max) // protect against / 0
 			return min;
 		else
-			// return min + static_cast<uint32_t>(rand::next()) % (max - min);
-			return min + std::rand() % (max - min);
+			return min + static_cast<uint32_t>(rand::next()) % (max - min);
 	}
-
 }

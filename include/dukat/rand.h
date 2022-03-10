@@ -14,6 +14,15 @@ namespace dukat
 		void jump(void);
 		// Long-jump function for generator. Equivalent to 2^96 calls to next.
 		void long_jump(void);
+
+		template<typename T>
+		struct Generator 
+		{
+			typedef T result_type;
+			static T min(void) { return std::numeric_limits<T>::min(); }
+			static T max(void) { return std::numeric_limits<T>::max(); }
+			T operator()() { return static_cast<T>(next()); }
+		};
 	}
 
 	// Utility methods for returning a random value within a range.
