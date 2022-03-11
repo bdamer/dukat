@@ -23,6 +23,20 @@ namespace dukat
 			static T max(void) { return std::numeric_limits<T>::max(); }
 			T operator()() { return static_cast<T>(next()); }
 		};
+
+		template<typename Iterator, typename RNG>
+		void shuffle(Iterator first, Iterator last, RNG&& g)
+		{
+			if (first == last)
+				return;
+
+			const auto range = last - first;
+			for (auto i = range - 1; i > 0; i--)
+			{
+				auto j = g.operator()() % i;
+				std::iter_swap(first + i, first + j);
+			}	
+		}
 	}
 
 	// Utility methods for returning a random value within a range.
