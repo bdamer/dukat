@@ -33,7 +33,7 @@ namespace dukat
 			const auto range = last - first;
 			for (auto i = range - 1; i > 0; i--)
 			{
-				auto j = g.operator()() % i;
+				auto j = g() % i;
 				std::iter_swap(first + i, first + j);
 			}	
 		}
