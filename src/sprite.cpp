@@ -10,7 +10,7 @@
 
 namespace dukat
 {
-	MemoryPool<Sprite> Sprite::_pool(1024);
+	MemoryPool<Sprite> Sprite::_pool(2048);
 
 	Sprite::Sprite(Texture* texture) : cols(1), rows(1), p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
 		normal_id(0), index(0), flags(0)
