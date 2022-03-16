@@ -56,7 +56,7 @@ namespace dukat
 	}
 
 	// Creates color from RGB hex representation.
-	inline Color color_rgb(int rgb)
+	inline constexpr Color color_rgb(int rgb)
 	{
 		return Color { 
 			static_cast<float>((rgb >> 16) & 0xff) / 255.0f,
@@ -67,7 +67,7 @@ namespace dukat
 	}
 
 	// Creates color from RGBA hex representation.
-	inline Color color_rgba(uint32_t rgba) 
+	inline constexpr Color color_rgba(uint32_t rgba)
 	{
 		return Color{
 			static_cast<float>((rgba >> 24) & 0xff) / 255.0f,

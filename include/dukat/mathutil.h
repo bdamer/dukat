@@ -48,11 +48,11 @@ namespace dukat
 	float fast_cos(float value);
 
 	// convert degrees to radians and back
-	inline float deg_to_rad(float x) { return (x*pi)/180.0f; }
-	inline float rad_to_deg(float x) { return (x*180.0f)/pi; }
+	inline constexpr float deg_to_rad(float x) { return (x * pi) / 180.0f; }
+	inline constexpr float rad_to_deg(float x) { return (x * 180.0f) / pi; }
 
 	// Returns the next value greater than v that is a power of 2.
-	inline int next_pow_two(int v)
+	inline constexpr int next_pow_two(int v)
 	{
 		v--;
 		v |= v >> 1; v |= v >> 2; v |= v >> 4; v |= v >> 8; v |= v >> 16;
@@ -60,7 +60,7 @@ namespace dukat
 	}
 
 	// Rounds r to the next integer.
-	inline int round(float r) 
+	inline constexpr int round(float r)
 	{
 		return static_cast<int>(r > 0.0f ? (r + 0.5f) : (r - 0.5f));
 	}
@@ -81,13 +81,13 @@ namespace dukat
 	}
 
 	// Returns the positive modulo value.
-	inline int pos_mod(int i, int n)
+	inline constexpr int pos_mod(int i, int n)
     {
         return (i % n + n) % n;
     }
 
 	// normalizes the value of an angle between 0 and 2 pi
-	inline void normalize_angle(float& angle)
+	inline constexpr void normalize_angle(float& angle)
 	{
 		if (angle < 0)
 			angle += two_pi;
@@ -96,7 +96,7 @@ namespace dukat
 	}
 
 	// computes the smallest angle between two angles.
-	inline float angle_delta(float a, float b)
+	inline constexpr float angle_delta(float a, float b)
 	{
 		float diff = a - b;
 		while (diff < pi) diff += two_pi;
@@ -114,7 +114,7 @@ namespace dukat
 	}
 
 	template <typename T>
-	inline float normalize(T value, T max_value = std::numeric_limits<T>::max())
+	inline constexpr float normalize(T value, T max_value = std::numeric_limits<T>::max())
 	{
 		return static_cast<float>(value) / static_cast<float>(max_value);
 	}
@@ -126,7 +126,7 @@ namespace dukat
 	}
 
 	template <typename T> 
-	int sgn(T val) 
+	int constexpr sgn(T val)
 	{
 		return (T(0) < val) - (val < T(0));
 	}
