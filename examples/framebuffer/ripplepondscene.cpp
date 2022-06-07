@@ -99,7 +99,7 @@ namespace dukat
 			game->pop_scene();
 			break;
 		case SDLK_d:
-			add_ripple(rand() % texture_size, rand() % texture_size, random(0.25f * ripple_amplitude, ripple_amplitude));
+			add_ripple(std::rand() % texture_size, std::rand() % texture_size, random(0.25f * ripple_amplitude, ripple_amplitude));
 			break;
 		case SDLK_t:
 			background_idx++;

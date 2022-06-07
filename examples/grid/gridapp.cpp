@@ -150,7 +150,7 @@ namespace dukat
 			break;
 		case SDLK_F2:
 			{
-			DiamondSquareGenerator gen(rand() % 10000);
+			DiamondSquareGenerator gen(std::rand() % 10000);
 			gen.set_range(0.0f, 1.0f);
 			gen.set_roughness(120.0f);
 			heightmap->generate(grid_size, gen);
