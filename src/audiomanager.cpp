@@ -77,4 +77,10 @@ namespace dukat
 	{
 		Mix_HaltChannel(channel);
 	}
+
+	void AudioManager::stop_all(void)
+	{
+		for (auto channel = 0; channel < num_channels; channel++)
+			Mix_HaltChannel(channel);
+	}
 }

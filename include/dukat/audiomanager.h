@@ -41,5 +41,7 @@ namespace dukat
 		// return the channel user or playback_error in case of error.
 		int play_sample(Sample* sample, int channel = -1, int loops = 0);
 		void stop_sample(int channel);
+		// Stops all samples
+		void stop_all(void);
 	};
 }
