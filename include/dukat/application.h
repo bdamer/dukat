@@ -25,6 +25,8 @@ namespace dukat
 		bool active; // Triggered by application window becoming active. If set, will execute update method.
 		bool done; // If set, will exit application
 
+		void set_active(bool active);
+
 	protected:
 		uint32_t last_update; // Ticks at last update
 		Settings& settings;

@@ -42,7 +42,7 @@ namespace dukat
 
 		// Rotation - positive angles will rotate in CW direction.
 		Vector2 rotate(float theta) const;
-		// Angle of this vector (relative to [0,1]).
+		// Angle of this vector (relative to [1,0]).
 		float angle(void) const;
 
 		friend std::ostream& operator<<(std::ostream& os, const Vector2& v);

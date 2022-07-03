@@ -139,6 +139,22 @@ namespace dukat
 		return 0;
 	}
 
+	void Application::set_active(bool active)
+	{
+		this->active = active;
+
+		if (active)
+		{
+			audio_manager->resume_all();
+			device_manager->resume_feedback();
+		}
+		else
+		{
+			audio_manager->pause_all();
+			device_manager->pause_feedback();
+		}
+	}
+
 	void Application::handle_event(const SDL_Event& e)
 	{
 		switch (e.type)
@@ -187,20 +203,20 @@ namespace dukat
 		switch (e.window.event)
 		{
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
-			active = true;
+			set_active(true);
 			if (settings.get_bool("input.mouse.lock", true))
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
 			break;
         case SDL_WINDOWEVENT_FOCUS_LOST:
-			active = false;
+			set_active(false);
 			if (settings.get_bool("input.mouse.lock", true))
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
 	        break;
 		case SDL_WINDOWEVENT_SHOWN:
-			active = true;
+			set_active(true);
 			break;
 		case SDL_WINDOWEVENT_HIDDEN:
-			active = false;
+			set_active(false);
 			break;
 		case SDL_WINDOWEVENT_SIZE_CHANGED:
 			window->on_resize();

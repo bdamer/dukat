@@ -43,5 +43,8 @@ namespace dukat
 		void stop_sample(int channel);
 		// Stops all samples
 		void stop_all(void);
+
+		void pause_all(void);
+		void resume_all(void);
 	};
 }
