@@ -42,4 +42,56 @@ namespace dukat
 			log->error("glError: {}", error);
 		}
 	}
+
+	void crash_dump(const std::vector<std::string>& paths)
+	{
+		const auto now = time(nullptr);
+		const auto dir_name = "crash_" + std::to_string(now);
+		if (!create_directory(dir_name))
+		{
+			log->error("Failed to create crash dir: {}", dir_name);
+			return;
+		}
+
+		for (const auto& it : paths)
+		{
+			if (file_exists(it))
+			{
+				const auto name = file_name(it);
+				copy_file(it, dir_name + "/" + name);
+			}
+		}
+	}
+
+	bool file_exists(const std::string& path)
+	{
+		struct stat tmp;
+		return stat(path.c_str(), &tmp) == 0;
+	}
+
+	bool create_directory(const std::string& path)
+	{
+#ifdef WIN32
+		auto res = _mkdir(path.c_str());
+#else
+		mode_t mode = 0755;
+		auto res = mkdir(path.c_str(), mode);
+#endif
+		return (res == 0);
+	}
+
+	bool copy_file(const std::string& source, const std::string& dest)
+	{
+		std::ifstream src(source, std::ios::binary);
+		if (!src)
+			return false;
+
+		std::ofstream dst(dest, std::ios::binary);
+		if (!dst)
+			return false;
+
+		dst << src.rdbuf();
+
+		return true;
+	}
 }

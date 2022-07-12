@@ -2,8 +2,6 @@
 
 namespace dukat
 {
-	void gl_check_error(void);
-
 	inline constexpr uint32_t mc_const(char a, char b, char c, char d) 
 	{
 		return static_cast<uint32_t>((a << 24) | (b << 16) | (c << 8) | d);
@@ -25,30 +23,64 @@ namespace dukat
 		return reinterpret_cast<float_t&>(val);
 	}
 
-	inline std::string file_extension(const std::string& filename)
+	inline std::string file_extension(const std::string& path)
 	{
-		const auto idx = filename.rfind('.');
+		const auto idx = path.rfind('.');
 		if (idx != std::string::npos)
-			return filename.substr(idx + 1);
+			return path.substr(idx + 1);
 		else
 			return "";
 	}
 
-	inline std::string file_name(const std::string& filename)
+	inline std::string file_name(const std::string& path)
 	{
-		const auto idx = filename.find_last_of("\\/");
+		const auto idx = path.find_last_of("\\/");
 		if (idx != std::string::npos)
-			return filename.substr(idx + 1);
+			return path.substr(idx + 1);
+		else
+			return path;
+	}
+
+	inline std::string dir_name(const std::string& path)
+	{
+		const auto idx = path.find_last_of("\\/");
+		if (idx != std::string::npos)
+			return path.substr(0, idx + 1);
 		else
 			return "";
 	}
 
-	inline std::string dir_name(const std::string& filename)
-	{
-		const auto idx = filename.find_last_of("\\/");
-		if (idx != std::string::npos)
-			return filename.substr(0, idx + 1);
-		else
-			return "";
-	}
+	/// <summary>
+	/// Checks for and logs error of last OpenGL operation.
+	/// </summary>
+	void gl_check_error(void);
+
+	/// <summary>
+	/// Creates a new crash dump directory and copies any of the 
+	/// provided files to it.
+	/// </summary>
+	/// <param name="paths">Array of file paths to include in the dump.</param>
+	void crash_dump(const std::vector<std::string>& paths);
+
+	/// <summary>
+	/// Checks if file exists.
+	/// </summary>
+	/// <param name="path">File path</param>
+	/// <returns>True if file exist, otherwise false.</returns>
+	bool file_exists(const std::string& path);
+
+	/// <summary>
+	/// Creates a new directory.
+	/// </summary>
+	/// <param name="path">Directory path</param>
+	/// <returns>True if directory was created, otherwise false.</returns>
+	bool create_directory(const std::string& path);
+
+	/// <summary>
+	/// Copies a file to a new destination.
+	/// </summary>
+	/// <param name="source">Source path</param>
+	/// <param name="dest">Destination path</param>
+	/// <returns>True if file was copied, otherwise false.</returns>
+	bool copy_file(const std::string& source, const std::string& dest);
 }
