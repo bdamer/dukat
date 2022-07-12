@@ -43,7 +43,8 @@ namespace dukat
 		else if (log_output == "file")
 		{
 			const auto log_file = settings.get_string("logging.file", "run.log");
-			log = spdlog::basic_logger_st("file_logger", log_file);
+			const auto truncate = settings.get_bool("logging.truncate", false);
+			log = spdlog::basic_logger_st("file_logger", log_file, truncate);
 		}
 		else
 		{
