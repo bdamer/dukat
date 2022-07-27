@@ -75,7 +75,7 @@ namespace dukat
 	{
 	private:
 		// Map of subscribers, indexed by event type
-		robin_hood::unordered_map<Event, std::list<Recipient*>> subscriptions;
+		robin_hood::unordered_node_map<Event, std::list<Recipient*>> subscriptions;
 		Event active_trigger;
 
 		void do_unsubscribe(Recipient* recipient, std::list<Recipient*>& list);
