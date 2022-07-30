@@ -23,15 +23,17 @@ namespace dukat
 		void operator=(const UIControl& rhs) = delete;
 
 		// Tab index
-		int get_index(void) { return index; }
+		int get_index(void) const { return index; }
 		void set_index(int index) { this->index = index; }
 		// Enable flag 
-		bool is_enabled(void) { return enabled; }
+		bool is_enabled(void) const { return enabled; }
 		void set_enabled(bool enabled) { this->enabled = enabled; }
+		bool has_trigger(void) const { return trigger_func != nullptr; }
+		bool can_cycle(void) const { return cycle_func != nullptr; }
 		// Screen rect
-		virtual const AABB2& get_bb(void) { return bb; }
+		virtual const AABB2& get_bb(void) const { return bb; }
 		// Screen priority
-		virtual float get_priority(void) { return priority; }
+		virtual float get_priority(void) const { return priority; }
 
 		// Event handling
 		bool is_focus(void) const { return focus; }

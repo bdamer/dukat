@@ -34,6 +34,7 @@ namespace dukat
 		void prev_control(void);
 		void next_control(void);
 		void focus_on(UIControl* control);
+		const UIControl* get_focus(void) const { return focus; }
 		// Triggers click on control in focus, if any.
 		bool trigger_focus(void); 
 		// Cycles current control in focus, if any.
