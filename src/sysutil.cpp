@@ -69,6 +69,12 @@ namespace dukat
 		return stat(path.c_str(), &tmp) == 0;
 	}
 
+	bool directory_exists(const std::string& path)
+	{
+		struct stat tmp;
+		return (stat(path.c_str(), &tmp) == 0) && (tmp.st_mode & S_IFDIR);
+	}
+
 	bool create_directory(const std::string& path)
 	{
 #ifdef WIN32

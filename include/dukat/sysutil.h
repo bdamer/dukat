@@ -70,6 +70,13 @@ namespace dukat
 	bool file_exists(const std::string& path);
 
 	/// <summary>
+	/// Checks if directory exists.
+	/// </summary>
+	/// <param name="path">Directory path</param>
+	/// <returns>True if directory exist, otherwise false.</returns>
+	bool directory_exists(const std::string& path);
+
+	/// <summary>
 	/// Creates a new directory.
 	/// </summary>
 	/// <param name="path">Directory path</param>
