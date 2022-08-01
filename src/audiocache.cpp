@@ -2,12 +2,28 @@
 #include <dukat/audiocache.h>
 #include <dukat/log.h>
 #include <dukat/string.h>
+#include <dukat/sysutil.h>
 
 namespace dukat
 {
+	void AudioCache::preload_samples(void)
+	{
+		log->info("Preloading audio samples from: {}", sample_dir);
+		const auto start = SDL_GetTicks();
+		const auto files = list_files(sample_dir);
+		for (const auto& f : files)
+		{
+			const auto ext = file_extension(f);
+			if (ext == "mp3" || ext == "wav" || ext == "ogg")
+				load_sample(f);
+		}
+		log->debug("Preload complete in: {}", SDL_GetTicks() - start);
+	}
+
 	std::unique_ptr<Sample> AudioCache::load_sample(const std::string& filename)
 	{
 		log->debug("Loading sample [{}]", filename);
+		const auto start = SDL_GetTicks();
 		auto fqn = sample_dir + "/" + filename;
 		auto chunk = Mix_LoadWAV(fqn.c_str());
 		if (chunk == nullptr)
@@ -15,6 +31,7 @@ namespace dukat
 			log->warn("Failed to load {}: {}", filename, Mix_GetError());
 			return nullptr;
 		}
+		log->trace("Load complete in: {}", SDL_GetTicks() - start);
 		return std::make_unique<Sample>(chunk);
 	}
 
@@ -50,7 +67,7 @@ namespace dukat
 		}
 		return music_map[id].get();
 	}
-	
+
 	void AudioCache::free_all(void)
 	{
 		log->debug("Freeing {} sample(s)...", sample_map.size());

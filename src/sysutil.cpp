@@ -2,6 +2,10 @@
 #include <dukat/sysutil.h>
 #include <dukat/log.h>
 
+#ifndef WIN32
+#include <dirent.h>
+#endif
+
 namespace dukat
 {
 	void gl_check_error(void)
@@ -99,5 +103,23 @@ namespace dukat
 		dst << src.rdbuf();
 
 		return true;
+	}
+
+	std::vector<std::string> list_files(const std::string& path)
+	{
+		std::vector<std::string> res;
+#ifdef WIN32
+		// TODO: implement
+#else
+		auto ptr = opendir(path.c_str());
+		if (ptr)
+		{
+			dirent* fp;
+			while ((fp = readdir(ptr)) != nullptr)
+				res.push_back(std::string(fp->d_name));
+			closedir(ptr);
+		}
+#endif
+		return res;
 	}
 }

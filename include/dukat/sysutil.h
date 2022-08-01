@@ -90,4 +90,11 @@ namespace dukat
 	/// <param name="dest">Destination path</param>
 	/// <returns>True if file was copied, otherwise false.</returns>
 	bool copy_file(const std::string& source, const std::string& dest);
+
+	/// <summary>
+	/// Lists files under a given directory.
+	/// </summary>
+	/// <param name="path">Directory path</param>
+	/// <returns>A list of file names.</returns>
+	std::vector<std::string> list_files(const std::string& path);
 }

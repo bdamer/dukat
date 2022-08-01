@@ -36,6 +36,9 @@ namespace dukat
 			: sample_dir(sample_dir), music_dir(music_dir) { }
 		~AudioCache(void) { free_all(); }
 
+		// Preloads all files in sample directory.
+		void preload_samples(void);
+
 		// Returns sample or nullptr in case of error.
 		Sample* get_sample(const std::string& filename);
 		// Returns music or nullptr in case of error.
