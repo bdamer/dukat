@@ -109,7 +109,20 @@ namespace dukat
 	{
 		std::vector<std::string> res;
 #ifdef WIN32
-		// TODO: implement
+		const auto filename = path + "\\*";
+		WIN32_FIND_DATAA data;
+		auto handle = FindFirstFileA(filename.c_str(), &data);
+		if (handle == INVALID_HANDLE_VALUE)
+			return res;
+		do
+		{
+			if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+			{
+				res.push_back(std::string(data.cFileName));
+			}
+		} 
+		while (FindNextFileA(handle, &data) != 0);
+		FindClose(handle);
 #else
 		auto ptr = opendir(path.c_str());
 		if (ptr)
