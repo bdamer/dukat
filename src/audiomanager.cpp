@@ -9,8 +9,13 @@ namespace dukat
 	AudioManager::AudioManager(int num_channels) : num_channels(num_channels), channel_volume(num_channels)
 	{
 		log->info("Initializating audio mixer.");
-		sdl_check_result(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096), "Open mixer");
-		// sdl_check_result(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096), "Open mixer");
+
+		const auto init_flags = MIX_INIT_MP3 | MIX_INIT_OGG;
+		if (Mix_Init(init_flags) != init_flags)
+			throw std::runtime_error("Failed to initialize audio mixer.");
+
+		const auto frequency = 44100;
+		sdl_check_result(Mix_OpenAudio(frequency, MIX_DEFAULT_FORMAT, 2, 4096), "Open mixer");
 		auto res = Mix_AllocateChannels(num_channels);
 		log->debug("Allocated {} channels.", res);
 		std::fill(channel_volume.begin(), channel_volume.end(), 1.0f);
