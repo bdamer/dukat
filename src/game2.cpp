@@ -56,15 +56,12 @@ namespace dukat
 		Texture* texture;
 
 		// check if this is an atlas entry
-		const auto pos = filename.find_last_of('/');
-		if (pos != std::string::npos)
+		std::string atlas_name;
+		Rect atlas_rect;
+		if (texture_cache->atlas_lookup(filename, atlas_name, atlas_rect))
 		{
-			const auto atlas_name = filename.substr(0, pos);
-			const auto atlas_entry = filename.substr(pos + 1);
-			auto atlas = texture_cache->get_atlas(atlas_name);
 			try
 			{
-				const auto atlas_rect = atlas->get(atlas_entry);
 				texture = texture_cache->get(atlas_name + ".png");
 				if (rect.w == 0) // rect is empty, use atlas rect
 					rect = atlas_rect;

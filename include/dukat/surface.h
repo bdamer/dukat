@@ -68,4 +68,12 @@ namespace dukat
 	// Creates a new surface for an image file.
 	std::unique_ptr<Surface> load_surface(const std::string& filename);
 	void save_surface(const Surface&, const std::string& filename);
+
+	/// <summary>
+	/// Replaces each source color with corresponding destination color.
+	/// </summary>
+	/// <param name="surface">Surface</param>
+	/// <param name="src_colors">Source colors</param>
+	/// <param name="dest_colors">Destination colors</param>
+	void replace_surface_colors(Surface& surface, const std::vector<SDL_Color>& src_colors, const std::vector<SDL_Color>& dest_colors);
 }

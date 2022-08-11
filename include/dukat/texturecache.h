@@ -53,6 +53,15 @@ namespace dukat
 		// Looks up texture index by name.
 		TextureAtlas* get_atlas(const std::string& name);
 
+		/// <summary>
+		/// Performs atlas lookup for a given filename.
+		/// </summary>
+		/// <param name="filename">The filename to look up.</param>
+		/// <param name="atlas_name">Returns the atlas name, if found</param>
+		/// <param name="entry_rect">Returns the entry rect in the atlas, if found</param>
+		/// <returns>Returns true if atlas entry was found, otherwise false.</returns>
+		bool atlas_lookup(const std::string& filename, std::string& atlas_name, Rect& entry_rect);
+
 		void set_hflip(bool hflip) { this->hflip = hflip; }
 		void set_vflip(bool vflip) { this->vflip = vflip; }
 	};

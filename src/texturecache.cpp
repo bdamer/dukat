@@ -154,6 +154,18 @@ namespace dukat
 		}
 	}
 
+	bool TextureCache::atlas_lookup(const std::string& filename, std::string& atlas_name, Rect& entry_rect)
+	{
+		const auto pos = filename.find_last_of('/');
+		if (pos == std::string::npos)
+			return false;
+		atlas_name = filename.substr(0, pos);
+		const auto atlas_entry = filename.substr(pos + 1);
+		auto atlas = get_atlas(atlas_name);
+		entry_rect = atlas->get(atlas_entry);
+		return true;
+	}
+
 	void TextureCache::free_all(void)
 	{
 		log->debug("Freeing {} texture(s)...", textures.size());

@@ -282,5 +282,16 @@ namespace dukat
 		sdl_check_result(res, "Save surface");
 	}
 
+	void replace_surface_colors(Surface& surface, const std::vector<SDL_Color>& src_colors, const std::vector<SDL_Color>& dest_colors)
+	{
+		assert(src_colors.size() == dest_colors.size());
+		for (auto i = 0u; i < src_colors.size(); i++)
+		{
+			const auto src_color = surface.color(src_colors[i]);
+			const auto dest_color = surface.color(dest_colors[i]);
+			surface.replace(src_color, dest_color);
+		}
+	}
+
 #pragma endregion
 }
