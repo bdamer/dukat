@@ -10,6 +10,20 @@ namespace dukat
 	class Window;
 	class Settings;
 
+	struct LongPressHandler
+	{
+		Uint32 threshold;
+		std::function<void(void)> callback;
+
+		LongPressHandler(void) : threshold(0), callback(nullptr) { }
+		LongPressHandler(nullptr_t) : threshold(0), callback(nullptr) { }
+		LongPressHandler(Uint32 threshold, const std::function<void(void)>& callback)
+			: threshold(threshold), callback(callback) { }
+	};
+
+	inline bool operator==(const LongPressHandler& handler, nullptr_t) { return handler.callback == nullptr; }
+	inline bool operator!=(const LongPressHandler& handler, nullptr_t) { return handler.callback != nullptr; }
+
 	// Base class for all supported input devices
 	class InputDevice
 	{
@@ -41,8 +55,9 @@ namespace dukat
 		};
 
 	private:
+
 		static std::array<std::function<void(void)>, VirtualButton::_Count> button_handlers;
-		static std::array<std::function<void(void)>, VirtualButton::_Count> long_press_handlers;
+		static std::array<LongPressHandler, VirtualButton::_Count> long_press_handlers;
 		std::array<Uint32, VirtualButton::_Count> buttons; // tracks current button state
 
 	protected:
@@ -83,7 +98,9 @@ namespace dukat
 		// Event handlers
 		void on_press(VirtualButton button, std::function<void(void)> handler) { button_handlers[button] = handler; }
 		void unbind(VirtualButton button) { button_handlers[button] = nullptr; }
-		void bind_long_press(VirtualButton button, std::function<void(void)> handler) { long_press_handlers[button] = handler; }
+		void bind_long_press(VirtualButton button, const std::function<void(void)>& handler, Uint32 threshold = 0) {
+			long_press_handlers[button] = LongPressHandler(threshold > 0 ? threshold : long_press_threshold, handler);
+		}
 		void unbind_long_press(VirtualButton button) { long_press_handlers[button] = nullptr; }
 
 		// Controls haptic feedback

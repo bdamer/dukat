@@ -5,7 +5,7 @@
 namespace dukat
 {
 	std::array<std::function<void(void)>, InputDevice::VirtualButton::_Count> InputDevice::button_handlers;
-	std::array<std::function<void(void)>, InputDevice::VirtualButton::_Count> InputDevice::long_press_handlers;
+	std::array<LongPressHandler, InputDevice::VirtualButton::_Count> InputDevice::long_press_handlers;
 
 	InputDevice::InputDevice(const Window& window, const Settings& settings, bool digital) : window(window), lx(0.0f), ly(0.0f),
 		rx(0.0f), ry(0.0f), lxa(0.0f), lya(0.0f), rxa(0.0f), rya(0.0f), lt(0.0f), rt(0.0f), digital(digital)
@@ -25,10 +25,11 @@ namespace dukat
 		}
 
 		// Check if long press has been reached
-		if (pressed && long_press_handlers[button] != nullptr && buttons[button] != -1 &&
-			(SDL_GetTicks() - buttons[button]) >= long_press_threshold)
+		const auto& handler = long_press_handlers[button];
+		if (pressed && handler != nullptr && buttons[button] != -1 &&
+			(SDL_GetTicks() - buttons[button]) >= handler.threshold)
 		{
-			long_press_handlers[button]();
+			handler.callback();
 			buttons[button] = static_cast<Uint32>(-1); // prevent long press from firing again
 		}
 	}
