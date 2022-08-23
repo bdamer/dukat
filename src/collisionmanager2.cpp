@@ -13,6 +13,9 @@ namespace dukat
 	const CollisionManager2::predicate CollisionManager2::pred_static = [](CollisionManager2::Body* b) { return b->active && b->solid && !b->dynamic; };
 	const CollisionManager2::predicate CollisionManager2::pred_dynamic = [](CollisionManager2::Body* b) { return b->active && b->solid && b->dynamic; };
 
+	// guard against destroying bodies while we're looping over them
+	static bool in_collision_loop = false;
+
 	CollisionManager2::CollisionManager2(GameBase* game) : Manager(game), 
 		world_origin({ 0,0 }), world_size(1000.0f), world_depth(5), generation(0)
 	{
@@ -48,6 +51,7 @@ namespace dukat
 
 	void CollisionManager2::invalidate_contacts(Body* body)
 	{
+		assert(!in_collision_loop);
 		// Remove any contacts this body is part of
 		for (const auto& c : get_contacts(body))
 		{
@@ -56,7 +60,8 @@ namespace dukat
 			{
 				other_body->owner->trigger(Message{ Events::CollisionEnd, body });
 			}
-			contacts.erase(hash(c->body1, c->body2));
+			const auto res = contacts.erase(hash(c->body1, c->body2));
+			assert(res > 0u);
 		}
 	}
 
@@ -108,6 +113,7 @@ namespace dukat
 
 	void CollisionManager2::resolve_collisions(void)
 	{
+		in_collision_loop = true;
 		for (auto it = contacts.begin(); it != contacts.end(); )
 		{
 			// clean up contacts which are no longer active
@@ -150,6 +156,7 @@ namespace dukat
 				++it;
 			}
 		}
+		in_collision_loop = false;
 	}
 
 	void CollisionManager2::update(float delta)
