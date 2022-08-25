@@ -17,19 +17,23 @@ namespace dukat
 	void InputDevice::update_button_state(VirtualButton button, bool pressed)
 	{
 		const auto was_pressed = buttons[button] > 0;
+		const auto& lp_handler = long_press_handlers[button];
+
 		if (pressed != was_pressed) // state was changed
 		{
 			buttons[button] = pressed ? SDL_GetTicks() : 0;
 			if (pressed && button_handlers[button] != nullptr)
 				button_handlers[button]();
+
+			if (lp_handler != nullptr)
+				lp_handler.callback(pressed ? LongPressHandler::Begin : LongPressHandler::Cancel);
 		}
 
 		// Check if long press has been reached
-		const auto& handler = long_press_handlers[button];
-		if (pressed && handler != nullptr && buttons[button] != -1 &&
-			(SDL_GetTicks() - buttons[button]) >= handler.threshold)
+		if (pressed && lp_handler != nullptr && buttons[button] != -1 &&
+			(SDL_GetTicks() - buttons[button]) >= lp_handler.threshold)
 		{
-			handler.callback();
+			lp_handler.callback(LongPressHandler::Complete);
 			buttons[button] = static_cast<Uint32>(-1); // prevent long press from firing again
 		}
 	}

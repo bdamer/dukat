@@ -12,12 +12,19 @@ namespace dukat
 
 	struct LongPressHandler
 	{
+		enum Event
+		{
+			Begin,
+			Complete,
+			Cancel
+		};
+
 		Uint32 threshold;
-		std::function<void(void)> callback;
+		std::function<void(Event ev)> callback;
 
 		LongPressHandler(void) : threshold(0), callback(nullptr) { }
 		LongPressHandler(nullptr_t) : threshold(0), callback(nullptr) { }
-		LongPressHandler(Uint32 threshold, const std::function<void(void)>& callback)
+		LongPressHandler(Uint32 threshold, const std::function<void(Event)>& callback)
 			: threshold(threshold), callback(callback) { }
 	};
 
@@ -98,7 +105,9 @@ namespace dukat
 		// Event handlers
 		void on_press(VirtualButton button, std::function<void(void)> handler) { button_handlers[button] = handler; }
 		void unbind(VirtualButton button) { button_handlers[button] = nullptr; }
-		void bind_long_press(VirtualButton button, const std::function<void(void)>& handler, Uint32 threshold = 0) {
+
+		// Binds event handler for long-press.
+		void bind_long_press(VirtualButton button, const std::function<void(LongPressHandler::Event)>& handler, Uint32 threshold = 0) {
 			long_press_handlers[button] = LongPressHandler(threshold > 0 ? threshold : long_press_threshold, handler);
 		}
 		void unbind_long_press(VirtualButton button) { long_press_handlers[button] = nullptr; }
