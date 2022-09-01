@@ -285,11 +285,19 @@ namespace dukat
 	void replace_surface_colors(Surface& surface, const std::vector<SDL_Color>& src_colors, const std::vector<SDL_Color>& dest_colors)
 	{
 		assert(src_colors.size() == dest_colors.size());
+
+		std::unordered_map<uint32_t, uint32_t> colors;
 		for (auto i = 0u; i < src_colors.size(); i++)
+			colors.insert(std::make_pair(surface.color(src_colors[i]), surface.color(dest_colors[i])));
+
+		auto sfc = surface.get_surface();
+		auto ptr = static_cast<uint32_t*>(sfc->pixels);
+		auto end = ptr + sfc->w * sfc->h;
+		while (ptr < end)
 		{
-			const auto src_color = surface.color(src_colors[i]);
-			const auto dest_color = surface.color(dest_colors[i]);
-			surface.replace(src_color, dest_color);
+			if (colors.count(*ptr))
+				*ptr = colors[*ptr];
+			++ptr;
 		}
 	}
 
