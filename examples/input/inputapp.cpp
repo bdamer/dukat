@@ -206,7 +206,19 @@ namespace dukat
 		{
 			const auto btn = static_cast<InputDevice::VirtualButton>(i);
 			dev->on_press(btn, [&, btn](void) { log->info("Pressed: {}", game->get_devices()->active->get_button_name(btn)); });
-			dev->bind_long_press(btn, [&, btn](void) { log->info("Long Pressed: {}", game->get_devices()->active->get_button_name(btn)); });
+			dev->bind_long_press(btn, [&, btn](LongPressHandler::Event ev) {
+				switch (ev) {
+					case LongPressHandler::Event::Begin:
+						log->info("Long Press begin: {}", game->get_devices()->active->get_button_name(btn));
+						break;
+					case LongPressHandler::Event::Cancel:
+						log->info("Long Press cancel: {}", game->get_devices()->active->get_button_name(btn));
+						break;
+					case LongPressHandler::Event::Complete:
+						log->info("Long Press complete: {}", game->get_devices()->active->get_button_name(btn));
+						break;
+				}
+			});
 		}
 	}
 
