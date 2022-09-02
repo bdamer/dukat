@@ -67,7 +67,7 @@ namespace dukat
 			throw std::runtime_error("Failed to write JSON.");
 
 		Json::StreamWriterBuilder builder;
-#ifdef _DEBUG
+#ifndef _DEBUG
 		builder.settings_["indentation"] = "";
 #endif		
 		std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
