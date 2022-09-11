@@ -114,6 +114,8 @@ namespace dukat
 		std::list<Body*> find(const Vector2& pos, const predicate& p = pred_active) const;
 		// Returns all bodies which are intersected by a given bounding box.
 		std::list<Body*> find(const AABB2& bb, const predicate& p = pred_active) const;
+		// Returns all bodies which are intersected by a given bounding circle.
+		std::list<Body*> find(const BoundingCircle& bc, const predicate& p = pred_active) const;
 		// Returns all bodies which are intersected by a given ray.
 		std::list<Body*> find(const Ray2& ray, float min_t, float max_t, const predicate& p = pred_active) const;
 		// Returns closest body intersected by a given ray.

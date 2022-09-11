@@ -304,6 +304,23 @@ namespace dukat
 		return res;
 	}
 
+	std::list<CollisionManager2::Body*> CollisionManager2::find(const BoundingCircle& bc, const predicate& p) const
+	{
+		Body b{ 0 };
+		const Vector2 extent{ bc.radius, bc.radius };
+		b.bb = AABB2{ bc.center - extent, bc.center + extent };
+		candidates.clear();
+		collect_collisions(*tree, &b, candidates);
+
+		std::list<Body*> res;
+		for (Body* b : candidates)
+		{
+			if ((p == nullptr || p(b)) && b->bb.overlaps(bc))
+				res.push_back(b);
+		}
+		return res;
+	}
+
 	void CollisionManager2::find(QuadTree<Body>* tree, const Ray2& ray, float min_t, float max_t, std::list<Body*>& list, const predicate& p) const
 	{
 		if (tree == nullptr)
