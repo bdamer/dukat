@@ -19,7 +19,7 @@ namespace dukat
 		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->set_resize_handler(fixed_height_camera(texture_height));
 		camera->refresh();
-		texture_width = camera->transform.dimension.x;
+		texture_width = static_cast<int>(camera->transform.dimension.x);
 		game->get_renderer()->set_camera(std::move(camera));
 
 		// Set up "fake" camera for raytracer
