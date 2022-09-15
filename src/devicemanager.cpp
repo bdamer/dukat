@@ -158,6 +158,7 @@ namespace dukat
 	void DeviceManager::pause_feedback(void)
 	{
 		if (feedback_paused) return;
+		log->info("Pausing feedback.");
 		feedback_paused = true;
 		active->cancel_feedback();
 	}
@@ -165,12 +166,14 @@ namespace dukat
 	void DeviceManager::resume_feedback(void)
 	{
 		if (!feedback_paused) return;
+		log->info("Resuming feedback.");
 		feedback_paused = false;
 		apply_feedback(true);
 	}
 
 	void DeviceManager::reset_feedback(void)
 	{
+		log->debug("Resetting feedback.");
 		feedback_stack.clear();
 		active->cancel_feedback();
 	}
@@ -189,7 +192,7 @@ namespace dukat
 	{
 		if (recording)
 		{
-			log->info("Stopping recording");
+			log->info("Stopping recording.");
 			recorder = nullptr;
 			recording = false;
 		}
@@ -214,7 +217,7 @@ namespace dukat
 	{
 		if (replaying)
 		{
-			log->info("Stopping replay");
+			log->info("Stopping replay.");
 			recorder = nullptr;
 			controllers.pop_back();
 			active = controllers.back().get();
