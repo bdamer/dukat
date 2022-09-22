@@ -124,4 +124,28 @@ namespace dukat
 			camera->transform.dimension.y = static_cast<float>(height);
 		};
 	}
+
+	Camera2::resize_handler limited_height_camera(int min_height, int max_height)
+	{
+		return [min_height, max_height](Camera2* camera, Window* window) {
+			const auto ratio = static_cast<float>(window->get_height()) / static_cast<float>(window->get_width());
+			const auto height = compute_ideal_height(window->get_height(), min_height, max_height);
+			// adjust width to nearest multiple of 2
+			auto width = static_cast<int>(std::round(static_cast<float>(height) / ratio));
+			width += width % 2;
+			camera->transform.dimension.x = static_cast<float>(width);
+			camera->transform.dimension.y = static_cast<float>(height);
+		};
+	}
+
+	int compute_ideal_height(int screen_height, int min_height, int max_height)
+	{
+		// find smallest value greater than min_height that evenly divides height
+		for (auto h = min_height; h <= max_height; h += 2)
+		{
+			if (screen_height % h == 0)
+				return h;
+		}
+		return -1;
+	}
 }

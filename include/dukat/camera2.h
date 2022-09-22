@@ -64,7 +64,11 @@ namespace dukat
 	};
 
 	// Camera resize handlers
-	extern Camera2::resize_handler fixed_camera(int width, int height);
-	extern Camera2::resize_handler fixed_width_camera(int width);
-	extern Camera2::resize_handler fixed_height_camera(int height);
+	Camera2::resize_handler fixed_camera(int width, int height);
+	Camera2::resize_handler fixed_width_camera(int width);
+	Camera2::resize_handler fixed_height_camera(int height);
+	Camera2::resize_handler limited_height_camera(int min_height, int max_height);
+
+	// Computes smallest height between min_height and max_height that evenly divides screen_height.
+	int compute_ideal_height(int screen_height, int min_height, int max_height);
 }
