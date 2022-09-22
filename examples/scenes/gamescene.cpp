@@ -43,6 +43,9 @@ namespace dukat
 
 	void GameScene::activate(void)
 	{
+		auto renderer = game->get_renderer();
+		renderer->set_clear_color(Color{ 0.0f, 0.0f, 0.0f, 1.0f });
+
 		auto settings = game->get_settings();
 		auto camera = std::make_unique<OrbitCamera3>(game, camera_target, 10.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(5.0f);
@@ -50,7 +53,7 @@ namespace dukat
 		camera->set_vertical_fov(game->get_settings().get_float("camera.fov"));
 		camera->set_clip(game->get_settings().get_float("camera.nearclip"), settings.get_float("camera.farclip"));
 		camera->refresh();
-		game->get_renderer()->set_camera(std::move(camera));
+		renderer->set_camera(std::move(camera));
 
 		game->set_controller(this);
 	}

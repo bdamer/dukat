@@ -17,6 +17,18 @@ namespace dukat
 		return needle.length() <= haystack.length() && equal(needle.begin(), needle.end(), haystack.end() - needle.size());
 	}
 
+	inline std::string join(const std::vector<std::string>& v, const char* delim = ",")
+	{
+		std::ostringstream oss;
+		if (!v.empty())
+		{
+			for (auto i = 0u; i < v.size() - 1; i++)
+				oss << v[i] << delim;
+			oss << *(v.end() - 1);
+		}
+		return oss.str();
+	}
+
 	template<typename Iterator>
 	std::string join(Iterator first, Iterator last, const char* delim = ",")
 	{

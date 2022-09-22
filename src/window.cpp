@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <dukat/log.h>
 #include <dukat/sdlutil.h>
+#include <dukat/string.h>
 #include <dukat/sysutil.h>
 #include <dukat/window.h>
 
@@ -12,30 +13,12 @@ namespace dukat
 		this->height = settings.get_int("window.height", -1);
 		this->fullscreen = settings.get_bool("window.fullscreen");
 		this->resizable = settings.get_bool("window.resizable");
+		this->borderless = settings.get_bool("window.borderless");
 
-#ifdef OPENGL_CORE
 		const auto msaa = settings.get_bool("window.msaa");
-		// Need to request MSAA buffers before creating window
-		if (msaa)
-		{
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
-		}
-
-		// Request sRGB capable frame buffer to support gamma correction on Intel cards
-		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-		SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
-#endif
-
-		set_context_attributes();
+		set_context_attributes(msaa);
 		create_window();
-		context = SDL_GL_CreateContext(window);
-		if (context == nullptr)
-			sdl_check_result(-1, "Create OpenGL Context");
-		int major, minor;
-		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
-		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
-		log->debug("Created OpenGL context {}.{}", major, minor);
+		create_context();
 
 		// Set vsync for current context 
 		set_vsync(settings.get_bool("window.vsync", true));
@@ -82,8 +65,21 @@ namespace dukat
 		}
 	}
 
-	void Window::set_context_attributes(void)
+	void Window::set_context_attributes(bool msaa)
 	{
+#ifdef OPENGL_CORE
+		// Need to request MSAA buffers before creating window
+		if (msaa)
+		{
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
+		}
+
+		// Request sRGB capable frame buffer to support gamma correction on Intel cards
+		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
+#endif
+
 		// Create OpenGL context with desired profile version
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
@@ -109,6 +105,9 @@ namespace dukat
 			height = display_mode.h;
 		}
 
+		const auto display_names = list_display_names();
+		log->debug("Available displays: {}", join(display_names));
+
 		log->debug("Creating window with size: {}x{}", width, height);
 		Uint32 window_flags;
 #ifdef __ANDROID__
@@ -119,38 +118,74 @@ namespace dukat
 		window_flags = SDL_WINDOW_OPENGL;
 		if (fullscreen)
 		{
-			window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+			window_flags |= SDL_WINDOW_FULLSCREEN;
 		}
 		else
 		{
 			window_flags |= SDL_WINDOW_OPENGL;
 			if (resizable)
 				window_flags |= SDL_WINDOW_RESIZABLE;
+			if (borderless)
+				window_flags |= SDL_WINDOW_BORDERLESS;
 		}
 #endif
 		// Create the window with the requested resolution
-		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			width, height, window_flags);
 		if (window == nullptr)
 			sdl_check_result(-1, "Create SDL Window");
 	}
 
+	void Window::create_context(void)
+	{
+		context = SDL_GL_CreateContext(window);
+		if (context == nullptr)
+			sdl_check_result(-1, "Create OpenGL Context");
+		int major, minor;
+		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
+		SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
+		log->debug("Created OpenGL context {}.{}", major, minor);
+	}
+
 	void Window::resize(int width, int height)
 	{
+		// Note: resize only affects the window when not using fullscreen
+		log->debug("Resizing window to: {}x{}", width, height);
 		this->width = width;
 		this->height = height;
 		SDL_SetWindowSize(window, width, height);
+		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	}
+
+	void Window::set_display_mode(const SDL_DisplayMode& mode)
+	{
+		// Note: display mode changes the underlying display, but not the window
+		log->debug("Switching to display mode: {}", format_display_mode(mode));
+		this->width = mode.w;
+		this->height = mode.h;
+		sdl_check_result(SDL_SetWindowDisplayMode(window, &mode), "Change Display Mode");
+		SDL_SetWindowSize(window, width, height); // always change window size to avoid visual artifacts
 	}
 
 	void Window::set_fullscreen(bool fullscreen)
 	{
 		this->fullscreen = fullscreen;
 		log->debug("Switching to {}", (fullscreen ? "fullscreen" : "window"));
-		sdl_check_result(SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0),
+		sdl_check_result(SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0),
 			"Change screen mode");
+
+		if (!fullscreen) // re-center position upon leaving fullscreen mode
+			SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
 		// On Linux, seeing duplicate SDL events get sent after window resize. 
 		// Introduce slight delay to avoid this...
 		SDL_Delay(100);
+	}
+
+	void Window::set_borderless(bool borderless)
+	{
+		this->borderless = borderless;
+		SDL_SetWindowBordered(window, !borderless ? SDL_TRUE : SDL_FALSE);
 	}
 
 	void Window::set_vsync(bool vsync)

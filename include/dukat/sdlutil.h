@@ -25,4 +25,10 @@ namespace dukat
 		c.a = static_cast<uint8_t>((rgba) & 0xff);
 		return c;
 	}
+
+	// Display mode utilties
+	std::string format_display_mode(const SDL_DisplayMode& mode);
+	std::vector<std::string> list_display_names(void);
+	std::vector<SDL_DisplayMode> list_display_modes(int display_idx);
+	int find_current_display_mode(int display_idx, const std::vector<SDL_DisplayMode>& modes);
 }

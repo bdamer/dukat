@@ -20,14 +20,16 @@ namespace dukat
 		int width;
 		int height;
 		bool fullscreen;
+		bool borderless; // show border when window is not fullscreen
 		bool resizable; // indicates that the window can be resized
 		bool vsync;
 		bool msaa_enabled;
 		SDL_Window* window;
 		SDL_GLContext context;
 
-		void set_context_attributes(void);
+		void set_context_attributes(bool msaa);
 		void create_window(void);
+		void create_context(void);
 
 	public:
 		Window(const Settings& settings);
@@ -38,8 +40,10 @@ namespace dukat
 		
 		void set_title(const std::string& title) { SDL_SetWindowTitle(window, title.c_str()); }
 		void set_vsync(bool vsync);
+		void set_display_mode(const SDL_DisplayMode& mode);
 		void set_fullscreen(bool fullscreen);
 		void toggle_fullscreen(void) { set_fullscreen(!fullscreen); }
+		void set_borderless(bool borderless);
 
 		void resize(int width, int height);
 		int get_height(void) const { return height; }
@@ -47,6 +51,7 @@ namespace dukat
 		float get_aspect_ratio(void) const { return (float)width / (float)height; }
 
 		bool is_fullscreen(void) const { return fullscreen; }
+		bool is_borderless(void) const { return borderless; }
 		bool is_resizable(void) const { return resizable; }
 		bool is_msaa_enabled(void) const { return msaa_enabled; }
 		
