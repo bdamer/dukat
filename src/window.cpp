@@ -97,16 +97,16 @@ namespace dukat
 		width = height = -1;
 #endif
 
-		if (width == -1 || height == -1)
-		{
-			SDL_DisplayMode display_mode;
-			SDL_GetCurrentDisplayMode(0, &display_mode);
-			width = display_mode.w;
-			height = display_mode.h;
-		}
-
 		const auto display_names = list_display_names();
 		log->debug("Available displays: {}", join(display_names));
+
+		SDL_DisplayMode cur_display_mode;
+		SDL_GetCurrentDisplayMode(0, &cur_display_mode);
+		if (width == -1 || height == -1)
+		{
+			width = cur_display_mode.w;
+			height = cur_display_mode.h;
+		}
 
 		log->debug("Creating window with size: {}x{}", width, height);
 		Uint32 window_flags;
@@ -134,6 +134,28 @@ namespace dukat
 			width, height, window_flags);
 		if (window == nullptr)
 			sdl_check_result(-1, "Create SDL Window");
+
+		if (fullscreen && (width != cur_display_mode.w || height != cur_display_mode.h))
+		{
+			SDL_DisplayMode target, closest;
+			target.w = width;
+			target.h = height;
+			target.format = 0;
+			target.refresh_rate = 0;
+			target.driverdata = 0; 
+
+			log->debug("Finding closed display mode to: {}x{}", width, height);
+
+			if (SDL_GetClosestDisplayMode(0, &target, &closest) == nullptr)
+			{
+				log->warn("Unable to find matching display mode: {}x{}", width, height);
+			}
+			else
+			{
+				log->info("Found mode: {}", format_display_mode(closest));
+				change_mode(Fullscreen, closest);
+			}
+		}
 	}
 
 	void Window::create_context(void)
