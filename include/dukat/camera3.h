@@ -26,7 +26,7 @@ namespace dukat
 			dir(-Vector3::unit_z), up(Vector3::unit_y), right(-Vector3::unit_x) { }
 	};
 
-	class Camera3 : public Recipient
+	class Camera3
 	{
 	private:
 		// Default values
@@ -79,7 +79,5 @@ namespace dukat
 		Ray3 pick_ray_view(float x, float y);
 		// Computes left and right clip planes.
 		static void compute_clip_planes(const CameraTransform3& transform, float fov, Plane& left_plane, Plane& right_plane);
-
-		void receive(const Message& msg);
 	};
 }

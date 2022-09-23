@@ -215,12 +215,14 @@ namespace dukat
 			this->camera = std::move(camera);
 	}
 
-	void Renderer2::resize_window(void)
+	void Renderer2::resize_window(int w, int h)
 	{
-		Renderer::resize_window();
-		log->debug("Resizing screen buffer to {}x{}", window->get_width(), window->get_height());
-		screen_buffer->resize(window->get_width(), window->get_height());
+		Renderer::resize_window(w, h);
+		log->debug("Resizing screen buffer to {}x{}", w, h);
+		screen_buffer->resize(w, h);
 		initialize_frame_buffers();
+		if (camera)
+			camera->resize(w, h);
 	}
 
 	void Renderer2::render_layer(RenderLayer2& layer, FrameBuffer* target_buffer)
@@ -376,6 +378,7 @@ namespace dukat
 		glUniform2fv(active_program->attr(Renderer2::u_cam_dimension), 1, (GLfloat*)(&camera->transform.dimension));
 #endif
 	}
+
 	void Renderer2::set_composite_program(ShaderProgram* composite_program, std::function<void(ShaderProgram*)> composite_binder)
 	{
 		this->composite_program = composite_program;

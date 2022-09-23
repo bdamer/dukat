@@ -91,7 +91,7 @@ namespace dukat
 #endif
 	}
 
-	void Renderer::resize_window(void)
+	void Renderer::resize_window(int w, int h)
 	{
 		reset_viewport();
 	}
@@ -138,7 +138,7 @@ namespace dukat
 		switch (msg.event)
 		{
 		case Events::WindowResized:
-			resize_window();
+			resize_window(*msg.get_param1<int>(), *msg.get_param2<int>());
 			break;
 		}
 	}

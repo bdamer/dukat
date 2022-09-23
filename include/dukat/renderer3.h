@@ -62,6 +62,7 @@ namespace dukat
 		
 		void init_lights(void);
 		void switch_fbo(void);
+		void resize_window(int w, int h);
 
 	public:
 		Renderer3(Window* window, ShaderCache* shaders, TextureCache* textures);

@@ -83,7 +83,7 @@ namespace dukat
 		void render_layer(RenderLayer2& layer, FrameBuffer* target_buffer);
 		void render_composite(FrameBuffer* target_buffer, ShaderProgram* comp_program, ShaderBinder comp_binder, Texture* source_tex);
 		void render_screenbuffer(void);
-		void resize_window(void);
+		void resize_window(int w, int h);
 
 	public:
 		Renderer2(Window* window, ShaderCache* shader_cache);

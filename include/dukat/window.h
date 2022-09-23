@@ -32,6 +32,13 @@ namespace dukat
 		void create_context(void);
 
 	public:
+		enum Mode
+		{
+			Windowed,
+			Borderless,
+			Fullscreen
+		};
+
 		Window(const Settings& settings);
 		~Window(void);
 
@@ -45,6 +52,7 @@ namespace dukat
 		void toggle_fullscreen(void) { set_fullscreen(!fullscreen); }
 		void set_borderless(bool borderless);
 
+		void change_mode(Mode wm, const SDL_DisplayMode& dm);
 		void resize(int width, int height);
 		int get_height(void) const { return height; }
 		int get_width(void) const { return width; }

@@ -83,6 +83,13 @@ namespace dukat
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
+	void Renderer3::resize_window(int w, int h)
+	{
+		Renderer::resize_window(w, h);
+		if (camera)
+			camera->resize(w, h);
+	}
+
 	void Renderer3::render(const std::vector<Mesh*>& meshes)
 	{
 #if OPENGL_VERSION >= 30

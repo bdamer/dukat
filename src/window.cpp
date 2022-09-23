@@ -147,6 +147,34 @@ namespace dukat
 		log->debug("Created OpenGL context {}.{}", major, minor);
 	}
 
+	void Window::change_mode(Mode wm, const SDL_DisplayMode& dm)
+	{
+		const auto cur_mode = fullscreen ? Fullscreen :
+			(borderless ? Borderless : Windowed);
+		if (cur_mode != wm)
+		{
+			switch (wm)
+			{
+			case Windowed:
+				set_fullscreen(false);
+				set_borderless(false);
+				break;
+			case Borderless:
+				set_fullscreen(false);
+				set_borderless(true);
+				break;
+			case Fullscreen:
+				set_fullscreen(true);
+				break;
+			}
+		}
+
+		if (fullscreen)
+			set_display_mode(dm);
+		else
+			resize(dm.w, dm.h);
+	}
+
 	void Window::resize(int width, int height)
 	{
 		// Note: resize only affects the window when not using fullscreen

@@ -20,7 +20,7 @@ namespace dukat
 		CameraTransform2(void) : position(Vector2::origin) { }
 	};
 
-	class Camera2 : public Recipient
+	class Camera2
 	{
 	public:
 		typedef std::function<void(Camera2 * camera, Window * window)> resize_handler;
@@ -59,8 +59,6 @@ namespace dukat
 		// Updates the camera's view matrix. Subclasses of camera should update
 		// the camera axes and call this method to update the view matrix.
 		virtual void update(float delta);
-
-		void receive(const Message& msg);
 	};
 
 	// Camera resize handlers

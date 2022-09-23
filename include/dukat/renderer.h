@@ -38,7 +38,7 @@ namespace dukat
 		bool blending;
 
 		void test_capabilities(void);
-		virtual void resize_window(void);
+		virtual void resize_window(int w, int h);
 
 	public:
 		enum class UniformBuffer : int

@@ -17,13 +17,6 @@ namespace dukat
         static constexpr auto option_apply = "Apply";
         static constexpr auto option_back = "Back";
 
-        enum WindowMode
-        {
-            Windowed,
-            Borderless,
-            Fullscreen
-        };
-
         Game3* game;
         MeshGroup overlay_meshes;
         TextMeshInstance* title_text;
@@ -36,7 +29,7 @@ namespace dukat
         std::unique_ptr<TextButton> apply_button;
         std::unique_ptr<TextButton> return_button;
 
-        WindowMode window_mode;
+        Window::Mode window_mode;
         std::vector<SDL_DisplayMode> display_modes;
         int display_mode_idx;
 

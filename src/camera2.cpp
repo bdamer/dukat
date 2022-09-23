@@ -14,22 +14,10 @@ namespace dukat
 		near_clip(default_near_clip), far_clip(default_far_clip), 
 		mag_factor(1.f), effect(nullptr), handler(nullptr)
 	{
-		window->subscribe(this, Events::WindowResized);
 	}
 
 	Camera2::~Camera2(void)
 	{
-		window->unsubscribe(this, Events::WindowResized);
-	}
-
-	void Camera2::receive(const Message& msg)
-	{
-		switch (msg.event)
-		{
-		case Events::WindowResized:
-			resize(*static_cast<const int*>(msg.param1), *static_cast<const int*>(msg.param2));
-			break;
-		}
 	}
 
 	void Camera2::resize(int window_width, int window_height)
