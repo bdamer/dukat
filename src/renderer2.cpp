@@ -210,18 +210,9 @@ namespace dukat
 	void Renderer2::set_camera(std::unique_ptr<Camera2> camera)
 	{
 		if (camera == nullptr)
-		{
 			this->camera = nullptr;
-		}
 		else
-		{
 			this->camera = std::move(camera);
-			if (frame_buffer == nullptr || frame_buffer->texture->w != this->camera->transform.dimension.x
-				|| frame_buffer->texture->h != this->camera->transform.dimension.y)
-			{
-				initialize_frame_buffers();
-			}
-		}
 	}
 
 	void Renderer2::resize_window(void)
@@ -229,6 +220,7 @@ namespace dukat
 		Renderer::resize_window();
 		log->debug("Resizing screen buffer to {}x{}", window->get_width(), window->get_height());
 		screen_buffer->resize(window->get_width(), window->get_height());
+		initialize_frame_buffers();
 	}
 
 	void Renderer2::render_layer(RenderLayer2& layer, FrameBuffer* target_buffer)
