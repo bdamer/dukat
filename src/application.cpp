@@ -61,6 +61,7 @@ namespace dukat
 	{
 		// Force release of device manager before call to SDL_Quit
 		device_manager = nullptr;
+		window = nullptr;
 		// Always show cursor before exiting
 		SDL_ShowCursor(SDL_ENABLE);
 		SDL_Quit();

@@ -53,6 +53,10 @@ namespace dukat
 
 	Window::~Window()
 	{
+		if (window != nullptr && fullscreen) // leave fullscreen to restore original res
+			toggle_fullscreen();
+
+		log->debug("Destroying window.");
 		if (context != nullptr)
 		{
 			SDL_GL_DeleteContext(context);
