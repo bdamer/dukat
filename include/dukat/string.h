@@ -41,6 +41,20 @@ namespace dukat
 		return oss.str();
 	}
 
+	inline std::vector<std::string> split(const std::string& s, const char* delim = " ")
+	{
+		std::vector<std::string> res;
+		size_t prev = 0u, next = 0u;
+		while ((next = s.find(delim, prev)) != std::string::npos)
+		{
+			res.push_back(s.substr(prev, next - prev));
+			prev = next + 1;
+		}
+		if (prev != s.size())
+			res.push_back(s.substr(prev));
+		return res;
+	}
+
 	// End inline string helpers
 
 	// reads a pascal string from a stream.
