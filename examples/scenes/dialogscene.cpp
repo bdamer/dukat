@@ -55,6 +55,7 @@ namespace dukat
 			const auto& mode = display_modes[display_mode_idx];
 			game->get_window()->change_mode(window_mode, mode);
 			update_display_modes();
+			update_resolution_button();
 		});
 		apply_text = text_mesh.get();
 		overlay_meshes.add_instance(std::move(text_mesh));
@@ -124,13 +125,13 @@ namespace dukat
 		std::string label(option_mode);
 		switch (window_mode)
 		{
-		case Window::Windowed:
+		case Window::Mode::Windowed:
 			label += option_windowed;
 			break;
-		case Window::Borderless:
+		case Window::Mode::Borderless:
 			label += option_borderless;
 			break;
-		case Window::Fullscreen:
+		case Window::Mode::Fullscreen:
 			label += option_fullscreen;
 			break;
 		}
@@ -159,9 +160,9 @@ namespace dukat
 
 		// Update display mode since this option may have changed externally
 		if (game->get_window()->is_fullscreen())
-			window_mode = Window::Fullscreen;
+			window_mode = Window::Mode::Fullscreen;
 		else
-			window_mode = game->get_window()->is_borderless() ? Window::Borderless : Window::Windowed;
+			window_mode = game->get_window()->is_borderless() ? Window::Mode::Borderless : Window::Mode::Windowed;
 		update_mode_button();
 		update_display_modes();
 		update_resolution_button();

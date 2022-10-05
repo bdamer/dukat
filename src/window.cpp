@@ -7,13 +7,19 @@
 
 namespace dukat
 {
-	Window::Window(const Settings& settings)
+	Window::Window(const Settings& settings) : flags(0)
 	{
 		this->width = settings.get_int("window.width", -1);
 		this->height = settings.get_int("window.height", -1);
-		this->fullscreen = settings.get_bool("window.fullscreen");
-		this->resizable = settings.get_bool("window.resizable");
-		this->borderless = settings.get_bool("window.borderless");
+
+		if (settings.get_bool("window.fullscreen"))
+			flags |= Flags::Fullscreen;
+		if (settings.get_bool("window.fullscreen_desktop"))
+			flags |= Flags::FullscreenDesktop;
+		if (settings.get_bool("window.resizable"))
+			flags |= Flags::Resizable;
+		if (settings.get_bool("window.borderless"))
+			flags |= Flags::Borderless;
 
 		const auto msaa = settings.get_bool("window.msaa");
 		set_context_attributes(msaa);
@@ -53,7 +59,7 @@ namespace dukat
 
 	Window::~Window()
 	{
-		if (window != nullptr && fullscreen) // leave fullscreen to restore original res
+		if (window != nullptr && (flags & Flags::Fullscreen)) // leave fullscreen to restore original res
 			toggle_fullscreen();
 
 		log->debug("Destroying window.");
@@ -120,16 +126,19 @@ namespace dukat
 		window_flags = SDL_WINDOW_SHOWN;
 #else
 		window_flags = SDL_WINDOW_OPENGL;
-		if (fullscreen)
+		if (flags & Flags::Fullscreen)
 		{
-			window_flags |= SDL_WINDOW_FULLSCREEN;
+			if (flags & Flags::FullscreenDesktop)
+				window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+			else
+				window_flags |= SDL_WINDOW_FULLSCREEN;
 		}
 		else
 		{
 			window_flags |= SDL_WINDOW_OPENGL;
-			if (resizable)
+			if (flags & Flags::Resizable)
 				window_flags |= SDL_WINDOW_RESIZABLE;
-			if (borderless)
+			if (flags & Flags::Borderless)
 				window_flags |= SDL_WINDOW_BORDERLESS;
 		}
 #endif
@@ -139,7 +148,7 @@ namespace dukat
 		if (window == nullptr)
 			sdl_check_result(-1, "Create SDL Window");
 
-		if (fullscreen && (width != cur_display_mode.w || height != cur_display_mode.h))
+		if ((flags & Flags::Fullscreen) && !(flags & Flags::FullscreenDesktop) && (width != cur_display_mode.w || height != cur_display_mode.h))
 		{
 			SDL_DisplayMode target, closest;
 			target.w = width;
@@ -157,7 +166,7 @@ namespace dukat
 			else
 			{
 				log->info("Found mode: {}", format_display_mode(closest));
-				change_mode(Fullscreen, closest);
+				change_mode(Mode::Fullscreen, closest);
 			}
 		}
 	}
@@ -175,27 +184,27 @@ namespace dukat
 
 	void Window::change_mode(Mode wm, const SDL_DisplayMode& dm)
 	{
-		const auto cur_mode = fullscreen ? Fullscreen :
-			(borderless ? Borderless : Windowed);
+		const auto cur_mode = is_fullscreen() ? Mode::Fullscreen :
+			(is_borderless() ? Mode::Borderless : Mode::Windowed);
 		if (cur_mode != wm)
 		{
 			switch (wm)
 			{
-			case Windowed:
+			case Mode::Windowed:
 				set_fullscreen(false);
 				set_borderless(false);
 				break;
-			case Borderless:
+			case Mode::Borderless:
 				set_fullscreen(false);
 				set_borderless(true);
 				break;
-			case Fullscreen:
+			case Mode::Fullscreen:
 				set_fullscreen(true);
 				break;
 			}
 		}
 
-		if (fullscreen)
+		if (is_fullscreen())
 			set_display_mode(dm);
 		else
 			resize(dm.w, dm.h);
@@ -223,10 +232,19 @@ namespace dukat
 
 	void Window::set_fullscreen(bool fullscreen)
 	{
-		this->fullscreen = fullscreen;
+		uint32_t target_flags;
+		if (fullscreen)
+		{
+			flags |= Fullscreen;
+			target_flags = flags & FullscreenDesktop ? SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_FULLSCREEN;
+		}
+		else
+		{
+			flags &= ~Fullscreen;
+			target_flags = 0;
+		}
 		log->debug("Switching to {}", (fullscreen ? "fullscreen" : "window"));
-		sdl_check_result(SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0),
-			"Change screen mode");
+		sdl_check_result(SDL_SetWindowFullscreen(window, target_flags), "Change screen mode");
 
 		if (!fullscreen) // re-center position upon leaving fullscreen mode
 			SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -238,7 +256,10 @@ namespace dukat
 
 	void Window::set_borderless(bool borderless)
 	{
-		this->borderless = borderless;
+		if (borderless)
+			flags |= Borderless;
+		else
+			flags &= ~Borderless;
 		SDL_SetWindowBordered(window, !borderless ? SDL_TRUE : SDL_FALSE);
 	}
 
