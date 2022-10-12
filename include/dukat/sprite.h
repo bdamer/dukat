@@ -34,6 +34,8 @@ namespace dukat
 		GLfloat z;
 		// Dimension in pixels
 		int w, h;
+		// Customizable values accessible in shader
+		GLfloat custom[2];
 		// Texture coordinates
 		GLfloat tex[4];
 		// Scaling factor
@@ -42,15 +44,14 @@ namespace dukat
 		// Color and opacity
 		Color color;
 		TextureId texture_id;
-		TextureId normal_id;
 		// current index for sprite map.
 		int index;
 		// Sprite flags
 		uint8_t flags;
 
 		// Default constructor
-		Sprite(void) : cols(1), rows(1), p(0, 0), z(0), w(0), h(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-			texture_id(0), normal_id(0), index(0), flags(0) { }
+		Sprite(void) : cols(1), rows(1), p(0, 0), z(0), w(0), h(0), custom(), tex(), scale(1), 
+			rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }), texture_id(0), index(0), flags(0) { }
 		// Creates a sprite with the full size of the texture
 		Sprite(Texture* texture);
 		// Creates a sprite from a texture with the dimensions specified by r (in pixels)

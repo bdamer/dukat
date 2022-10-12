@@ -12,8 +12,8 @@ namespace dukat
 {
 	MemoryPool<Sprite> Sprite::_pool(2048);
 
-	Sprite::Sprite(Texture* texture) : cols(1), rows(1), p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-		normal_id(0), index(0), flags(0)
+	Sprite::Sprite(Texture* texture) : cols(1), rows(1), p(0, 0), z(0), custom(), 
+		scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }), index(0), flags(0)
 	{
 		w = texture->w;
 		h = texture->h;
@@ -24,8 +24,8 @@ namespace dukat
 		tex[3] = 1.0f;
 	}
 
-	Sprite::Sprite(Texture* texture, Rect rect) : cols(1), rows(1), p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-		normal_id(0), index(0), flags(0)
+	Sprite::Sprite(Texture* texture, Rect rect) : cols(1), rows(1), p(0, 0), z(0), custom(),
+		scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }), index(0), flags(0)
 	{
 		w = rect.w;
 		h = rect.h;
@@ -38,8 +38,8 @@ namespace dukat
 		tex[3] = static_cast<float>(rect.h) / static_cast<float>(texture->h);
 	}
 
-	Sprite::Sprite(Texture* texture, int cols, int rows) : cols(cols), rows(rows), p(0, 0), z(0), scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }),
-		normal_id(0), index(0), flags(0)
+	Sprite::Sprite(Texture* texture, int cols, int rows) : cols(cols), rows(rows), p(0, 0), z(0), custom(), 
+		scale(1), rot(0), color({ 1.0f, 1.0f, 1.0f, 1.0f }), index(0), flags(0)
 	{
 		// determine the dimensions of each map entry
 		Rect rect = { 0, 0, static_cast<int>(texture->w) / cols, static_cast<int>(texture->h) / rows };

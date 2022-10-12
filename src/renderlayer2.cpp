@@ -150,6 +150,7 @@ namespace dukat
 		const auto uv_id = sprite_program->attr(Renderer::at_texcoord);
 		const auto uvwh_id = sprite_program->attr("u_uvwh");
 		const auto size_id = sprite_program->attr("u_size");
+		const auto custom_id = sprite_program->attr("u_custom");
 		const auto color_id = sprite_program->attr(Renderer::uf_color);
 		const auto model_id = sprite_program->attr(Renderer::uf_model);
 
@@ -183,6 +184,8 @@ namespace dukat
 			glUniform4fv(color_id, 1, &sprite->color.r);
 			if (size_id >= 0)
 				glUniform2f(size_id, static_cast<float>(sprite->w), static_cast<float>(sprite->h));
+			if (custom_id >= 0)
+				glUniform2fv(custom_id, 1, sprite->custom);
 
 			if (uvwh_id >= 0)
 			{
