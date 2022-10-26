@@ -10,7 +10,6 @@ namespace dukat
     {
     private:
         static constexpr auto jump_threshold = 10.0f;
-        static constexpr auto lerp_speed = 32.0f;
 
 		GameBase* game;
         T* target;
@@ -18,11 +17,12 @@ namespace dukat
         Vector2 actual_offset;
         Vector2 target_offset;
 		float sharpness; // determines how closely we follow target [0..1]
+		float lerp_speed; // determines how closely camera switches from one target to next
 		AABB2 limits; // limits camera movement
 
     public:
         FollowerCamera2(GameBase* game) : Camera2(game), game(game), target(nullptr), 
-			actual_pos{ 0, 0 }, actual_offset{ 0, 0 }, target_offset{ 0, 0 }, sharpness(1.0f),
+			actual_pos{ 0, 0 }, actual_offset{ 0, 0 }, target_offset{ 0, 0 }, sharpness(1.0f), lerp_speed(32.0f),
 			limits(Vector2{ -big_number, -big_number }, Vector2{ big_number, big_number }) { }
         ~FollowerCamera2(void) { }
 
@@ -30,6 +30,7 @@ namespace dukat
         void set_offset(const Vector2& offset, bool immediate = true);
 		void set_limits(const AABB2& bb) { this->limits = bb; }
 		void set_sharpness(float sharpness) { this->sharpness = sharpness; }
+		void set_lerp_speed(float speed) { this->lerp_speed = speed; }
         void update(float delta);
     };
 
