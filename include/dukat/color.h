@@ -81,4 +81,12 @@ namespace dukat
 	{
 		return static_cast<uint32_t>((r << 24) | (g << 16) | (b << 8) | a);
 	}
+
+	inline constexpr uint32_t pack_color(const Color& color)
+	{
+		return pack_color(static_cast<uint8_t>(color.r * 255.0f),
+			static_cast<uint8_t>(color.g * 255.0f),
+			static_cast<uint8_t>(color.b * 255.0f),
+			static_cast<uint8_t>(color.a * 255.0f));
+	}
 }
