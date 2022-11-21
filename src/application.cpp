@@ -25,7 +25,7 @@ namespace dukat
 		paused(false), active(true), done(false), last_update(0), settings(settings)
 	{
 		init_logging(settings);
-		log->info("Initializing application.");
+		log->info("Initializing application from: {}", current_working_directory());
 
 		SDL_version compiled;
 		SDL_version linked;

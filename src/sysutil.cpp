@@ -56,6 +56,7 @@ namespace dukat
 			log->error("Failed to create crash dir: {}", dir_name);
 			return;
 		}
+		log->info("Creating crash dump: {}", dir_name);
 
 		for (const auto& it : paths)
 		{
@@ -103,6 +104,19 @@ namespace dukat
 		dst << src.rdbuf();
 
 		return true;
+	}
+
+	std::string current_working_directory(void)
+	{
+#ifdef WIN32
+		CHAR buffer[MAX_PATH] = { 0 };
+		GetModuleFileNameA(NULL, buffer, MAX_PATH);
+		const auto exec = std::string(buffer);
+		const auto pos = exec.find_last_of("\\/");
+		return exec.substr(0, pos);
+#else
+		// TODO: implement
+#endif
 	}
 
 	std::vector<std::string> list_files(const std::string& path)

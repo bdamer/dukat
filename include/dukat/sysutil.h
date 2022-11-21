@@ -92,6 +92,12 @@ namespace dukat
 	bool copy_file(const std::string& source, const std::string& dest);
 
 	/// <summary>
+	/// Returns the current working directory.
+	/// </summary>
+	/// <returns>Working directory.</returns>
+	std::string current_working_directory(void);
+
+	/// <summary>
 	/// Lists files under a given directory.
 	/// </summary>
 	/// <param name="path">Directory path</param>

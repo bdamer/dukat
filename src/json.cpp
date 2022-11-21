@@ -23,6 +23,7 @@ namespace dukat
 			log->warn("Failed to parse JSON: {}", reader.getFormattedErrorMessages());
 			throw std::runtime_error("Failed to parse JSON.");
 		}
+		log->trace("Load complete: {}", filename);
 	}
 
 	void merge_json_subtree(Json::Value& base, const Json::Value& patch)
@@ -64,7 +65,10 @@ namespace dukat
 		log->debug("Saving: {}", filename);
 		std::fstream fs(filename, std::fstream::out);
 		if (!fs)
+		{
+			log->error("Failed to open stream: {}", filename);
 			throw std::runtime_error("Failed to write JSON.");
+		}
 
 		Json::StreamWriterBuilder builder;
 #ifndef _DEBUG
@@ -73,6 +77,7 @@ namespace dukat
 		std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
 		writer->write(root, &fs);
 		fs.close();
+		log->trace("Save complete: {}", filename);
 	}
 
 	void save_settings(const Settings& settings, const std::string& filename)
