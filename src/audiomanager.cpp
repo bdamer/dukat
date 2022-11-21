@@ -8,7 +8,7 @@ namespace dukat
 {
 	AudioManager::AudioManager(int num_channels) : num_channels(num_channels), channel_volume(num_channels)
 	{
-		log->info("Initializating audio mixer.");
+		log->info("Initializing audio mixer.");
 
 		const auto init_flags = MIX_INIT_MP3 | MIX_INIT_OGG;
 		auto res = Mix_Init(init_flags);
