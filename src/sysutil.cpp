@@ -115,7 +115,9 @@ namespace dukat
 		const auto pos = exec.find_last_of("\\/");
 		return exec.substr(0, pos);
 #else
-		// TODO: implement
+		char buffer[1024];
+		const auto res = getcwd(buffer, 1024);
+		return (res ? std::string(buffer) : "");
 #endif
 	}
 
