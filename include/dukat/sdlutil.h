@@ -1,5 +1,7 @@
 #pragma once
 
+#include <dukat/color.h>
+
 namespace dukat
 {
 	// Checks a SDL result for errors. If there is an error, will 
@@ -24,6 +26,16 @@ namespace dukat
 		c.b = static_cast<uint8_t>((rgba >> 8) & 0xff);
 		c.a = static_cast<uint8_t>((rgba) & 0xff);
 		return c;
+	}
+
+	inline constexpr SDL_Color sdl_color(const Color& color)
+	{
+		return SDL_Color{
+			static_cast<uint8_t>(color.r * 255.f),
+			static_cast<uint8_t>(color.g * 255.f),
+			static_cast<uint8_t>(color.b * 255.f),
+			static_cast<uint8_t>(color.a * 255.f)
+		};
 	}
 
 	// Display mode utilties

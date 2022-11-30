@@ -21,10 +21,13 @@ namespace dukat
 		std::unique_ptr<TextMeshInstance> info_text;
 		std::unique_ptr<TextMeshInstance> debug_text;
 
-		void test_load_image(void);
+		void test_load_image(const std::string& filename);
 		void test_bw_image(void);
 		void test_color_image(void);
 		void test_random_image(void);
+		void apply_dithering(int flavor);
+		void convert_to_grayscale(void);
+
 	public:
 		SurfaceScene(Game2* game2);
 		~SurfaceScene(void) { }

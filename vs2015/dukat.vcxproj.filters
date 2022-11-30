@@ -525,6 +525,9 @@
     <ClInclude Include="..\include\dukat\deferred.h">
       <Filter>Header Files\system</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\dither.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -832,6 +835,12 @@
     </ClCompile>
     <ClCompile Include="..\src\rand.cpp">
       <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\color.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dither.cpp">
+      <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

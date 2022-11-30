@@ -3,8 +3,10 @@
 
 namespace dukat
 {
-	void draw_line(Surface& surface, int x0, int y0, int x1, int y1, uint32_t color)
+	void draw_line(Surface& surface, int x0, int y0, int x1, int y1, const Color& color)
 	{
+		const auto c = surface.raw_color(color);
+
 		// check if slope is steep
 		const auto steep = abs(y1 - y0) > abs(x1 - x0);
 		if (steep)
@@ -32,9 +34,9 @@ namespace dukat
 				continue;
 
 			if (steep)
-				surface(y, x) = color;
+				surface.set_pixel(y, x, c);
 			else
-				surface(x, y) = color;
+				surface.set_pixel(x, y, c);
 			error = error - dy;
 			if (error < 0)
 			{
@@ -44,21 +46,23 @@ namespace dukat
 		}
 	}
 
-	void draw_circle(Surface& surface, int x, int y, int radius, uint32_t color)
+	void draw_circle(Surface& surface, int x, int y, int radius, const Color& color)
 	{
+		const auto c = surface.raw_color(color);
+
 		auto px = radius;
 		auto py = 0;
 		auto radiusError = 1 - px;
 		while (px >= py)
 		{
-			surface(px + x, py + y) = color;
-			surface(py + x, px + y) = color;
-			surface(-px + x, py + y) = color;
-			surface(-py + x, px + y) = color;
-			surface(-px + x, -py + y) = color;
-			surface(-py + x, -px + y) = color;
-			surface(px + x, -py + y) = color;
-			surface(py + x, -px + y) = color;
+			surface.set_pixel(px + x, py + y, c);
+			surface.set_pixel(py + x, px + y, c);
+			surface.set_pixel(-px + x, py + y, c);
+			surface.set_pixel(-py + x, px + y, c);
+			surface.set_pixel(-px + x, -py + y, c);
+			surface.set_pixel(-py + x, -px + y, c);
+			surface.set_pixel(px + x, -py + y, c);
+			surface.set_pixel(py + x, -px + y, c);
 			py++;
 
 			if (radiusError < 0)
@@ -73,7 +77,7 @@ namespace dukat
 		}
 	}
 
-	void draw_rect(Surface& surface, int x, int y, int width, int height, uint32_t color)
+	void draw_rect(Surface& surface, int x, int y, int width, int height, const Color& color)
 	{
 		draw_line(surface, x, y, x + width, y, color);
 		draw_line(surface, x + width, y, x + width, y + height, color);
@@ -81,7 +85,7 @@ namespace dukat
 		draw_line(surface, x, y + height, x, y, color);
 	}
 
-	void fill_circle(Surface& surface, int x, int y, int radius, uint32_t color)
+	void fill_circle(Surface& surface, int x, int y, int radius, const Color& color)
 	{
 		auto px = radius;
 		auto py = 0;
@@ -106,14 +110,55 @@ namespace dukat
 		}
 	}
 
-	void fill_rect(Surface& surface, int x, int y, int width, int height, uint32_t color)
+	void fill(Surface& surface, const Color& color)
 	{
-		const SDL_Rect rect = { x, y, width, height };
-		SDL_FillRect(surface.get_surface(), &rect, color);
+		SDL_FillRect(surface.get_surface(), nullptr, surface.raw_color(color));
 	}
 
-	void fill_rect(Surface& surface, const Rect& r, uint32_t color)
+	void fill_rect(Surface& surface, int x, int y, int width, int height, const Color& color)
 	{
-		fill_rect(surface, r.x, r.y, r.w, r.h, color);
+		const SDL_Rect rect = { x, y, width, height };
+		SDL_FillRect(surface.get_surface(), &rect, surface.raw_color(color));
+	}
+
+	void fill_rect(Surface& surface, const Rect& r, const Color& color)
+	{
+		SDL_FillRect(surface.get_surface(), (SDL_Rect*)&r, surface.raw_color(color));
+	}
+
+	void blend(const Surface& src, Surface& dest)
+	{
+		SDL_BlitSurface(src.get_surface(), nullptr, dest.get_surface(), nullptr);
+	}
+
+	void blend(const Surface& src, const Rect& src_rect, Surface& dest, const Rect& dest_rect)
+	{
+		SDL_BlitSurface(src.get_surface(), (SDL_Rect*)&src_rect, dest.get_surface(), (SDL_Rect*)&dest_rect);
+	}
+
+	void blend(const Surface& src, int x, int y, Surface& dest)
+	{
+		SDL_Rect r{ x, y, src.width(), src.height() };
+		SDL_BlitSurface(src.get_surface(), nullptr, dest.get_surface(), &r);
+	}
+
+	void blend_flip_h(const Surface& src, const Rect& src_rect, Surface& dest, const Rect& dest_rect)
+	{
+		auto surface = src.get_surface();
+		Surface tmp_surface(SDL_CreateRGBSurface(0, src.width(), src.height(), surface->format->BitsPerPixel,
+			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask));
+		blend(src, src_rect, tmp_surface, src_rect);
+		tmp_surface.flip_horizontal();
+		SDL_BlitSurface(tmp_surface.get_surface(), nullptr, dest.get_surface(), (SDL_Rect*)&dest_rect);
+	}
+
+	void blend_flip_v(const Surface& src, const Rect& src_rect, Surface& dest, const Rect& dest_rect)
+	{
+		auto surface = src.get_surface();
+		Surface tmp_surface(SDL_CreateRGBSurface(0, src.width(), src.height(), surface->format->BitsPerPixel,
+			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask));
+		blend(src, src_rect, tmp_surface, src_rect);
+		tmp_surface.flip_vertical();
+		SDL_BlitSurface(tmp_surface.get_surface(), nullptr, dest.get_surface(), (SDL_Rect*)&dest_rect);
 	}
 }

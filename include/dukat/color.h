@@ -66,6 +66,16 @@ namespace dukat
 		};
 	}
 
+	inline constexpr Color color_rgb(uint8_t r, uint8_t g, uint8_t b)
+	{
+		return Color{
+			static_cast<float>(r) / 255.0f,
+			static_cast<float>(g) / 255.0f,
+			static_cast<float>(b) / 255.0f,
+			1.0f
+		};
+	}
+
 	// Creates color from RGBA hex representation.
 	inline constexpr Color color_rgba(uint32_t rgba)
 	{
@@ -74,6 +84,16 @@ namespace dukat
 			static_cast<float>((rgba >> 16) & 0xff) / 255.0f,
 			static_cast<float>((rgba >> 8) & 0xff) / 255.0f,
 			static_cast<float>((rgba) & 0xff) / 255.0f
+		};
+	}
+
+	inline constexpr Color color_rgba(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+	{
+		return Color{
+			static_cast<float>(r) / 255.0f,
+			static_cast<float>(g) / 255.0f,
+			static_cast<float>(b) / 255.0f,
+			static_cast<float>(a) / 255.0f
 		};
 	}
 
@@ -88,5 +108,17 @@ namespace dukat
 			static_cast<uint8_t>(color.g * 255.0f),
 			static_cast<uint8_t>(color.b * 255.0f),
 			static_cast<uint8_t>(color.a * 255.0f));
+	}
+
+	// Converts RGB to HSL, preserving alpha
+	Color rgb_to_hsl(const Color& rgb);
+	// Converts HSL to RGB, preserving alpha
+	Color hsl_to_rgb(const Color& hsl);
+
+	// Converts RGB to grayscale, preserving alpha
+	inline constexpr Color rgb_to_gray(const Color& rgb) 
+	{
+		const auto grey = 0.21f * rgb.r + 0.71f * rgb.g + 0.07f * rgb.b;
+		return Color{ grey, grey, grey, rgb.a };
 	}
 }

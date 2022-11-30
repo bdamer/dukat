@@ -34,35 +34,168 @@ namespace dukat
 		}
 	}
 
-	SDL_Color Surface::map_color(SDL_PixelFormat* fmt, uint32_t pixel) const
+	Color Surface::get_color(int x, int y) const
+	{
+		const auto raw = get_pixel(x, y);
+		const auto color = map_raw(raw);
+		return color_rgba(color.r, color.g, color.b, color.a);
+	}
+
+	void Surface::set_pixel(int x, int y, uint32_t p)
+	{
+		assert(x >= 0 && x < surface->w && y >= 0 && y < surface->h);
+		switch (surface->format->BytesPerPixel)
+		{
+		case 1:
+			write(x, y, static_cast<uint8_t>(p));
+			break;
+		case 2:
+			write(x, y, static_cast<uint16_t>(p));
+			break;
+		case 3:
+			*reinterpret_cast<Uint24*>(raw_ptr(x, y)) 
+				= Uint24{ static_cast<uint8_t>(p >> 24), static_cast<uint8_t>(p >> 16), static_cast<uint8_t>(p >> 8) };
+			break;
+		case 4:
+			write(x, y, p);
+			break;
+		}
+	}
+
+	uint32_t Surface::get_pixel(int x, int y) const
+	{
+		assert(x >= 0 && x < surface->w&& y >= 0 && y < surface->h);
+		auto p = raw_ptr(x, y);
+		switch (surface->format->BytesPerPixel) 
+		{
+		case 1:
+			return *p;
+		case 2:
+			return *reinterpret_cast<uint16_t*>(p);
+		case 3:
+			if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+				return p[0] << 16 | p[1] << 8 | p[2];
+			else
+				return p[0] | p[1] << 8 | p[2] << 16;
+		case 4:
+			return *reinterpret_cast<uint32_t*>(p);
+		default:
+			return 0; // shouldn't happen, but avoids warnings
+		}
+	}
+
+	void Surface::read(int x, int y, uint32_t& c) const
+	{
+		assert(surface->format->BytesPerPixel == 4);
+		c = *reinterpret_cast<uint32_t*>(raw_ptr(x, y));
+	}
+
+	void Surface::write(int x, int y, uint32_t c)
+	{
+		assert(surface->format->BytesPerPixel == 4);
+		*reinterpret_cast<uint32_t*>(raw_ptr(x, y)) = c;
+	}
+
+	void Surface::read(int x, int y, uint16_t& c) const
+	{
+		assert(surface->format->BytesPerPixel == 2);
+		c = *reinterpret_cast<uint16_t*>(raw_ptr(x, y));
+	}
+
+	void Surface::write(int x, int y, uint16_t c)
+	{
+		assert(surface->format->BytesPerPixel == 2);
+		*reinterpret_cast<uint16_t*>(raw_ptr(x, y)) = c;
+	}
+
+	void Surface::read(int x, int y, uint8_t& c) const
+	{
+		assert(surface->format->BytesPerPixel == 1);
+		c = *raw_ptr(x, y);
+	}
+
+	void Surface::write(int x, int y, uint8_t c)
+	{
+		assert(surface->format->BytesPerPixel == 1);
+		*raw_ptr(x, y) = c;
+	}
+
+	SDL_Color Surface::map_raw(uint32_t pixel) const
 	{
 		uint32_t temp;
 		SDL_Color result;
 
-		// Get Red component
-		temp = pixel & fmt->Rmask;	// Isolate red component
-		temp = temp >> fmt->Rshift;	// Shift it down to 8-bit
-		temp = temp << fmt->Rloss;	// Expand to a full 8-bit number
-		result.r = static_cast<uint8_t>(temp);
+		auto fmt = surface->format;
+		if (fmt->BytesPerPixel == 1)
+		{
+			return fmt->palette->colors[static_cast<uint8_t>(pixel)];
+		}
+		else // TRUE color
+		{
+			// Get Red component
+			temp = pixel & fmt->Rmask;	// Isolate red component
+			temp = temp >> fmt->Rshift;	// Shift it down to 8-bit
+			temp = temp << fmt->Rloss;	// Expand to a full 8-bit number
+			result.r = static_cast<uint8_t>(temp);
 
-		// Get Green component
-		temp = pixel & fmt->Gmask;	// Isolate green component
-		temp = temp >> fmt->Gshift;	// Shift it down to 8-bit
-		temp = temp << fmt->Gloss;	// Expand to a full 8-bit number
-		result.g = static_cast<uint8_t>(temp);
+			// Get Green component
+			temp = pixel & fmt->Gmask;	// Isolate green component
+			temp = temp >> fmt->Gshift;	// Shift it down to 8-bit
+			temp = temp << fmt->Gloss;	// Expand to a full 8-bit number
+			result.g = static_cast<uint8_t>(temp);
 
-		// Get Blue component
-		temp = pixel & fmt->Bmask;	// Isolate blue component
-		temp = temp >> fmt->Bshift;	// Shift it down to 8-bit
-		temp = temp << fmt->Bloss;	// Expand to a full 8-bit number
-		result.b = static_cast<uint8_t>(temp);
+			// Get Blue component
+			temp = pixel & fmt->Bmask;	// Isolate blue component
+			temp = temp >> fmt->Bshift;	// Shift it down to 8-bit
+			temp = temp << fmt->Bloss;	// Expand to a full 8-bit number
+			result.b = static_cast<uint8_t>(temp);
 
-		// Get Alpha component
-		temp = pixel & fmt->Amask;	// Isolate alpha component
-		temp = temp >> fmt->Ashift;	// Shift it down to 8-bit 
-		temp = temp << fmt->Aloss;	// Expand to a full 8-bit number 
-		result.a = static_cast<uint8_t>(temp);
+			// Get Alpha component
+			temp = pixel & fmt->Amask;	// Isolate alpha component
+			temp = temp >> fmt->Ashift;	// Shift it down to 8-bit 
+			temp = temp << fmt->Aloss;	// Expand to a full 8-bit number 
+			result.a = static_cast<uint8_t>(temp);
+		}
+
 		return result;
+	}
+
+	uint32_t Surface::raw_color(const Color& color) const
+	{
+		const auto c = sdl_color(color);
+		return SDL_MapRGBA(surface->format, c.r, c.g, c.b, c.a);
+	}
+
+	void Surface::replace(const Color& src_color, const Color& dest_color)
+	{
+		const auto sc = raw_color(src_color);
+		const auto dc = raw_color(src_color);
+		auto ptr = static_cast<uint32_t*>(surface->pixels);
+		auto end = ptr + surface->w * surface->h;
+		while (ptr < end)
+		{
+			if (*ptr == sc)
+				*ptr = dc;
+			++ptr;
+		}
+	}
+
+	void Surface::replace(const std::vector<Color>& src_colors, const std::vector<Color>& dest_colors)
+	{
+		assert(src_colors.size() == dest_colors.size());
+
+		std::unordered_map<uint32_t, uint32_t> colors;
+		for (auto i = 0u; i < src_colors.size(); i++)
+			colors.insert(std::make_pair(raw_color(src_colors[i]), raw_color(dest_colors[i])));
+
+		auto ptr = static_cast<uint32_t*>(surface->pixels);
+		auto end = ptr + surface->w * surface->h;
+		while (ptr < end)
+		{
+			if (colors.count(*ptr))
+				*ptr = colors[*ptr];
+			++ptr;
+		}
 	}
 
 	void Surface::query_pixel_format(GLenum& format, GLenum& type) const
@@ -70,7 +203,7 @@ namespace dukat
 		switch (surface->format->format)
 		{
 #ifdef OPENGL_CORE
-		// 24 bit
+			// 24 bit
 		case SDL_PIXELFORMAT_BGR24:
 		case SDL_PIXELFORMAT_BGR888:
 			format = GL_BGR;
@@ -80,7 +213,7 @@ namespace dukat
 			format = GL_RGB;
 			type = GL_UNSIGNED_BYTE;
 			break;
-		// 32 bit
+			// 32 bit
 		case SDL_PIXELFORMAT_ABGR8888:
 			format = GL_RGBA;
 			type = surface->format->Rshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8 : GL_UNSIGNED_INT_8_8_8_8_REV;
@@ -94,7 +227,7 @@ namespace dukat
 			type = surface->format->Bshift == 0xff ? GL_UNSIGNED_INT_8_8_8_8_REV : GL_UNSIGNED_INT_8_8_8_8;
 			break;
 #else
-		// 32 bit
+			// 32 bit
 		case SDL_PIXELFORMAT_ABGR8888:
 			format = GL_RGBA;
 			type = surface->format->Rshift == 0xff ? GL_UNSIGNED_BYTE : GL_UNSIGNED_BYTE;
@@ -112,57 +245,6 @@ namespace dukat
 		}
 	}
 
-	const uint32_t& Surface::operator()(int x, int y) const
-	{
-		assert(x >= 0 && x < surface->w&& y >= 0 && y < surface->h);
-		return static_cast<uint32_t*>(surface->pixels)[y * surface->w + x];
-	}
-
-	uint32_t& Surface::operator()(int x, int y)
-	{
-		assert(x >= 0 && x < surface->w && y >= 0 && y < surface->h);
-		return static_cast<uint32_t*>(surface->pixels)[y * surface->w + x];
-	}
-
-	uint32_t Surface::get_pixel(int x, int y) const
-	{
-		// Here p is the address to the pixel we want to retrieve
-		auto p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * surface->format->BytesPerPixel;
-		switch (surface->format->BytesPerPixel) 
-		{
-		case 1:
-			return *p;
-		case 2:
-			return *reinterpret_cast<uint16_t*>(p);
-		case 3:
-			if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-				return p[0] << 16 | p[1] << 8 | p[2];
-			else
-				return p[0] | p[1] << 8 | p[2] << 16;
-		case 4:
-			return *reinterpret_cast<uint32_t*>(p);
-		default:
-			return 0;       // shouldn't happen, but avoids warnings
-		}
-	}
-
-	void Surface::fill(uint32_t color)
-	{
-		SDL_FillRect(surface, nullptr, color);
-	}
-
-	void Surface::replace(uint32_t src_color, uint32_t dest_color)
-	{
-		auto ptr = static_cast<uint32_t*>(surface->pixels);
-		auto end = ptr + surface->w * surface->h;
-		while (ptr < end)
-		{
-			if (*ptr == src_color)
-				*ptr = dest_color;
-			++ptr;
-		}
-	}
-
 	void Surface::convert_format(uint32_t format)
 	{
 		auto tmp = SDL_ConvertSurfaceFormat(surface, format, 0);
@@ -176,41 +258,7 @@ namespace dukat
 		surface = tmp;
 	}
 
-	void Surface::blend(const Surface& another)
-	{
-		SDL_BlitSurface(another.surface, nullptr, surface, nullptr);
-	}
-
-	void Surface::blend(const Surface& another, const Rect& src, const Rect& dest)
-	{
-		SDL_BlitSurface(another.surface, (SDL_Rect*)&src, surface, (SDL_Rect*)&dest);
-	}
-
-	void Surface::blend(const Surface& another, int x, int y)
-	{
-		SDL_Rect r{ x, y, another.width(), another.height() };
-		SDL_BlitSurface(another.surface, nullptr, surface, &r);
-	}
-
-	void Surface::blend_flip_h(const Surface& another, const Rect& src, const Rect& dest)
-	{
-		Surface tmp_surface(SDL_CreateRGBSurface(0, src.w, src.h, surface->format->BitsPerPixel,
-			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask));
-		tmp_surface.blend(*this, src, src);
-		tmp_surface.flip_horizontal();
-		SDL_BlitSurface(tmp_surface.surface, nullptr, another.surface, (SDL_Rect*)&dest);
-	}
-
-	void Surface::blend_flip_v(const Surface& another, const Rect& src, const Rect& dest)
-	{
-		Surface tmp_surface(SDL_CreateRGBSurface(0, src.w, src.h, surface->format->BitsPerPixel,
-			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask));
-		tmp_surface.blend(*this, src, src);
-		tmp_surface.flip_vertical();
-		SDL_BlitSurface(tmp_surface.surface, nullptr, another.surface, (SDL_Rect*)&dest);
-	}
-
-	void Surface::flip_vertical(void) const 
+	void Surface::flip_vertical(void)
 	{
 		const auto size = surface->w * surface->h;
 		switch (surface->format->BytesPerPixel)
@@ -228,10 +276,10 @@ namespace dukat
 			dukat::flip_vertical(static_cast<uint32_t*>(surface->pixels), static_cast<uint32_t*>(surface->pixels) + size, static_cast<size_t>(surface->w));
 			break;
 		}
-	}
+		}
 
-	void Surface::flip_horizontal(void) const 
-	{ 
+	void Surface::flip_horizontal(void)
+	{
 		const auto size = surface->w * surface->h;
 		switch (surface->format->BytesPerPixel)
 		{
@@ -282,24 +330,6 @@ namespace dukat
 		sdl_check_result(res, "Save surface");
 	}
 
-	void replace_surface_colors(Surface& surface, const std::vector<SDL_Color>& src_colors, const std::vector<SDL_Color>& dest_colors)
-	{
-		assert(src_colors.size() == dest_colors.size());
-
-		std::unordered_map<uint32_t, uint32_t> colors;
-		for (auto i = 0u; i < src_colors.size(); i++)
-			colors.insert(std::make_pair(surface.color(src_colors[i]), surface.color(dest_colors[i])));
-
-		auto sfc = surface.get_surface();
-		auto ptr = static_cast<uint32_t*>(sfc->pixels);
-		auto end = ptr + sfc->w * sfc->h;
-		while (ptr < end)
-		{
-			if (colors.count(*ptr))
-				*ptr = colors[*ptr];
-			++ptr;
-		}
-	}
-
 #pragma endregion
+
 }

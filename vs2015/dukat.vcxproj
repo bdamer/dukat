@@ -162,6 +162,7 @@
     <ClInclude Include="..\include\dukat\box2deffect2.h" />
     <ClInclude Include="..\include\dukat\debugeffect2.h" />
     <ClInclude Include="..\include\dukat\deferred.h" />
+    <ClInclude Include="..\include\dukat\dither.h" />
     <ClInclude Include="..\include\dukat\draw.h" />
     <ClInclude Include="..\include\dukat\dukat.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -309,7 +310,9 @@
     <ClCompile Include="..\src\box2dmanager.cpp" />
     <ClCompile Include="..\src\box2deffect2.cpp" />
     <ClCompile Include="..\src\collisionmanager2.cpp" />
+    <ClCompile Include="..\src\color.cpp" />
     <ClCompile Include="..\src\debugeffect2.cpp" />
+    <ClCompile Include="..\src\dither.cpp" />
     <ClCompile Include="..\src\draw.cpp" />
     <ClCompile Include="..\src\effectpass.cpp" />
     <ClCompile Include="..\src\feedback.cpp" />

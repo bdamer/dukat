@@ -216,7 +216,7 @@ namespace dukat
 #endif
 
 		// Render white dot at center of screen and update screen buffer
-		(*surface)(texture_width / 2, texture_height / 2) = 0xffffffff;
+		surface->set_color(texture_width / 2, texture_height / 2, Color{ 1.f, 1.f, 1.f, 1.f });
 		update_texture();
 	}
 
@@ -289,8 +289,8 @@ namespace dukat
 					data = sample;
 					best_z = t;
 				}
-
-				(*surface)(u, v) = surface->color(*data);
+				
+				surface->write(u, v, surface->raw_color(*data));
 			}
 		}
 	}
