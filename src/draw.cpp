@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/draw.h>
+#include <array>
 
 namespace dukat
 {
@@ -124,6 +125,32 @@ namespace dukat
 	void fill_rect(Surface& surface, const Rect& r, const Color& color)
 	{
 		SDL_FillRect(surface.get_surface(), (SDL_Rect*)&r, surface.raw_color(color));
+	}
+
+	void gradient_v(Surface& surface, float from_y, float to_y, const Color& from_color, const Color& to_color)
+	{
+		// Defines start / end of gradient relative to height
+		const auto start_row = from_y * static_cast<float>(surface.height());
+		const auto end_row = to_y * static_cast<float>(surface.height());
+
+		// per-component steps - this assumes range is 1. for each component
+		std::array<float, 3> delta = {
+			(to_color.r - from_color.r) / (end_row - start_row),
+			(to_color.g - from_color.g) / (end_row - start_row),
+			(to_color.b - from_color.b) / (end_row - start_row)
+		};
+
+		auto cur = from_color;
+		for (auto y = 0; y < surface.height(); y++)
+		{
+			fill_rect(surface, Rect{ 0, y, surface.width(), 1 }, cur);
+			if (y >= static_cast<int>(start_row) && y < static_cast<int>(end_row))
+			{
+				cur.r += delta[0];
+				cur.g += delta[1];
+				cur.b += delta[2];
+			}
+		}
 	}
 
 	void blend(const Surface& src, Surface& dest)

@@ -101,35 +101,37 @@ namespace dukat
 	};
 
 	/// <summary>
-	/// Generates a NxN Bayer matrix used for ordered dithering.
+	/// Generates a square Bayer matrix used for ordered dithering.
 	/// </summary>
 	/// <param name="m">The matrix.</param>
-	/// <param name="stride">Number of elements per row.</param>
-	void generate_bayer_matrix(std::vector<int>& m, size_t stride);
+	/// <param name="n">Number of elements per row / col is 2^n.</param>
+	void generate_bayer_matrix(std::vector<int>& m, int n);
 
 	template<typename T, size_t N>
 	class OrderedDitherAlgorithm : public DitherAlgorithm<T, N>
 	{
 	private:
-		const int n;
+		const int dim;
 		// bayer matrix
 		std::vector<float> m;
 
 	public:
-		OrderedDitherAlgorithm(int n) : n(n), m(n* n)
+		// Uses a matrix of 2^n * 2^n
+		OrderedDitherAlgorithm(int n) : dim(1 << n)
 		{
-			std::vector<int> raw(n * n);
-			generate_bayer_matrix(raw, static_cast<size_t>(n));
-			// normalize
-			const auto n2 = static_cast<float>(n * n);
-			for (auto i = 0; i < n * n; i++)
-				m[i] = static_cast<float>(raw[i]) / n2 - 0.5f;
+			const auto size = dim * dim;
+			std::vector<int> raw(size);
+			generate_bayer_matrix(raw, n);
+			// normalize matrix
+			m.resize(size);
+			for (auto i = 0; i < size; i++)
+				m[i] = static_cast<float>(raw[i]) / static_cast<float>(size) - 0.5f;
 		}
 
 		std::array<T,N> get_error(int x, int y) const
 		{
 			std::array<T, N> res;
-			const auto val = m[(y % n) * n + (x % n)];
+			const auto val = m[(y % dim) * dim + (x % dim)];
 			std::fill(res.begin(), res.end(), val);
 			return res;
 		}
@@ -139,4 +141,9 @@ namespace dukat
 
 	void dither_image(const Surface& src, DitherAlgorithm<float, 3>& algorithm, Surface& dest);
 	void dither_image(const Surface& src, DitherAlgorithm<float, 3>& algorithm, const std::vector<Color>& palette, Surface& dest);
+	
+	// Applies dithering to a monochromatic surface.
+	// Only the red channel of the input surface is used. This method uses the provided palette values 
+	// when drawing to the destination surface.
+	void dither_image_mono(const Surface& src, DitherAlgorithm<float, 1>& algorithm, const std::array<Color, 2>& palette, Surface& dest);
 }

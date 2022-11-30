@@ -58,7 +58,7 @@ namespace dukat
 
 		if (0.0f == hsl.g)
 		{
-			rgb.r = rgb.g = rgb.b = hsl.b / 255.0f; // achromatic
+			rgb.r = rgb.g = rgb.b = hsl.b; // achromatic
 		}
 		else
 		{

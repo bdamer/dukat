@@ -13,6 +13,11 @@ namespace dukat
 		Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 	};
 
+	static const std::vector<Color> gradient_palette = {
+		color_rgba(0x131313ff),
+		color_rgba(0x001d36ff)
+	};
+
 	static const std::vector<Color> color_palette = {
 		color_rgb(255, 0, 64),
 		color_rgb(19, 19, 19),
@@ -104,19 +109,21 @@ namespace dukat
 		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(10.0f);
-		info_text->transform.position = Vector3(-0.45f * static_cast<float>(texture_width), -0.2f * static_cast<float>(texture_height), 0.0f);
+		info_text->transform.position = Vector3(-0.45f * static_cast<float>(texture_width), -0.3f * static_cast<float>(texture_height), 0.0f);
 		std::stringstream ss;
 		ss << "Surface Test" << std::endl
 			<< "Press 1: Load test image" << std::endl
 			<< "Press 2: B/W test image" << std::endl
 			<< "Press 3: Color test image" << std::endl
 			<< "Press 4: Random noise" << std::endl
+			<< "Press 5: Gradient" << std::endl
 			<< std::endl
 			<< "Press B: Blend image" << std::endl
 			<< "Press D: Apply dithering" << std::endl
 			<< "Press G: Convert to grayscale" << std::endl
 			<< "Press H: Flip image horizontally" << std::endl
 			<< "Press O: Apply ordered dithering" << std::endl
+			<< "Press M: Apply ordered, monochromatic dithering" << std::endl
 			<< "Press V: Flip image horizontally" << std::endl
 			<< "F11: Hide info text" << std::endl;
 		info_text->set_text(ss.str());
@@ -164,7 +171,10 @@ namespace dukat
 			test_color_image();
 			break;
 		case SDLK_4:
-			test_random_image();
+			test_random_noise();
+			break;
+		case SDLK_5:
+			test_gradient(true);
 			break;
 
 		case SDLK_b:
@@ -196,6 +206,11 @@ namespace dukat
 		case SDLK_o:
 			if (surface != nullptr)
 				apply_dithering(3);
+			break;
+
+		case SDLK_x:
+			if (surface != nullptr)
+				apply_dithering(4);
 			break;
 
 		case SDLK_v:
@@ -259,7 +274,7 @@ namespace dukat
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 
-	void SurfaceScene::test_random_image(void)
+	void SurfaceScene::test_random_noise(void)
 	{
 		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
 
@@ -276,6 +291,14 @@ namespace dukat
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 
+	void SurfaceScene::test_gradient(bool mono)
+	{
+		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
+		const auto& palette = mono ? bw_palette : gradient_palette;
+		gradient_v(*surface, 0.25f, 0.75, palette[0], palette[1]);
+		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
+	}
+
 	void SurfaceScene::apply_dithering(int flavor)
 	{
 		auto src_surface = Surface(*surface);
@@ -289,8 +312,16 @@ namespace dukat
 			dither_image(src_surface, SierraDitherAlgorithm<float, 3>{ src_surface.width(), src_surface.height() }, color_palette, *surface);
 			break;
 		case 3:
-			dither_image(src_surface, OrderedDitherAlgorithm<float, 3>{ 2 }, color_palette, *surface);
+			dither_image(src_surface, OrderedDitherAlgorithm<float, 3>{ 4 }, bw_palette, *surface);
 			break;
+		case 4: // monochromatic dithering
+		{
+			static const std::array<Color, 2> my_palette = {
+				gradient_palette[0], gradient_palette[1]
+			};
+			dither_image_mono(src_surface, OrderedDitherAlgorithm<float, 1>{ 4 }, my_palette, *surface);
+			break;
+		}
 		}
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
@@ -302,7 +333,7 @@ namespace dukat
 			for (auto x = 0; x < texture_width; x++)
 			{
 				const auto src_color = surface->get_color(x, y);
-				surface->set_color(x, y, rgb_to_gray(src_color));
+				surface->set_color(x, y, rgb_to_lum(src_color));
 			}
 		}
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);

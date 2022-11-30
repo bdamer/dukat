@@ -24,7 +24,8 @@ namespace dukat
 		void test_load_image(const std::string& filename);
 		void test_bw_image(void);
 		void test_color_image(void);
-		void test_random_image(void);
+		void test_random_noise(void);
+		void test_gradient(bool mono);
 		void apply_dithering(int flavor);
 		void convert_to_grayscale(void);
 

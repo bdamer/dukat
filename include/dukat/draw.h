@@ -17,6 +17,8 @@ namespace dukat
 	// Fills a rectangle with given dimensions. The top-left corner is at (x,y)
 	void fill_rect(Surface& surface, int x, int y, int width, int height, const Color& color);
 	void fill_rect(Surface& surface, const Rect& r, const Color& color);
+	// Applies monochrome gradient to surface following the vertical axis.
+	void gradient_v(Surface& surface, float from_y, float to_y, const Color& from_color, const Color& to_color);
 
 	// Blends source surface on top of destination surface.
 	void blend(const Surface& src, Surface& dest);
