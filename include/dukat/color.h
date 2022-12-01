@@ -115,10 +115,15 @@ namespace dukat
 	// Converts HSL to RGB, preserving alpha
 	Color hsl_to_rgb(const Color& hsl);
 
+	inline constexpr float luminance(const Color& rgb)
+	{
+		return 0.2126f * rgb.r + 0.7152f * rgb.g + 0.0722f * rgb.b;
+	}
+
 	// Converts RGB to luminance, preserving alpha
 	inline constexpr Color rgb_to_lum(const Color& rgb) 
 	{
-		const auto grey = 0.2126f * rgb.r + 0.7152f * rgb.g + 0.0722f * rgb.b;
+		const auto grey = luminance(rgb);
 		return Color{ grey, grey, grey, rgb.a };
 	}
 }

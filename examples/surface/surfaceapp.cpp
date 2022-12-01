@@ -187,7 +187,7 @@ namespace dukat
 			break;
 		case SDLK_d:
 			if (surface != nullptr)
-				apply_dithering(1);
+				apply_dithering(2);
 			break;
 
 		case SDLK_g:
@@ -210,7 +210,7 @@ namespace dukat
 
 		case SDLK_x:
 			if (surface != nullptr)
-				apply_dithering(4);
+				apply_dithering(1);
 			break;
 
 		case SDLK_v:
@@ -301,27 +301,20 @@ namespace dukat
 
 	void SurfaceScene::apply_dithering(int flavor)
 	{
-		auto src_surface = Surface(*surface);
-		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
+		static const std::array<Color, 2> my_palette = {
+			bw_palette[0], bw_palette[1]
+		};
 		switch (flavor) 
 		{
 		case 1:
-			dither_image(src_surface, FloydSteinbergDitherAlgorithm<float,3>{ src_surface.width(), src_surface.height() }, color_palette, *surface);
+			dither(*surface, FloydSteinbergDitherAlgorithm<float>{ surface->width(), surface->height() }, my_palette);
 			break;
 		case 2:
-			dither_image(src_surface, SierraDitherAlgorithm<float, 3>{ src_surface.width(), src_surface.height() }, color_palette, *surface);
+			dither(*surface, SierraDitherAlgorithm<float>{ surface->width(), surface->height() }, my_palette);
 			break;
 		case 3:
-			dither_image(src_surface, OrderedDitherAlgorithm<float, 3>{ 4 }, bw_palette, *surface);
+			dither_ordered(*surface, 3, my_palette);
 			break;
-		case 4: // monochromatic dithering
-		{
-			static const std::array<Color, 2> my_palette = {
-				gradient_palette[0], gradient_palette[1]
-			};
-			dither_image_mono(src_surface, OrderedDitherAlgorithm<float, 1>{ 4 }, my_palette, *surface);
-			break;
-		}
 		}
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
