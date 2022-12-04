@@ -116,14 +116,14 @@ namespace dukat
 			<< "Press 2: B/W test image" << std::endl
 			<< "Press 3: Color test image" << std::endl
 			<< "Press 4: Random noise" << std::endl
-			<< "Press 5: Gradient" << std::endl
+			<< "Press 5: Linear Gradient" << std::endl
+			<< "Press 6: Radial Gradient" << std::endl
 			<< std::endl
 			<< "Press B: Blend image" << std::endl
 			<< "Press D: Apply dithering" << std::endl
 			<< "Press G: Convert to grayscale" << std::endl
 			<< "Press H: Flip image horizontally" << std::endl
 			<< "Press O: Apply ordered dithering" << std::endl
-			<< "Press M: Apply ordered, monochromatic dithering" << std::endl
 			<< "Press V: Flip image horizontally" << std::endl
 			<< "F11: Hide info text" << std::endl;
 		info_text->set_text(ss.str());
@@ -174,7 +174,10 @@ namespace dukat
 			test_random_noise();
 			break;
 		case SDLK_5:
-			test_gradient(true);
+			test_linear_gradient(true);
+			break;
+		case SDLK_6:
+			test_radial_gradient(true);
 			break;
 
 		case SDLK_b:
@@ -206,11 +209,6 @@ namespace dukat
 		case SDLK_o:
 			if (surface != nullptr)
 				apply_dithering(3);
-			break;
-
-		case SDLK_x:
-			if (surface != nullptr)
-				apply_dithering(1);
 			break;
 
 		case SDLK_v:
@@ -291,11 +289,19 @@ namespace dukat
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 
-	void SurfaceScene::test_gradient(bool mono)
+	void SurfaceScene::test_linear_gradient(bool mono)
 	{
 		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
 		const auto& palette = mono ? bw_palette : gradient_palette;
-		gradient_v(*surface, 0.25f, 0.75, palette[0], palette[1]);
+		gradient_v(*surface, 64, 192, palette[0], palette[1]);
+		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
+	}
+
+	void SurfaceScene::test_radial_gradient(bool mono)
+	{
+		surface = std::make_unique<Surface>(texture_width, texture_height, SDL_PIXELFORMAT_RGBA8888);
+		const auto& palette = mono ? bw_palette : gradient_palette;
+		radial_gradient(*surface, texture_width / 2, texture_height / 2, 28, 100, palette[1], palette[0]);
 		texture->load_data(*surface, TextureFilterProfile::ProfileNearest);
 	}
 

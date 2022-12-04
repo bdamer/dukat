@@ -25,7 +25,8 @@ namespace dukat
 		void test_bw_image(void);
 		void test_color_image(void);
 		void test_random_noise(void);
-		void test_gradient(bool mono);
+		void test_linear_gradient(bool mono);
+		void test_radial_gradient(bool mono);
 		void apply_dithering(int flavor);
 		void convert_to_grayscale(void);
 

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include <dukat/draw.h>
+#include <dukat/mathutil.h>
+#include <dukat/vector2.h>
 #include <array>
 
 namespace dukat
@@ -9,7 +11,7 @@ namespace dukat
 		const auto c = surface.raw_color(color);
 
 		// check if slope is steep
-		const auto steep = abs(y1 - y0) > abs(x1 - x0);
+		const auto steep = std::abs(y1 - y0) > std::abs(x1 - x0);
 		if (steep)
 		{
 			std::swap(x0, y0);
@@ -23,7 +25,7 @@ namespace dukat
 		}
 
 		const auto dx = x1 - x0;
-		const auto dy = abs(y1 - y0);
+		const auto dy = std::abs(y1 - y0);
 		auto error = dx / 2;
 		auto y = y0;
 		const auto y_step = (y0 < y1) ? 1 : -1;
@@ -127,28 +129,69 @@ namespace dukat
 		SDL_FillRect(surface.get_surface(), (SDL_Rect*)&r, surface.raw_color(color));
 	}
 
-	void gradient_v(Surface& surface, float from_y, float to_y, const Color& from_color, const Color& to_color)
+	void gradient_v(Surface& surface, int from_r, int to_r, const Color& from_color, const Color& to_color)
 	{
-		// Defines start / end of gradient relative to height
-		const auto start_row = from_y * static_cast<float>(surface.height());
-		const auto end_row = to_y * static_cast<float>(surface.height());
-
 		// per-component steps - this assumes range is 1. for each component
 		std::array<float, 3> delta = {
-			(to_color.r - from_color.r) / (end_row - start_row),
-			(to_color.g - from_color.g) / (end_row - start_row),
-			(to_color.b - from_color.b) / (end_row - start_row)
+			(to_color.r - from_color.r) / static_cast<float>(to_r - from_r),
+			(to_color.g - from_color.g) / static_cast<float>(to_r - from_r),
+			(to_color.b - from_color.b) / static_cast<float>(to_r - from_r)
 		};
 
 		auto cur = from_color;
 		for (auto y = 0; y < surface.height(); y++)
 		{
 			fill_rect(surface, Rect{ 0, y, surface.width(), 1 }, cur);
-			if (y >= static_cast<int>(start_row) && y < static_cast<int>(end_row))
+			if (y >= from_r && y < to_r)
 			{
 				cur.r += delta[0];
 				cur.g += delta[1];
 				cur.b += delta[2];
+			}
+		}
+	}
+
+	void gradient_h(Surface& surface, int from_r, int to_r, const Color& from_color, const Color& to_color)
+	{
+		// per-component steps - this assumes range is 1. for each component
+		std::array<float, 3> delta = {
+			(to_color.r - from_color.r) / static_cast<float>(to_r - from_r),
+			(to_color.g - from_color.g) / static_cast<float>(to_r - from_r),
+			(to_color.b - from_color.b) / static_cast<float>(to_r - from_r)
+		};
+
+		auto cur = from_color;
+		for (auto x = 0; x < surface.width(); x++)
+		{
+			fill_rect(surface, Rect{ x, 0, 1, surface.height() }, cur);
+			if (x >= from_r && x < to_r)
+			{
+				cur.r += delta[0];
+				cur.g += delta[1];
+				cur.b += delta[2];
+			}
+		}
+	}
+
+	void radial_gradient(Surface& surface, int x, int y, int from_r, int to_r, const Color& from_color, const Color& to_color)
+	{
+		const auto dr = static_cast<float>(to_r) - static_cast<float>(from_r);
+		const Vector2 center{ x, y };
+		for (auto y = 0; y < surface.height(); y++)
+		{
+			for (auto x = 0; x < surface.width(); x++)
+			{
+				const auto dist = (Vector2{ x, y } - center).mag();
+				auto g = (dist - static_cast<float>(from_r)) / dr; // normalize
+				clamp(g, 0.0f, 1.0f);
+				// interpolate 
+				const auto color = Color{
+					lerp(from_color.r, to_color.r, g),
+					lerp(from_color.g, to_color.g, g),
+					lerp(from_color.b, to_color.b, g),
+					lerp(from_color.a, to_color.a, g)
+				};
+				surface.set_color(x, y, color);
 			}
 		}
 	}

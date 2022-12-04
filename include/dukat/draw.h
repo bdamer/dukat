@@ -18,7 +18,11 @@ namespace dukat
 	void fill_rect(Surface& surface, int x, int y, int width, int height, const Color& color);
 	void fill_rect(Surface& surface, const Rect& r, const Color& color);
 	// Applies monochrome gradient to surface following the vertical axis.
-	void gradient_v(Surface& surface, float from_y, float to_y, const Color& from_color, const Color& to_color);
+	void gradient_v(Surface& surface, int from_r, int to_r, const Color& from_color, const Color& to_color);
+	// Applies monochrome gradient to surface following the vertical axis.
+	void gradient_h(Surface& surface, int from_r, int to_r, const Color& from_color, const Color& to_color);
+	// Applies monochrome gradient to surface from x/y within radius (in pixels).
+	void radial_gradient(Surface& surface, int x, int y, int from_r, int to_r, const Color& from_color, const Color& to_color);
 
 	// Blends source surface on top of destination surface.
 	void blend(const Surface& src, Surface& dest);
