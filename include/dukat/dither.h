@@ -1,8 +1,9 @@
 #pragma once
 
+#include <dukat/surface.h>
+
 namespace dukat
 {
-	class Surface;
 	struct Color;
 
 	/// <summary>
