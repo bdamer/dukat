@@ -80,4 +80,21 @@ namespace dukat
 	{
 		map[name] = value ? "true" : "false";
 	}
+	
+	Settings load_settings_with_default(const std::string& path, const std::string& prefix)
+	{
+		// TODO: load all files via asset loader
+		AssetLoader loader;
+		const auto file = path + "/" + prefix + ".json";
+		if (loader.exists(file))
+		{
+			Settings settings;
+			load_settings(file, settings);
+			return settings;
+		}
+		else
+		{
+			return Settings(path + "/" + prefix + ".ini");
+		}
+	}
 }
