@@ -162,6 +162,7 @@
 #include "shaderprogram.h"
 #include "shadoweffect2.h"
 #include "sprite.h"
+#include "spriteanimation.h"
 #include "surface.h"
 #include "textmeshbuilder.h"
 #include "textmeshinstance.h"

@@ -528,6 +528,9 @@
     <ClInclude Include="..\include\dukat\dither.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\spriteanimation.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">

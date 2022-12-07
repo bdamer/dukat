@@ -32,7 +32,4 @@ namespace dukat
 		friend void save_settings(const Settings& settings, const std::string& filename);
 		friend void load_settings(const std::string& filename, Settings& settings);
 	};
-
-	// Attempts to load JSON settings based on prefix from path. If not found, will load INI settings instead.
-	Settings load_settings_with_default(const std::string& path, const std::string& prefix);
 }

@@ -198,6 +198,7 @@
     <ClInclude Include="..\include\dukat\shadoweffect2.h" />
     <ClInclude Include="..\include\dukat\shakycameraeffect.h" />
     <ClInclude Include="..\include\dukat\shape.h" />
+    <ClInclude Include="..\include\dukat\spriteanimation.h" />
     <ClInclude Include="..\include\dukat\string.h" />
     <ClInclude Include="..\include\dukat\textbutton.h" />
     <ClInclude Include="..\include\dukat\textureatlas.h" />

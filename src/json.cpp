@@ -1,8 +1,9 @@
 #include "stdafx.h"
+#include <dukat/assetloader.h>
 #include <dukat/json.h>
 #include <dukat/log.h>
-#include <json/json.h>
 #include <dukat/settings.h>
+#include <json/json.h>
 
 namespace dukat
 {
@@ -124,5 +125,22 @@ namespace dukat
 		log->info("Loading settings from: {}", filename);
 		const auto root = load_json(filename);
 		load_settings_from_json(root, "", settings.map);
+	}
+
+	Settings load_settings_with_default(const std::string& path, const std::string& prefix)
+	{
+		// TODO: load all files via asset loader
+		AssetLoader loader;
+		const auto file = path + "/" + prefix + ".json";
+		if (loader.exists(file))
+		{
+			Settings settings;
+			load_settings(file, settings);
+			return settings;
+		}
+		else
+		{
+			return Settings(path + "/" + prefix + ".ini");
+		}
 	}
 }
