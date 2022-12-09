@@ -203,7 +203,8 @@ namespace dukat
 
 	void blend(const Surface& src, const Rect& src_rect, Surface& dest, const Rect& dest_rect)
 	{
-		SDL_BlitSurface(src.get_surface(), (SDL_Rect*)&src_rect, dest.get_surface(), (SDL_Rect*)&dest_rect);
+		SDL_Rect tmp{ dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h };
+		SDL_BlitSurface(src.get_surface(), (SDL_Rect*)&src_rect, dest.get_surface(), &tmp);
 	}
 
 	void blend(const Surface& src, int x, int y, Surface& dest)
@@ -219,7 +220,8 @@ namespace dukat
 			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask));
 		blend(src, src_rect, tmp_surface, src_rect);
 		tmp_surface.flip_horizontal();
-		SDL_BlitSurface(tmp_surface.get_surface(), nullptr, dest.get_surface(), (SDL_Rect*)&dest_rect);
+		SDL_Rect tmp{ dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h };
+		SDL_BlitSurface(tmp_surface.get_surface(), nullptr, dest.get_surface(), &tmp);
 	}
 
 	void blend_flip_v(const Surface& src, const Rect& src_rect, Surface& dest, const Rect& dest_rect)
@@ -229,6 +231,7 @@ namespace dukat
 			surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask));
 		blend(src, src_rect, tmp_surface, src_rect);
 		tmp_surface.flip_vertical();
-		SDL_BlitSurface(tmp_surface.get_surface(), nullptr, dest.get_surface(), (SDL_Rect*)&dest_rect);
+		SDL_Rect tmp{ dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h };
+		SDL_BlitSurface(tmp_surface.get_surface(), nullptr, dest.get_surface(), &tmp);
 	}
 }
