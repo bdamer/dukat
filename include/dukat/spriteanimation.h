@@ -10,15 +10,15 @@ namespace dukat
 	{
 		struct Sequence
 		{
-			int from;
-			int to;
+			uint16_t from;
+			uint16_t to;
 			float step;
 		};
 
 		robin_hood::unordered_map<std::string, Sequence> sequences;
 		Sequence* sequence; // current sequence
 		float time_idx; // current time within the sequence
-		int index; // sprite index
+		uint16_t index; // sprite index
 
 		SpriteAnimation(void) : sequence(nullptr), time_idx(0.0f), index(0) { }
 
@@ -26,13 +26,23 @@ namespace dukat
 		void update(float delta) 
 		{ 
 			time_idx += delta; 
-			index = sequence->from + static_cast<int>(std::floor(time_idx / sequence->step)); 
+			const auto step = static_cast<uint16_t>(std::floor(time_idx / sequence->step));
+			index = sequence->from <= sequence->to ? 
+				sequence->from + step : sequence->from - step;
 		}
 
 		// Returns duration of the current animation.
 		float cur_duration(void) const 
 		{ 
-			return sequence != nullptr ? sequence->step * static_cast<float>(1 + sequence->to - sequence->from) : 0.0f; 
+			if (sequence)
+			{
+				const auto len = 1u + std::abs(sequence->to - sequence->from);
+				return sequence->step * static_cast<float>(len);
+			}
+			else
+			{
+				return 0.0f;
+			}
 		}
 
 		// Returns time remaining for the current animation.
@@ -43,13 +53,13 @@ namespace dukat
 
 		void reset_sequence(void) 
 		{ 
-			index = sequence->from;
+			index = sequence->from <= sequence->to ? sequence->from : sequence->to;
 			time_idx = 0.0f; 
 		}
 
-		void add_sequence(const std::string& id, int from, int to, float step) 
+		void add_sequence(const std::string& id, uint16_t from, uint16_t to, float step)
 		{ 
-			sequences.emplace(id, Sequence{ from, to, step }); 
+			sequences.emplace(id, Sequence{ from, to, step });
 		}
 		
 		void set_sequence(const std::string& id, bool reset_timer) 
@@ -73,7 +83,7 @@ namespace dukat
 
 		bool sequence_done(void) const 
 		{ 
-			return index > sequence->to; 
+			return sequence->from <= sequence->to ? index > sequence->to : index < sequence->to;
 		}
 
 		void set_sequence_step(const std::string& id, float step)
