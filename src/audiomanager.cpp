@@ -44,17 +44,13 @@ namespace dukat
 	{
 		music_volume = volume;
 		if (Mix_PlayingMusic())
-		{
 			Mix_VolumeMusic(static_cast<int>(music_volume * MIX_MAX_VOLUME));
-		}
 	}
 
 	void AudioManager::play_music(Music* music, int loops) const
 	{
 		if (Mix_PlayMusic(music->music, loops) == playback_error)
-		{
 			log->warn("Failed to play music: {}", Mix_GetError());
-		}
 		Mix_VolumeMusic(static_cast<int>(music_volume * MIX_MAX_VOLUME));
 	}
 
@@ -66,6 +62,21 @@ namespace dukat
 	void AudioManager::stop_music(void) const
 	{
 		Mix_HaltMusic();
+	}
+
+	bool AudioManager::is_playing_music(void) const
+	{
+		return Mix_PlayingMusic() > 0;
+	}
+
+	int AudioManager::fade_in_music(float duration, Music* music, int loops) const
+	{
+		return Mix_FadeInMusic(music->music, loops, static_cast<int>(duration * 1000.f));
+	}
+
+	int AudioManager::fade_out_music(float duration) const
+	{
+		return Mix_FadeOutMusic(static_cast<int>(duration * 1000.f));
 	}
 
 	int AudioManager::play_sample(Sample* sample, int channel, int loops)

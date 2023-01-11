@@ -36,6 +36,9 @@ namespace dukat
 		void play_music(Music* music, int loops = 1) const;
 		void pause_music(void) const;
 		void stop_music(void) const;
+		bool is_playing_music(void) const;
+		int fade_in_music(float duration, Music* music, int loops = 1) const;
+		int fade_out_music(float duration) const;
 
 		// Plays a sample. If no channel specified, will use next available channel. Will
 		// return the channel user or playback_error in case of error.
