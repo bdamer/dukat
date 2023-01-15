@@ -107,7 +107,7 @@ namespace dukat
 	void AudioManager::pause_all(void)
 	{
 		Mix_Pause(-1);
-		Mix_PausedMusic();
+		Mix_PauseMusic();
 	}
 
 	void AudioManager::resume_all(void)
