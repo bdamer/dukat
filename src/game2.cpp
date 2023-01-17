@@ -58,9 +58,9 @@ namespace dukat
 		// check if this is an atlas entry
 		std::string atlas_name;
 		Rect atlas_rect;
-		if (texture_cache->atlas_lookup(filename, atlas_name, atlas_rect))
+		try
 		{
-			try
+			if (texture_cache->atlas_lookup(filename, atlas_name, atlas_rect))
 			{
 				texture = texture_cache->get(atlas_name + ".png");
 				if (rect.w == 0) // rect is empty, use atlas rect
@@ -71,16 +71,16 @@ namespace dukat
 					rect.y += atlas_rect.y;
 				}
 			}
-			catch (const std::runtime_error& ex)
+			else
 			{
-				log->warn("Failed to create sprite: {}", ex.what());
-				texture = texture_cache->get("missing.png");
-				rect.w = 0;
+				texture = texture_cache->get(filename);
 			}
 		}
-		else
+		catch (const std::runtime_error& ex)
 		{
-			texture = texture_cache->get(filename);
+			log->warn("Failed to create sprite: {}", ex.what());
+			texture = texture_cache->get("missing.png");
+			rect.w = 0;
 		}
 
 		if (rect.w > 0) // rect is not empty

@@ -162,6 +162,8 @@ namespace dukat
 		atlas_name = filename.substr(0, pos);
 		const auto atlas_entry = filename.substr(pos + 1);
 		auto atlas = get_atlas(atlas_name);
+		if (!atlas->contains(atlas_entry))
+			return false;
 		entry_rect = atlas->get(atlas_entry);
 		return true;
 	}
