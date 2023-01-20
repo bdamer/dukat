@@ -67,7 +67,7 @@ namespace dukat
 		static constexpr Event BodyDestroyed = 24;
 		// catch-all to allow subscription to all supported events
 		// TODO: review - I don't like the hard-coded max ID here
-		static constexpr Event Any = 64;
+		static constexpr Event Any = 1024;
 	};
 
 	// Messenging class
@@ -90,7 +90,7 @@ namespace dukat
 		void subscribe(Recipient* recipient, Event ev);
 		void subscribe(Recipient* recipient, const std::vector<Event>& events);
 		void subscribe(Event ev, Recipient* recipient) { subscribe(recipient, ev); } // legacy
-		// Subscribes to all events on this entity.
+		// Subscribes ttriggero all events on this entity.
 		void subscribe_all(Recipient* recipient);
 		// Unsubscribes from an event on this entity.
 		void unsubscribe(Recipient* recipient, Event ev);
