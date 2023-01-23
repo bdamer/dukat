@@ -57,7 +57,7 @@ namespace dukat
 
 		// Fills up priority queue with visible sprites.
 		void fill_sprite_queue(const AABB2& camera_bb, std::function<bool(Sprite*)> predicate,
-			std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator>& queue);
+			std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator<Sprite*>>& queue);
 		void bind_sprite_buffers(GLint pos_id, GLint uv_id);
 		void unbind_sprite_buffers(GLint pos_id, GLint uv_id);
 		// Generates sprite model matrix.

@@ -80,36 +80,19 @@ namespace dukat
 
 	// Used to order entities by z value. For sprites with the same z value,
 	// this will additionally order by texture ID to reduce the number of
-	// texture switches necessary.
+	// texture switches necessary; if texture ID is the same, will finally
+	// use memory address to keep ordering stable between subsequent invocations.
+	template <typename T>
 	struct SpriteComparator
 	{
-		bool operator()(const Sprite& lhs, const Sprite& rhs)
-		{
-			if (lhs.z == rhs.z)
-			{
-				return lhs.texture_id > rhs.texture_id;
-			}
-			else
-			{
-				return lhs.z > rhs.z;
-			}
-		}
-		bool operator()(const std::shared_ptr<Sprite>& lhs, const std::shared_ptr<Sprite>& rhs)
+		bool operator()(const T& lhs, const T& rhs)
 		{
 			if (lhs->z == rhs->z)
 			{
-				return lhs->texture_id > rhs->texture_id;
-			}
-			else
-			{
-				return lhs->z > rhs->z;
-			}
-		}
-		bool operator()(Sprite* lhs, Sprite* rhs)
-		{
-			if (lhs->z == rhs->z)
-			{
-				return lhs->texture_id > rhs->texture_id;
+				if (lhs->texture_id != rhs->texture_id)
+					return lhs->texture_id > rhs->texture_id;
+				else
+					return lhs > rhs;
 			}
 			else
 			{

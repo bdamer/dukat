@@ -110,7 +110,7 @@ namespace dukat
 	}
 
 	void RenderLayer2::fill_sprite_queue(const AABB2& camera_bb, std::function<bool(Sprite*)> predicate,
-		std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator>& queue)
+		std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator<Sprite*>>& queue)
 	{
 		// Fill queue with sprites ordered by priority from low to high
 		const auto layer_relative = check_flag(render_flags, Relative);
@@ -138,7 +138,7 @@ namespace dukat
 
 	void RenderLayer2::render_sprites(Renderer2* renderer, const AABB2& camera_bb, std::function<bool(Sprite*)> predicate)
 	{
-		static std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator> queue;
+		static std::priority_queue<Sprite*, std::deque<Sprite*>, SpriteComparator<Sprite*>> queue;
 		fill_sprite_queue(camera_bb, predicate, queue);
 		if (queue.empty())
 			return; // nothing to render
