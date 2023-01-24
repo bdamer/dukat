@@ -10,15 +10,15 @@ namespace dukat
 	{
 		struct Sequence
 		{
-			uint16_t from;
-			uint16_t to;
+			int from;
+			int to;
 			float step;
 		};
 
 		robin_hood::unordered_map<std::string, Sequence> sequences;
 		Sequence* sequence; // current sequence
 		float time_idx; // current time within the sequence
-		uint16_t index; // sprite index
+		int index; // sprite index
 
 		SpriteAnimation(void) : sequence(nullptr), time_idx(0.0f), index(0) { }
 
@@ -26,7 +26,7 @@ namespace dukat
 		void update(float delta) 
 		{ 
 			time_idx += delta; 
-			const auto step = static_cast<uint16_t>(std::floor(time_idx / sequence->step));
+			const auto step = static_cast<int>(std::floor(time_idx / sequence->step));
 			index = sequence->from <= sequence->to ? 
 				sequence->from + step : sequence->from - step;
 		}
@@ -57,7 +57,7 @@ namespace dukat
 			time_idx = 0.0f; 
 		}
 
-		void add_sequence(const std::string& id, uint16_t from, uint16_t to, float step)
+		void add_sequence(const std::string& id, int from, int to, float step)
 		{ 
 			sequences.emplace(id, Sequence{ from, to, step });
 		}
