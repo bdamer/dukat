@@ -42,6 +42,7 @@ namespace dukat
 
 		Timer* create(float interval, std::function<void(void)> callback, bool recurring = false);
 		void cancel(Timer* timer);
+		void free(Timer*& timer) { cancel(timer); timer = nullptr; }
 		void update(float delta);
 		void set_active_group(uint8_t group) { this->active_group = group; }
 
