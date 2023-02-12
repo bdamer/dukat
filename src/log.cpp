@@ -45,6 +45,9 @@ namespace dukat
 			const auto log_file = settings.get_string("logging.file", "run.log");
 			const auto truncate = settings.get_bool("logging.truncate", false);
 			log = spdlog::basic_logger_st("file_logger", log_file, truncate);
+			const auto log_flush = settings.get_int("logging.file.flush", 0);
+			if (log_flush > 0)
+				spdlog::flush_every(std::chrono::seconds(log_flush));
 		}
 		else
 		{
