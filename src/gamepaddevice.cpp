@@ -45,20 +45,20 @@ namespace dukat
 
 	void GamepadDevice::initialize_mapping(const Settings& settings)
 	{
-		mapping[VirtualButton::Button1] = settings.get_int("input.gamepad.button1", button_left_shoulder);
-		mapping[VirtualButton::Button2] = settings.get_int("input.gamepad.button2", button_right_shoulder);
-		mapping[VirtualButton::Button3] = settings.get_int("input.gamepad.button3", button_a);
-		mapping[VirtualButton::Button4] = settings.get_int("input.gamepad.button4", button_b);
-		mapping[VirtualButton::Button5] = settings.get_int("input.gamepad.button5", button_x);
-		mapping[VirtualButton::Button6] = settings.get_int("input.gamepad.button6", button_y);
-		mapping[VirtualButton::Button7] = settings.get_int("input.gamepad.button7", button_left_thumb);
-		mapping[VirtualButton::Button8] = settings.get_int("input.gamepad.button8", button_right_thumb);
-		mapping[VirtualButton::Select] = settings.get_int("input.gamepad.select", button_select);
-		mapping[VirtualButton::Start] = settings.get_int("input.gamepad.start", button_start);
-		mapping[VirtualButton::Down] = settings.get_int("input.gamepad.down", dpad_down);
-		mapping[VirtualButton::Right] = settings.get_int("input.gamepad.right", dpad_right);
-		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", dpad_left);
-		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", dpad_up);
+		mapping[VirtualButton::Button1] = settings.get_int("input.gamepad.button1", SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+		mapping[VirtualButton::Button2] = settings.get_int("input.gamepad.button2", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+		mapping[VirtualButton::Button3] = settings.get_int("input.gamepad.button3", SDL_CONTROLLER_BUTTON_A);
+		mapping[VirtualButton::Button4] = settings.get_int("input.gamepad.button4", SDL_CONTROLLER_BUTTON_B);
+		mapping[VirtualButton::Button5] = settings.get_int("input.gamepad.button5", SDL_CONTROLLER_BUTTON_X);
+		mapping[VirtualButton::Button6] = settings.get_int("input.gamepad.button6", SDL_CONTROLLER_BUTTON_Y);
+		mapping[VirtualButton::Button7] = settings.get_int("input.gamepad.button7", SDL_CONTROLLER_BUTTON_LEFTSTICK);
+		mapping[VirtualButton::Button8] = settings.get_int("input.gamepad.button8", SDL_CONTROLLER_BUTTON_RIGHTSTICK);
+		mapping[VirtualButton::Select] = settings.get_int("input.gamepad.select", SDL_CONTROLLER_BUTTON_BACK);
+		mapping[VirtualButton::Start] = settings.get_int("input.gamepad.start", SDL_CONTROLLER_BUTTON_START);
+		mapping[VirtualButton::Down] = settings.get_int("input.gamepad.down", SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+		mapping[VirtualButton::Right] = settings.get_int("input.gamepad.right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", SDL_CONTROLLER_BUTTON_DPAD_UP);
 	}
 
 	void GamepadDevice::normalize_axis(int16_t ix, int16_t iy, float& ox, float& oy, int16_t deadzone)
@@ -145,34 +145,48 @@ namespace dukat
 	{
 		switch (mapping[button])
 		{
-		case button_a:
+		case SDL_CONTROLLER_BUTTON_A:
 			return "A";
-		case button_b:
+		case SDL_CONTROLLER_BUTTON_B:
 			return "B";
-		case button_x:
+		case SDL_CONTROLLER_BUTTON_X:
 			return "X";
-		case button_y:
+		case SDL_CONTROLLER_BUTTON_Y:
 			return "Y";
-		case button_left_shoulder:
+		case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
 			return "Left Button";
-		case button_right_shoulder:
+		case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
 			return "Right Button";
-		case button_left_thumb:
+		case SDL_CONTROLLER_BUTTON_LEFTSTICK:
 			return "Left Thumb";
-		case button_right_thumb:
+		case SDL_CONTROLLER_BUTTON_RIGHTSTICK:
 			return "Right Thumb";
-		case button_select:
-			return "Select";
-		case button_start:
+		case SDL_CONTROLLER_BUTTON_BACK:
+			return "Back";
+		case SDL_CONTROLLER_BUTTON_GUIDE:
+			return "Guide";
+		case SDL_CONTROLLER_BUTTON_START:
 			return "Start";
-		case dpad_down:
+		case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
 			return "DPAD Down";
-		case dpad_right:
+		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
 			return "DPAD Right";
-		case dpad_left:
+		case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
 			return "DPAD Left";
-		case dpad_up:
+		case SDL_CONTROLLER_BUTTON_DPAD_UP:
 			return "DPAD Up";
+		case SDL_CONTROLLER_BUTTON_MISC1:
+			return "Misc";
+		case SDL_CONTROLLER_BUTTON_PADDLE1:
+			return "Paddle 1";
+		case SDL_CONTROLLER_BUTTON_PADDLE2:
+			return "Paddle 2";
+		case SDL_CONTROLLER_BUTTON_PADDLE3:
+			return "Paddle 3";
+		case SDL_CONTROLLER_BUTTON_PADDLE4:
+			return "Paddle 4";	
+		case SDL_CONTROLLER_BUTTON_TOUCHPAD:
+			return "Touchpad";
 		default:
 			return "n/a";
 		}
