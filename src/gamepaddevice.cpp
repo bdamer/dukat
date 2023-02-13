@@ -173,6 +173,7 @@ namespace dukat
 			return "DPAD Right";
 		case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
 			return "DPAD Left";
+		/*
 		case SDL_CONTROLLER_BUTTON_DPAD_UP:
 			return "DPAD Up";
 		case SDL_CONTROLLER_BUTTON_MISC1:
@@ -184,9 +185,10 @@ namespace dukat
 		case SDL_CONTROLLER_BUTTON_PADDLE3:
 			return "Paddle 3";
 		case SDL_CONTROLLER_BUTTON_PADDLE4:
-			return "Paddle 4";	
+			return "Paddle 4";
 		case SDL_CONTROLLER_BUTTON_TOUCHPAD:
 			return "Touchpad";
+		*/
 		default:
 			return "n/a";
 		}
