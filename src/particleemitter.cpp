@@ -469,6 +469,15 @@ namespace dukat
 		}
     }
 
+	// BURST
+	// - burst of particles with ramp-up / ramp-down
+	// - particle are emitted along min_dp vector
+	// 
+	void burst_update(ParticleManager& pm, ParticleEmitter& em, float delta) 
+	{
+		
+	}
+
 	// SPIRAL
 	// - spiralling emitters
 	// - angle changes with time, particles are emitted with initial direction based on angle
