@@ -15,6 +15,7 @@ namespace dukat
 			Linear = 4,			// Update position based on dp
 			Dampened = 8,		// Update dp based on dampening constant until it reaches 0.
 			Gravitational = 16,	// Update dp based on gravity constant
+			AntiGravitational = 32, // Update dp based on negative gravity constant
 		};
 
 		Vector2 pos;	// Position in world space

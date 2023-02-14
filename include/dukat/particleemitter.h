@@ -28,7 +28,8 @@ namespace dukat
 				Explosion,
 				Spiral,
 				Radial,
-				Layered
+				Layered,
+				Blast
 			};
 
 			Type type;
@@ -65,6 +66,7 @@ namespace dukat
 			static const Recipe ExplosionRecipe;
 			static const Recipe SnowRecipe;
 			static const Recipe SpiralRecipe;
+			static const Recipe BlastRecipe;
 		};
 
 		// Particle recipe

@@ -101,6 +101,22 @@ namespace dukat
 		Color{ 0.f, 0.f, 0.f, -0.005f }
 	};
 
+	const ParticleEmitter::Recipe ParticleEmitter::Recipe::BlastRecipe{
+		ParticleEmitter::Recipe::Blast,
+		Particle::Alive | Particle::Linear | Particle::AntiGravitational,
+		100.0f, // rate
+		1.0f, 4.0f, // size
+		1.0f, 3.0f, // ttl
+		Vector2{ 32, -7 }, Vector2{ 64, 7 }, // direction
+		{
+			color_rgb(0xffc825),
+			color_rgb(0xffa214),
+			color_rgb(0xed7614),
+			color_rgb(0xff5000)
+		},
+		Color{ 0.1f, -0.1f, -0.1f, -0.25f }
+	};
+
 	// LINEAR
 	// - particles are created with unique direction in +/- dp range
 	void linear_update(ParticleManager& pm, ParticleEmitter& em, float delta)
@@ -469,13 +485,50 @@ namespace dukat
 		}
     }
 
-	// BURST
+	// BLAST
 	// - burst of particles with ramp-up / ramp-down
-	// - particle are emitted along min_dp vector
-	// 
-	void burst_update(ParticleManager& pm, ParticleEmitter& em, float delta) 
+	// - particle are emitted with dp based on min_dp / max_dp
+	// - otherwise behavior similar to LINEAR emitter
+	void blast_update(ParticleManager& pm, ParticleEmitter& em, float delta) 
 	{
-		
+		static constexpr auto delay = 0.25f;
+		// Rate is dependent on age:
+		// 1. if age < delay, scale between 0 and rate
+		// 2. if age > delay, scale between rate and 0 until age > em.value
+		float rate;
+		if (em.age < delay)
+			rate = lerp(0.0f, em.recipe.rate, em.age / delay);
+		else
+			rate = lerp(em.recipe.rate, 0.0f, (em.age - delay) * (em.age - delay) / em.value);
+
+		em.accumulator += rate * delta;
+		if (em.accumulator < 1.0f || em.target_layer == nullptr)
+			return;
+
+		const auto offset_count = em.offsets.size();
+		while (em.accumulator >= 1.0f)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				return;
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
+
+			if (offset_count == 0)
+				p->pos = em.pos;
+			else
+				p->pos = em.pos + em.offsets[random(0, offset_count)];
+
+			p->dp = random(em.recipe.min_dp, em.recipe.max_dp);
+			p->size = random(em.recipe.min_size, em.recipe.max_size);
+			p->color = em.recipe.colors[random(0, em.recipe.colors.size())];
+			p->dc = em.recipe.dc;
+			p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
+
+			em.target_layer->add(p);
+
+			em.accumulator -= 1.0f;
+		}
 	}
 
 	// SPIRAL
@@ -554,6 +607,9 @@ namespace dukat
 			break;
 		case ParticleEmitter::Recipe::Layered:
 			emitter.update = std::bind(layered_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Blast:
+			emitter.update = std::bind(blast_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		default:
 			emitter.update = nullptr;

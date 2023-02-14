@@ -44,11 +44,14 @@ namespace dukat
 					else
 						p.pos.y = p.ry;
 				}
+				else if (check_flag(p.flags, Particle::AntiGravitational))
+				{
+					p.dp.y -= gravity * delta;
+				}
 				if (check_flag(p.flags, Particle::Dampened))
 					p.dp *= dampening;
 				p.color += p.dc * delta;
 				p.size += p.dsize * delta;
-
 			}
 
 			++it;
