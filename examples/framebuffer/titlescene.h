@@ -13,7 +13,10 @@ namespace dukat
 		MeshGroup overlay_meshes;
 		std::unique_ptr<TextButton> fractals_button;
 		std::unique_ptr<TextButton> ripples_button;
+		std::unique_ptr<TextButton> caustics_button;
 		std::unique_ptr<TextButton> quit_button;
+
+		void create_controls(void);
 
 	public:
 		TitleScene(Game3* game);

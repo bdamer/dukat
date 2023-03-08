@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="causticsscene.h" />
     <ClInclude Include="fractalscene.h" />
     <ClInclude Include="ripplepondscene.h" />
     <ClInclude Include="stdafx.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="titlescene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="causticsscene.cpp" />
     <ClCompile Include="fractalscene.cpp" />
     <ClCompile Include="framebufferapp.cpp" />
     <ClCompile Include="ripplepondscene.cpp" />

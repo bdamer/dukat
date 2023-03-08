@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "fractalscene.h"
+#include "causticsscene.h"
 
 namespace dukat
 {
-	constexpr int FractalScene::texture_size;
+	constexpr int CausticsScene::texture_size;
 
-	FractalScene::FractalScene(Game3* game) : game(game)
+	CausticsScene::CausticsScene(Game3* game) : game(game), speed(1.f), time(0.0f), color_set(0)
 	{
 		MeshBuilder2 mb2;
 		if (!game->get_meshes()->contains("quad"))
@@ -13,7 +13,7 @@ namespace dukat
 
 		// Generate framebuffer and texture
 		fbo = std::make_unique<FrameBuffer>(texture_size, texture_size, true, false);
-		fb_program = game->get_shaders()->get_program("fx_default.vsh", "fx_fractal.fsh");
+		fb_program = game->get_shaders()->get_program("fx_default.vsh", "fx_caustics.fsh");
 
 		overlay_meshes.stage = RenderStage::Overlay;
 		overlay_meshes.visible = true;
@@ -28,9 +28,8 @@ namespace dukat
 		info_text->set_size(1.0f / 20.0f);
 		info_text->transform.position = { -1.5f, -0.5f, 0.5f };
 		std::stringstream ss;
-		ss << "<WASD> Move" << std::endl
-			<< "<LMB> Zoom in" << std::endl
-			<< "<RMB> Zoom out" << std::endl
+		ss << "<C> Cycle color" << std::endl
+			<< "<,.> Change Speed" << std::endl
 			<< "<F11> Toggle Info" << std::endl
 			<< "<ESC> Quit" << std::endl
 			<< std::endl;
@@ -39,7 +38,7 @@ namespace dukat
 		info_mesh = overlay_meshes.add_instance(std::move(info_text));
 	}
 
-	void FractalScene::activate(void)
+	void CausticsScene::activate(void)
 	{
 		auto settings = game->get_settings();
 		// Top-down camera
@@ -52,12 +51,21 @@ namespace dukat
 		game->set_controller(this);
 	}
 
-	void FractalScene::handle_keyboard(const SDL_Event & e)
+	void CausticsScene::handle_keyboard(const SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_ESCAPE:
 			game->pop_scene();
+			break;
+		case SDLK_c:
+			color_set = (color_set + 1) % 3;
+			break;
+		case SDLK_COMMA:
+			speed = std::max(0.5f * speed, 1.0f);
+			break;
+		case SDLK_PERIOD:
+			speed = std::min(2.f * speed, 128.f);
 			break;
 		case SDLK_F11:
 			info_mesh->visible = !info_mesh->visible;
@@ -65,41 +73,43 @@ namespace dukat
 		}
 	}
 
-	void FractalScene::update(float delta)
+	void CausticsScene::update(float delta)
 	{
 		overlay_meshes.update(delta);
 		update_framebuffer(delta);
 	}
 
-	void FractalScene::update_framebuffer(float delta)
+	void CausticsScene::update_framebuffer(float delta)
 	{
-		static float increment = 2.0f;
-		static float zoom = 1.0f;
-		static Vector2 pos{ 0.0f, 0.0f };
-		
 		game->get_renderer()->set_blending(false);
 
 		fbo->bind();
 
-		auto ctrl = game->get_devices()->active;
-		if (ctrl->is_pressed(InputDevice::Button1))
-		{
-			zoom += increment * delta;
-			increment *= 1.01f;
-		}
-		else if (zoom > 0.1f && ctrl->is_pressed(InputDevice::Button2))
-		{
-			zoom -= increment * delta;
-			increment *= 0.99f;
-		}
-		pos.x += -ctrl->lx / zoom * delta;
-		pos.y += -ctrl->ly / zoom * delta;
+		time += speed * delta;
 
         game->get_renderer()->switch_shader(fb_program);
-		fb_program->set("u_k", 0.35f, 0.4f);
-		fb_program->set("u_offset", pos.x, pos.y);
-		fb_program->set("u_zoom", zoom);
-        game->get_meshes()->get("quad")->render(fb_program);
+		fb_program->set("u_time", time);
+
+		switch (color_set)
+		{
+		case 0: // Blue
+			fb_program->set("u_color_lo", 0.051f, 0.09f, 0.286f, 1.f);	// #0d1749
+			fb_program->set("u_color_mid", 0.047f, 0.08f, 0.576f, 1.f);	// #0c0293
+			fb_program->set("u_color_hi", 0.188f, 0.012f, 0.851f, 1.f);	// #3003d9
+			break;
+		case 1: // Red
+			fb_program->set("u_color_lo", .769f, 0.141f, 0.188f, 1.f);	// #ffeb57
+			fb_program->set("u_color_mid", 1.f, 0.314f, 0.0f, 1.f);		// #ff5000
+			fb_program->set("u_color_hi", 1.f, 0.922f, 0.341f, 1.f);	// #c42430
+			break;
+		case 2: // Green
+			fb_program->set("u_color_lo", 0.047f, 0.180f, 0.267f, 1.f);	// #0c2e44
+			fb_program->set("u_color_mid", 0.075f, 0.298f, 0.298f, 1.f);// #134c4c
+			fb_program->set("u_color_hi", 0.353f, 0.773f, 0.310f, 1.f);	// #5ac54f
+			break;
+		}
+
+	    game->get_meshes()->get("quad")->render(fb_program);
 
 		fbo->unbind();
 
@@ -108,7 +118,7 @@ namespace dukat
 		perfc.inc(PerformanceCounter::FRAME_BUFFERS);
 	}
 
-	void FractalScene::render(void)
+	void CausticsScene::render(void)
 	{
 		std::vector<Mesh*> meshes;
 		meshes.push_back(&overlay_meshes);
