@@ -27,6 +27,16 @@ namespace dukat
 		trigger(Message{ Events::DeviceUnbound });
 	}
 
+	InputDevice* DeviceManager::get_keyboard(void) const
+	{
+		for (const auto& it : controllers)
+		{
+			if (it->id() == KeyboardDevice::keyboard_id)
+				return it.get();
+		}
+		return nullptr;
+	}
+
 	void DeviceManager::add_joystick(int joystick_index)
 	{
 		if (!settings.get_bool("input.gamepad.support", true))

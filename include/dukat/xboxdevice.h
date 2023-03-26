@@ -22,13 +22,13 @@ namespace dukat
 
 		void select_device_index(void);
 		bool check_device_caps(int index) const;
-		void initialize_mapping(void);
 		void normalize_axis(int16_t ix, int16_t iy, float& ox, float& oy, int16_t deadzone = 0);
 		void normalize_trigger(uint8_t i, float& o, uint8_t deadzone = 0);
 
 	public:
 		XBoxDevice(const Window& window, const Settings& settings, int device_index);
 		~XBoxDevice(void);
+		void restore_mapping(const Settings& settings);
 
 		int id(void) const { return device_id; }
 		std::string get_button_name(VirtualButton button) const;

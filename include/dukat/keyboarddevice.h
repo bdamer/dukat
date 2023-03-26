@@ -26,6 +26,8 @@ namespace dukat
 
 		KeyboardDevice(const Window& window, const Settings& settings);
 		~KeyboardDevice(void);
+		void restore_mapping(const Settings& settings);
+
 		void update(void);
 		void set_sensitivity(int sensitivity) { this->sensitivity = sensitivity; }
 		int id(void) const { return keyboard_id; }

@@ -12,6 +12,19 @@ namespace dukat
 	{
 		name = "Keyboard";
 		sensitivity = settings.get_int("input.mouse.sensitivity", 128);
+		restore_mapping(settings);
+		// Initialize default key bindings
+		keystate = SDL_GetKeyboardState(&num_keys);
+	}
+
+	KeyboardDevice::~KeyboardDevice(void)
+	{
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+		keystate = nullptr; // memory handled by SDL
+	}
+
+	void KeyboardDevice::restore_mapping(const Settings& settings)
+	{
 		// Initialize key mapping
 		mapping[VirtualButton::Button1] = settings.get_int("input.keyboard.button1", -1);
 		mapping[VirtualButton::Button2] = settings.get_int("input.keyboard.button2", -1);
@@ -40,14 +53,6 @@ namespace dukat
 		mouse_mapping[2] = settings.get_int("input.mouse.right", VirtualButton::Button2);
 		mouse_mapping[3] = settings.get_int("input.mouse.extra1", VirtualButton::Button4);
 		mouse_mapping[4] = settings.get_int("input.mouse.extra2", VirtualButton::Button5);
-		// Initialize default key bindings
-		keystate = SDL_GetKeyboardState(&num_keys);
-	}
-
-	KeyboardDevice::~KeyboardDevice(void)
-	{
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-		keystate = nullptr; // memory handled by SDL
 	}
 
 	void KeyboardDevice::update(void)

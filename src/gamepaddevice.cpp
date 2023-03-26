@@ -31,7 +31,7 @@ namespace dukat
 		invert_y = settings.get_bool("input.gamepad.inverty", true);
 		deadzone = static_cast<int16_t>(settings.get_int("input.gamepad.inverty", 8000));
 
-		initialize_mapping(settings);
+		restore_mapping(settings);
 	}
 
 	GamepadDevice::~GamepadDevice(void)
@@ -43,7 +43,7 @@ namespace dukat
 		}
 	}
 
-	void GamepadDevice::initialize_mapping(const Settings& settings)
+	void GamepadDevice::restore_mapping(const Settings& settings)
 	{
 		mapping[VirtualButton::Button1] = settings.get_int("input.gamepad.button1", SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
 		mapping[VirtualButton::Button2] = settings.get_int("input.gamepad.button2", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);

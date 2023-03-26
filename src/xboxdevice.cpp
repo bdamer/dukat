@@ -29,7 +29,7 @@ namespace dukat
 		SDL_JoystickClose(device);
 
 		select_device_index();
-		initialize_mapping();
+		restore_mapping(settings);
 	}
 
 	XBoxDevice::~XBoxDevice(void)
@@ -83,7 +83,7 @@ namespace dukat
 		return true;
 	}
 
-	void XBoxDevice::initialize_mapping(void)
+	void XBoxDevice::restore_mapping(const Settings& settings)
 	{
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
 		mapping[VirtualButton::Button1] = XINPUT_GAMEPAD_LEFT_SHOULDER;

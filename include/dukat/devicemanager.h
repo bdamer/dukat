@@ -40,6 +40,7 @@ namespace dukat
 
 		void add_keyboard(void);
 		void remove_keyboard(void);
+		InputDevice* get_keyboard(void) const;
 		void add_joystick(int index);
 		void remove_joystick(SDL_JoystickID id);
 		void update(float delta);
