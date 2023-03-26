@@ -133,7 +133,7 @@ namespace dukat
 
 	bool UIManager::trigger_focus(void)
 	{
-		if (focus != nullptr)
+		if (focus != nullptr && focus->has_trigger())
 		{
 			focus->trigger();
 			if (trigger_sample != nullptr)
@@ -145,7 +145,7 @@ namespace dukat
 
 	bool UIManager::cycle_focus(int dir)
 	{
-		if (focus != nullptr)
+		if (focus != nullptr && focus->can_cycle())
 		{
 			focus->cycle(dir);
 			if (cycle_sample != nullptr)
