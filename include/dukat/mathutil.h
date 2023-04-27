@@ -73,7 +73,7 @@ namespace dukat
 			const auto sign = r > 0.f ? 1.f : -1.f;
 			r *= sign;
 			r /= base;
-			const auto fixed_point = static_cast<int>(std::ceil(r));
+			const auto fixed_point = static_cast<int>(std::round(r));
 			r = fixed_point * base;
 			r *= sign;
 		}
