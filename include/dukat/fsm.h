@@ -38,6 +38,8 @@ namespace dukat
 
         // Transitions to a new state.
         bool transition_to(const std::string& id);
+        // Checks if transition to state is possible.
+        bool can_transition(const std::string& id) const;
     };
 
 	template<typename T>
@@ -57,20 +59,12 @@ namespace dukat
     template<typename T>
     bool FSM<T>::transition_to(const std::string& id)
     {
-        // cannot transition out of or into invalid state
-        if (!states.count(cur_state) || !states.count(id))
+        if (!can_transition(id))
             return false;
-
-        // check that next state is a valid transition from previous
-        auto& prev_state = states.at(cur_state);
-        if (!prev_state.transitions.count(id))
-            return false;
-
-        if (in_transition)
-            return false; // already in transition, undefined behavior
 
         in_transition = true;
 
+        auto& prev_state = states.at(cur_state);
         auto& next_state = states.at(id);
 
         // call state exit / entrance handlers
@@ -85,6 +79,24 @@ namespace dukat
 			state_change_listener(cur_state);
 
         in_transition = false;
+
+        return true;
+    }
+
+    template<typename T>
+    bool FSM<T>::can_transition(const std::string& id) const
+    {
+        // cannot transition out of or into invalid state
+        if (!states.count(cur_state) || !states.count(id))
+            return false;
+
+        // check that next state is a valid transition from previous
+        const auto& prev_state = states.at(cur_state);
+        if (!prev_state.transitions.count(id))
+            return false;
+    
+        if (in_transition)
+            return false; // already in transition, undefined behavior
 
         return true;
     }
