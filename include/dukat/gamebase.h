@@ -68,6 +68,9 @@ namespace dukat
 		void pop_scene(int n = 1);
 		Scene* get_scene(const std::string& id) const;
 		Scene* get_scene(void) const { return scene_stack.top(); }
+		// Returns first scene of a given type.
+		template <typename T>
+		T* find_scene(void) const;
 		void set_controller(Controller* controller) { this->controller = controller; }
 		virtual void receive(const Message& message);
 
@@ -123,5 +126,16 @@ namespace dukat
 	{
 		std::type_index index(typeid(T));
 		managers.erase(index);
+	}
+
+	template <typename T>
+	T* GameBase::find_scene(void) const
+	{
+		for (const auto& it : scenes)
+		{
+			if (typeid(T) == typeid(*it.second))
+				return static_cast<T*>(it.second.get());
+		}
+		return nullptr;
 	}
 }
