@@ -9,7 +9,7 @@
 
 namespace dukat
 {
-	class Ray3;
+	struct Ray3;
 
 	struct CameraTransform3
 	{

@@ -7,7 +7,7 @@ namespace dukat
     struct Rect;
     class Surface;
 	class HeightMapGenerator;
-	class Ray3;
+    struct Ray3;
 
     class HeightMap
     {

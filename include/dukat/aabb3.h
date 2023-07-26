@@ -8,8 +8,8 @@ namespace dukat
 {
 	class AABB3;
 	class Matrix4;
-	class Plane;
-	class Ray3;
+	struct Plane;
+	struct Ray3;
 
 	// TODO: move to Oriented Bounding Boxes at some point, so we don't have to recompute
 	// each step for animated objects

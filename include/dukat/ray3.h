@@ -4,14 +4,13 @@
 
 namespace dukat
 {
-	class Plane;
+	struct Plane;
 
-	class Ray3
+	struct Ray3
 	{
-	public:
 		Vector3 origin;
 		Vector3 dir;	
-		Ray3() { };
+		Ray3(void) : origin({ 0, 0, 0 }), dir({ 0, 0, 0 }) { };
 		Ray3(const Vector3& o, const Vector3& d) : origin(o), dir(d) { };
 		Vector3 point_at(float t) const { return origin + dir * t; }
 		// Checks if this ray intersects a plane.

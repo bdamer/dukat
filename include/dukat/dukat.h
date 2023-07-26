@@ -36,6 +36,7 @@
 #include "xboxdevice.h"
 
 // Math
+#include "ellipse.h"
 #include "eulerangles.h"
 #include "geometry.h"
 #include "mathutil.h"

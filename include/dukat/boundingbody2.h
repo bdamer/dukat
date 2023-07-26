@@ -4,7 +4,7 @@
 
 namespace dukat
 {
-	class Ray2;
+	struct Ray2;
 	class Vector2;
 
 	class BoundingBody2
