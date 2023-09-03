@@ -370,7 +370,7 @@ namespace dukat
     }
 
 	// FOUNTAIN
-	// - initial dx, dy
+	// - initial dx, dy used for particle motion
 	// - gravity pulls at dy->reduce and ultimately turn around
 	void fountain_update(ParticleManager& pm, ParticleEmitter& em, float delta)
     {

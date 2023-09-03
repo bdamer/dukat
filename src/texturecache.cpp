@@ -172,5 +172,7 @@ namespace dukat
 	{
 		log->debug("Freeing {} texture(s)...", textures.size());
 		textures.clear();
+		log->debug("Freeing {} surface(s)...", surfaces.size());
+		surfaces.clear();
 	}
 }
