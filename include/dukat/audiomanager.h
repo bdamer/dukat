@@ -8,6 +8,7 @@ namespace dukat
 	class AudioManager
 	{
 	private:
+		bool initialized; // tracks if audio subsystem was initialized successfully
 		int num_channels;
 		float music_volume;
 		float sample_volume;
