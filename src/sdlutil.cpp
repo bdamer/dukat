@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <dukat/log.h>
 #include <dukat/sdlutil.h>
 
 namespace dukat
@@ -13,10 +14,15 @@ namespace dukat
 		}
 	}
 
-	std::string format_display_mode(const SDL_DisplayMode& mode)
+	std::string format_display_mode(const SDL_DisplayMode& mode, int flags)
 	{
 		std::stringstream ss;
-		ss << mode.w << "x" << mode.h << " @ " << mode.refresh_rate << " Hz";
+		if ((flags & 1) == 1)
+			ss << mode.w << "x" << mode.h << " ";
+		if ((flags & 2) == 2)
+			ss << "@ " << mode.refresh_rate << " Hz ";
+		if ((flags & 4) == 4)
+			ss << " " << SDL_GetPixelFormatName(mode.format) << "bit ";
 		return ss.str();
 	}
 
@@ -28,7 +34,10 @@ namespace dukat
 		{
 			const auto name = SDL_GetDisplayName(i);
 			if (name != nullptr)
+			{
+				log->debug("Found display {}: {}", i, name);
 				displays[i] = std::string(name);
+			}
 		}
 		return displays;
 	}
@@ -38,7 +47,10 @@ namespace dukat
 		const auto num_modes = SDL_GetNumDisplayModes(display_idx);
 		std::vector<SDL_DisplayMode> modes(num_modes);
 		for (auto i = 0; i < num_modes; i++)
+		{
 			sdl_check_result(SDL_GetDisplayMode(display_idx, i, &modes[i]), "SDL_GetDisplayMode");
+			log->debug("Found display mode {}: {}", i, format_display_mode(modes[i]));
+		}
 		return modes;
 	}
 

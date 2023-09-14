@@ -39,7 +39,7 @@ namespace dukat
 	}
 
 	// Display mode utilties
-	std::string format_display_mode(const SDL_DisplayMode& mode);
+	std::string format_display_mode(const SDL_DisplayMode& mode, int flags = 7);
 	std::vector<std::string> list_display_names(void);
 	std::vector<SDL_DisplayMode> list_display_modes(int display_idx);
 	int find_current_display_mode(int display_idx, const std::vector<SDL_DisplayMode>& modes);
