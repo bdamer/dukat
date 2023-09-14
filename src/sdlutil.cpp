@@ -22,7 +22,14 @@ namespace dukat
 		if ((flags & 2) == 2)
 			ss << "@ " << mode.refresh_rate << " Hz ";
 		if ((flags & 4) == 4)
-			ss << " " << SDL_GetPixelFormatName(mode.format) << "bit ";
+			ss << " " << SDL_GetPixelFormatName(mode.format) << " ";
+		if ((flags & 8) == 8)
+		{
+			int bpp;
+			Uint32 r_mask, g_mask, b_mask, a_mask;
+			SDL_PixelFormatEnumToMasks(mode.format, &bpp, &r_mask, &g_mask, &b_mask, &a_mask);
+			ss << " " << bpp << "bit ";
+		}
 		return ss.str();
 	}
 
