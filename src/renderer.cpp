@@ -22,6 +22,8 @@ namespace dukat
 		set_backface_culling(true);
 		gl_check_error();
 		window->subscribe(this, Events::WindowResized);
+		// Present once to show blank screen during initial load
+		window->present();
 	}
 
 	Renderer::~Renderer(void)
