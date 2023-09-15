@@ -97,7 +97,7 @@ namespace dukat
 
 	int AudioManager::play_sample(Sample* sample, int channel, int loops)
 	{
-		if (initialized) return playback_error;
+		if (!initialized) return playback_error;
 		const auto res = Mix_PlayChannel(channel, sample->chunk, loops);
 		if (res != playback_error)
 		{
