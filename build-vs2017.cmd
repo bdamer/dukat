@@ -7,11 +7,11 @@ echo Setting up environment
 call "%VSPATH%\VC\vcvarsall.bat"
 
 echo Cleaning up last build
-"%DEVENV%" .\vs2015\dukat.sln /clean "Release"
+"%DEVENV%" .\vs2015\dukat.sln /clean "Release|x86"
 if NOT ERRORLEVEL 0 GOTO ERROR
 
 echo Building dukat
-"%DEVENV%" .\vs2015\dukat.sln /build "Release"
+"%DEVENV%" .\vs2015\dukat.sln /build "Release|x86"
 if NOT ERRORLEVEL 0 GOTO ERROR
 
 echo Build complete
