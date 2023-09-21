@@ -22,6 +22,10 @@ namespace dukat
 		AudioManager(int num_channels);
 		~AudioManager(void);
 
+		// Returns true if the audio system was successfully initialized. 
+		// In case there is no valid audio device available, this will return false.
+		bool is_initialized(void) const { return initialized; }
+
 		int get_num_channels(void) const { return num_channels; }
 		float get_music_volume(void) const { return music_volume; }
 		int get_num_active_channels(void) const;

@@ -16,9 +16,8 @@ namespace dukat
 		if (res != init_flags)
 			throw std::runtime_error("Failed to initialize audio mixer.");
 
-		const auto frequency = 44100;
-
 		// This can fail if no audio devices are available.
+		const auto frequency = 44100;
 		res = Mix_OpenAudio(frequency, MIX_DEFAULT_FORMAT, 2, 4096);
 		if (res < 0)
 		{
