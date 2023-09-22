@@ -18,7 +18,7 @@ namespace dukat
 		// Called once per frame to update internal state.
 		virtual void update(float delta) { };
 
-		void set_enabled(bool enabled) { this->enabled = enabled; }
+		virtual void set_enabled(bool enabled) { this->enabled = enabled; }
 		bool is_enabled(void) const { return enabled; }
 	};
 }
