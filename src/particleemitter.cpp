@@ -534,6 +534,8 @@ namespace dukat
 	// SPIRAL
 	// - spiralling emitters
 	// - angle changes with time, particles are emitted with initial direction based on angle
+	// - min_dp.x is radious around center at which to emit
+	// - min_dy.y is the value increment
 	void spiral_update(ParticleManager& pm, ParticleEmitter& em, float delta)
 	{
 		em.value += em.recipe.min_dp.y * delta; 
@@ -542,7 +544,7 @@ namespace dukat
 		if (em.accumulator < 1.0f || em.target_layer == nullptr)
 			return;
 
-		auto offset = Vector2{ 0.f, 1.f }.rotate(em.value);
+		const auto offset = Vector2{ 0.f, 1.f }.rotate(em.value);
 
 		const auto offset_count = em.offsets.size();
 		while (em.accumulator >= 1.0f)
