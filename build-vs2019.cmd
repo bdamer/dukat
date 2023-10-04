@@ -9,12 +9,12 @@ if "%TARGET%"=="" GOTO ERROR
 echo Setting up environment
 call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x86 10.0.19041.0 -vcvars_ver=14.29
 
-echo Cleaning up last build
-"%DEVENV%" .\vs2015\dukat.sln /clean "%TARGET%"
+echo Cleaning up last %TARGET% build
+"%DEVENV%" .\vs2015\dukat.sln /clean %TARGET%
 if NOT ERRORLEVEL 0 GOTO ERROR
 
-echo Building dukat
-"%DEVENV%" .\vs2015\dukat.sln /build "%TARGET%"
+echo Building dukat %TARGET%
+"%DEVENV%" .\vs2015\dukat.sln /build %TARGET%
 if NOT ERRORLEVEL 0 GOTO ERROR
 
 echo Build complete
