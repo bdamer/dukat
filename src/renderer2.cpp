@@ -265,6 +265,7 @@ namespace dukat
 			comp_binder(comp_program);
 		// Finally, render composite image to screen buffer
 		quad->render(comp_program);
+		perfc.inc(PerformanceCounter::FRAME_BUFFERS);
 	}
 
 	void Renderer2::render(void)
@@ -347,6 +348,7 @@ namespace dukat
 		if (composite_binder != nullptr)
 			composite_binder(composite_program);
 		quad->render(composite_program);
+		perfc.inc(PerformanceCounter::FRAME_BUFFERS);
 		if (check_flag(render_flags, GammaCorrect))
 			glDisable(GL_FRAMEBUFFER_SRGB);
 		window->present();
