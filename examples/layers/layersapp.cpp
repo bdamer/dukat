@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "layersapp.h"
+#include <dukat/causticseffect2.h>
 
 namespace dukat
 {
@@ -14,16 +15,28 @@ namespace dukat
 		resize(window->get_width(), window->get_height());
 		const auto game_height = static_cast<int>(game->get_renderer()->get_camera()->transform.dimension.y);
 
+		MeshBuilder2 mb2;
+		if (!game->get_meshes()->contains("quad"))
+			game->get_meshes()->put("quad", mb2.build_textured_quad());
+
 		// Mirror mask 
-		mask_texture = game->get_textures()->get("mask2.png");
+		mask_texture = game->get_textures()->get("mask1.png");
 		// Ground tiles
 		ground_texture = game->get_textures()->get("ground32.png");
 
 		// Set up layers
 		auto ground_layer = game->get_renderer()->create_composite_layer("ground", 0.0f);
-		ground_layer->set_composite_program(game->get_shaders()->get_program("fx_default.vsh", "fx_ground.fsh"));
-		ground_layer->set_composite_binder([&](ShaderProgram* p) {
+
+		auto caustics_sp = game->get_shaders()->get_program("fx_default.vsh", "fx_caustics.fsh");
+		auto caustics_fx = std::make_unique<CausticsEffect2>(game, caustics_sp, game_width, game_height, 0.005f);
+		const auto fx_ptr = caustics_fx.get();
+		ground_layer->add(std::move(caustics_fx));
+
+		ground_layer->set_composite_program(game->get_shaders()->get_program("fx_default.vsh", "fx_layers.fsh"));
+		ground_layer->set_composite_binder([&, fx_ptr](ShaderProgram* p) {
 			ground_texture->bind(1, p);
+			mask_texture->bind(2, p);
+			fx_ptr->get_texture()->bind(3, p);
 			p->set("u_scale", 8.0f);
 		});
 
@@ -48,13 +61,6 @@ namespace dukat
 		auto scene_layer = game->get_renderer()->create_composite_layer("scene", 20.0f);
 
 		// Load sprites
-		water_sprite = std::make_unique<Sprite>(game->get_textures()->get("white.png"));
-		water_sprite->w = 60;
-		water_sprite->h = 45;
-		water_sprite->z = 20;
-		water_sprite->color = color_rgb(0x3484b0);
-		bg_layer->add(water_sprite.get());
-
 		player_sprite = std::make_unique<Sprite>(game->get_textures()->get("lobber.png"));
 		player_sprite->flags |= Sprite::align_bottom;
 		scene_layer->add(player_sprite.get());
@@ -126,7 +132,7 @@ namespace dukat
 		p->pos = barrel_sprite->p + Vector2{ random(-4.0f, 4.0f), -random(12.0f, 14.0f) };
 		p->ry = barrel_sprite->p.y;
 		p->dp = Vector2{ random(-4.0f, 4.0f), -random(12.0f, 16.0f) };
-		p->color = Color{ 1.0f, 1.0f, 1.0f, random(0.75f, 1.0f) };
+		p->color = Color{ 0.0f, 0.0f, 1.0f, random(0.75f, 1.0f) };
 		p->dc = Color{ 0.0f, 0.0f, 0.0f, -0.1f };
 		p->ttl = 2.0f;
 		game->get_renderer()->get_layer("scene")->add(p);

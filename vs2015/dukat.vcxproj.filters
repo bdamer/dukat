@@ -534,6 +534,9 @@
     <ClInclude Include="..\include\dukat\ellipse.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\causticseffect2.h">
+      <Filter>Header Files\video\effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -847,6 +850,9 @@
     </ClCompile>
     <ClCompile Include="..\src\dither.cpp">
       <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\causticseffect2.cpp">
+      <Filter>Source Files\video\effects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

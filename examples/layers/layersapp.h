@@ -22,7 +22,6 @@ namespace dukat
 		Texture* mask_texture;
 		Texture* ground_texture;
 		std::unique_ptr<Sprite> ground_sprite;
-		std::unique_ptr<Sprite> water_sprite;
 		std::unique_ptr<Sprite> player_sprite;
 		std::unique_ptr<Sprite> barrel_sprite;
 

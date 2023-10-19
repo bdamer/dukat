@@ -1,21 +1,11 @@
-#version 330
-precision mediump float;
-///
-// Water caustics effect fragment shader.
-///
-in vec2 v_tex_coord;
 
-// time
-uniform float u_time;
-uniform vec4 u_color_lo;
-uniform vec4 u_color_mid;
-uniform vec4 u_color_hi;
+// Adapted from https://www.shadertoy.com/view/MdlXz8# by David Hoskins.
+// Based on Water turbulence effect by joltz0r 2013-07-04, improved 2013-07-07
 
-out vec4 o_color;
-
-//#include "lib_water.fsh"
-
-float caustic(vec2 uv, float speed)
+// Returns caustic ripple value.
+// uv Texture coordinate [0..1]
+// time variable
+float caustic(vec2 uv, float time)
 {
 	// Magic number
 	const float tau = 6.28318530718;
@@ -27,7 +17,6 @@ float caustic(vec2 uv, float speed)
 	const float inten = .009;
 
 	// Initialize values
-	float time = speed * u_time + 23.0;
     vec2 p = mod(uv * tau, tau) - 250.0;
 	vec2 i = vec2(p);
 	float c = 1.0;
@@ -44,17 +33,4 @@ float caustic(vec2 uv, float speed)
 	c = pow(abs(c), 8.0);
 
     return clamp(c, 0.0, 1.0);
-}
-
-void main()
-{
-	// Compute caustic value
-	float cval = caustic(v_tex_coord, 0.005);
-
-	// Switch between one of three colors [0 - .5], [.5 - .75], [.75+]
-	float s1 = step(0.75, cval);
-	float s2 = step(0.5, cval);
-	//o_color = (s1 * u_color_hi) + (1 - s1) * (s2 * u_color_mid + (1 - s2) * u_color_lo);
-	o_color = mix(u_color_hi, mix(u_color_mid, u_color_lo, s2), s1);
-	
 }

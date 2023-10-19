@@ -1,7 +1,7 @@
 #version 330
 precision mediump float;
 ///
-// Ground effect used by layers example.
+// Ground effect used by lighting2d example.
 ///
 in vec2 v_tex_coord;
 

@@ -155,6 +155,7 @@
     <ClInclude Include="..\include\dukat\boundingcircle.h" />
     <ClInclude Include="..\include\dukat\box2dmanager.h" />
     <ClInclude Include="..\include\dukat\cameraeffect2.h" />
+    <ClInclude Include="..\include\dukat\causticseffect2.h" />
     <ClInclude Include="..\include\dukat\circularbuffer.h" />
     <ClInclude Include="..\include\dukat\collision.h" />
     <ClInclude Include="..\include\dukat\collisionmanager2.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="..\src\boundingcircle.cpp" />
     <ClCompile Include="..\src\box2dmanager.cpp" />
     <ClCompile Include="..\src\box2deffect2.cpp" />
+    <ClCompile Include="..\src\causticseffect2.cpp" />
     <ClCompile Include="..\src\collisionmanager2.cpp" />
     <ClCompile Include="..\src\color.cpp" />
     <ClCompile Include="..\src\debugeffect2.cpp" />

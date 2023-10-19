@@ -122,6 +122,7 @@
 #include "camera2.h"
 #include "camera3.h"
 #include "cameraeffect2.h"
+#include "causticseffect2.h"
 #ifndef __ANDROID__
 #include "clipmap.h"
 #endif
