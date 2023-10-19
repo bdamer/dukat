@@ -22,6 +22,11 @@ uniform sampler2D u_tex2;
 // caustics texture 
 uniform sampler2D u_tex3;
 
+// Colors
+uniform vec4 u_color_lo;
+uniform vec4 u_color_mid;
+uniform vec4 u_color_hi;
+
 // aspect ratio
 uniform float u_aspect;
 // scale factor
@@ -40,7 +45,12 @@ void main()
 	vec2 uv = (screen_offset * vec2(1.0 / u_aspect, 1.0)) + 0.5;
 
 	float blend = texture(u_tex2, uv).r;
-	vec4 caustic_color = texture(u_tex3, uv);
+	float cval = texture(u_tex3, uv).r;
+	
+	// Switch between one of three colors [0 - .5], [.5 - .75], [.75+]
+	float s1 = step(0.75, cval);
+	float s2 = step(0.5, cval);
+	vec4 caustic_color = (s1 * u_color_hi) + (1 - s1) * (s2 * u_color_mid + (1 - s2) * u_color_lo);
 
 	o_color = vec4(mix(base_color.xyz, caustic_color.xyz, blend), 1);
 }

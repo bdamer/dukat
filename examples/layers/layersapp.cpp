@@ -38,6 +38,9 @@ namespace dukat
 			mask_texture->bind(2, p);
 			fx_ptr->get_texture()->bind(3, p);
 			p->set("u_scale", 8.0f);
+			p->set("u_color_lo", 0.051f, 0.09f, 0.286f, 1.f);	// #0d1749
+			p->set("u_color_mid", 0.047f, 0.08f, 0.576f, 1.f);	// #0c0293
+			p->set("u_color_hi", 0.188f, 0.012f, 0.851f, 1.f);	// #3003d9
 		});
 
 		auto bg_layer = game->get_renderer()->create_composite_layer("background", 10.0f);
@@ -132,7 +135,7 @@ namespace dukat
 		p->pos = barrel_sprite->p + Vector2{ random(-4.0f, 4.0f), -random(12.0f, 14.0f) };
 		p->ry = barrel_sprite->p.y;
 		p->dp = Vector2{ random(-4.0f, 4.0f), -random(12.0f, 16.0f) };
-		p->color = Color{ 0.0f, 0.0f, 1.0f, random(0.75f, 1.0f) };
+		p->color = Color{ 0.047f, 0.08f, 0.576f, random(0.75f, 1.0f) };
 		p->dc = Color{ 0.0f, 0.0f, 0.0f, -0.1f };
 		p->ttl = 2.0f;
 		game->get_renderer()->get_layer("scene")->add(p);

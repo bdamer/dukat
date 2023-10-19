@@ -16,6 +16,7 @@ namespace dukat
 	private:
 		Game2* game;
 		ShaderProgram* sp;
+		std::unique_ptr<Texture> texture; // frame buffer target
 		std::unique_ptr<FrameBuffer> fbo; // frame buffer object
 		std::unique_ptr<MeshData> fb_quad; // quad mesh used during framebuffer render pass
 
