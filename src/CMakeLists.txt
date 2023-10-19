@@ -7,7 +7,7 @@ if(ANDROID)
 	file (GLOB SOURCE_FILES
 		aabb2.cpp aabb3.cpp animationmanager.cpp animationsequence.cpp application.cpp assetloader.cpp
 		bit.cpp bitmapfont.cpp blockbuilder.cpp boundingcircle.cpp boundingsphere.cpp buffers.cpp
-		camera2.cpp camera3.cpp collisionmanager2.cpp color.cpp
+		camera2.cpp camera3.cpp causticseffect2.cpp collisionmanager2.cpp color.cpp
 		debugeffect2.cpp devicemanager.cpp dither.cpp draw.cpp
 		effectpass.cpp environment.cpp eulerangles.cpp
 		feedback.cpp firstpersoncamera3.cpp fixedcamera3.cpp fontcache.cpp fullscreeneffect2.cpp 
