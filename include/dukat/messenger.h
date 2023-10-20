@@ -26,6 +26,10 @@ namespace dukat
 		static constexpr Event GameBegin = 5;
 		// Game is about to end
 		static constexpr Event GameEnd = 6;
+		// Sent after a setting was changed.
+		// param1: string* The name of the setting.
+		// param2: (bool|float|int|string)* The new value of the setting.
+		static constexpr Event SettingChanged = 8;
 		// Sent after camera was changed
 		static constexpr Event CameraChanged = 9;
 		// Entity Events
