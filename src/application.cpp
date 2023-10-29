@@ -24,6 +24,7 @@ namespace dukat
 		: title(settings.get_string("window.title")), runtime(0.0f), fixed_frame_rate(0.0f),
 		paused(false), active(true), done(false), last_update(0), settings(settings)
 	{
+		const auto start = SDL_GetTicks();
 		init_logging(settings);
 		log->info("Initializing application from: {}", current_working_directory());
 
@@ -55,6 +56,8 @@ namespace dukat
 		device_manager = std::make_unique<DeviceManager>(*window, settings);
 		device_manager->add_keyboard();
 		gl_check_error();
+
+		log->trace("Application initialized in {} ms", SDL_GetTicks() - start);
 	}
 
 	Application::~Application(void)

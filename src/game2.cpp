@@ -7,8 +7,10 @@ namespace dukat
 {
 	Game2::Game2(Settings& settings) : GameBase(settings), speed_factor(1.0f)
 	{
+		const auto start = SDL_GetTicks();
 		renderer = std::make_unique<Renderer2>(window.get(), shader_cache.get());
 		renderer->set_force_sync(settings.get_bool("video.forcesync", false));
+		log->trace("Renderer initialized in {} ms", SDL_GetTicks() - start);
 		effect = std::make_unique<FullscreenEffect2>(this);
 	}
 
