@@ -66,23 +66,19 @@ namespace dukat
 			for (auto i = 0u; (processed + i) < text.length(); i++)
 			{
 				const auto c = text[processed + i];
-				if (c == ' ')
-				{
+				if (c == ' ') // remember last space
 					last_space = processed + i;
-				}
-				else
+
+				const auto& glyph = font->get_glyph(c);
+				cur_width += glyph.x_advance;
+				if (cur_width > max_line_width)
 				{
-					const auto& glyph = font->get_glyph(c);
-					cur_width += glyph.x_advance;
-					if (cur_width > max_line_width)
-					{
-						assert(last_space >= 0);
-						// need to break
-						ss << text.substr(processed, last_space - processed) << std::endl;
-						processed = last_space + 1; // acount for the space
-						line_break = true;
-						break;
-					}
+					assert(last_space >= 0);
+					// need to break
+					ss << text.substr(processed, last_space - processed) << std::endl;
+					processed = last_space + 1; // acount for the space
+					line_break = true;
+					break;
 				}
 			}
 
