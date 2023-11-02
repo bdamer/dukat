@@ -7,6 +7,10 @@
 
 namespace dukat
 {
+	ParticleManager::ParticleManager(GameBase* game) : Manager(game), gravity(60.0f), dampening(0.99f) 
+	{ 
+	}
+
 	void ParticleManager::clear(void)
 	{
 		for (auto& p : particles)

@@ -25,7 +25,7 @@ namespace dukat
 		void update_emitters(float delta);
 
 	public:
-		ParticleManager(GameBase* game) : Manager(game), gravity(25.0f), dampening(0.99f) { }
+		ParticleManager(GameBase* game);
 		~ParticleManager(void) { }
 
 		void set_gravity(float gravity) { this->gravity = gravity; }

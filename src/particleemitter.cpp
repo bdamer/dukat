@@ -10,112 +10,131 @@ namespace dukat
 {
 	MemoryPool<ParticleEmitter> ParticleEmitter::_pool(512);
 
-	const ParticleEmitter::Recipe ParticleEmitter::Recipe::FlameRecipe{
-		ParticleEmitter::Recipe::Type::Flame, 
-		Particle::Alive | Particle::Linear,
-		400.f, 1.f, 6.f, 1.f, 5.f,
-		Vector2{ 2, 25 },	// min_dp.x used to determine initial range
-		Vector2{ 2, 40 }, 	// max_dp.x used to scale particle motion 
-		{ 
-			Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Center color
-			Color{ 0.0f, 0.25f, 0.0f, 0.0f },	// Color reduction as we move away from center
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-		},
-		Color{ 0.0f, -0.5f, 0.0f, -0.05f }		// Color reduction over time
-	};
+	namespace recipes
+	{
+		const ParticleEmitter::Recipe FlameRecipe{
+			ParticleEmitter::Recipe::Type::Flame, 
+			Particle::Alive | Particle::Linear,
+			400.f, 1.f, 6.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
+			Vector2{ 2, 25 },	// min_dp.x used to determine initial range
+			Vector2{ 2, 40 }, 	// max_dp.x used to scale particle motion 
+			{ 
+				Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Center color
+				Color{ 0.0f, 0.25f, 0.0f, 0.0f },	// Color reduction as we move away from center
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
+			},
+			Color{ 0.0f, -0.5f, 0.0f, -0.05f }		// Color reduction over time
+		};
 
-	const ParticleEmitter::Recipe ParticleEmitter::Recipe::SmokeRecipe{
-		ParticleEmitter::Recipe::Type::Smoke, 
-		Particle::Alive | Particle::Linear,
-		100.f, 4.f, 8.f, 2.f, 6.f,
-		Vector2{ 4, 15 },	// min_dp.x used to determine initial range
-		Vector2{ 1, 25 },	// max_dp.x used to scale particle motion 
-		{
-			Color{ 1.0f, 1.0f, 1.0f, 1.0f },	// Smoke color
-			Color{ 0.15f, 0.0f, 0.0f, 0.0f },	// R-value: rate of change to angle, other values not used
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-		},
-		Color{ 0.0f, 0.0f, 0.0f, -0.5f }		// Color reduction over time
-	};
+		const ParticleEmitter::Recipe SmokeRecipe{
+			ParticleEmitter::Recipe::Type::Smoke, 
+			Particle::Alive | Particle::Linear,
+			100.f, 4.f, 8.f, 2.f, 6.f,				// rate, min/max size, min/max ttl
+			Vector2{ 4, 15 },	// min_dp.x used to determine initial range
+			Vector2{ 1, 25 },	// max_dp.x used to scale particle motion 
+			{
+				Color{ 1.0f, 1.0f, 1.0f, 1.0f },	// Smoke color
+				Color{ 0.15f, 0.0f, 0.0f, 0.0f },	// R-value: rate of change to angle, other values not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
+			},
+			Color{ 0.0f, 0.0f, 0.0f, -0.5f }		// Color reduction over time
+		};
 
-	const ParticleEmitter::Recipe ParticleEmitter::Recipe::FountainRecipe{
-		ParticleEmitter::Recipe::Type::Fountain, 
-		Particle::Alive | Particle::Linear | Particle::Gravitational,
-		200.f, 1.f, 4.f, 4.f, 6.f,
-		Vector2{ 0, 40 }, Vector2{ 4, 50 }, 	// horizontal x used for initial range
-		{
-			Color{ 0.47f, 0.945f, 1.0f, 0.8f }, // Each color picked randomly
-			Color{ 0.0f, 0.8f, 0.976f, 0.866f },
-			Color{ 0.0f, 0.596f, 0.862f, 0.933f },
-			Color{ 0.0f, 0.411f, 0.666f, 1.0f }
-		},
-		Color{ 0.0f, 0.0f, 0.0f, -0.05f }		// Color reduction over time
-	};
+		const ParticleEmitter::Recipe FountainRecipe{
+			ParticleEmitter::Recipe::Type::Fountain, 
+			Particle::Alive | Particle::Linear | Particle::Gravitational,
+			200.f, 1.f, 4.f, 4.f, 6.f,				// rate, min/max size, min/max ttl
+			Vector2{ 0, 80 }, Vector2{ 4, 100 }, 	// x used for initial range
+													// y used for initial motion in -y direction
+			{
+				Color{ 0.47f, 0.945f, 1.0f, 0.8f }, // Each color picked randomly
+				Color{ 0.0f, 0.8f, 0.976f, 0.866f },
+				Color{ 0.0f, 0.596f, 0.862f, 0.933f },
+				Color{ 0.0f, 0.411f, 0.666f, 1.0f }
+			},
+			Color{ 0.0f, 0.0f, 0.0f, -0.1f }		// Color reduction over time
+		};
 
-	const ParticleEmitter::Recipe ParticleEmitter::Recipe::ExplosionRecipe{
-		ParticleEmitter::Recipe::Type::Explosion, 
-		Particle::Alive | Particle::Linear | Particle::Dampened,
-		100.f, 1.f, 6.f, 1.f, 5.f,
-		Vector2{ 0, 25 }, Vector2{ 10, 35 },	// x used to adjust initial position in particle direction 
-												// y used to determine particle velocity
-		{
-			Color{ 1.0f, 0.78f, 0.14f, 1.0f },	// Inner color (at min_dp.x)
-			Color{ 1.0f, 0.31f, 0.0f, 1.0f },	// Outer color (at max_dp.x)
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-		},
-		Color{ 0.0f, -0.25f, -0.05f, -0.05f }	// Color reduction over time
-	};
+		const ParticleEmitter::Recipe ExplosionRecipe{
+			ParticleEmitter::Recipe::Type::Explosion, 
+			Particle::Alive | Particle::Linear | Particle::Dampened,
+			100.f, 1.f, 6.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
+			Vector2{ 0, 25 }, Vector2{ 10, 35 },	// x used to adjust initial position in particle direction 
+													// y used to determine particle velocity
+			{
+				Color{ 1.0f, 0.78f, 0.14f, 1.0f },	// Inner color (at min_dp.x)
+				Color{ 1.0f, 0.31f, 0.0f, 1.0f },	// Outer color (at max_dp.x)
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
+			},
+			Color{ 0.0f, -0.25f, -0.05f, -0.05f }	// Color reduction over time
+		};
 
-	const ParticleEmitter::Recipe ParticleEmitter::Recipe::SpiralRecipe{
-		ParticleEmitter::Recipe::Type::Spiral,
-		Particle::Alive | Particle::Linear,
-		100.f, 1.f, 4.f, 1.f, 5.f,
-		Vector2{ 4.f, 3.f },					// x used to scale emit range, y used to define max angular change per second
-		Vector2{ 64, 64 },						// Used to scale dp
-		{
-			Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Initial color
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-		},
-		Color{ 0.0f, -1.0f, 0.0f, -0.1f }		// Color reduction over time
-	};
+		const ParticleEmitter::Recipe GroundExplosionRecipe{
+			ParticleEmitter::Recipe::Type::GroundExplosion,
+			Particle::Alive | Particle::Linear | Particle::Gravitational,
+			100.f, 1.f, 6.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
+			Vector2{ 0, 25 }, Vector2{ 10, 35 },	// x used to adjust initial position in particle direction 
+													// y used to determine particle velocity
+			{
+				Color{ 1.0f, 0.78f, 0.14f, 1.0f },	// Inner color (at min_dp.x)
+				Color{ 1.0f, 0.31f, 0.0f, 1.0f },	// Outer color (at max_dp.x)
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
+			},
+			Color{ 0.0f, -0.25f, -0.05f, -0.05f }	// Color reduction over time
+		};
 
-	const ParticleEmitter::Recipe ParticleEmitter::Recipe::SnowRecipe{
-		ParticleEmitter::Recipe::Layered,
-		Particle::Alive | Particle::Linear,
-		40.0f,	
-		1.0f, 3.0f,		// size within 1,3
-		10.0f, 10.0f,	// ttl 
-		Vector2{ -2, 24 },  // particle motion for background (color[2] and color[3])
-		Vector2{ 4, 36 },	// particle motion for foreground (color[0] and color[1])
-		{
-			color_rgba(0xffffffff),
-			color_rgba(0xffffffc0),
-			color_rgba(0xc7cfddc0),
-			color_rgba(0x94fdffc0),
-		},
-		Color{ 0.f, 0.f, 0.f, -0.005f }
-	};
+		const ParticleEmitter::Recipe SpiralRecipe{
+			ParticleEmitter::Recipe::Type::Spiral,
+			Particle::Alive | Particle::Linear,
+			100.f, 1.f, 4.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
+			Vector2{ 4.f, 3.f },					// x used to scale emit range, y used to define max angular change per second
+			Vector2{ 64, 64 },						// Used to scale dp
+			{
+				Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Initial color
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
+			},
+			Color{ 0.0f, -1.0f, 0.0f, -0.1f }		// Color reduction over time
+		};
 
-	const ParticleEmitter::Recipe ParticleEmitter::Recipe::BlastRecipe{
-		ParticleEmitter::Recipe::Blast,
-		Particle::Alive | Particle::Linear | Particle::AntiGravitational,
-		100.0f, // rate
-		1.0f, 4.0f, // size
-		1.0f, 3.0f, // ttl
-		Vector2{ 32, -7 }, Vector2{ 64, 7 }, // direction
-		{
-			color_rgb(0xffc825),
-			color_rgb(0xffa214),
-			color_rgb(0xed7614),
-			color_rgb(0xff5000)
-		},
-		Color{ 0.1f, -0.1f, -0.1f, -0.25f }
-	};
+		const ParticleEmitter::Recipe SnowRecipe{
+			ParticleEmitter::Recipe::Layered,
+			Particle::Alive | Particle::Linear,
+			40.0f,	
+			1.0f, 3.0f,		// size within 1,3
+			10.0f, 10.0f,	// ttl 
+			Vector2{ -2, 24 },  // particle motion for background (color[2] and color[3])
+			Vector2{ 4, 36 },	// particle motion for foreground (color[0] and color[1])
+			{
+				color_rgba(0xffffffff),
+				color_rgba(0xffffffc0),
+				color_rgba(0xc7cfddc0),
+				color_rgba(0x94fdffc0),
+			},
+			Color{ 0.f, 0.f, 0.f, -0.005f }
+		};
+
+		const ParticleEmitter::Recipe BlastRecipe{
+			ParticleEmitter::Recipe::Blast,
+			Particle::Alive | Particle::Linear | Particle::AntiGravitational,
+			100.0f, // rate
+			1.0f, 4.0f, // size
+			1.0f, 3.0f, // ttl
+			Vector2{ 32, -7 }, Vector2{ 64, 7 }, // direction
+			{
+				color_rgb(0xffc825),
+				color_rgb(0xffa214),
+				color_rgb(0xed7614),
+				color_rgb(0xff5000)
+			},
+			Color{ 0.1f, -0.1f, -0.1f, -0.25f }
+		};
+	}
 
 	// LINEAR
 	// - particles are created with unique direction in +/- dp range
@@ -485,6 +504,80 @@ namespace dukat
 		}
     }
 
+	// GROUND_EXPLOSION
+	// - burst of particles
+	// - particle direction determined by angle within +/- PI/2
+	// - particle position based min_dp.x along direction vector
+	// - particle velocity within min_dp.y and max_dp.y along direction, 
+	//   additionally scaled by angle
+	void ground_explosion_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	{
+		if (em.target_layer == nullptr)
+			return;
+
+		// value used as repeat interval
+		if (em.age > 0.0f)
+		{
+			if (em.value <= 0.0f)
+				return; // no repeat
+			else if (em.age < em.value)
+				return;
+			else
+				em.age = 0.0f;
+		}
+
+		Vector2 base_offset{ 0, 0 };
+		const auto offset_count = static_cast<int>(em.offsets.size());
+		if (offset_count > 0)
+		{
+			// use accumulator to store last offset to avoid repetition
+			const auto idx = (static_cast<int>(em.accumulator) + 1) % offset_count;
+			base_offset = em.offsets[idx];
+			em.accumulator = static_cast<float>(idx);
+		}
+
+		const auto scale_delta = em.recipe.max_dp.x - em.recipe.min_dp.x;
+		static const Vector2 base_vector{ 0.0f, -1.0f };
+		for (auto i = 0; i < static_cast<int>(em.recipe.rate); i++)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				break;
+
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
+
+			const auto angle = random(-pi_over_two, pi_over_two);
+			const auto offset = base_vector.rotate(angle);
+			p->pos = em.pos + base_offset;
+
+			if (scale_delta != 0.0f)
+			{
+				const auto init_scale = random(0.0f, 1.0f);
+				p->pos += offset * (em.recipe.min_dp.x + init_scale * scale_delta);
+				p->color = lerp(em.recipe.colors[0], em.recipe.colors[1], init_scale);
+			}
+			else
+			{
+				p->color = em.recipe.colors[0];
+			}
+
+			// scale dp base on angle - to closer to [0,-1] the faster
+			const auto vel = std::abs(offset.y);
+			p->dp = offset * random(em.recipe.min_dp.y, em.recipe.max_dp.y) * vel;
+
+			const auto n_size = random(0.0f, 1.0f);
+			p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
+			p->dc = em.recipe.dc;
+			p->dc.a -= n_size;
+
+			// The smaller the particle, the longer it will live
+			p->ttl = em.recipe.min_ttl + (1.f - n_size) * (em.recipe.max_ttl - em.recipe.min_ttl);
+
+			em.target_layer->add(p);
+		}
+	}
+
 	// BLAST
 	// - burst of particles with ramp-up / ramp-down
 	// - particle are emitted with dp based on min_dp / max_dp
@@ -600,6 +693,9 @@ namespace dukat
 			break;
 		case ParticleEmitter::Recipe::Explosion:
 			emitter.update = std::bind(explosion_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break; 
+		case ParticleEmitter::Recipe::GroundExplosion:
+			emitter.update = std::bind(ground_explosion_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		case ParticleEmitter::Recipe::Spiral:
 			emitter.update = std::bind(spiral_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);

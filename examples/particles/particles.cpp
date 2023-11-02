@@ -131,7 +131,7 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Flame", 
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe::FlameRecipe);
+				auto e = pm->create_emitter(recipes::FlameRecipe);
 				e->pos = Vector2{0.f, 0.25f * static_cast<float>(camera_height) };
 				e->target_layer = particle_layer;
 				auto x_offset = -0.02f;
@@ -146,7 +146,7 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Blast",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe::BlastRecipe);
+				auto e = pm->create_emitter(recipes::BlastRecipe);
 				e->pos = Vector2{ 0, 0 };
 				e->value = 3.0f; // determines how long we emit particles
 				e->target_layer = particle_layer;
@@ -156,7 +156,7 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Smoke",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe::SmokeRecipe);
+				auto e = pm->create_emitter(recipes::SmokeRecipe);
 				e->pos = Vector2{ 0.0f, 0.25f * static_cast<float>(camera_height) };
 				e->target_layer = particle_layer;
 				auto x_offset = -0.02f;
@@ -171,10 +171,10 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Fountain",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe::FountainRecipe);
+				auto e = pm->create_emitter(recipes::FountainRecipe);
 				e->pos = Vector2{ 0.f, 0.f };
 				e->target_layer = particle_layer;
-				e->mirror_offset = 1.0f;
+				e->mirror_offset = 25.0f;
 				auto x_offset = -0.01f;
 				for (auto i = 0; i < 5; i++)
 				{
@@ -187,7 +187,7 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Snow",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe::SnowRecipe);
+				auto e = pm->create_emitter(recipes::SnowRecipe);
 				e->pos = Vector2{ 0.f, -138.f };
 				e->offsets.push_back(Vector2{ -240, 0 });
 				e->offsets.push_back(Vector2{ 240, 0 });
@@ -198,17 +198,30 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Explosion",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe::ExplosionRecipe);
+				auto e = pm->create_emitter(recipes::ExplosionRecipe);
 				e->pos = Vector2{ 0.0f, 0.0f };
 				e->target_layer = particle_layer;
 				e->value = 5.0f; // repeat interval
 			}
 		});
 
+		modes.push_back(ParticleMode{ "Explosion Ground",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+				auto e = pm->create_emitter(recipes::GroundExplosionRecipe);
+				e->recipe.max_ttl = 3.f;
+				e->recipe.min_dp.y = 100.f;
+				e->recipe.max_dp.y = 150.f;
+				e->pos = Vector2{ 0.0f, 75.0f };
+				e->target_layer = particle_layer;
+				e->value = 3.0f; // repeat interval
+			}
+		});
+
 		modes.push_back(ParticleMode{ "Cascade",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe::ExplosionRecipe);
+				auto e = pm->create_emitter(recipes::ExplosionRecipe);
 				e->pos = Vector2{ 0.0f, 0.0f };
 				e->target_layer = particle_layer;
 				e->value = 0.25f; // repeat interval
@@ -229,7 +242,7 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Implosion",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto recipe = ParticleEmitter::Recipe::ExplosionRecipe;
+				auto recipe = recipes::ExplosionRecipe;
 				recipe.min_dp.x = 25.0f; // offset by 10 pix from emitter
 				recipe.min_dp.y = -35.0f;
 				recipe.max_dp.y = -25.0f;
@@ -243,7 +256,7 @@ namespace dukat
 		modes.push_back(ParticleMode{ "Spiral",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(ParticleEmitter::Recipe::SpiralRecipe);
+				auto e = pm->create_emitter(recipes::SpiralRecipe);
 				e->pos = Vector2{ 0.0f, 0.0f };
 				e->target_layer = particle_layer;
 			}

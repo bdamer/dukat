@@ -29,7 +29,8 @@ namespace dukat
 				Spiral,
 				Radial,
 				Layered,
-				Blast
+				Blast,
+				GroundExplosion
 			};
 
 			Type type;
@@ -58,15 +59,6 @@ namespace dukat
 				: type(type), flags(flags), rate(rate), min_size(min_size), max_size(max_size), min_ttl(min_ttl), max_ttl(max_ttl),
 				min_dp(min_dp), max_dp(max_dp), colors(colors), dc(dc) { }
 			~Recipe(void) { }
-
-			// Default recipes
-			static const Recipe FlameRecipe;
-			static const Recipe SmokeRecipe;
-			static const Recipe FountainRecipe;
-			static const Recipe ExplosionRecipe;
-			static const Recipe SnowRecipe;
-			static const Recipe SpiralRecipe;
-			static const Recipe BlastRecipe;
 		};
 
 		// Particle recipe
@@ -101,6 +93,19 @@ namespace dukat
 		static void* operator new(std::size_t size) { return _pool.allocate(size); }
 		static void operator delete(void* ptr, std::size_t size) { return _pool.free(ptr, size); }
     };
+
+	// Default recipes
+	namespace recipes
+	{
+		extern const ParticleEmitter::Recipe FlameRecipe;
+		extern const ParticleEmitter::Recipe SmokeRecipe;
+		extern const ParticleEmitter::Recipe FountainRecipe;
+		extern const ParticleEmitter::Recipe ExplosionRecipe;
+		extern const ParticleEmitter::Recipe GroundExplosionRecipe;
+		extern const ParticleEmitter::Recipe SnowRecipe;
+		extern const ParticleEmitter::Recipe SpiralRecipe;
+		extern const ParticleEmitter::Recipe BlastRecipe;
+	}
 
 	// Factory method for particle emitters.
 	void init_emitter(ParticleEmitter& emitter, const ParticleEmitter::Recipe& recipe);
