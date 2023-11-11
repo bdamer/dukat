@@ -46,7 +46,11 @@ namespace dukat
 					if (p.pos.y < p.ry)
 						p.dp.y += gravity * delta;
 					else
+					{
 						p.pos.y = p.ry;
+						// zero out dp once we reach reflection line
+						p.dp.x = p.dp.y = 0.f;
+					}
 				}
 				else if (check_flag(p.flags, Particle::AntiGravitational))
 				{
