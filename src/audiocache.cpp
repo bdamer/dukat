@@ -15,7 +15,10 @@ namespace dukat
 		{
 			const auto ext = file_extension(f);
 			if (ext == "mp3" || ext == "wav" || ext == "ogg")
-				load_sample(f);
+			{
+				const auto id = compute_hash(f);
+				sample_map[id] = load_sample(f);
+			}
 		}
 		log->debug("Preload complete in: {}", SDL_GetTicks() - start);
 	}
