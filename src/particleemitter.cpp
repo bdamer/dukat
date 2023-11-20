@@ -42,6 +42,23 @@ namespace dukat
 			Color{ 0.0f, 0.0f, 0.0f, -0.5f }		// Color reduction over time
 		};
 
+		const ParticleEmitter::Recipe FogRecipe{
+			ParticleEmitter::Recipe::Type::Fog,
+			Particle::Alive | Particle::Linear,
+			40.f, 8.f, 16.f,	// rate, min/max size of ground particles
+			5.f, 10.f,			// min/max ttl
+			Vector2{ -2, 2 },	// _dp.x used for particle motion
+			Vector2{ 2, 4 },	// _dp.y used for particle motion that escape fog bank
+			{
+				Color{ 1.0f, 1.0f, 1.0f, 0.85f },	// Fog color
+				Color{ 0.75f, 0.75f, 0.1f, 0.0f },	// R/G - min/max scalar coefficient of small particles 
+													// B - Emit ratio for small particles
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
+			},
+			Color{ 0.0f, 0.0f, 0.0f, 0.0f }			// Color reduction over time - alpha not used
+		};
+
 		const ParticleEmitter::Recipe FountainRecipe{
 			ParticleEmitter::Recipe::Type::Fountain, 
 			Particle::Alive | Particle::Linear | Particle::Gravitational,
@@ -388,6 +405,66 @@ namespace dukat
         }
     }
 
+	// FOG
+	// - some particles escape upwards (amount determined by ratio in color[1].b)
+	// - majority of particles drift horizontally (based on dx/dy)
+	// - single color that fades over time 
+	// - particles emitted within offset[0] - offset[1]
+	void fog_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	{
+		em.accumulator += em.recipe.rate * delta;
+
+		if (em.accumulator < 1.0f || em.target_layer == nullptr)
+			return;
+
+		if (em.offsets.size() != 2)
+			return;
+
+		const auto small_threshold = 1.f / em.recipe.colors[1].b;
+		const auto min_pos = em.pos + em.offsets[0];
+		const auto max_pos = em.pos + em.offsets[1];
+		const auto small_min_size = static_cast<int>(em.recipe.min_size * em.recipe.colors[1].r);
+		const auto small_max_size = static_cast<int>(em.recipe.max_size * em.recipe.colors[1].g);
+		while (em.accumulator >= 1.0f)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				break;
+
+			em.value += 1.f;
+
+			p->flags = em.recipe.flags;
+			p->pos = random(min_pos, max_pos); // spawn withing rect
+
+			// most particles are large + slow-moving
+			if (em.value < small_threshold)
+			{
+				p->dp.x = random(em.recipe.min_dp.x, em.recipe.max_dp.x);
+				p->dp.y = random(-0.5f, 0.5f); // minimal movement along vertical axis
+				const auto size = random(0.0f, 1.0f);
+				p->size = std::round(em.recipe.min_size + size * (em.recipe.max_size - em.recipe.min_size));
+			}
+			else
+			{
+				p->dp.x = random(em.recipe.min_dp.x, em.recipe.max_dp.x);
+				p->dp.y = -random(em.recipe.min_dp.y, em.recipe.max_dp.y);
+				p->size = random(small_min_size, small_max_size);
+				em.value = 0.0f; // reset accumulator
+			}
+
+			p->color = em.recipe.colors[0];
+			p->dc = em.recipe.dc;
+			p->ry = em.pos.y + em.mirror_offset;
+
+			p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
+			p->dc.a = -0.25f / p->ttl; // alpha reduction based on ttl
+
+			em.target_layer->add(p);
+
+			em.accumulator -= 1.0f;
+		}
+	}
+
 	// FOUNTAIN
 	// - initial dx, dy used for particle motion
 	// - gravity pulls at dy->reduce and ultimately turn around
@@ -687,6 +764,9 @@ namespace dukat
 			break;
 		case ParticleEmitter::Recipe::Smoke:
 			emitter.update = std::bind(smoke_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Fog:
+			emitter.update = std::bind(fog_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		case ParticleEmitter::Recipe::Fountain:
 			emitter.update = std::bind(fountain_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);

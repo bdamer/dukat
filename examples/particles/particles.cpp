@@ -168,6 +168,18 @@ namespace dukat
 			}
 		});
 
+		modes.push_back(ParticleMode{ "Fog",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+
+				auto e = pm->create_emitter(recipes::FogRecipe);
+				e->pos = Vector2{ 0.f, 0.f };
+				e->target_layer = particle_layer;
+				e->offsets.push_back(Vector2{ -0.35f * static_cast<float>(camera_width), 0.1f * static_cast<float>(camera_height) });
+				e->offsets.push_back(Vector2{ 0.35f * static_cast<float>(camera_width), 0.25f * static_cast<float>(camera_height) });
+			}
+		});
+
 		modes.push_back(ParticleMode{ "Fountain",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();

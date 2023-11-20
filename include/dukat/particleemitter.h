@@ -30,7 +30,8 @@ namespace dukat
 				Radial,
 				Layered,
 				Blast,
-				GroundExplosion
+				GroundExplosion,
+				Fog
 			};
 
 			Type type;
@@ -99,6 +100,7 @@ namespace dukat
 	{
 		extern const ParticleEmitter::Recipe FlameRecipe;
 		extern const ParticleEmitter::Recipe SmokeRecipe;
+		extern const ParticleEmitter::Recipe FogRecipe;
 		extern const ParticleEmitter::Recipe FountainRecipe;
 		extern const ParticleEmitter::Recipe ExplosionRecipe;
 		extern const ParticleEmitter::Recipe GroundExplosionRecipe;
