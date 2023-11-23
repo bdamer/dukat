@@ -64,6 +64,7 @@ namespace dukat
 
 			++it;
 		}
+		perfc.inc(PerformanceCounter::PARTICLES_TOTAL, static_cast<int>(particles.size()));
 	}
 
 	void ParticleManager::update_emitters(float delta)

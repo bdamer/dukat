@@ -434,7 +434,7 @@ namespace dukat
 			em.value += 1.f;
 
 			p->flags = em.recipe.flags;
-			p->pos = random(min_pos, max_pos); // spawn withing rect
+			p->pos = random(min_pos, max_pos); // spawn within rect
 
 			// most particles are large + slow-moving
 			if (em.value < small_threshold)
@@ -457,7 +457,7 @@ namespace dukat
 			p->ry = em.pos.y + em.mirror_offset;
 
 			p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
-			p->dc.a = -0.25f / p->ttl; // alpha reduction based on ttl
+			p->dc.a = -0.5f / p->ttl; // alpha reduction based on ttl
 
 			em.target_layer->add(p);
 
