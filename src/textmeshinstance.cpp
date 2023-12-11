@@ -56,7 +56,6 @@ namespace dukat
 	{
 		TextMeshBuilder mb(font, char_width, line_height, max_line_width);
 		mb.rebuild_text_mesh(get_mesh(), text, width, height);
-		// update(0.0f);
 
 		// if scroll is active, reset number of characters on screen
 		if (scroll_delay > 0.0f)

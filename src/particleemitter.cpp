@@ -448,7 +448,7 @@ namespace dukat
 			{
 				p->dp.x = random(em.recipe.min_dp.x, em.recipe.max_dp.x);
 				p->dp.y = -random(em.recipe.min_dp.y, em.recipe.max_dp.y);
-				p->size = random(small_min_size, small_max_size);
+				p->size = static_cast<float>(random(small_min_size, small_max_size));
 				em.value = 0.0f; // reset accumulator
 			}
 

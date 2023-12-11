@@ -68,6 +68,13 @@ namespace dukat
 				const auto c = text[processed + i];
 				if (c == ' ') // remember last space
 					last_space = processed + i;
+				else if (c == '\n')
+				{
+					ss << text.substr(processed, i) << std::endl;
+					processed += i + 1; // acount for newline
+					line_break = true;
+					break;
+				}
 
 				const auto& glyph = font->get_glyph(c);
 				cur_width += glyph.x_advance;
