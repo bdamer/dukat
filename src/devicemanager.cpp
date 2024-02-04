@@ -19,12 +19,12 @@ namespace dukat
 		log->info("Keyboard device added.");
 		controllers.push_back(std::make_unique<KeyboardDevice>(window, settings));
 		active = controllers.back().get();
-		trigger(Message{ Events::DeviceBound });
+		trigger(Message{ events::DeviceBound });
 	}
 
 	void DeviceManager::remove_keyboard(void)
 	{
-		trigger(Message{ Events::DeviceUnbound });
+		trigger(Message{ events::DeviceUnbound });
 	}
 
 	InputDevice* DeviceManager::get_keyboard(void) const
@@ -63,9 +63,9 @@ namespace dukat
 #ifdef XINPUT_SUPPORT
 		}
 #endif
-		trigger(Message{ Events::DeviceUnbound });
+		trigger(Message{ events::DeviceUnbound });
 		active = controllers.back().get();
-		trigger(Message{ Events::DeviceBound });
+		trigger(Message{ events::DeviceBound });
 		apply_feedback(true);
 	}
 
@@ -80,9 +80,9 @@ namespace dukat
 			return; // device not found
 		log->info("Removing: {}", (*it)->get_name());
 		controllers.erase(it);
-		trigger(Message{ Events::DeviceUnbound });
+		trigger(Message{ events::DeviceUnbound });
 		active = controllers.back().get();
-		trigger(Message{ Events::DeviceBound });
+		trigger(Message{ events::DeviceBound });
 		apply_feedback(true);
 	}
 
@@ -220,7 +220,7 @@ namespace dukat
 		active = controllers.back().get();
 		replaying = true;
 
-		trigger(Message{ Events::DeviceBound });
+		trigger(Message{ events::DeviceBound });
 	}
 	
 	void DeviceManager::stop_replay(void)

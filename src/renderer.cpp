@@ -21,14 +21,14 @@ namespace dukat
 		glFrontFace(GL_CCW);
 		set_backface_culling(true);
 		gl_check_error();
-		window->subscribe(this, Events::WindowResized);
+		window->subscribe(this, events::WindowResized);
 		// Present once to show blank screen during initial load
 		window->present();
 	}
 
 	Renderer::~Renderer(void)
 	{
-		window->unsubscribe(this, Events::WindowResized);
+		window->unsubscribe(this, events::WindowResized);
 	}
 
 	void Renderer::test_capabilities(void)
@@ -139,7 +139,7 @@ namespace dukat
 	{
 		switch (msg.event)
 		{
-		case Events::WindowResized:
+		case events::WindowResized:
 			resize_window(*msg.get_param1<int>(), *msg.get_param2<int>());
 			break;
 		}

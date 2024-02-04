@@ -6,7 +6,7 @@
 
 namespace dukat
 {
-	struct Events
+	namespace events
 	{
 		// Range marker - does not trigger
 		static constexpr Event None = 0;
@@ -85,7 +85,7 @@ namespace dukat
 		void do_unsubscribe(Recipient* recipient, std::list<Recipient*>& list);
 
 	public:
-		Messenger(void) : active_trigger(Events::None) { }
+		Messenger(void) : active_trigger(events::None) { }
 		virtual ~Messenger(void) { }
 
 		// Triggers an event for all recievers subscribed to this entity.

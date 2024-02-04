@@ -34,12 +34,12 @@ namespace dukat
 		add_manager<UIManager>();
 		device_manager->active->on_press(InputDevice::VirtualButton::Debug, std::bind(&GameBase::toggle_debug, this));
 		get<TimerManager>()->create(1.0f, std::bind(&GameBase::update_debug_text, this), true);
-		window->subscribe(this, Events::WindowResized);
+		window->subscribe(this, events::WindowResized);
 	}
 
 	GameBase::~GameBase(void)
 	{
-		window->unsubscribe(this, Events::WindowResized);
+		window->unsubscribe(this, events::WindowResized);
 		device_manager->active->unbind(InputDevice::VirtualButton::Debug);
 
 		// explicitely free resources
@@ -89,7 +89,7 @@ namespace dukat
 	void GameBase::toggle_debug(void)
 	{
 		debug = !debug;
-		trigger(Message{Events::ToggleDebug});
+		trigger(Message{events::ToggleDebug});
 	}
 
 	std::unique_ptr<TextMeshInstance> GameBase::build_text_mesh(const std::string& font_name, ShaderProgram* sp, float size, float yorientation)
@@ -157,7 +157,7 @@ namespace dukat
 	void GameBase::receive(const Message& message)
 	{
 		switch (message.event) {
-		case Events::WindowResized:
+		case events::WindowResized:
 			// delay resize notification to avoid subscription inside event notification
 			const auto width = *message.get_param1<int>();
 			const auto height = *message.get_param2<int>();

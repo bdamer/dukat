@@ -33,7 +33,7 @@ namespace dukat
 	{
 		// just queue message for now; we won't actually send it until we've
 		// left the b2 simulation step.
-		Message msg(Events::CollisionBegin);
+		Message msg(events::CollisionBegin);
 		msg.param1 = static_cast<const void*>(contact->GetFixtureA());
 		msg.param2 = static_cast<const void*>(contact->GetFixtureB());
 		messages.push(msg);
@@ -43,7 +43,7 @@ namespace dukat
 	{
 		// This can be called either during b2 step or when destroying a body, so
 		// send notification immediately
-		Message msg(Events::CollisionEnd);
+		Message msg(events::CollisionEnd);
 		msg.param1 = static_cast<const void*>(contact->GetFixtureA());
 		msg.param2 = static_cast<const void*>(contact->GetFixtureB());
 		trigger(msg);

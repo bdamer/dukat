@@ -14,7 +14,7 @@ namespace dukat
 
 		~EventLock(void)
 		{
-			active_event = Events::None;
+			active_event = events::None;
 		}
 	};
 
@@ -46,7 +46,7 @@ namespace dukat
 
 	void Messenger::subscribe_all(Recipient* recipient)
 	{
-		for (auto it = Events::None + 1; it != Events::Any; ++it)
+		for (auto it = events::None + 1; it != events::Any; ++it)
 			subscribe(recipient, it);
 	}
 

@@ -87,7 +87,7 @@ namespace dukat
 		if (std::abs(dx) > jump_threshold || std::abs(dy) > jump_threshold)
 		{
 			// camera jump detected, trigger notification
-			game->trigger(Message{ Events::CameraChanged });
+			game->trigger(Message{ events::CameraChanged });
 		}
 
 		Camera2::update(delta);

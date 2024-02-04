@@ -281,7 +281,7 @@ namespace dukat
 	{
 		SDL_GetWindowSize(window, &width, &height);
 		log->debug("Window resized to: {}x{}", width, height);
-		trigger(Message{Events::WindowResized, &width, &height});
+		trigger(Message{events::WindowResized, &width, &height});
 	}
 
 	void Window::present(void)

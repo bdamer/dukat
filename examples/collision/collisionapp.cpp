@@ -182,12 +182,12 @@ namespace dukat
 	GameObject::GameObject(const Vector2& dir, CollisionManager2::Body* body) : dir(dir), body(body)
 	{
 		body->owner = this;
-		this->subscribe(this, Events::CollisionBegin);
+		this->subscribe(this, events::CollisionBegin);
 	}
 
 	GameObject::~GameObject(void)
 	{
-		this->unsubscribe(this, Events::CollisionBegin);
+		this->unsubscribe(this, events::CollisionBegin);
 	}
 
 	void GameObject::handle_dynamic_collision(const CollisionManager2::Body* other_body, const Collision* collision)
@@ -220,7 +220,7 @@ namespace dukat
 	{
 		switch (msg.event)
 		{
-		case Events::CollisionBegin:
+		case events::CollisionBegin:
 		{
 			if (!body->dynamic)
 				return; // nothing to do

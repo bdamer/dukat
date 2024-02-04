@@ -61,7 +61,7 @@ namespace dukat
 			debug_text->update();
 		}, true);
 
-		game->get_devices()->subscribe(this, Events::DeviceBound);
+		game->get_devices()->subscribe(this, events::DeviceBound);
 
 		bind_events();
 
@@ -70,7 +70,7 @@ namespace dukat
 
 	InputScene::~InputScene(void)
 	{
-		game->get_devices()->unsubscribe(this, Events::DeviceBound);
+		game->get_devices()->unsubscribe(this, events::DeviceBound);
 	}
 
 	void InputScene::create_sprites(void)
@@ -405,7 +405,7 @@ namespace dukat
 	{
 		switch (msg.event)
 		{
-		case Events::DeviceBound:
+		case events::DeviceBound:
 			update_info_text();
 			break;
 		}
