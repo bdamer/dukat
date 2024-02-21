@@ -62,6 +62,7 @@ namespace dukat
 		static constexpr Event CollisionEnd = 21;
 		// Indicates that a collision was resolved.
 		// param1: Vector2* direction of resolution.
+		// param2: Body* body that collision occured with.
 		static constexpr Event CollisionResolve = 22; 
 		// Indicates that a collision body was created.
 		// param1: Body* collision body
