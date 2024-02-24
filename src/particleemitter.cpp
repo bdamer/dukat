@@ -151,6 +151,21 @@ namespace dukat
 			},
 			Color{ 0.1f, -0.1f, -0.1f, -0.25f }
 		};
+
+		const ParticleEmitter::Recipe VortexRecipe{
+			ParticleEmitter::Recipe::Type::Vortex,
+			Particle::Alive | Particle::Linear,
+			40.f, 2.f, 4.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
+			Vector2{ 30.f, 8.f },					// x used to scale emit range, y used to define max angular change per second
+			Vector2{ 0, -40 },						// Used to scale dp
+			{
+				Color{ 0.78f, 0.81f, 0.87f, 1.0f },	// Initial color
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
+				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
+			},
+			Color{ 0.0f, -0.5f, 0.0f, -0.075f }		// Color reduction over time
+		};
 	}
 
 	// LINEAR
@@ -748,6 +763,52 @@ namespace dukat
 		}
 	}
 
+	// VORTEX
+	// - oscillating emitter, range defined by min_dp.x
+	// - angular speed determined by min_dp.y
+	// - particles created with fixed dp based on max_dp
+	void vortex_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	{
+		em.value += em.recipe.min_dp.y * delta;
+		em.accumulator += em.recipe.rate * delta;
+
+		if (em.accumulator < 1.0f || em.target_layer == nullptr)
+			return;
+
+		const auto offset_count = em.offsets.size();
+		const auto offset_x = em.recipe.min_dp.x * std::sin(em.value);// Vector2{ 0.f, 1.f }.rotate(em.value);
+		while (em.accumulator >= 1.0f)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				break;
+
+			p->flags = em.recipe.flags;
+			p->ry = em.pos.y + em.mirror_offset;
+			p->dp.x = em.recipe.max_dp.x;
+			p->dp.y = em.recipe.max_dp.y;
+
+			p->pos.x = em.pos.x + offset_x;
+			p->pos.y = em.pos.y;
+			if (offset_count > 0)
+				p->pos += em.offsets[random(0, offset_count)];
+
+			const auto n_size = random(0.0f, 1.0f);
+			p->size = em.recipe.min_size + n_size * (em.recipe.max_size - em.recipe.min_size);
+
+			p->color = em.recipe.colors[0];
+			p->dc = em.recipe.dc;
+			p->dc.a -= n_size;
+
+			// The smaller the particle, the longer it will live
+			p->ttl = em.recipe.min_ttl + (1.f - n_size) * (em.recipe.max_ttl - em.recipe.min_ttl);
+
+			em.target_layer->add(p);
+
+			em.accumulator -= 1.0f;
+		}
+	}
+
 	void init_emitter(ParticleEmitter& emitter, const ParticleEmitter::Recipe& recipe)
 	{
 		emitter.recipe = recipe;
@@ -788,6 +849,9 @@ namespace dukat
 			break;
 		case ParticleEmitter::Recipe::Blast:
 			emitter.update = std::bind(blast_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleEmitter::Recipe::Vortex:
+			emitter.update = std::bind(vortex_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		default:
 			emitter.update = nullptr;

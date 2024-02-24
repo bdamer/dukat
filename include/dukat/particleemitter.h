@@ -31,7 +31,8 @@ namespace dukat
 				Layered,
 				Blast,
 				GroundExplosion,
-				Fog
+				Fog,
+				Vortex
 			};
 
 			Type type;
@@ -107,6 +108,7 @@ namespace dukat
 		extern const ParticleEmitter::Recipe SnowRecipe;
 		extern const ParticleEmitter::Recipe SpiralRecipe;
 		extern const ParticleEmitter::Recipe BlastRecipe;
+		extern const ParticleEmitter::Recipe VortexRecipe;
 	}
 
 	// Factory method for particle emitters.

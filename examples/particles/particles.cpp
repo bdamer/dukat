@@ -128,6 +128,22 @@ namespace dukat
 			}
 			});
 
+		modes.push_back(ParticleMode{ "Vortex",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+				auto e1 = pm->create_emitter(recipes::VortexRecipe);
+				e1->pos = Vector2{ 0, 10 };
+				e1->recipe.min_dp.y = 10.f;
+				e1->target_layer = particle_layer;
+				
+				auto e2 = pm->create_emitter(recipes::VortexRecipe);
+				e2->pos = Vector2{ 0, 10 };
+				e2->recipe.min_dp.y = 10.f;
+				e2->value = pi;
+				e2->target_layer = particle_layer;
+			}
+		});
+
 		modes.push_back(ParticleMode{ "Flame", 
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
