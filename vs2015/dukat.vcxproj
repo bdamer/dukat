@@ -89,6 +89,9 @@
     <IntDir>dukat\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)..\include\;$(BOX2D_PATH);$(BOOST_PATH);$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>

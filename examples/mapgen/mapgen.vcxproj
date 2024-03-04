@@ -89,6 +89,9 @@
     <OutDir>$(SolutionDir)..\bin\$(PlatformTarget)\</OutDir>
     <IncludePath>$(SolutionDir)..\include\;$(SolutionDir)..\src\;%BOOST_PATH%;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
