@@ -35,7 +35,7 @@ namespace dukat
 		InputDevice* active;
 
 		DeviceManager(const Window& window, const Settings& settings) : window(window), settings(settings), 
-			recorder(nullptr), enabled(true), feedback_paused(false), recording(false), replaying(false), active(nullptr) { }
+			feedback_val(), recorder(nullptr), enabled(true), feedback_paused(false), recording(false), replaying(false), active(nullptr) { }
 		~DeviceManager(void) { }
 
 		void add_keyboard(void);

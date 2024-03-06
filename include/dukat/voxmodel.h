@@ -32,7 +32,7 @@ namespace dukat
         void load_node(OctreeNode<SDL_Color>* cur_node, const std::vector<VoxNode>& nodes, int idx);
 
     public:
-        VoxModel(void) { }
+        VoxModel(void) : header(), octree(nullptr) { }
         ~VoxModel(void) { }
 
         // Data accessor

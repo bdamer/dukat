@@ -52,7 +52,7 @@ namespace dukat
             std::vector<Corner*> corners;
             
             Center(void) : index(-1), ocean(false), water(false), 
-                coast(false), border(false), elevation(0.0f), moisture(0.0f) { }
+                coast(false), border(false), biome(), elevation(0.0f), moisture(0.0f) { }
         };
 
         // A corner of a map polygon.

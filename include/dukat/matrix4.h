@@ -31,7 +31,7 @@ namespace dukat
 		// Column-major ordered elements of the matrix.
 		GLfloat m[16];
 
-		Matrix4(void) { }
+		Matrix4(void) : m() { }
 		~Matrix4(void) { }
 
 		void identity(void);

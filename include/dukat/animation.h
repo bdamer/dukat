@@ -62,7 +62,7 @@ namespace dukat
 
 	public:
 		// Creates a new animation for the attribute provided.
-		ValueAnimation(T* attribute) : next_key(-1), time(0.0f), attribute(attribute), loop(false), paused(false), callback(nullptr) { }
+		ValueAnimation(T* attribute) : next_key(-1), time(0.0f), attribute(attribute), value_delta(), loop(false), paused(false), callback(nullptr) { }
 		// Creates a new animation with a single animation key specified by time and value.
 		ValueAnimation(T* attribute, float time, T value, bool loop = false)
 			: next_key(-1) , time(0.0f), attribute(attribute), loop(loop), paused(false), callback(nullptr) {
@@ -151,7 +151,7 @@ namespace dukat
 
 	public:
 		// Creates a new animation for the attribute provided.
-		MultiValueAnimation(const std::array<T*, S>& attributes) : next_key(-1), time(0.0f), attributes(attributes), loop(false), paused(false), callback(nullptr) { }
+		MultiValueAnimation(const std::array<T*, S>& attributes) : next_key(-1), time(0.0f), attributes(attributes), value_deltas(), loop(false), paused(false), callback(nullptr) { }
 		// Creates a new animation with a single animation key specified by time and value.
 		MultiValueAnimation(const std::array<T*, S>& attributes, float time, const std::array<T, S>& values, bool loop = false)
 			: next_key(-1), time(0.0f), attributes(attributes), loop(loop), paused(false), callback(nullptr) {

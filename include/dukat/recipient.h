@@ -10,7 +10,7 @@ namespace dukat
 		const void* param1; // parameter 1
 		const void* param2; // parameter 2
 
-        Message(void) { }
+        Message(void) : event(0), param1(nullptr), param2(nullptr) { }
         Message(Event ev, const void* param1 = nullptr, const void* param2 = nullptr) : event(ev), param1(param1), param2(param2) { }
     
         // convenience methods

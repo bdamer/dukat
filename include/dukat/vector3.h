@@ -11,9 +11,9 @@ namespace dukat
 		float x, y, z, w;
 
 		// Constructors
-		Vector3(void) : x(0), y(0), z(0), w(1) { }
-		Vector3(const Vector3& a) : x(a.x), y(a.y), z(a.z) { }
-		Vector3(float nx, float ny, float nz) : x(nx), y(ny), z(nz) { }
+		Vector3(void) : x(0.f), y(0.f), z(0.f), w(1.f) { }
+		Vector3(const Vector3& a) : x(a.x), y(a.y), z(a.z), w(1.f) { }
+		Vector3(float nx, float ny, float nz) : x(nx), y(ny), z(nz), w(1.f) { }
 
 		// Vector operations
 		Vector3& operator=(const Vector3& a) { x = a.x; y = a.y; z = a.z; return *this; }

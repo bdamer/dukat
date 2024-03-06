@@ -9,7 +9,7 @@ namespace dukat
 	public:
 		GLfloat m[4];
 
-		Matrix2(void) { }
+		Matrix2(void) : m() { }
 		~Matrix2(void) { }
 
 		// Makes this an identity matrix.

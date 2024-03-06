@@ -15,8 +15,8 @@ namespace dukat
 
 		// Constructor
 		Transform2(void) : pos(Vector2(0,0)), rot(0), priority(-1.0f) { }
-		Transform2(float x, float y, float rot) : pos(x,y), rot(rot) { }
-		Transform2(Vector2 pos, float rot) : pos(pos), rot(rot) { }
+		Transform2(float x, float y, float rot) : pos(x,y), rot(rot), priority(-1.0f) { }
+		Transform2(Vector2 pos, float rot) : pos(pos), rot(rot), priority(-1.0f) { }
 
 		// Operators
 		Transform2 operator+(const Transform2& a) const { return Transform2(pos.x + a.pos.x, pos.y + a.pos.y, rot + a.rot); }

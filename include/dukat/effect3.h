@@ -10,7 +10,7 @@ namespace dukat
 		int count;
 		float values[4];
 
-		EffectParameter(void) : count(0) {  }
+		EffectParameter(void) : count(0), values() {  }
 		EffectParameter(float val0) : count(1) { values[0] = val0; }
 		EffectParameter(float val0, float val1) : count(2) { values[0] = val0; values[1] = val1; }
 		EffectParameter(float val0, float val1, float val2) : count(3) { values[0] = val0; values[1] = val1; values[2] = val2; }

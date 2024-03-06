@@ -16,7 +16,7 @@ namespace dukat
 		void diamond(HeightMap::Level& level, int x, int y, int size, float offset) const;
 
 	public:
-		DiamondSquareGenerator(int seed = 0) : seed(seed), min_val(0.0f), max_val(1.0f) { }
+		DiamondSquareGenerator(int seed = 0) : seed(seed), roughness(0.f), min_val(0.0f), max_val(1.0f) { }
 		~DiamondSquareGenerator(void) { }
 
 		void generate(HeightMap::Level& level) const;

@@ -14,7 +14,7 @@ namespace dukat
 		float bank;
 
 		// Default constructor does nothing
-		EulerAngles(void) { };
+		EulerAngles(void) : heading(0.f), pitch(0.f), bank(0.f) { };
 		// Construct from three values
 		EulerAngles(float h, float p, float b) : heading(h), pitch(p), bank(b) { }
 		

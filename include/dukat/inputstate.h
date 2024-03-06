@@ -11,7 +11,7 @@ namespace dukat
 		float rx, ry; // relative right axis [-1..1]
 		float lt, rt; // left and right triggers
 	
-		InputState(void) : lx(0.0f), ly(0.0f), rx(0.0f), ry(0.0f), lt(0.0f), rt(0.0f) { }
+		InputState(void) : buttons(), lx(0.0f), ly(0.0f), rx(0.0f), ry(0.0f), lt(0.0f), rt(0.0f) { }
 		InputState(const std::array<Uint32, 21>& buttons, float lx, float ly, float rx, float ry, float lt, float rt) 
 			: buttons(buttons), lx(lx), ly(ly), rx(rx), ry(ry), lt(lt), rt(rt) { }
 

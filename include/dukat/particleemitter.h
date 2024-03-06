@@ -54,8 +54,8 @@ namespace dukat
             // color reduciton over time
             Color dc;
 
-			Recipe(void) : type(None), flags(Particle::Alive | Particle::Linear), rate(0.0f), min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
-			Recipe(Type type) : type(type), flags(Particle::Alive | Particle::Linear), rate(0.0f), min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f) { }
+			Recipe(void) : type(None), flags(Particle::Alive | Particle::Linear), rate(0.0f), min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f), colors() { }
+			Recipe(Type type) : type(type), flags(Particle::Alive | Particle::Linear), rate(0.0f), min_size(0.0f), max_size(0.0f), min_ttl(0.0f), max_ttl(0.0f), colors() { }
 			Recipe(Type type, uint8_t flags, float rate, float min_size, float max_size, float min_ttl, float max_ttl, 
 				const Vector2& min_dp, const Vector2& max_dp, const std::array<Color,4> colors, const Color& dc) 
 				: type(type), flags(flags), rate(rate), min_size(min_size), max_size(max_size), min_ttl(min_ttl), max_ttl(max_ttl),

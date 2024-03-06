@@ -33,7 +33,7 @@ namespace dukat
 
     void FullscreenEffect2::begin_fade_in(float duration, std::function<void(void)> callback)
     {
-        log->debug("Begin fade-in: {}", duration);
+        log->trace("FX2 begin_fade_in: {}", duration);
         cancel_anim();
 
         state.alpha = 1.0f;
@@ -45,7 +45,7 @@ namespace dukat
 
     void FullscreenEffect2::begin_fade_out(float duration, std::function<void(void)> callback)
     {
-        log->debug("Begin fade-out: {}", duration);
+        log->trace("FX2 begin_fade_out: {}", duration);
         cancel_anim();
 
         state.alpha = 0.0f;
@@ -57,6 +57,7 @@ namespace dukat
 
     void FullscreenEffect2::begin_anim(float duration, float target, std::function<void(void)> callback)
     {
+        log->trace("FX2 begin_anim: {}", duration);
         auto value_anim = std::make_unique<ValueAnimation<float>>(&state.alpha, duration, target);
         value_anim->set_callback([&, callback](void) {
             if (callback != nullptr)
@@ -68,6 +69,7 @@ namespace dukat
 
     void FullscreenEffect2::cancel_anim(void)
     {
+        log->trace("FX2 cancel_anim");
         if (state.anim != nullptr)
         {
             game->get<AnimationManager>()->cancel(state.anim);
