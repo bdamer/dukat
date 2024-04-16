@@ -51,12 +51,25 @@ namespace dukat
 	inline constexpr float deg_to_rad(float x) { return (x * pi) / 180.0f; }
 	inline constexpr float rad_to_deg(float x) { return (x * 180.0f) / pi; }
 
-	// Returns the next value greater than v that is a power of 2.
+	// Returns the next value >= v that is a power of 2.
 	inline constexpr int next_pow_two(int v)
 	{
 		v--;
 		v |= v >> 1; v |= v >> 2; v |= v >> 4; v |= v >> 8; v |= v >> 16;
 		return ++v;
+	}
+
+	// Returns the power to raise 2 to a given exponent.
+	inline int get_pow_two(int exponent) 
+	{
+		static constexpr int twos[] = 
+		{
+			1 << 0,  1 << 1,  1 << 2,  1 << 3,  1 << 4,  1 << 5,  1 << 6,  1 << 7,
+			1 << 8,  1 << 9,  1 << 10, 1 << 11, 1 << 12, 1 << 13, 1 << 14, 1 << 15,
+			1 << 16, 1 << 17, 1 << 18, 1 << 19, 1 << 20, 1 << 21, 1 << 22, 1 << 23,
+			1 << 24, 1 << 25, 1 << 26, 1 << 27, 1 << 28, 1 << 29, 1 << 30, 1 << 31
+		};
+		return std::lower_bound(std::begin(twos), std::end(twos), exponent) - std::begin(twos);
 	}
 
 	// Rounds r to the next integer.
