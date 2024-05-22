@@ -44,6 +44,9 @@ namespace dukat
 		Vector2 rotate(float theta) const;
 		// Angle of this vector (relative to [1,0]).
 		float angle(void) const;
+		// Shortcuts to return perpendicular vectors.		
+		Vector2 left(void) const { return Vector2{ -y, x }; }
+		Vector2 right(void) const { return Vector2{ y, -x }; }
 
 		friend std::ostream& operator<<(std::ostream& os, const Vector2& v);
 
