@@ -17,7 +17,9 @@ namespace dukat
 		// swap sprite program and render sprites
 		auto sp = target_layer->get_sprite_program();
 		target_layer->set_sprite_program(sprite_program);
-		target_layer->render_sprites(renderer, shifted_bb, [](Sprite* s) { return (s->flags & Sprite::fx) != Sprite::fx; });
+		// sprite rotation is not supported
+		target_layer->render_sprites(renderer, shifted_bb, 
+			[](Sprite* s) { return (s->flags & Sprite::fx) != Sprite::fx && s->rot == 0.0f; });
 		target_layer->set_sprite_program(sp);
 
 		// do the same for particles
