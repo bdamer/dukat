@@ -126,6 +126,12 @@ namespace dukat
 			value = max;
 	}
 
+	template<typename T>
+	inline bool in_range(const T& val, const T& min_val, const T& max_val)
+	{
+		return val >= min_val && val <= max_val;
+	}
+
 	template <typename T>
 	inline constexpr float normalize(T value, T max_value = std::numeric_limits<T>::max())
 	{
