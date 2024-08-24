@@ -21,16 +21,16 @@ namespace dukat
 
 	public:
 		GamepadDevice(const Window& window, const Settings& settings, int device_index);
-		~GamepadDevice(void);
-		void restore_mapping(const Settings& settings);
+		~GamepadDevice(void) override;
+		void restore_mapping(const Settings& settings) override;
 
-		int id(void) const;
+		int id(void) const override;
 		bool is_inverted(void) const { return invert_y; }
-		std::string get_button_name(VirtualButton button) const;
-		void update(void);
+		std::string get_button_name(VirtualButton button) const override;
+		void update(void) override;
 
 		// Controls haptic feedback
-		void start_feedback(float low_freq, float hi_freq, float duration);
-		void cancel_feedback(void) { start_feedback(0.0f, 0.0f, 0.0f); }
+		void start_feedback(float low_freq, float hi_freq, float duration) override;
+		void cancel_feedback(void) override { start_feedback(0.0f, 0.0f, 0.0f); }
 	};
 }

@@ -16,10 +16,10 @@ namespace dukat
 
 	public:
 		PlaybackDevice(const Window& window, const Settings& settings, InputRecorder* recorder);
-		~PlaybackDevice(void) { }
-		void update(void);
+		~PlaybackDevice(void) override { }
+		void update(void) override;
 
-		int id(void) const { return playback_id; }
-		std::string get_button_name(VirtualButton button) const { return ""; }
+		int id(void) const override { return playback_id; }
+		std::string get_button_name(VirtualButton button) const override { return ""; }
 	};
 }

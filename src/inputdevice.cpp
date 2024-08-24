@@ -14,6 +14,19 @@ namespace dukat
 		long_press_threshold = settings.get_int("input.longpress", 1000);
 	}
 
+	bool InputDevice::is_mapped(int key, VirtualButton& button) const
+	{
+		for (auto i = 0u; i < mapping.size(); i++)
+		{
+			if (key == mapping[i])
+			{
+				button = static_cast<VirtualButton>(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void InputDevice::update_button_state(VirtualButton button, bool pressed)
 	{
 		const auto was_pressed = buttons[button] > 0;

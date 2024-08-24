@@ -25,12 +25,16 @@ namespace dukat
 		static constexpr auto keyboard_id = -1;
 
 		KeyboardDevice(const Window& window, const Settings& settings);
-		~KeyboardDevice(void);
-		void restore_mapping(const Settings& settings);
+		~KeyboardDevice(void) override;
 
-		void update(void);
+		int get_mapping(VirtualButton button) const override;
+		bool is_mapped(int key, VirtualButton& button) const override;
+		void override_mapping(VirtualButton button, int key) override;
+		void restore_mapping(const Settings& settings) override;
+
+		void update(void) override;
 		void set_sensitivity(int sensitivity) { this->sensitivity = sensitivity; }
-		int id(void) const { return keyboard_id; }
-		std::string get_button_name(VirtualButton button) const;
+		int id(void) const override { return keyboard_id; }
+		std::string get_button_name(VirtualButton button) const override;
 	};
 }

@@ -27,16 +27,16 @@ namespace dukat
 
 	public:
 		XBoxDevice(const Window& window, const Settings& settings, int device_index);
-		~XBoxDevice(void);
-		void restore_mapping(const Settings& settings);
+		~XBoxDevice(void) override;
+		void restore_mapping(const Settings& settings) override;
 
-		int id(void) const { return device_id; }
-		std::string get_button_name(VirtualButton button) const;
-		void update(void);
+		int id(void) const override { return device_id; }
+		std::string get_button_name(VirtualButton button) const override;
+		void update(void) override;
 
 		// Controls haptic feedback
-		void start_feedback(float low_freq, float hi_freq, float duration);
-		void cancel_feedback(void) { start_feedback(0.0f, 0.0f, 0.0f); }
+		void start_feedback(float low_freq, float hi_freq, float duration) override;
+		void cancel_feedback(void) override { start_feedback(0.0f, 0.0f, 0.0f); }
 	};
 
 	bool is_xinput_device(int device_index);

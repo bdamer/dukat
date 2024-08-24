@@ -23,6 +23,50 @@ namespace dukat
 		keystate = nullptr; // memory handled by SDL
 	}
 
+	int KeyboardDevice::get_mapping(VirtualButton button) const
+	{
+		for (auto i = 0; i < static_cast<int>(mouse_mapping.size()); i++)
+		{
+			if (mouse_mapping[i] == static_cast<int>(button))
+				return -(i + 1);
+		}
+		return InputDevice::get_mapping(button);
+	}
+
+	bool KeyboardDevice::is_mapped(int key, VirtualButton& button) const
+	{
+		if (key < 0) // indicates mouse button
+		{
+			const auto mouse_button = -key - 1;
+			if (mouse_button < static_cast<int>(mouse_mapping.size()) && mouse_mapping[mouse_button] != -1)
+			{
+				button = static_cast<VirtualButton>(mouse_mapping[mouse_button]);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return InputDevice::is_mapped(key, button);
+		}
+	}
+
+	void KeyboardDevice::override_mapping(VirtualButton button, int key)
+	{
+		if (key < 0) // indicates mouse button [1..5]
+		{
+			const auto mouse_button = -key - 1;
+			mouse_mapping[mouse_button] = button;
+		}
+		else
+		{
+			InputDevice::override_mapping(button, key);
+		}
+	}
+
 	void KeyboardDevice::restore_mapping(const Settings& settings)
 	{
 		// Initialize key mapping
