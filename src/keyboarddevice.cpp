@@ -28,17 +28,17 @@ namespace dukat
 		for (auto i = 0; i < static_cast<int>(mouse_mapping.size()); i++)
 		{
 			if (mouse_mapping[i] == static_cast<int>(button))
-				return -(i + 1);
+				return mouse_button_to_key(i + 1); // map to [-2,-6]
 		}
 		return InputDevice::get_mapping(button);
 	}
 
 	bool KeyboardDevice::is_mapped(int key, VirtualButton& button) const
 	{
-		if (key < 0) // indicates mouse button
+		if (key < InputDevice::no_key) // indicates mouse button
 		{
-			const auto mouse_button = -key - 1;
-			if (mouse_button < static_cast<int>(mouse_mapping.size()) && mouse_mapping[mouse_button] != -1)
+			const auto mouse_button = -key - 2;
+			if (mouse_button < static_cast<int>(mouse_mapping.size()) && mouse_mapping[mouse_button] != no_key)
 			{
 				button = static_cast<VirtualButton>(mouse_mapping[mouse_button]);
 				return true;
@@ -56,9 +56,9 @@ namespace dukat
 
 	void KeyboardDevice::override_mapping(VirtualButton button, int key)
 	{
-		if (key < 0) // indicates mouse button [1..5]
+		if (key < InputDevice::no_key) // indicates mouse button [1..5]
 		{
-			const auto mouse_button = -key - 1;
+			const auto mouse_button = -key - 2;
 			mouse_mapping[mouse_button] = button;
 		}
 		else
@@ -67,17 +67,27 @@ namespace dukat
 		}
 	}
 
+	void KeyboardDevice::clear_mapping(VirtualButton button)
+	{
+		for (auto& it : mouse_mapping)
+		{
+			if (it == button)
+				it = no_key;
+		}
+		InputDevice::clear_mapping(button);
+	}
+
 	void KeyboardDevice::restore_mapping(const Settings& settings)
 	{
 		// Initialize key mapping
-		mapping[VirtualButton::Button1] = settings.get_int("input.keyboard.button1", -1);
-		mapping[VirtualButton::Button2] = settings.get_int("input.keyboard.button2", -1);
-		mapping[VirtualButton::Button3] = settings.get_int("input.keyboard.button3", -1);
-		mapping[VirtualButton::Button4] = settings.get_int("input.keyboard.button4", -1);
-		mapping[VirtualButton::Button5] = settings.get_int("input.keyboard.button5", -1);
-		mapping[VirtualButton::Button6] = settings.get_int("input.keyboard.button6", -1);
-		mapping[VirtualButton::Button7] = settings.get_int("input.keyboard.button7", -1);
-		mapping[VirtualButton::Button8] = settings.get_int("input.keyboard.button8", -1);
+		mapping[VirtualButton::Button1] = settings.get_int("input.keyboard.button1", no_key);
+		mapping[VirtualButton::Button2] = settings.get_int("input.keyboard.button2", no_key);
+		mapping[VirtualButton::Button3] = settings.get_int("input.keyboard.button3", no_key);
+		mapping[VirtualButton::Button4] = settings.get_int("input.keyboard.button4", no_key);
+		mapping[VirtualButton::Button5] = settings.get_int("input.keyboard.button5", no_key);
+		mapping[VirtualButton::Button6] = settings.get_int("input.keyboard.button6", no_key);
+		mapping[VirtualButton::Button7] = settings.get_int("input.keyboard.button7", no_key);
+		mapping[VirtualButton::Button8] = settings.get_int("input.keyboard.button8", no_key);
 		mapping[VirtualButton::Select] = SDL_SCANCODE_ESCAPE;
 		mapping[VirtualButton::Start] = SDL_SCANCODE_RETURN;
 		mapping[VirtualButton::Down] = settings.get_int("input.keyboard.down", SDL_SCANCODE_DOWN);
@@ -106,22 +116,22 @@ namespace dukat
 		// Handle direction keys
 		const auto key_left = mapping[VirtualButton::LeftAxisLeft];
 		const auto key_right = mapping[VirtualButton::LeftAxisRight];
-		if (key_left > -1 && key_right > -1)
+		if (key_left > no_key && key_right > no_key)
 		{
 			lx = keystate[key_left] ? -1.0f : (keystate[key_right] ? 1.0f : 0.0f);
 		}
 		const auto key_up = mapping[VirtualButton::LeftAxisUp];
 		const auto key_down = mapping[VirtualButton::LeftAxisDown];
-		if (key_up > -1 && key_down > -1)
+		if (key_up > no_key && key_down > no_key)
 		{
 			ly = keystate[key_up] ? 1.0f : (keystate[key_down] ? -1.0f : 0.0f);
 		}
 
 		// Handle trigger keys
 		const auto key_lt = mapping[VirtualButton::LeftTrigger];
-		lt = key_lt > -1 && keystate[key_lt] ? 1.0f : 0.0f;
+		lt = key_lt > no_key && keystate[key_lt] ? 1.0f : 0.0f;
 		const auto key_rt = mapping[VirtualButton::RightTrigger];
-		rt = key_rt > -1 && keystate[key_rt] ? 1.0f : 0.0f;
+		rt = key_rt > no_key && keystate[key_rt] ? 1.0f : 0.0f;
 
 		// Right axis comes from mouse cursor
 		int rel_x, rel_y;
@@ -149,14 +159,14 @@ namespace dukat
 		for (auto i = 0u; i < mouse_buttons.size(); i++)
 		{
 			mouse_buttons[i] = (buttons & SDL_BUTTON(SDL_BUTTON_LEFT + i)) > 0;
-			if (mouse_mapping[i] > -1)
+			if (mouse_mapping[i] > no_key)
 				states[mouse_mapping[i]] |= mouse_buttons[i];
 		}
 
 		// Handle mapped keys
 		for (auto i = 0u; i < VirtualButton::_Count; i++)
 		{
-			if (mapping[i] > -1)
+			if (mapping[i] > no_key)
 				states[i] |= keystate[mapping[i]] == 1;
 		}
 
@@ -178,7 +188,7 @@ namespace dukat
 			return "Extra Mouse Button 2";
 
 		const auto code = mapping[button];
-		if (code == -1)
+		if (code == no_key)
 			return "n/a";
 		else
 			return SDL_GetScancodeName(static_cast<SDL_Scancode>(code));

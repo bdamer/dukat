@@ -61,6 +61,8 @@ namespace dukat
 			_Count
 		};
 
+		static constexpr auto no_key = -1;
+
 	private:
 
 		static std::array<std::function<void(void)>, VirtualButton::_Count> button_handlers;
@@ -105,6 +107,8 @@ namespace dukat
 		virtual bool is_mapped(int key, VirtualButton& button) const;
 		// Temporarily overrides key mapping.
 		virtual void override_mapping(VirtualButton button, int key) { mapping[button] = key; }
+		// Clears all mappings for a specific button.
+		virtual void clear_mapping(VirtualButton button) { mapping[button] = no_key; }
 		// Restores default mapping based on configration settings.
 		virtual void restore_mapping(const Settings& settings) { };
 
