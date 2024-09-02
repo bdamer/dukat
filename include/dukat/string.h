@@ -17,6 +17,21 @@ namespace dukat
 		return needle.length() <= haystack.length() && equal(needle.begin(), needle.end(), haystack.end() - needle.size());
 	}
 
+	/// <summary>
+	/// Checks that input value matches prefix. Assumes that remainder of input
+	/// is a number, which is returned via index parameter.
+	/// </summary>
+	/// <param name="value">The input value.</param>
+	/// <param name="prefix">A prefix to match.</param>
+	/// <param name="index">The index value.</param>
+	/// <returns>True if input value matches prefix.</returns>
+	inline bool matches(const std::string& value, const std::string& prefix, int& index)
+	{
+		if (!starts_with(value, prefix)) return false;
+		index = std::stoi(value.substr(static_cast<int>(prefix.size())));
+		return true;
+	}
+
 	inline std::string join(const std::vector<std::string>& v, const char* delim = ",")
 	{
 		std::ostringstream oss;
