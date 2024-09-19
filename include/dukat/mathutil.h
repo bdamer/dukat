@@ -132,6 +132,15 @@ namespace dukat
 		return val >= min_val && val <= max_val;
 	}
 
+	template<typename T>
+	inline T wrap(const T& val, const T& max_val)
+	{
+		auto res = val;
+		while (res < 0)
+			res += max_val;
+		return res % max_val;
+	}
+
 	template <typename T>
 	inline constexpr float normalize(T value, T max_value = std::numeric_limits<T>::max())
 	{
