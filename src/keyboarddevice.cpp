@@ -33,6 +33,21 @@ namespace dukat
 		return InputDevice::get_mapping(button);
 	}
 
+	int KeyboardDevice::get_mouse_mapping(VirtualButton button) const
+	{
+		for (auto i = 0; i < static_cast<int>(mouse_mapping.size()); i++)
+		{
+			if (mouse_mapping[i] == static_cast<int>(button))
+				return mouse_button_to_key(i + 1); // map to [-2,-6]
+		}
+		return no_key;
+	}
+
+	int KeyboardDevice::get_key_mapping(VirtualButton button) const
+	{
+		return InputDevice::get_mapping(button);
+	}
+
 	bool KeyboardDevice::is_mapped(int key, VirtualButton& button) const
 	{
 		if (key < InputDevice::no_key) // indicates mouse button

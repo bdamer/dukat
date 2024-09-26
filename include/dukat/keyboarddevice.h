@@ -28,6 +28,8 @@ namespace dukat
 		~KeyboardDevice(void) override;
 
 		int get_mapping(VirtualButton button) const override;
+		int get_mouse_mapping(VirtualButton button) const;
+		int get_key_mapping(VirtualButton button) const;
 		bool is_mapped(int key, VirtualButton& button) const override;
 		void override_mapping(VirtualButton button, int key) override;
 		void clear_mapping(VirtualButton button) override;
