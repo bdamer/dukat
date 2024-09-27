@@ -16,11 +16,11 @@ namespace dukat
 		}
 
 		background_idx = 0;
-		background[0] = game->get_textures()->get("box01_1024.png");
-		background[1] = game->get_textures()->get("rock01_1024.png");
-		background[2] = game->get_textures()->get("sand01_1024.png");
-		background[3] = game->get_textures()->get("grass01_1024.png");
-		background[4] = game->get_textures()->get("dirt01_1024.png");
+		background[0] = game->get_textures()->get_or_load("box01_1024.png");
+		background[1] = game->get_textures()->get_or_load("rock01_1024.png");
+		background[2] = game->get_textures()->get_or_load("sand01_1024.png");
+		background[3] = game->get_textures()->get_or_load("grass01_1024.png");
+		background[4] = game->get_textures()->get_or_load("dirt01_1024.png");
 
 		// Generate framebuffer
 		fbo = std::make_unique<FrameBuffer>(texture_size, texture_size, false, false);

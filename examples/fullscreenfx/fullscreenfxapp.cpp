@@ -28,7 +28,7 @@ namespace dukat
 		auto layer = game->get_renderer()->create_composite_layer("main", 1.0f);
 
 		// Load sample image
-		auto texture = game->get_textures()->get("sunset.jpg");
+		auto texture = game->get_textures()->get_or_load("sunset.jpg");
 		sprite = std::make_unique<Sprite>(texture);
 		layer->add(sprite.get());
 

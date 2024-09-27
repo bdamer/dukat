@@ -90,7 +90,7 @@ namespace dukat
 		auto cube_mesh = game->get_meshes()->put("cube", build_inverted_cube(25.0f, 25.0f));
 		mi = object_meshes.create_instance();
 		mi->set_mesh(cube_mesh);
-		mi->set_texture(game->get_textures()->get("holodeck.png", ProfileAnisotropic));
+		mi->set_texture(game->get_textures()->get_or_load("holodeck.png", ProfileAnisotropic));
 		mi->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
 		mi->transform.position.y = 25.0f;
 		mi->transform.scale = Vector3(25.0f, 25.0f, 25.0f);

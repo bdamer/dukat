@@ -78,7 +78,7 @@ namespace dukat
 		auto renderer = game->get_renderer();
 
 		// Ground tiles
-		ground_texture = game->get_textures()->get("ground32.png");
+		ground_texture = game->get_textures()->get_or_load("ground32.png");
 
 		// Set up layers
 		auto ground_layer = game->get_renderer()->create_composite_layer("ground", 0.0f);
@@ -89,7 +89,7 @@ namespace dukat
 		});
 
 		auto lights_layer = renderer->create_composite_layer("lights", 10.0f);
-		auto light_tex = game->get_textures()->get("light.png");
+		auto light_tex = game->get_textures()->get_or_load("light.png");
 		light_sprites[0] = std::make_unique<Sprite>(light_tex, Rect{ 0, 0, 8, 8 });
 		lights_layer->add(light_sprites[0].get());
 		light_sprites[1] = std::make_unique<Sprite>(light_tex, Rect{ 8, 0, 8, 8 });

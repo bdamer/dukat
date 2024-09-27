@@ -220,11 +220,11 @@ namespace dukat
 			std::string texture(m.texture);
 			if (texture.length() > 0)
 			{
-				instance->set_texture(game->get_textures()->get(texture, TextureFilterProfile::ProfileMipMapped));
+				instance->set_texture(game->get_textures()->get_or_load(texture, TextureFilterProfile::ProfileMipMapped));
 			}
 			else
 			{
-				instance->set_texture(game->get_textures()->get("white.png", TextureFilterProfile::ProfileNearest));
+				instance->set_texture(game->get_textures()->get_or_load("white.png", TextureFilterProfile::ProfileNearest));
 			}
 			instance->set_material(m.material);
 			instance->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));

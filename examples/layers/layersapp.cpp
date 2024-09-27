@@ -20,9 +20,9 @@ namespace dukat
 			game->get_meshes()->put("quad", mb2.build_textured_quad());
 
 		// Mirror mask 
-		mask_texture = game->get_textures()->get("mask1.png");
+		mask_texture = game->get_textures()->get_or_load("mask1.png");
 		// Ground tiles
-		ground_texture = game->get_textures()->get("ground32.png");
+		ground_texture = game->get_textures()->get_or_load("ground32.png");
 
 		// Set up layers
 		auto ground_layer = game->get_renderer()->create_composite_layer("ground", 0.0f);
@@ -64,11 +64,11 @@ namespace dukat
 		auto scene_layer = game->get_renderer()->create_composite_layer("scene", 20.0f);
 
 		// Load sprites
-		player_sprite = std::make_unique<Sprite>(game->get_textures()->get("lobber.png"));
+		player_sprite = std::make_unique<Sprite>(game->get_textures()->get_or_load("lobber.png"));
 		player_sprite->flags |= Sprite::align_bottom;
 		scene_layer->add(player_sprite.get());
 
-		barrel_sprite = std::make_unique<Sprite>(game->get_textures()->get("barrel16.png"));
+		barrel_sprite = std::make_unique<Sprite>(game->get_textures()->get_or_load("barrel16.png"));
 		barrel_sprite->flags |= Sprite::align_bottom;
 		barrel_sprite->p.x = 20.0f;
 		barrel_sprite->p.y = -10.0f;

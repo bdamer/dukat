@@ -20,7 +20,7 @@ namespace dukat
 		particle_layer = game->get_renderer()->create_composite_layer("particles", 15.0f);
 		main_layer = game->get_renderer()->create_composite_layer("main", 20.0f);
 
-		auto texture = game->get_textures()->get("dukat.png");
+		auto texture = game->get_textures()->get_or_load("dukat.png");
 		sprite = std::make_unique<Sprite>(texture);
 		main_layer->add(sprite.get());
 

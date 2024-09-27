@@ -64,7 +64,7 @@ namespace dukat
 		{
 			if (texture_cache->atlas_lookup(filename, atlas_name, atlas_rect))
 			{
-				texture = texture_cache->get(atlas_name + ".png");
+				texture = texture_cache->get_or_load(atlas_name + ".png");
 				if (rect.w == 0) // rect is empty, use atlas rect
 					rect = atlas_rect;
 				else // rect was specified, need to transpose by atlas position
@@ -75,13 +75,13 @@ namespace dukat
 			}
 			else
 			{
-				texture = texture_cache->get(filename);
+				texture = texture_cache->get_or_load(filename);
 			}
 		}
 		catch (const std::runtime_error& ex)
 		{
 			log->warn("Failed to create sprite: {}", ex.what());
-			texture = texture_cache->get("missing.png");
+			texture = texture_cache->get_or_load("missing.png");
 			rect.w = 0;
 		}
 

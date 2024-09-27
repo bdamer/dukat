@@ -22,7 +22,7 @@ namespace dukat
 		main_layer = game->get_renderer()->create_direct_layer("main", 20.0f);
 		
 		// Add cursor
-		auto texture = game->get_textures()->get("cursor32.png");
+		auto texture = game->get_textures()->get_or_load("cursor32.png");
 		cursor = std::make_unique<Sprite>(texture);
 		cursor->flags = Sprite::align_left | Sprite::align_top | Sprite::relative;
 		main_layer->add(cursor.get());

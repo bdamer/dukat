@@ -48,7 +48,7 @@ namespace dukat
 		// Box
 		auto box = object_meshes.create_instance();
 		box->set_mesh(game->get_meshes()->put("box", mb3.build_cube_single_face()));
-		box->set_texture(game->get_textures()->get("box01_1024.png"));
+		box->set_texture(game->get_textures()->get_or_load("box01_1024.png"));
 		box->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
 		box->transform.scale = Vector3{0.25f, 0.25f, 0.25f};
 		box->transform.position.y = 0.25f;
@@ -57,7 +57,7 @@ namespace dukat
 		const float scale = 100.0f;
 		ground_mesh = object_meshes.create_instance();
 		ground_mesh->set_mesh(game->get_meshes()->put("ground", build_plane(scale, scale)));
-		ground_mesh->set_texture(game->get_textures()->get("sand01_1024.png", ProfileAnisotropic));
+		ground_mesh->set_texture(game->get_textures()->get_or_load("sand01_1024.png", ProfileAnisotropic));
 		ground_mesh->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
 		ground_mesh->transform.position.y = scale;
 		ground_mesh->transform.scale = Vector3(scale, scale, scale);
@@ -68,7 +68,7 @@ namespace dukat
 		skydome_mesh->set_program(game->get_shaders()->get_program("sc_skydome.vsh", "sc_skydome.fsh"));
 
 		// Create cubemap
-		skydome_mesh->set_texture(game->get_textures()->get("skybox01.dds"), 0);
+		skydome_mesh->set_texture(game->get_textures()->get_or_load("skybox01.dds"), 0);
 
 		init_environment();		
 
@@ -115,7 +115,7 @@ namespace dukat
 		sun_mesh = game->get_debug_meshes()->create_instance();
 		sun_mesh->set_mesh(game->get_meshes()->put("sun", mb3.build_sphere(16, 16)));
 		sun_mesh->set_program(game->get_shaders()->get_program("sc_texture.vsh", "sc_texture.fsh"));
-		sun_mesh->set_texture(game->get_textures()->get("white.png"));
+		sun_mesh->set_texture(game->get_textures()->get_or_load("white.png"));
 		Material m;
 		m.ambient = color_rgb(0xffff00);
 		sun_mesh->set_material(m);

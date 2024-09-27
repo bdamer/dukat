@@ -23,7 +23,7 @@ namespace dukat
 
 		auto box = scene_meshes.create_instance();
 		box->set_mesh(game->get_meshes()->put("box", mb3.build_cube_single_face()));
-		box->set_texture(game->get_textures()->get("box01_1024.png"));
+		box->set_texture(game->get_textures()->get_or_load("box01_1024.png"));
 		box->set_program(game->get_shaders()->get_program("sc_lighting.vsh", "sc_lighting.fsh"));
 		box->transform.scale = Vector3{ 2.0f, 2.0f, 2.0f };
 

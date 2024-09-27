@@ -78,11 +78,11 @@ namespace dukat
 		auto layer = game->get_renderer()->create_composite_layer("main", 1.0f);
 
 		// Mask
-		mask_sprite = std::make_unique<Sprite>(game->get_textures()->get("controller.png"));
+		mask_sprite = std::make_unique<Sprite>(game->get_textures()->get_or_load("controller.png"));
 		mask_sprite->z = 100;
 		layer->add(mask_sprite.get());
 
-		auto texture = game->get_textures()->get("white.png");
+		auto texture = game->get_textures()->get_or_load("white.png");
 		Rect r{ 0, 0, 16, 16 };
 		Color c{ 0xff, 0x0, 0xff, 0x0 };
 

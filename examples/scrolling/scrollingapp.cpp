@@ -20,19 +20,19 @@ namespace dukat
 		// Load sprites
 		init_background(bg_layer);
 
-		heart_sprite = std::make_unique<Sprite>(game->get_textures()->get("scroll_tiles.png"), Rect{ 48, 32, tile_size, tile_size });
+		heart_sprite = std::make_unique<Sprite>(game->get_textures()->get_or_load("scroll_tiles.png"), Rect{ 48, 32, tile_size, tile_size });
 		heart_sprite->flags |= Sprite::align_bottom | Sprite::relative;
 		heart_sprite->p = Vector2{ -3 * scaled_tile_size, -3 * scaled_tile_size };
 		heart_sprite->scale = tile_scale;
 		ui_layer->add(heart_sprite.get());
 
-		star_sprite = std::make_unique<Sprite>(game->get_textures()->get("scroll_tiles.png"), Rect{ 48, 48, tile_size, tile_size });
+		star_sprite = std::make_unique<Sprite>(game->get_textures()->get_or_load("scroll_tiles.png"), Rect{ 48, 48, tile_size, tile_size });
 		star_sprite->flags |= Sprite::align_bottom | Sprite::relative;
 		star_sprite->p = Vector2{ 4 * scaled_tile_size, 0 };
 		star_sprite->scale = tile_scale;
 		ui_layer->add(star_sprite.get());
 
-		player_sprite = std::make_unique<Sprite>(game->get_textures()->get("lobber.png"));
+		player_sprite = std::make_unique<Sprite>(game->get_textures()->get_or_load("lobber.png"));
 		player_sprite->flags |= Sprite::align_bottom | Sprite::flip_h;
 		player_sprite->scale = tile_scale;
 		scene_layer->add(player_sprite.get());
@@ -83,7 +83,7 @@ namespace dukat
 	{
 		// Ground Sprites
 		background_sprites.resize(tile_rows * tile_cols);
-		Texture* t = game->get_textures()->get("scroll_tiles.png");
+		Texture* t = game->get_textures()->get_or_load("scroll_tiles.png");
 
 		int idx = 0;
 		// Two rows of dark blue

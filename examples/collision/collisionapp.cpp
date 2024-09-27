@@ -26,7 +26,7 @@ namespace dukat
 		debug_effect = static_cast<DebugEffect2*>(main_layer->add(std::make_unique<DebugEffect2>(game)));
 
 		// Add cursor
-		auto texture = game->get_textures()->get("cursor32.png");
+		auto texture = game->get_textures()->get_or_load("cursor32.png");
 		cursor = std::make_unique<Sprite>(texture);
 		cursor->flags = Sprite::align_left | Sprite::align_top;
 		main_layer->add(cursor.get());

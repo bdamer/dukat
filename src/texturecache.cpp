@@ -56,6 +56,12 @@ namespace dukat
 		return surfaces[filename].get();
 	}
 
+	Surface* TextureCache::put_surface(const std::string& filename, std::unique_ptr<Surface>& surface)
+	{
+		surfaces[filename] = std::move(surface);
+		return surfaces[filename].get();
+	}
+
 	std::unique_ptr<Texture> TextureCache::load(const std::string& filename, TextureFilterProfile profile)
 	{
 		log->debug("Loading texture [{}]", filename);
@@ -65,7 +71,7 @@ namespace dukat
 		return std::make_unique<Texture>(*surface, profile);
 	}
 
-	Texture* TextureCache::get(const std::string& filename, TextureFilterProfile profile)
+	Texture* TextureCache::get_or_load(const std::string& filename, TextureFilterProfile profile)
 	{
 		const auto id = compute_hash(filename);
 		if (textures.count(id) == 0)
@@ -88,16 +94,14 @@ namespace dukat
 		return textures[id].get();
 	}
 
-	Texture* TextureCache::get(uint32_t id)
+	Texture* TextureCache::get(const std::string& filename) const
 	{
-		if (textures.count(id) == 0)
-		{
-			return nullptr;
-		}
-		else
-		{
-			return textures[id].get();
-		}
+		return get(compute_hash(filename));
+	}
+
+	Texture* TextureCache::get(uint32_t id) const
+	{
+		return textures.count(id) ? textures.at(id).get() : nullptr;
 	}
 
 	Texture* TextureCache::find_by_texture_id(const TextureId id) const
@@ -114,8 +118,9 @@ namespace dukat
 
 	Texture* TextureCache::put(const std::string& filename, std::unique_ptr<Texture> texture)
 	{
-		put(compute_hash(filename), std::move(texture)); 
-		return get(filename);
+		const auto id = compute_hash(filename);
+		put(id, std::move(texture)); 
+		return get(id);
 	}
 
 	Texture* TextureCache::put(uint32_t id, std::unique_ptr<Texture> texture)
