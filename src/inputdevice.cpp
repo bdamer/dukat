@@ -15,6 +15,11 @@ namespace dukat
 		long_press_threshold = settings.get_int(settings::input_longpress, 1000);
 	}
 
+	void InputDevice::bind_long_press(VirtualButton button, const std::function<void(LongPressHandler::Event)>& handler, Uint32 threshold)
+	{
+		long_press_handlers[button] = LongPressHandler(threshold > 0 ? threshold : long_press_threshold, handler);
+	}
+
 	bool InputDevice::is_mapped(int key, VirtualButton& button) const
 	{
 		for (auto i = 0u; i < mapping.size(); i++)

@@ -20,16 +20,25 @@ namespace dukat
 		int sensitivity;
 		// Updates button states.
 		void update_buttons(Uint32 buttons);
-
+		
 	public:
 		static constexpr auto keyboard_id = -1;
 
 		KeyboardDevice(const Window& window, const Settings& settings);
 		~KeyboardDevice(void) override;
 
+		// Returns key or mouse index assigned to a given virtual button in current mapping
 		int get_mapping(VirtualButton button) const override;
+		// Returns key or mouse index assigned to a given virtual button in specific profile.
+		int get_profile_mapping(VirtualButton button, const std::string& profile, const Settings& settings) const;
+		// Returns mouse button index assigned to a given virtual button in current mapping.
 		int get_mouse_mapping(VirtualButton button) const;
+		int get_mouse_profile_mapping(VirtualButton button, const std::string& profile, const Settings& settings) const;
+		// Returns keyboard index assigned to a given virtual button in current mapping.
 		int get_key_mapping(VirtualButton button) const;
+		// Returns keyboard index assigned to a given virtual button in a specific profile.
+		int get_key_profile_mapping(VirtualButton button, const std::string& profile, const Settings& settings) const;
+
 		bool is_mapped(int key, VirtualButton& button) const override;
 		void override_mapping(VirtualButton button, int key) override;
 		void clear_mapping(VirtualButton button) override;
