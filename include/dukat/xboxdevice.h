@@ -28,7 +28,7 @@ namespace dukat
 	public:
 		XBoxDevice(const Window& window, const Settings& settings, int device_index);
 		~XBoxDevice(void) override;
-		void restore_mapping(const Settings& settings) override;
+		void restore_mapping(const Settings& settings, const std::string& profile) override;
 
 		int id(void) const override { return device_id; }
 		std::string get_button_name(VirtualButton button) const override;

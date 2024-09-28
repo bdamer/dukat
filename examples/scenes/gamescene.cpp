@@ -50,8 +50,8 @@ namespace dukat
 		auto camera = std::make_unique<OrbitCamera3>(game, camera_target, 10.0f, 0.0f, pi_over_four);
 		camera->set_min_distance(5.0f);
 		camera->set_max_distance(100.0f);
-		camera->set_vertical_fov(game->get_settings().get_float("camera.fov"));
-		camera->set_clip(game->get_settings().get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_vertical_fov(game->get_settings().get_float(settings::video_camera_fov));
+		camera->set_clip(game->get_settings().get_float(settings::video_camera_nearclip), settings.get_float(settings::video_camera_farclip));
 		camera->refresh();
 		renderer->set_camera(std::move(camera));
 

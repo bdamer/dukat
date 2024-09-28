@@ -9,25 +9,25 @@ namespace dukat
 {
 	Window::Window(const Settings& settings) : flags(0)
 	{
-		this->width = settings.get_int("window.width", -1);
-		this->height = settings.get_int("window.height", -1);
+		this->width = settings.get_int(settings::window_width, -1);
+		this->height = settings.get_int(settings::window_height, -1);
 
-		if (settings.get_bool("window.fullscreen"))
+		if (settings.get_bool(settings::window_fullscreen))
 			flags |= Flags::Fullscreen;
-		if (settings.get_bool("window.fullscreen_desktop"))
+		if (settings.get_bool(settings::window_fullscreen_desktop))
 			flags |= Flags::FullscreenDesktop;
-		if (settings.get_bool("window.resizable"))
+		if (settings.get_bool(settings::window_resizable))
 			flags |= Flags::Resizable;
-		if (settings.get_bool("window.borderless"))
+		if (settings.get_bool(settings::window_borderless))
 			flags |= Flags::Borderless;
 
-		const auto msaa = settings.get_bool("window.msaa");
+		const auto msaa = settings.get_bool(settings::window_msaa);
 		set_context_attributes(msaa);
 		create_window();
 		create_context();
 
 		// Set vsync for current context 
-		set_vsync(settings.get_bool("window.vsync", true));
+		set_vsync(settings.get_bool(settings::window_vsync, true));
 
 #ifdef OPENGL_CORE
 		if (msaa)

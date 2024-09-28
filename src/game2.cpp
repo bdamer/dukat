@@ -9,7 +9,7 @@ namespace dukat
 	{
 		const auto start = SDL_GetTicks();
 		renderer = std::make_unique<Renderer2>(window.get(), shader_cache.get());
-		renderer->set_force_sync(settings.get_bool("video.forcesync", false));
+		renderer->set_force_sync(settings.get_bool(settings::video_forcesync, false));
 		log->trace("Renderer initialized in {} ms", SDL_GetTicks() - start);
 		effect = std::make_unique<FullscreenEffect2>(this);
 	}

@@ -32,4 +32,61 @@ namespace dukat
 		friend void save_settings(const Settings& settings, const std::string& filename);
 		friend void load_settings(const std::string& filename, Settings& settings);
 	};
+
+	namespace settings
+	{
+		// audio
+		static constexpr auto audio_channels = "audio.channels";
+		static constexpr auto audio_sample_volume = "audio.sample.volume";
+		static constexpr auto audio_music_volume = "audio.music.volume";
+
+		// game
+		static constexpr auto game_height = "game.height";
+		static constexpr auto game_width = "game.width";
+
+		// input
+		static constexpr auto input_longpress = "input.longpress";
+		static constexpr auto input_gamepad_deadzone = "input.gamepad.deadzone";
+		static constexpr auto input_gamepad_inverty = "input.gamepad.inverty";
+		static constexpr auto input_gamepad_support = "input.gamepad.support";
+		static constexpr auto input_gamepad_feedback = "input.gamepad.feedback";
+		static constexpr auto input_mouse_cursor = "input.mouse.cursor";
+		static constexpr auto input_mouse_lock = "input.mouse.lock";
+		static constexpr auto input_mouse_sensitivity = "input.mouse.sensitivity";
+
+		// logging
+		static constexpr auto logging_file = "logging.file";
+		static constexpr auto logging_flush = "logging.flush";
+		static constexpr auto logging_level = "logging.level";
+		static constexpr auto logging_output = "logging.output";
+		static constexpr auto logging_truncate = "logging.truncate";
+
+		// renderer
+		static constexpr auto renderer_effects_enabled = "renderer.effects.enabled";
+
+		// resources
+		static constexpr auto resources_fonts = "resources.fonts";
+		static constexpr auto resources_models = "resources.models";
+		static constexpr auto resources_music = "resources.music";
+		static constexpr auto resources_samples = "resources.samples";
+		static constexpr auto resources_shaders = "resources.shaders";
+		static constexpr auto resources_textures = "resources.textures";
+
+		// video
+		static constexpr auto video_forcesync = "video.forcesync";
+		static constexpr auto video_camera_nearclip = "video.camera.nearclip";
+		static constexpr auto video_camera_farclip = "video.camera.farclip";
+		static constexpr auto video_camera_fov = "video.camera.fov";
+
+		// window
+		static constexpr auto window_title = "window.title";
+		static constexpr auto window_width = "window.width";
+		static constexpr auto window_height = "window.height";
+		static constexpr auto window_fullscreen = "window.fullscreen";
+		static constexpr auto window_fullscreen_desktop = "window.fullscreen_desktop";
+		static constexpr auto window_resizable = "window.resizable";
+		static constexpr auto window_borderless = "window.borderless";
+		static constexpr auto window_msaa = "window.msaa";
+		static constexpr auto window_vsync = "window.vsync";
+	}
 }

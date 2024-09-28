@@ -13,7 +13,7 @@ namespace dukat
 		font_cache->set_texture_filter_profile(TextureFilterProfile::ProfileMipMapped);
 
 		renderer = std::make_unique<dukat::Renderer3>(window.get(), shader_cache.get(), texture_cache.get());
-		if (settings.get_bool("renderer.effects.enabled")) 
+		if (settings.get_bool(settings::renderer_effects_enabled))
 			renderer->enable_effects();
 
 		debug_meshes.stage = RenderStage::Overlay;

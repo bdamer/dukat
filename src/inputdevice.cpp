@@ -4,6 +4,7 @@
 
 namespace dukat
 {
+	const std::string InputDevice::default_profile = "default";
 	std::array<std::function<void(void)>, InputDevice::VirtualButton::_Count> InputDevice::button_handlers;
 	std::array<LongPressHandler, InputDevice::VirtualButton::_Count> InputDevice::long_press_handlers;
 
@@ -11,7 +12,7 @@ namespace dukat
 		rx(0.0f), ry(0.0f), lxa(0.0f), lya(0.0f), rxa(0.0f), rya(0.0f), lt(0.0f), rt(0.0f), digital(digital)
 	{
 		std::fill(buttons.begin(), buttons.end(), 0x0);
-		long_press_threshold = settings.get_int("input.longpress", 1000);
+		long_press_threshold = settings.get_int(settings::input_longpress, 1000);
 	}
 
 	bool InputDevice::is_mapped(int key, VirtualButton& button) const

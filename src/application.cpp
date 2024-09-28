@@ -21,7 +21,7 @@ namespace dukat
 	constexpr float Application::max_frame_delta;
 
 	Application::Application(Settings& settings)
-		: title(settings.get_string("window.title")), runtime(0.0f), fixed_frame_rate(0.0f),
+		: title(settings.get_string(settings::window_title)), runtime(0.0f), fixed_frame_rate(0.0f),
 		paused(false), active(true), done(false), last_update(0), settings(settings)
 	{
 		const auto start = SDL_GetTicks();
@@ -40,14 +40,14 @@ namespace dukat
 		window = std::make_unique<Window>(settings);
 		window->set_title(title);
 
-		auto show_cursor = settings.get_bool("input.mouse.cursor", false);
+		auto show_cursor = settings.get_bool(settings::input_mouse_cursor, false);
 		if (!show_cursor)
 			SDL_ShowCursor(SDL_DISABLE);
 
 #ifndef __ANDROID__
-		audio_manager = std::make_unique<AudioManager>(settings.get_int("audio.channels", 16));
-		audio_manager->set_music_volume(settings.get_float("audio.music.volume", 1.0f));
-		audio_manager->set_sample_volume(settings.get_float("audio.sample.volume", 1.0f));
+		audio_manager = std::make_unique<AudioManager>(settings.get_int(settings::audio_channels, 16));
+		audio_manager->set_music_volume(settings.get_float(settings::audio_music_volume, 1.0f));
+		audio_manager->set_sample_volume(settings.get_float(settings::audio_sample_volume, 1.0f));
 #endif
 
 		// Initialize random generator once
@@ -208,12 +208,12 @@ namespace dukat
 		{
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
 			set_active(true);
-			if (settings.get_bool("input.mouse.lock", true))
+			if (settings.get_bool(settings::input_mouse_lock, true))
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_TRUE), "Set mouse mode");
 			break;
         case SDL_WINDOWEVENT_FOCUS_LOST:
 			set_active(false);
-			if (settings.get_bool("input.mouse.lock", true))
+			if (settings.get_bool(settings::input_mouse_lock, true))
 				sdl_check_result(SDL_SetRelativeMouseMode(SDL_FALSE), "Set mouse mode");
 	        break;
 		case SDL_WINDOWEVENT_SHOWN:

@@ -62,9 +62,9 @@ namespace dukat
 		};
 
 		static constexpr auto no_key = -1;
+		static const std::string default_profile;
 
 	private:
-
 		static std::array<std::function<void(void)>, VirtualButton::_Count> button_handlers;
 		static std::array<LongPressHandler, VirtualButton::_Count> long_press_handlers;
 		std::array<Uint32, VirtualButton::_Count> buttons; // tracks current button state
@@ -110,7 +110,8 @@ namespace dukat
 		// Clears all mappings for a specific button.
 		virtual void clear_mapping(VirtualButton button) { mapping[button] = no_key; }
 		// Restores default mapping based on configration settings.
-		virtual void restore_mapping(const Settings& settings) { };
+		virtual void restore_mapping(const Settings& settings, const std::string& profile) { };
+		void restore_mapping(const Settings& settings) { restore_mapping(settings, default_profile); }
 
 		// Event handlers
 		void on_press(VirtualButton button, std::function<void(void)> handler) { button_handlers[button] = handler; }

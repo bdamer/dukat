@@ -220,8 +220,8 @@ namespace dukat
 			auto camera = std::make_unique<OrbitCamera3>(game, target, 50.0f, 0.0f, pi_over_four);
 			camera->set_min_distance(5.0f);
 			camera->set_max_distance(100.0f);
-			camera->set_vertical_fov(settings.get_float("camera.fov"));
-			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+			camera->set_vertical_fov(settings.get_float(settings::video_camera_fov));
+			camera->set_clip(settings.get_float(settings::video_camera_nearclip), settings.get_float(settings::video_camera_farclip));
 			camera->refresh();
 			game->get_renderer()->set_camera(std::move(camera));
 		}
@@ -231,8 +231,8 @@ namespace dukat
 		{
 			auto camera = std::make_unique<FirstPersonCamera3>(game);
 			camera->transform.position = observer_mesh->transform.position;
-			camera->set_vertical_fov(settings.get_float("camera.fov"));
-			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+			camera->set_vertical_fov(settings.get_float(settings::video_camera_fov));
+			camera->set_clip(settings.get_float(settings::video_camera_nearclip), settings.get_float(settings::video_camera_farclip));
 			camera->refresh();
 			camera->set_movement_speed(10.0f);
 			game->get_renderer()->set_camera(std::move(camera));
@@ -249,8 +249,8 @@ namespace dukat
 			Vector3 target(observer_mesh->transform.position.x, 0.0f, observer_mesh->transform.position.z);
 			const Vector3 overhead_camera_offset(0.0f, 200.0f, 0.0f);
 			auto camera = std::make_unique<FixedCamera3>(game, target + overhead_camera_offset, target, Vector3::unit_z);
-			camera->set_vertical_fov(settings.get_float("camera.fov"));
-			camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+			camera->set_vertical_fov(settings.get_float(settings::video_camera_fov));
+			camera->set_clip(settings.get_float(settings::video_camera_nearclip), settings.get_float(settings::video_camera_farclip));
 			camera->refresh();
 			game->get_renderer()->set_camera(std::move(camera));
 		}

@@ -33,7 +33,7 @@ namespace dukat
 		bool is_mapped(int key, VirtualButton& button) const override;
 		void override_mapping(VirtualButton button, int key) override;
 		void clear_mapping(VirtualButton button) override;
-		void restore_mapping(const Settings& settings) override;
+		void restore_mapping(const Settings& settings, const std::string& profile) override;
 
 		void update(void) override;
 		void set_sensitivity(int sensitivity) { this->sensitivity = sensitivity; }

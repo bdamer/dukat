@@ -24,7 +24,7 @@ namespace dukat
 	{
 #ifndef __ANDROID__
 		spdlog::set_pattern("[%Y-%m-%d %H-%M-%S.%e] [%l] %v");
-		const auto log_output = settings.get_string("logging.output", "console");
+		const auto log_output = settings.get_string(settings::logging_output, "console");
 		if (log_output == "console")
 		{
 #ifdef WIN32
@@ -42,10 +42,10 @@ namespace dukat
 		}
 		else if (log_output == "file")
 		{
-			const auto log_file = settings.get_string("logging.file", "run.log");
-			const auto truncate = settings.get_bool("logging.truncate", false);
+			const auto log_file = settings.get_string(settings::logging_file, "run.log");
+			const auto truncate = settings.get_bool(settings::logging_truncate, false);
 			log = spdlog::basic_logger_st("file_logger", log_file, truncate);
-			const auto log_flush = settings.get_int("logging.file.flush", 0);
+			const auto log_flush = settings.get_int(settings::logging_flush, 0);
 			if (log_flush > 0)
 				spdlog::flush_every(std::chrono::seconds(log_flush));
 		}
@@ -54,7 +54,7 @@ namespace dukat
 			log = spdlog::create<spdlog::sinks::null_sink_st>("null_logger");
 		}
 
-		const auto log_level =  settings.get_string("logging.level", "debug");
+		const auto log_level =  settings.get_string(settings::logging_level, "debug");
 		spdlog::level::level_enum level;
 		if (log_level == "error")
 			level = spdlog::level::err;

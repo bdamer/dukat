@@ -28,10 +28,10 @@ namespace dukat
 		log->debug("Rumble triggers support: {}", SDL_GameControllerHasRumbleTriggers(device));
 #endif
 
-		invert_y = settings.get_bool("input.gamepad.inverty", true);
-		deadzone = static_cast<int16_t>(settings.get_int("input.gamepad.inverty", 8000));
+		invert_y = settings.get_bool(settings::input_gamepad_inverty, true);
+		deadzone = static_cast<int16_t>(settings.get_int(settings::input_gamepad_deadzone, 8000));
 
-		restore_mapping(settings);
+		restore_mapping(settings, default_profile);
 	}
 
 	GamepadDevice::~GamepadDevice(void)
@@ -43,22 +43,23 @@ namespace dukat
 		}
 	}
 
-	void GamepadDevice::restore_mapping(const Settings& settings)
+	void GamepadDevice::restore_mapping(const Settings& settings, const std::string& profile)
 	{
-		mapping[VirtualButton::Button1] = settings.get_int("input.gamepad.button1", SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
-		mapping[VirtualButton::Button2] = settings.get_int("input.gamepad.button2", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
-		mapping[VirtualButton::Button3] = settings.get_int("input.gamepad.button3", SDL_CONTROLLER_BUTTON_A);
-		mapping[VirtualButton::Button4] = settings.get_int("input.gamepad.button4", SDL_CONTROLLER_BUTTON_B);
-		mapping[VirtualButton::Button5] = settings.get_int("input.gamepad.button5", SDL_CONTROLLER_BUTTON_X);
-		mapping[VirtualButton::Button6] = settings.get_int("input.gamepad.button6", SDL_CONTROLLER_BUTTON_Y);
-		mapping[VirtualButton::Button7] = settings.get_int("input.gamepad.button7", SDL_CONTROLLER_BUTTON_LEFTSTICK);
-		mapping[VirtualButton::Button8] = settings.get_int("input.gamepad.button8", SDL_CONTROLLER_BUTTON_RIGHTSTICK);
-		mapping[VirtualButton::Select] = settings.get_int("input.gamepad.select", SDL_CONTROLLER_BUTTON_BACK);
-		mapping[VirtualButton::Start] = settings.get_int("input.gamepad.start", SDL_CONTROLLER_BUTTON_START);
-		mapping[VirtualButton::Down] = settings.get_int("input.gamepad.down", SDL_CONTROLLER_BUTTON_DPAD_DOWN);
-		mapping[VirtualButton::Right] = settings.get_int("input.gamepad.right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
-		mapping[VirtualButton::Left] = settings.get_int("input.gamepad.left", SDL_CONTROLLER_BUTTON_DPAD_LEFT);
-		mapping[VirtualButton::Up] = settings.get_int("input.gamepad.up", SDL_CONTROLLER_BUTTON_DPAD_UP);
+		const auto prefix = "input.profiles." + profile + ".";
+		mapping[VirtualButton::Button1] = settings.get_int(prefix + "gamepad.button1", SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+		mapping[VirtualButton::Button2] = settings.get_int(prefix + "gamepad.button2", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+		mapping[VirtualButton::Button3] = settings.get_int(prefix + "gamepad.button3", SDL_CONTROLLER_BUTTON_A);
+		mapping[VirtualButton::Button4] = settings.get_int(prefix + "gamepad.button4", SDL_CONTROLLER_BUTTON_B);
+		mapping[VirtualButton::Button5] = settings.get_int(prefix + "gamepad.button5", SDL_CONTROLLER_BUTTON_X);
+		mapping[VirtualButton::Button6] = settings.get_int(prefix + "gamepad.button6", SDL_CONTROLLER_BUTTON_Y);
+		mapping[VirtualButton::Button7] = settings.get_int(prefix + "gamepad.button7", SDL_CONTROLLER_BUTTON_LEFTSTICK);
+		mapping[VirtualButton::Button8] = settings.get_int(prefix + "gamepad.button8", SDL_CONTROLLER_BUTTON_RIGHTSTICK);
+		mapping[VirtualButton::Select] = settings.get_int(prefix + "gamepad.select", SDL_CONTROLLER_BUTTON_BACK);
+		mapping[VirtualButton::Start] = settings.get_int(prefix + "gamepad.start", SDL_CONTROLLER_BUTTON_START);
+		mapping[VirtualButton::Down] = settings.get_int(prefix + "gamepad.down", SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+		mapping[VirtualButton::Right] = settings.get_int(prefix + "gamepad.right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+		mapping[VirtualButton::Left] = settings.get_int(prefix + "gamepad.left", SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+		mapping[VirtualButton::Up] = settings.get_int(prefix + "gamepad.up", SDL_CONTROLLER_BUTTON_DPAD_UP);
 	}
 
 	void GamepadDevice::normalize_axis(int16_t ix, int16_t iy, float& ox, float& oy, int16_t deadzone)

@@ -39,7 +39,7 @@ namespace dukat
 
 	void DeviceManager::add_joystick(int joystick_index)
 	{
-		if (!settings.get_bool("input.gamepad.support", true))
+		if (!settings.get_bool(settings::input_gamepad_support, true))
 			return;
 
 		const std::string name(SDL_JoystickNameForIndex(joystick_index));
@@ -71,7 +71,7 @@ namespace dukat
 
 	void DeviceManager::remove_joystick(SDL_JoystickID id)
 	{
-		if (!settings.get_bool("input.gamepad.support", true))
+		if (!settings.get_bool(settings::input_gamepad_support, true))
 			return;
 		log->info("Joystick device removed: {}", id);
 		auto it = std::find_if(controllers.begin(), controllers.end(),
@@ -121,7 +121,7 @@ namespace dukat
 
 	void DeviceManager::apply_feedback(bool force)
 	{
-		if (!settings.get_bool("input.gamepad.feedback", true))
+		if (!settings.get_bool(settings::input_gamepad_feedback, true))
 			return; 
 
 		auto duration = 0.0f;

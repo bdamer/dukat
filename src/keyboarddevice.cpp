@@ -11,8 +11,8 @@ namespace dukat
 		: InputDevice(window, settings, true), mouse_buttons({ 0, 0, 0 })
 	{
 		name = "Keyboard";
-		sensitivity = settings.get_int("input.mouse.sensitivity", 128);
-		restore_mapping(settings);
+		sensitivity = settings.get_int(settings::input_mouse_sensitivity, 128);
+		restore_mapping(settings, default_profile);
 		// Initialize default key bindings
 		keystate = SDL_GetKeyboardState(&num_keys);
 	}
@@ -92,36 +92,37 @@ namespace dukat
 		InputDevice::clear_mapping(button);
 	}
 
-	void KeyboardDevice::restore_mapping(const Settings& settings)
+	void KeyboardDevice::restore_mapping(const Settings& settings, const std::string& profile)
 	{
+		const auto prefix = "input.profiles." + profile + ".";
 		// Initialize key mapping
-		mapping[VirtualButton::Button1] = settings.get_int("input.keyboard.button1", no_key);
-		mapping[VirtualButton::Button2] = settings.get_int("input.keyboard.button2", no_key);
-		mapping[VirtualButton::Button3] = settings.get_int("input.keyboard.button3", no_key);
-		mapping[VirtualButton::Button4] = settings.get_int("input.keyboard.button4", no_key);
-		mapping[VirtualButton::Button5] = settings.get_int("input.keyboard.button5", no_key);
-		mapping[VirtualButton::Button6] = settings.get_int("input.keyboard.button6", no_key);
-		mapping[VirtualButton::Button7] = settings.get_int("input.keyboard.button7", no_key);
-		mapping[VirtualButton::Button8] = settings.get_int("input.keyboard.button8", no_key);
+		mapping[VirtualButton::Button1] = settings.get_int(prefix + "keyboard.button1", no_key);
+		mapping[VirtualButton::Button2] = settings.get_int(prefix + "keyboard.button2", no_key);
+		mapping[VirtualButton::Button3] = settings.get_int(prefix + "keyboard.button3", no_key);
+		mapping[VirtualButton::Button4] = settings.get_int(prefix + "keyboard.button4", no_key);
+		mapping[VirtualButton::Button5] = settings.get_int(prefix + "keyboard.button5", no_key);
+		mapping[VirtualButton::Button6] = settings.get_int(prefix + "keyboard.button6", no_key);
+		mapping[VirtualButton::Button7] = settings.get_int(prefix + "keyboard.button7", no_key);
+		mapping[VirtualButton::Button8] = settings.get_int(prefix + "keyboard.button8", no_key);
 		mapping[VirtualButton::Select] = SDL_SCANCODE_ESCAPE;
 		mapping[VirtualButton::Start] = SDL_SCANCODE_RETURN;
-		mapping[VirtualButton::Down] = settings.get_int("input.keyboard.down", SDL_SCANCODE_DOWN);
-		mapping[VirtualButton::Right] = settings.get_int("input.keyboard.right", SDL_SCANCODE_RIGHT);
-		mapping[VirtualButton::Left] = settings.get_int("input.keyboard.left", SDL_SCANCODE_LEFT);
-		mapping[VirtualButton::Up] = settings.get_int("input.keyboard.up", SDL_SCANCODE_UP);
-		mapping[VirtualButton::LeftTrigger] = settings.get_int("input.keyboard.lt", SDL_SCANCODE_TAB);
-		mapping[VirtualButton::RightTrigger] = settings.get_int("input.keyboard.rt", SDL_SCANCODE_SPACE);
-		mapping[VirtualButton::LeftAxisDown] = settings.get_int("input.keyboard.leftaxis.down", SDL_SCANCODE_S);
-		mapping[VirtualButton::LeftAxisRight] = settings.get_int("input.keyboard.leftaxis.right", SDL_SCANCODE_D);
-		mapping[VirtualButton::LeftAxisLeft] = settings.get_int("input.keyboard.leftaxis.left", SDL_SCANCODE_A);
-		mapping[VirtualButton::LeftAxisUp] = settings.get_int("input.keyboard.leftaxis.up", SDL_SCANCODE_W);
-		mapping[VirtualButton::Debug] = settings.get_int("input.keyboard.debug", SDL_SCANCODE_F1);
+		mapping[VirtualButton::Down] = settings.get_int(prefix + "keyboard.down", SDL_SCANCODE_DOWN);
+		mapping[VirtualButton::Right] = settings.get_int(prefix + "keyboard.right", SDL_SCANCODE_RIGHT);
+		mapping[VirtualButton::Left] = settings.get_int(prefix + "keyboard.left", SDL_SCANCODE_LEFT);
+		mapping[VirtualButton::Up] = settings.get_int(prefix + "keyboard.up", SDL_SCANCODE_UP);
+		mapping[VirtualButton::LeftTrigger] = settings.get_int(prefix + "keyboard.lt", SDL_SCANCODE_TAB);
+		mapping[VirtualButton::RightTrigger] = settings.get_int(prefix + "keyboard.rt", SDL_SCANCODE_SPACE);
+		mapping[VirtualButton::LeftAxisDown] = settings.get_int(prefix + "keyboard.leftaxis.down", SDL_SCANCODE_S);
+		mapping[VirtualButton::LeftAxisRight] = settings.get_int(prefix + "keyboard.leftaxis.right", SDL_SCANCODE_D);
+		mapping[VirtualButton::LeftAxisLeft] = settings.get_int(prefix + "keyboard.leftaxis.left", SDL_SCANCODE_A);
+		mapping[VirtualButton::LeftAxisUp] = settings.get_int(prefix + "keyboard.leftaxis.up", SDL_SCANCODE_W);
+		mapping[VirtualButton::Debug] = settings.get_int(prefix + "keyboard.debug", SDL_SCANCODE_F1);
 		// Initialize mouse mapping
-		mouse_mapping[0] = settings.get_int("input.mouse.left", VirtualButton::Button1);
-		mouse_mapping[1] = settings.get_int("input.mouse.middle", VirtualButton::Button3);
-		mouse_mapping[2] = settings.get_int("input.mouse.right", VirtualButton::Button2);
-		mouse_mapping[3] = settings.get_int("input.mouse.extra1", VirtualButton::Button4);
-		mouse_mapping[4] = settings.get_int("input.mouse.extra2", VirtualButton::Button5);
+		mouse_mapping[0] = settings.get_int(prefix + "mouse.left", VirtualButton::Button1);
+		mouse_mapping[1] = settings.get_int(prefix + "mouse.middle", VirtualButton::Button3);
+		mouse_mapping[2] = settings.get_int(prefix + "mouse.right", VirtualButton::Button2);
+		mouse_mapping[3] = settings.get_int(prefix + "mouse.extra1", VirtualButton::Button4);
+		mouse_mapping[4] = settings.get_int(prefix + "mouse.extra2", VirtualButton::Button5);
 	}
 
 	void KeyboardDevice::update(void)

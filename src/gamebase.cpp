@@ -22,12 +22,13 @@ namespace dukat
 	GameBase::GameBase(Settings& settings) : Application(settings), controller(nullptr), debug(false)
 	{
 #ifndef __ANDROID__
-		audio_cache = std::make_unique<AudioCache>(settings.get_string("resources.samples"), settings.get_string("resources.music"));
+		audio_cache = std::make_unique<AudioCache>(settings.get_string(settings::resources_samples), 
+			settings.get_string(settings::resources_music));
 #endif
-		shader_cache = std::make_unique<ShaderCache>(settings.get_string("resources.shaders"));
-		texture_cache = std::make_unique<TextureCache>(settings.get_string("resources.textures"));
+		shader_cache = std::make_unique<ShaderCache>(settings.get_string(settings::resources_shaders));
+		texture_cache = std::make_unique<TextureCache>(settings.get_string(settings::resources_textures));
 		mesh_cache = std::make_unique<MeshCache>();
-		font_cache = std::make_unique<FontCache>(settings.get_string("resources.fonts"));
+		font_cache = std::make_unique<FontCache>(settings.get_string(settings::resources_fonts));
 		add_manager<ParticleManager>();
 		add_manager<TimerManager>();
 		add_manager<AnimationManager>();

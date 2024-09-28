@@ -22,7 +22,7 @@ namespace dukat
 	public:
 		GamepadDevice(const Window& window, const Settings& settings, int device_index);
 		~GamepadDevice(void) override;
-		void restore_mapping(const Settings& settings) override;
+		void restore_mapping(const Settings& settings, const std::string& profile) override;
 
 		int id(void) const override;
 		bool is_inverted(void) const { return invert_y; }

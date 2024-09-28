@@ -167,7 +167,7 @@ namespace dukat
 		const auto& settings = game->get_settings();
 
 		auto camera = std::make_unique<Camera2>(game);
-		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_clip(settings.get_float(settings::video_camera_nearclip), settings.get_float(settings::video_camera_farclip));
 		camera->set_resize_handler(fixed_width_camera(game_width));
 		camera->refresh();
 		game_height = static_cast<int>(camera->transform.dimension.y);
@@ -177,10 +177,10 @@ namespace dukat
 	void ScrollingScene::switch_to_follower_camera(void)
 	{
 		const auto& settings = game->get_settings();
-		game_width = settings.get_int("game.width", 320);
+		game_width = settings.get_int(settings::game_width, 320);
 
 		auto camera = std::make_unique<FollowerCamera2<Player>>(game);
-		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_clip(settings.get_float(settings::video_camera_nearclip), settings.get_float(settings::video_camera_farclip));
 		camera->set_resize_handler(fixed_width_camera(game_width));
 		camera->set_target(player.get());
 		camera->refresh();
@@ -191,11 +191,11 @@ namespace dukat
 	void ScrollingScene::switch_to_delayed_camera(void)
 	{
 		const auto& settings = game->get_settings();
-		game_width = settings.get_int("game.width", 320);
+		game_width = settings.get_int(settings::game_width, 320);
 
 		auto camera = std::make_unique<FollowerCamera2<Player>>(game);
 		camera->set_sharpness(0.2f);
-		camera->set_clip(settings.get_float("camera.nearclip"), settings.get_float("camera.farclip"));
+		camera->set_clip(settings.get_float(settings::video_camera_nearclip), settings.get_float(settings::video_camera_farclip));
 		camera->set_resize_handler(fixed_width_camera(game_width));
 		camera->set_target(player.get());
 		camera->refresh();
