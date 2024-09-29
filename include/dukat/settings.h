@@ -53,6 +53,7 @@ namespace dukat
 		static constexpr auto input_mouse_cursor = "input.mouse.cursor";
 		static constexpr auto input_mouse_lock = "input.mouse.lock";
 		static constexpr auto input_mouse_sensitivity = "input.mouse.sensitivity";
+		static constexpr auto input_profile_prefix = "input.profiles.";
 
 		// logging
 		static constexpr auto logging_file = "logging.file";

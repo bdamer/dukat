@@ -45,7 +45,7 @@ namespace dukat
 
 	void GamepadDevice::restore_mapping(const Settings& settings, const std::string& profile)
 	{
-		const auto prefix = "input.profiles." + profile + ".";
+		const auto prefix = settings::input_profile_prefix + profile + ".";
 		mapping[VirtualButton::Button1] = settings.get_int(prefix + "gamepad.button1", SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
 		mapping[VirtualButton::Button2] = settings.get_int(prefix + "gamepad.button2", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
 		mapping[VirtualButton::Button3] = settings.get_int(prefix + "gamepad.button3", SDL_CONTROLLER_BUTTON_A);

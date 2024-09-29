@@ -40,8 +40,11 @@ namespace dukat
 		int get_key_profile_mapping(VirtualButton button, const std::string& profile, const Settings& settings) const;
 
 		bool is_mapped(int key, VirtualButton& button) const override;
+		bool is_mapped(int key, const std::string& profile, Settings& settings, VirtualButton& button) const;
 		void override_mapping(VirtualButton button, int key) override;
+		void override_profile_mapping(VirtualButton button, int key, const std::string& profile, Settings& settings) const;
 		void clear_mapping(VirtualButton button) override;
+		void clear_profile_mapping(VirtualButton button, const std::string& profile, Settings& settings) const;
 		void restore_mapping(const Settings& settings, const std::string& profile) override;
 
 		void update(void) override;
@@ -49,5 +52,6 @@ namespace dukat
 		int id(void) const override { return keyboard_id; }
 		std::string get_button_name(VirtualButton button) const override;
 		static int mouse_button_to_key(const int mb) { return -(mb + 1); }
+		static int key_to_mouse_button(const int key) { return -key - 1; }
 	};
 }
