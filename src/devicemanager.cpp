@@ -51,22 +51,34 @@ namespace dukat
 		SDL_JoystickGetGUIDString(guid, buffer, 33);
 		log->debug("Device GUID: {}", buffer);
 
+		std::unique_ptr<InputDevice> device = nullptr;
+
 #ifdef XINPUT_SUPPORT
 		if (is_xinput_device(joystick_index))
 		{
-			controllers.push_back(std::make_unique<XBoxDevice>(window, settings, joystick_index));
+			device = std::make_unique<XBoxDevice>(window, settings, joystick_index);
+		}
+#endif
+		if (!device && SDL_IsGameController(joystick_index))
+		{
+			device = std::make_unique<GamepadDevice>(window, settings, joystick_index);
 		}
 		else
 		{
-#endif
-			controllers.push_back(std::make_unique<GamepadDevice>(window, settings, joystick_index));
-#ifdef XINPUT_SUPPORT
+			// TODO: add support for SDL joysticks
 		}
-#endif
-		trigger(Message{ events::DeviceUnbound });
-		active = controllers.back().get();
-		trigger(Message{ events::DeviceBound });
-		apply_feedback(true);
+
+		if (device)
+		{
+			trigger(Message{ events::DeviceUnbound });
+			active = controllers.back().get();
+			trigger(Message{ events::DeviceBound });
+			apply_feedback(true);
+		}
+		else
+		{
+			log->warn("Failed to add unsupported device: {} [{}]", name, device_id);
+		}
 	}
 
 	void DeviceManager::remove_joystick(SDL_JoystickID id)

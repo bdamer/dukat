@@ -10,9 +10,6 @@ namespace dukat
 	GamepadDevice::GamepadDevice(const Window& window, const Settings& settings, int device_index)
 		: InputDevice(window, settings, false)
 	{
-		if (!SDL_IsGameController(device_index))
-			log->warn("Attempting to use incompatible device as gamepad: {}", device_index);
-
 		device = SDL_GameControllerOpen(device_index);
 		if (device == nullptr)
 		{
