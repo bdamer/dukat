@@ -70,6 +70,7 @@ namespace dukat
 
 		if (device)
 		{
+			controllers.push_back(std::move(device));
 			trigger(Message{ events::DeviceUnbound });
 			active = controllers.back().get();
 			trigger(Message{ events::DeviceBound });
