@@ -55,25 +55,44 @@ namespace dukat
 	std::string TextMeshBuilder::add_line_breaks(const std::string& text) const
 	{
 		std::stringstream ss;
+		const auto& len = text.length();
 
 		auto processed = 0;
 		while (true)
 		{
 			auto last_space = -1;
 			auto cur_width = 0.0f;
+			auto in_control = false;
 
 			auto line_break = false;
-			for (auto i = 0u; (processed + i) < text.length(); i++)
+			for (auto i = 0u; (processed + i) < len; i++)
 			{
 				const auto c = text[processed + i];
+				if (in_control)
+				{
+					in_control = (c != '>');
+					continue;
+				}
+
 				if (c == ' ') // remember last space
+				{
 					last_space = processed + i;
+				}
 				else if (c == '\n')
 				{
 					ss << text.substr(processed, i) << std::endl;
 					processed += i + 1; // acount for newline
 					line_break = true;
 					break;
+				}
+				else if (c == '<' && (i + 1) < len)
+				{
+					const auto next_c = text[processed + i + 1];
+					if (next_c == '#' || next_c == '/')
+					{
+						in_control = true;
+						continue;
+					}
 				}
 
 				const auto& glyph = font->get_glyph(c);
