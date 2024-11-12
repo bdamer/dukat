@@ -99,12 +99,56 @@ namespace dukat
 	// Default recipes
 	namespace recipes
 	{
+		// Flame particles emitter
+		// default params: rate,size,ttl,dc
+		// emit distance: min_dp.x
+		// horizontal motion: max_dp.x
+		// vertical motion: [min_dp.y, max_dp.y]
+		// colors[0]: center color
+		// colors[1]: outer color
 		extern const ParticleEmitter::Recipe FlameRecipe;
+
+		// Smoke particles emitter
+		// default params: rate,size,ttl,dc
+		// emit distance: min_dp.x
+		// horizontal motion: max_dp.x
+		// vertical motion: [min_dp.y, max_dp.y]
+		// colors[0]: Smoke color
+		// colors[1]: R-value: rate of change to angle, other values not used
 		extern const ParticleEmitter::Recipe SmokeRecipe;
+
+		// Fog particles emitter
+		// default params: rate,size,ttl,dc
+		// ground particle motion range: [min_dp.x, max_dp.x]
+		// escape particle motion range: [min_dp.y, max_dp.y]
+		// colors[0]: Fog color
+		// colors[1].rg: min/max scalar coefficient of small particles 
+		// colors[1].b: Emit ratio for small particles
 		extern const ParticleEmitter::Recipe FogRecipe;
+
+		// Fountain particles emitter
+		// default params: rate,size,ttl,dc
+		// emit range: [min_dp.x,max_dp.x]
+		// vertical motion: [min_dp.y, max_dp.y]
+		// colors[0:4]: randomly selected
 		extern const ParticleEmitter::Recipe FountainRecipe;
+
+		// Explosion particle emitter
+		// default params: rate,size,ttl,dc
+		// emit range: [min_dp.x, max_dp.x]
+		// particle motion range: [min_dp.y, max_dp.y]
+		// colors[0]: inner color (at min_dp.x)
+		// colors[1]: outer color (at max_dp.x)
 		extern const ParticleEmitter::Recipe ExplosionRecipe;
+
+		// Ground Explosion particle emitter
+		// default params: rate,size,ttl,dc
+		// emit range: [min_dp.x, max_dp.x]
+		// particle motion range: [min_dp.y, max_dp.y]
+		// colors[0]: inner color (at min_dp.x)
+		// colors[1]: outer color (at max_dp.x)
 		extern const ParticleEmitter::Recipe GroundExplosionRecipe;
+
 		extern const ParticleEmitter::Recipe SnowRecipe;
 		extern const ParticleEmitter::Recipe SpiralRecipe;
 		extern const ParticleEmitter::Recipe BlastRecipe;
