@@ -51,6 +51,13 @@ namespace dukat
 		SDL_JoystickGetGUIDString(guid, buffer, 33);
 		log->debug("Device GUID: {}", buffer);
 
+		// we've seen cases in which we receive multiple add events for the same device_id
+		if (find_device_by_id(device_id))
+		{
+			log->warn("Device for id {} already bound, ignoring event.", device_id);
+			return;
+		}
+
 		std::unique_ptr<InputDevice> device = nullptr;
 
 #ifdef XINPUT_SUPPORT
@@ -154,6 +161,14 @@ namespace dukat
 			feedback_val.low = low;
 			feedback_val.high = high;
 		}
+	}
+
+	InputDevice* DeviceManager::find_device_by_id(int device_id) const
+	{
+		const auto& it = std::find_if(controllers.begin(), controllers.end(), [&](const auto& dev) {
+			return dev->id() == device_id;
+		});
+		return it != controllers.end() ? it->get() : nullptr;
 	}
 
 	FeedbackSequence* DeviceManager::start_feedback(std::unique_ptr<FeedbackSequence> feedback)

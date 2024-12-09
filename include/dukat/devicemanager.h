@@ -30,6 +30,8 @@ namespace dukat
 		void update_feedback_stack(float delta);
 		// Applies current feedback to active device.
 		void apply_feedback(bool force);
+		// Returns device by device id.
+		InputDevice* find_device_by_id(int device_id) const;
 
 	public:
 		InputDevice* active;
