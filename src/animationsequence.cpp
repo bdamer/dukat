@@ -27,6 +27,11 @@ namespace dukat
 		time += delta;
 	}
 
+	bool AnimationSequence::is_done(void) const
+	{
+		return next_key >= (keys.end() - keys.begin());
+	}
+
 	AnimationSequence& AnimationSequence::then_do(const Callback& callback)
 	{
 		auto index = keys.size() > 0 ? keys.back().index : 0.0f;

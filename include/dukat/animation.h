@@ -73,15 +73,15 @@ namespace dukat
 		void set_callback(const Callback& callback) { this->callback = callback; }
 		void set_loop(bool loop) { this->loop = loop; }
 		bool is_loop(void) const { return loop; }
-		bool is_running(void) const { return next_key > -1 && !is_done(); }
-		bool is_done(void) const { return (keys.begin() + next_key) == keys.end(); }
+		bool is_running(void) const override { return next_key > -1 && !is_done(); }
+		bool is_done(void) const override { return next_key >= (keys.end() - keys.begin()); }
 		void add_key(const AnimationKey<T>& key) { keys.push_back(key); }
 
-		void start(void);
-		void stop(void) { next_key = keys.end() - keys.begin(); }
-		void pause(void) { paused = true; }
-		void resume(void) { paused = false; }
-		void step(float delta);
+		void start(void) override;
+		void stop(void) override { next_key = keys.end() - keys.begin(); loop = false; }
+		void pause(void) override { paused = true; }
+		void resume(void) override { paused = false; }
+		void step(float delta) override;
 	};
 
 	template<typename T>
@@ -167,7 +167,7 @@ namespace dukat
 		void add_key(const AnimationKey<std::array<T, S>>& key) { keys.push_back(key); }
 
 		void start(void);
-		void stop(void) { next_key = keys.end() - keys.begin(); }
+		void stop(void) { next_key = keys.end() - keys.begin(); loop = false; }
 		void pause(void) { paused = true; }
 		void resume(void) { paused = false; }
 		void step(float delta);
