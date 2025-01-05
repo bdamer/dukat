@@ -155,6 +155,7 @@
 #include "particle.h"
 #include "particleemitter.h"
 #include "particlemanager.h"
+#include "particlerecipe.h"
 #include "renderer.h"
 #include "renderer2.h"
 #include "renderer3.h"

@@ -22,8 +22,8 @@ namespace dukat
 		auto info_layer = game->get_renderer()->create_direct_layer("overlay", 25.0f);
 		info_text = game->create_text_mesh();
 		info_text->set_size(8.0f);
-		info_text->transform.position = Vector3(-0.5f * static_cast<float>(camera_width), 
-			0.4f * static_cast<float>(camera_height), 0.0f);
+		info_text->transform.position = Vector3(-0.4f * static_cast<float>(camera_width), 
+			0.3f * static_cast<float>(camera_height), 0.0f);
 		info_text->update();
 		info_layer->add(info_text.get());
 
@@ -56,23 +56,17 @@ namespace dukat
 		// Register particle modes
 		modes.push_back(ParticleMode{ "Linear", 
 			[&](void) {
-				auto pm = game->get<ParticleManager>();
-
-				ParticleEmitter::Recipe recipe{ 
-					ParticleEmitter::Recipe::Linear, 
-					Particle::Alive | Particle::Linear,
-					200.0f, 1.0f, 4.0f, 1.0f, 5.0f,
-					Vector2{ -15, -15 }, Vector2{ 15, 15 }, 	
-					{ 
-						color_rgb(0xff0000),
-						color_rgb(0x00ff00),
-						color_rgb(0x0000ff),
-						color_rgb(0xff00ff)
-					},
-					Color{ 0.f, 0.f, 0.f, -0.1f }
-				};
-
-				auto e = pm->create_emitter(recipe);
+				const auto recipe = ParticleRecipeBuilder()
+					.type(ParticleRecipe::Linear)
+					.flags(Particle::Alive | Particle::Linear)
+					.rate(200.0f)
+					.size(1.0f, 4.0f)
+					.ttl(1.0f, 5.0f)
+					.dp(Vector2{ -15, -15 }, Vector2{ 15, 15 })
+					.colors({ color_rgb(0xff0000), color_rgb(0x00ff00), color_rgb(0x0000ff), color_rgb(0xff00ff) })
+					.dc(Color{ 0.f, 0.f, 0.f, -0.1f })
+					.build();
+				auto e = game->get<ParticleManager>()->create_emitter(recipe);
 				e->pos = Vector2{0.f, 0.f };
 				e->target_layer = particle_layer;
 			}
@@ -80,23 +74,18 @@ namespace dukat
 
 		modes.push_back(ParticleMode{ "Uniform",
 			[&](void) {
-				auto pm = game->get<ParticleManager>();
+				const auto recipe = ParticleRecipeBuilder()
+					.type(ParticleRecipe::Uniform)
+					.flags(Particle::Alive | Particle::Linear)
+					.rate(50.0f)
+					.size(1.0f, 1.0f)
+					.ttl(1.5f, 2.0f)
+					.dp(Vector2{ 0, -50 }, Vector2{ 0, -50 })
+					.colors({ color_rgb(0xffffff), color_rgb(0xffeb57), color_rgb(0xffc825), color_rgb(0xffa214) })
+					.dc(Color{ 0.f, 0.f, 0.f, -0.25f })
+					.build();
 
-				ParticleEmitter::Recipe recipe{
-					ParticleEmitter::Recipe::Uniform,
-					Particle::Alive | Particle::Linear,
-					50.0f, 1.0f, 1.0f, 1.0f, 2.0f,
-					Vector2{ 0, -50 }, Vector2{ 0, -50 },
-					{
-						color_rgb(0xffffff),
-						color_rgb(0xffeb57),
-						color_rgb(0xffc825),
-						color_rgb(0xffa214)
-					},
-					Color{ 0.f, 0.f, 0.f, -1.0f }
-				};
-
-				auto e = pm->create_emitter(recipe);
+				auto e = game->get<ParticleManager>()->create_emitter(recipe);
 				e->pos = Vector2{ 0.f, 0.f };
 				e->offsets.push_back(Vector2{ -16, -8 });
 				e->offsets.push_back(Vector2{ 16, 8 });
@@ -106,37 +95,31 @@ namespace dukat
 
 		modes.push_back(ParticleMode{ "Radial",
 			[&](void) {
-				auto pm = game->get<ParticleManager>();
-
-				ParticleEmitter::Recipe recipe{
-					ParticleEmitter::Recipe::Radial,
-					Particle::Alive | Particle::Linear,
-					50.0f, 1.0f, 1.0f, 5.0f, 10.0f,
-					Vector2{ 150, -25 }, Vector2{ 0, -25 },
-					{
-						color_rgb(0xffffff),
-						color_rgb(0xffeb57),
-						color_rgb(0xffc825),
-						color_rgb(0xffa214)
-					},
-					Color{ 0.f, 0.f, 0.f, -.1f }
-				};
-
-				auto e = pm->create_emitter(recipe);
+				const auto recipe = ParticleRecipeBuilder()
+					.type(ParticleRecipe::Radial)
+					.flags(Particle::Alive | Particle::Linear)
+					.rate(50.0f)
+					.size(1.0f, 1.0f)
+					.ttl(5.0f, 10.0f)
+					.dp(Vector2{ 150, -25 }, Vector2{ 0, -25 })
+					.colors({ color_rgb(0xffffff), color_rgb(0xffeb57), color_rgb(0xffc825), color_rgb(0xffa214) })
+					.dc(Color{ 0.f, 0.f, 0.f, -0.1f })
+					.build();
+				auto e = game->get<ParticleManager>()->create_emitter(recipe);
 				e->pos = Vector2{ 0.f, 0.f };
 				e->target_layer = particle_layer;
 			}
-			});
+		});
 
-		modes.push_back(ParticleMode{ "Vortex",
+		modes.push_back(ParticleMode{ "Helix",
 			[&](void) {
 				auto pm = game->get<ParticleManager>();
-				auto e1 = pm->create_emitter(recipes::VortexRecipe);
+				auto e1 = pm->create_emitter(recipes::HelixRecipe);
 				e1->pos = Vector2{ 0, 10 };
 				e1->recipe.min_dp.y = 10.f;
 				e1->target_layer = particle_layer;
 				
-				auto e2 = pm->create_emitter(recipes::VortexRecipe);
+				auto e2 = pm->create_emitter(recipes::HelixRecipe);
 				e2->pos = Vector2{ 0, 10 };
 				e2->recipe.min_dp.y = 10.f;
 				e2->value = pi;
@@ -144,10 +127,17 @@ namespace dukat
 			}
 		});
 
+		modes.push_back(ParticleMode{ "Vortex",
+			[&](void) {
+				auto e = game->get<ParticleManager>()->create_emitter(recipes::VortexRecipe);
+				e->pos = Vector2{ 0.f, 0.4f * static_cast<float>(camera_height) };
+				e->target_layer = particle_layer;
+			}
+		});
+
 		modes.push_back(ParticleMode{ "Flame", 
 			[&](void) {
-				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(recipes::FlameRecipe);
+				auto e = game->get<ParticleManager>()->create_emitter(recipes::FlameRecipe);
 				e->pos = Vector2{0.f, 0.25f * static_cast<float>(camera_height) };
 				e->target_layer = particle_layer;
 				auto x_offset = -0.02f;
@@ -161,13 +151,21 @@ namespace dukat
 
 		modes.push_back(ParticleMode{ "Blast",
 			[&](void) {
-				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(recipes::BlastRecipe);
+				auto e = game->get<ParticleManager>()->create_emitter(recipes::BlastRecipe);
 				e->pos = Vector2{ 0, 0 };
 				e->value = 3.0f; // determines how long we emit particles
 				e->target_layer = particle_layer;
 			}
 		});
+
+		modes.push_back(ParticleMode{ "Spiral",
+			[&](void) {
+				auto pm = game->get<ParticleManager>();
+				auto e = pm->create_emitter(recipes::SpiralRecipe);
+				e->pos = Vector2{ 0.0f, 0.0f };
+				e->target_layer = particle_layer;
+			}
+			});
 
 		modes.push_back(ParticleMode{ "Smoke",
 			[&](void) {
@@ -278,15 +276,6 @@ namespace dukat
 				e->pos = Vector2{ 0.0f, 0.0f };
 				e->target_layer = particle_layer;
 				e->value = 5.0f; // repeat interval
-			}
-		});
-
-		modes.push_back(ParticleMode{ "Spiral",
-			[&](void) {
-				auto pm = game->get<ParticleManager>();
-				auto e = pm->create_emitter(recipes::SpiralRecipe);
-				e->pos = Vector2{ 0.0f, 0.0f };
-				e->target_layer = particle_layer;
 			}
 		});
 

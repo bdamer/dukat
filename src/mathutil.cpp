@@ -1,8 +1,49 @@
 #include "stdafx.h"
 #include <dukat/mathutil.h>
+#include <array>
 
 namespace dukat
 {
+	// Lookup table used for fast trig functions below
+	struct TrigTable
+	{
+		static constexpr auto size = 2048;
+		// Store values between 0 and pi / 2
+		std::array<float, size> table;
+
+		template<typename F>
+		TrigTable(F f)
+		{
+			for (auto i = 0; i < size; i++)
+				table[i] = f(i * pi / static_cast<float>(size * 2));
+		}
+
+		float lookup(float theta)
+		{
+			const auto angle = wrap_two_pi(theta);
+			if (angle < pi_over_two) // Q1
+				return table[static_cast<int>(angle * (size - 1) / pi_over_two)];
+			else if (angle < pi) // Q2
+				return table[static_cast<int>((pi - angle) * (size - 1) / pi_over_two)];
+			else if (angle < 3.f * pi_over_two) // Q3
+				return -table[static_cast<int>((angle - pi) * (size - 1) / pi_over_two)];
+			else // Q4
+				return -table[static_cast<int>((two_pi - angle) * (size - 1) / pi_over_two)];
+		}
+	};
+
+	static TrigTable table(sinf);
+
+	float fast_sin(float theta)
+	{
+		return table.lookup(theta);
+	}
+
+	float fast_cos(float theta)
+	{
+		return table.lookup(pi_over_two - theta);
+	}
+
 	float wrap_pi(float theta)
 	{
 		theta += pi;
@@ -23,35 +64,6 @@ namespace dukat
 			return 0.0f;
 		}
 		return std::acos(x);
-	}
-
-	// Lookup table used for fast trig functions below
-	struct TrigTable
-	{
-		float values[360];
-
-		template<typename F>
-		TrigTable(F f)
-		{
-			for (auto i = 0; i < 360; i++)
-				values[i] = f(deg_to_rad(static_cast<float>(i)));
-		}
-	};
-
-	float fast_sin(float value)
-	{
-		static TrigTable table(sinf);
-		auto deg = static_cast<int>(rad_to_deg(value));
-		while (deg < 0) { deg += 360; }
-		return table.values[deg % 360];
-	}
-
-	float fast_cos(float value)
-	{
-		static TrigTable table(cosf);
-		auto deg = static_cast<int>(rad_to_deg(value));
-		while (deg < 0) { deg += 360; }
-		return table.values[deg % 360];
 	}
 
 	float inv_sqrt(float val)

@@ -177,6 +177,9 @@
     </ClCompile>
     <ClCompile Include="text.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\text.ini" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

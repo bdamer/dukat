@@ -133,7 +133,7 @@ namespace dukat
 		auto p = pm->create_particle();
 		p->flags |= Particle::Gravitational;
 		p->pos = barrel_sprite->p + Vector2{ random(-4.0f, 4.0f), -random(12.0f, 14.0f) };
-		p->ry = barrel_sprite->p.y;
+		p->ref.y = barrel_sprite->p.y;
 		p->dp = Vector2{ random(-4.0f, 4.0f), -random(12.0f, 16.0f) };
 		p->color = Color{ 0.047f, 0.08f, 0.576f, random(0.75f, 1.0f) };
 		p->dc = Color{ 0.0f, 0.0f, 0.0f, -0.1f };

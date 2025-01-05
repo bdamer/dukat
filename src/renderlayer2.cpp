@@ -352,7 +352,7 @@ namespace dukat
 					particle_data[particle_count].py = p->pos.y;
 				}
 				particle_data[particle_count].size = p->size;
-				particle_data[particle_count].ry = p->ry;
+				particle_data[particle_count].ry = p->ref.y;
 				particle_data[particle_count].cr = p->color.r;
 				particle_data[particle_count].cg = p->color.g;
 				particle_data[particle_count].cb = p->color.b;

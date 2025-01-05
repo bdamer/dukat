@@ -3,170 +3,13 @@
 #include <dukat/particleemitter.h>
 #include <dukat/particle.h>
 #include <dukat/particlemanager.h>
+#include <dukat/particlerecipe.h>
 #include <dukat/rand.h>
 #include <dukat/renderlayer2.h>
 
 namespace dukat
 {
 	MemoryPool<ParticleEmitter> ParticleEmitter::_pool(512);
-
-	namespace recipes
-	{
-		const ParticleEmitter::Recipe FlameRecipe{
-			ParticleEmitter::Recipe::Type::Flame, 
-			Particle::Alive | Particle::Linear,
-			400.f, 1.f, 6.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
-			Vector2{ 2, 25 },	// min_dp.x used to determine initial range
-			Vector2{ 2, 40 }, 	// max_dp.x used to scale particle motion 
-			{ 
-				Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Center color
-				Color{ 0.0f, 0.25f, 0.0f, 0.0f },	// Color reduction as we move away from center
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-			},
-			Color{ 0.0f, -0.5f, 0.0f, -0.05f }		// Color reduction over time
-		};
-
-		const ParticleEmitter::Recipe SmokeRecipe{
-			ParticleEmitter::Recipe::Type::Smoke, 
-			Particle::Alive | Particle::Linear,
-			100.f, 4.f, 8.f, 2.f, 6.f,				// rate, min/max size, min/max ttl
-			Vector2{ 4, 15 },	// min_dp.x used to determine initial range
-			Vector2{ 1, 25 },	// max_dp.x used to scale particle motion 
-			{
-				Color{ 1.0f, 1.0f, 1.0f, 1.0f },	// Smoke color
-				Color{ 0.15f, 0.0f, 0.0f, 0.0f },	// R-value: rate of change to angle, other values not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-			},
-			Color{ 0.0f, 0.0f, 0.0f, -0.5f }		// Color reduction over time
-		};
-
-		const ParticleEmitter::Recipe FogRecipe{
-			ParticleEmitter::Recipe::Type::Fog,
-			Particle::Alive | Particle::Linear,
-			40.f, 8.f, 16.f,	// rate, min/max size of ground particles
-			5.f, 10.f,			// min/max ttl
-			Vector2{ -2, 2 },	// _dp.x used for particle motion
-			Vector2{ 2, 4 },	// _dp.y used for particle motion that escape fog bank
-			{
-				Color{ 1.0f, 1.0f, 1.0f, 0.85f },	// Fog color
-				Color{ 0.75f, 0.75f, 0.1f, 0.0f },	// R/G - min/max scalar coefficient of small particles 
-													// B - Emit ratio for small particles
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-			},
-			Color{ 0.0f, 0.0f, 0.0f, 0.0f }			// Color reduction over time - alpha not used
-		};
-
-		const ParticleEmitter::Recipe FountainRecipe{
-			ParticleEmitter::Recipe::Type::Fountain, 
-			Particle::Alive | Particle::Linear | Particle::Gravitational,
-			200.f, 1.f, 4.f, 4.f, 6.f,				// rate, min/max size, min/max ttl
-			Vector2{ 0, 80 }, Vector2{ 4, 100 }, 	// x used for initial range
-													// y used for initial motion in -y direction
-			{
-				Color{ 0.47f, 0.945f, 1.0f, 0.8f }, // Each color picked randomly
-				Color{ 0.0f, 0.8f, 0.976f, 0.866f },
-				Color{ 0.0f, 0.596f, 0.862f, 0.933f },
-				Color{ 0.0f, 0.411f, 0.666f, 1.0f }
-			},
-			Color{ 0.0f, 0.0f, 0.0f, -0.1f }		// Color reduction over time
-		};
-
-		const ParticleEmitter::Recipe ExplosionRecipe{
-			ParticleEmitter::Recipe::Type::Explosion, 
-			Particle::Alive | Particle::Linear | Particle::Dampened,
-			100.f, 1.f, 6.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
-			Vector2{ 0, 25 }, Vector2{ 10, 35 },	// x used to adjust initial position in particle direction 
-													// y used to determine particle velocity
-			{
-				Color{ 1.0f, 0.78f, 0.14f, 1.0f },	// Inner color (at min_dp.x)
-				Color{ 1.0f, 0.31f, 0.0f, 1.0f },	// Outer color (at max_dp.x)
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-			},
-			Color{ 0.0f, -0.25f, -0.05f, -0.05f }	// Color reduction over time
-		};
-
-		const ParticleEmitter::Recipe GroundExplosionRecipe{
-			ParticleEmitter::Recipe::Type::GroundExplosion,
-			Particle::Alive | Particle::Linear | Particle::Gravitational,
-			100.f, 1.f, 6.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
-			Vector2{ 0, 25 }, Vector2{ 10, 35 },	// x used to adjust initial position in particle direction 
-													// y used to determine particle velocity
-			{
-				Color{ 1.0f, 0.78f, 0.14f, 1.0f },	// Inner color (at min_dp.x)
-				Color{ 1.0f, 0.31f, 0.0f, 1.0f },	// Outer color (at max_dp.x)
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-			},
-			Color{ 0.0f, -0.25f, -0.05f, -0.05f }	// Color reduction over time
-		};
-
-		const ParticleEmitter::Recipe SpiralRecipe{
-			ParticleEmitter::Recipe::Type::Spiral,
-			Particle::Alive | Particle::Linear,
-			100.f, 1.f, 4.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
-			Vector2{ 4.f, 3.f },					// x used to scale emit range, y used to define max angular change per second
-			Vector2{ 64, 64 },						// Used to scale dp
-			{
-				Color{ 1.0f, 1.0f, 0.0f, 1.0f },	// Initial color
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-			},
-			Color{ 0.0f, -1.0f, 0.0f, -0.1f }		// Color reduction over time
-		};
-
-		const ParticleEmitter::Recipe SnowRecipe{
-			ParticleEmitter::Recipe::Layered,
-			Particle::Alive | Particle::Linear,
-			40.0f,	
-			1.0f, 3.0f,		// size within 1,3
-			10.0f, 10.0f,	// ttl 
-			Vector2{ -2, 24 },  // particle motion for background (color[2] and color[3])
-			Vector2{ 4, 36 },	// particle motion for foreground (color[0] and color[1])
-			{
-				color_rgba(0xffffffff),
-				color_rgba(0xffffffc0),
-				color_rgba(0xc7cfddc0),
-				color_rgba(0x94fdffc0),
-			},
-			Color{ 0.f, 0.f, 0.f, -0.005f }
-		};
-
-		const ParticleEmitter::Recipe BlastRecipe{
-			ParticleEmitter::Recipe::Blast,
-			Particle::Alive | Particle::Linear | Particle::AntiGravitational,
-			100.0f, // rate
-			1.0f, 4.0f, // size
-			1.0f, 3.0f, // ttl
-			Vector2{ 32, -7 }, Vector2{ 64, 7 }, // direction
-			{
-				color_rgb(0xffc825),
-				color_rgb(0xffa214),
-				color_rgb(0xed7614),
-				color_rgb(0xff5000)
-			},
-			Color{ 0.1f, -0.1f, -0.1f, -0.25f }
-		};
-
-		const ParticleEmitter::Recipe VortexRecipe{
-			ParticleEmitter::Recipe::Type::Vortex,
-			Particle::Alive | Particle::Linear,
-			40.f, 2.f, 4.f, 1.f, 5.f,				// rate, min/max size, min/max ttl
-			Vector2{ 30.f, 8.f },					// x used to scale emit range, y used to define max angular change per second
-			Vector2{ 0, -40 },						// Used to scale dp
-			{
-				Color{ 0.78f, 0.81f, 0.87f, 1.0f },	// Initial color
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f },	// Not used
-				Color{ 0.0f, 0.0f, 0.0f, 0.0f }		// Not used
-			},
-			Color{ 0.0f, -0.5f, 0.0f, -0.075f }		// Color reduction over time
-		};
-	}
 
 	// LINEAR
 	// - particles are created with unique direction in +/- dp range
@@ -183,7 +26,7 @@ namespace dukat
 			if (p == nullptr)
 				return;
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 			
 			if (offset_count == 0)
 				p->pos = em.pos;
@@ -221,7 +64,7 @@ namespace dukat
 			if (p == nullptr)
 				return;
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 			p->pos = em.pos + random(min_offset, max_offset);
 
 			p->dp = random(em.recipe.min_dp, em.recipe.max_dp);
@@ -257,7 +100,7 @@ namespace dukat
 			if (p == nullptr)
 				return;
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 			p->pos = em.pos + random(min_offset, max_offset);
 
 			const auto z = random(0, em.recipe.colors.size());
@@ -294,7 +137,7 @@ namespace dukat
 			if (p == nullptr)
 				return;
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 
 			const auto angle = random(0.0f, two_pi);
 			const auto offset = base_vector.rotate(angle);
@@ -342,7 +185,7 @@ namespace dukat
 				break;
 
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 			
 			auto offset = Vector2{ 0.f, range }.rotate(em.value);
 			offset.y = 0.f;
@@ -393,7 +236,7 @@ namespace dukat
 				break;
 
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 			
 			auto offset = Vector2{ 0.f, em.recipe.min_dp.x }.rotate(em.value);
 			offset.y = 0.f;
@@ -409,7 +252,7 @@ namespace dukat
             p->size = em.recipe.min_size + size * (em.recipe.max_size - em.recipe.min_size);
             p->color = em.recipe.colors[0];
 			p->dc = em.recipe.dc * (0.25f + size);
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 
             // The smaller the particle, the longer it will live
             p->ttl = em.recipe.min_ttl + (1.f - size) * (em.recipe.max_ttl - em.recipe.min_ttl);
@@ -469,7 +312,7 @@ namespace dukat
 
 			p->color = em.recipe.colors[0];
 			p->dc = em.recipe.dc;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 
 			p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
 			p->dc.a = -0.5f / p->ttl; // alpha reduction based on ttl
@@ -501,7 +344,7 @@ namespace dukat
 				break;
 
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 
 			auto offset = Vector2{ 0.f, em.recipe.max_dp.x }.rotate(em.value);
 			offset.y = 0.f;
@@ -565,7 +408,7 @@ namespace dukat
 				break;
 
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 
 			const auto angle = random(0.0f, two_pi);
 			const auto offset = base_vector.rotate(angle);
@@ -637,7 +480,7 @@ namespace dukat
 				break;
 
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 
 			const auto angle = random(-pi_over_two, pi_over_two);
 			const auto offset = base_vector.rotate(angle);
@@ -697,7 +540,7 @@ namespace dukat
 			if (p == nullptr)
 				return;
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 
 			if (offset_count == 0)
 				p->pos = em.pos;
@@ -739,7 +582,7 @@ namespace dukat
 				break;
 
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 			p->dp.x = em.recipe.max_dp.x * offset.x;
 			p->dp.y = em.recipe.max_dp.y * offset.y;
 
@@ -763,11 +606,11 @@ namespace dukat
 		}
 	}
 
-	// VORTEX
+	// HELIX
 	// - oscillating emitter, range defined by min_dp.x
 	// - angular speed determined by min_dp.y
 	// - particles created with fixed dp based on max_dp
-	void vortex_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	void helix_update(ParticleManager& pm, ParticleEmitter& em, float delta)
 	{
 		em.value += em.recipe.min_dp.y * delta;
 		em.accumulator += em.recipe.rate * delta;
@@ -776,7 +619,7 @@ namespace dukat
 			return;
 
 		const auto offset_count = em.offsets.size();
-		const auto offset_x = em.recipe.min_dp.x * std::sin(em.value);
+		const auto offset_x = em.recipe.min_dp.x * fast_sin(em.value);
 		while (em.accumulator >= 1.0f)
 		{
 			auto p = pm.create_particle();
@@ -784,7 +627,7 @@ namespace dukat
 				break;
 
 			p->flags = em.recipe.flags;
-			p->ry = em.pos.y + em.mirror_offset;
+			p->ref.y = em.pos.y + em.mirror_offset;
 			p->dp.x = em.recipe.max_dp.x;
 			p->dp.y = em.recipe.max_dp.y;
 
@@ -809,48 +652,91 @@ namespace dukat
 		}
 	}
 
-	void init_emitter(ParticleEmitter& emitter, const ParticleEmitter::Recipe& recipe)
+	// VORTEX
+	// - particles are created with unique direction in +/- dp range
+	// - x coordinate of rotation axis stored in p.ref.x
+	void vortex_update(ParticleManager& pm, ParticleEmitter& em, float delta)
+	{
+		em.accumulator += em.recipe.rate * delta;
+		if (em.accumulator < 1.0f || em.target_layer == nullptr)
+			return;
+
+		const auto offset_count = em.offsets.size();
+		while (em.accumulator >= 1.0f)
+		{
+			auto p = pm.create_particle();
+			if (p == nullptr)
+				return;
+			p->flags = em.recipe.flags;
+
+			if (offset_count == 0)
+				p->pos = em.pos;
+			else
+				p->pos = em.pos + em.offsets[random(0, offset_count)];
+
+			p->ref.x = p->pos.x;
+			p->ref.y = em.pos.y + em.mirror_offset;
+
+			p->dp = random(em.recipe.min_dp, em.recipe.max_dp);
+			p->size = em.recipe.min_size; 
+			p->dsize = em.recipe.max_size;
+			p->color = em.recipe.colors[random(0, em.recipe.colors.size())];
+			p->dc = em.recipe.dc;
+			p->radius = em.recipe.radius;
+			p->angle = pi_over_two;
+			p->ttl = random(em.recipe.min_ttl, em.recipe.max_ttl);
+			
+			em.target_layer->add(p);
+
+			em.accumulator -= 1.0f;
+		}
+	}
+
+	void init_emitter(ParticleEmitter& emitter, const ParticleRecipe& recipe)
 	{
 		emitter.recipe = recipe;
 		switch (recipe.type)
 		{
-		case ParticleEmitter::Recipe::Linear:
+		case ParticleRecipe::Linear:
 			emitter.update = std::bind(linear_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Uniform:
+		case ParticleRecipe::Uniform:
 			emitter.update = std::bind(uniform_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Flame:
+		case ParticleRecipe::Flame:
 			emitter.update = std::bind(flame_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Smoke:
+		case ParticleRecipe::Smoke:
 			emitter.update = std::bind(smoke_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Fog:
+		case ParticleRecipe::Fog:
 			emitter.update = std::bind(fog_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Fountain:
+		case ParticleRecipe::Fountain:
 			emitter.update = std::bind(fountain_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Explosion:
+		case ParticleRecipe::Explosion:
 			emitter.update = std::bind(explosion_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break; 
-		case ParticleEmitter::Recipe::GroundExplosion:
+		case ParticleRecipe::GroundExplosion:
 			emitter.update = std::bind(ground_explosion_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Spiral:
+		case ParticleRecipe::Spiral:
 			emitter.update = std::bind(spiral_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Radial:
+		case ParticleRecipe::Radial:
 			emitter.update = std::bind(radial_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Layered:
+		case ParticleRecipe::Layered:
 			emitter.update = std::bind(layered_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Blast:
+		case ParticleRecipe::Blast:
 			emitter.update = std::bind(blast_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
-		case ParticleEmitter::Recipe::Vortex:
+		case ParticleRecipe::Helix:
+			emitter.update = std::bind(helix_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+			break;
+		case ParticleRecipe::Vortex:
 			emitter.update = std::bind(vortex_update, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			break;
 		default:

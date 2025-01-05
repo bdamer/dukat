@@ -14,7 +14,7 @@ if(ANDROID)
 		game2.cpp game3.cpp gamebase.cpp gamepaddevice.cpp geometry.cpp
 		inputdevice.cpp inputrecorder.cpp json.cpp keyboarddevice.cpp log.cpp mathutil.cpp matrix2.cpp matrix4.cpp meshbuilder2.cpp meshbuilder3.cpp
 		meshcache.cpp meshdata.cpp meshgroup.cpp meshinstance.cpp messenger.cpp model3.cpp obb2.cpp orbitcamera3.cpp 
-		particle.cpp particleemitter.cpp particlemanager.cpp perfcounter.cpp quaternion.cpp
+		particle.cpp particleemitter.cpp particlemanager.cpp particlerecipe.cpp perfcounter.cpp quaternion.cpp
 		rand.cpp ray3.cpp renderer.cpp renderer2.cpp renderer3.cpp renderlayer2.cpp 
 		scene2.cpp sdlutil.cpp settings.cpp shadercache.cpp shaderprogram.cpp shadoweffect2.cpp sprite.cpp
 		shakycameraeffect.cpp stdafx.cpp string.cpp surface.cpp sysutil.cpp

@@ -33,4 +33,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\particles.ini">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

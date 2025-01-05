@@ -25,6 +25,9 @@ namespace dukat
 	// "Wrap an angle in range -PI...PI by adding the correct multiple of 2 PI
 	float wrap_pi(float theta);
 
+	// Wrap an angle in range 0...2PI
+	inline float wrap_two_pi(float theta) {	return theta - two_pi * floor(theta / two_pi); }
+
 	// "Safe" inverse trig functions
 
 	// Same as acos(x), but if x is out of range, it is "clamped" to the nearest
@@ -44,8 +47,9 @@ namespace dukat
 	}
 
 	// Fast sin / cos based on lookup tables.
-	float fast_sin(float value);
-	float fast_cos(float value);
+	// theta is in radians.
+	float fast_sin(float theta);
+	float fast_cos(float theta);
 
 	// convert degrees to radians and back
 	inline constexpr float deg_to_rad(float x) { return (x * pi) / 180.0f; }

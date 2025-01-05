@@ -3,6 +3,7 @@
 #include <dukat/particleemitter.h>
 #include <dukat/bit.h>
 #include <dukat/log.h>
+#include <dukat/mathutil.h>
 #include <dukat/perfcounter.h>
 
 namespace dukat
@@ -38,16 +39,29 @@ namespace dukat
 			{
 				p.ttl -= delta;
 				if (check_flag(p.flags, Particle::Linear))
+				{
 					p.pos += p.dp * delta;
+				}
+				else if (check_flag(p.flags, Particle::Spiraling))
+				{
+					p.angle += p.dp.x * delta;
+					p.pos.x = p.ref.x + p.radius * fast_cos(p.angle);
+					p.pos.y += p.dp.y * delta;
+
+					// reduce angular speed over time
+					p.dp.x = std::max(0.1f, p.dp.x - delta * 0.125f);
+					p.radius += 10.f * delta;
+				}
+
 				// For gravitational particles, only apply effect as long as we're above
 				// reflection line
 				if (check_flag(p.flags, Particle::Gravitational))
 				{
-					if (p.pos.y < p.ry)
+					if (p.pos.y < p.ref.y)
 						p.dp.y += gravity * delta;
 					else
 					{
-						p.pos.y = p.ry;
+						p.pos.y = p.ref.y;
 						// zero out dp once we reach reflection line
 						p.dp.x = p.dp.y = 0.f;
 					}
@@ -56,8 +70,10 @@ namespace dukat
 				{
 					p.dp.y -= gravity * delta;
 				}
+
 				if (check_flag(p.flags, Particle::Dampened))
 					p.dp *= dampening;
+
 				p.color += p.dc * delta;
 				p.size += p.dsize * delta;
 			}
@@ -93,7 +109,7 @@ namespace dukat
 		return res;
 	}
 
-	ParticleEmitter* ParticleManager::create_emitter(const ParticleEmitter::Recipe& recipe)
+	ParticleEmitter* ParticleManager::create_emitter(const ParticleRecipe& recipe)
 	{
 		auto emitter = std::make_unique<ParticleEmitter>();
 		init_emitter(*emitter, recipe);

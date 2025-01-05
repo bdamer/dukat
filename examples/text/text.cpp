@@ -23,7 +23,7 @@ namespace dukat
 		"malesuada fames ac turpis egestas. Mauris eleifend pellentesque enim, nec euismod erat aliquet eu. Etiam eget condimentum "
 		"libero, at posuere nunc. Duis sit amet nulla sed nulla iaculis molestie.";
 
-	TextScene::TextScene(Game2* game2) : Scene2(game2), font_size(16)
+	TextScene::TextScene(Game2* game2) : Scene2(game2), font_size(32)
 	{
 		auto settings = game->get_settings();
 		auto renderer = game->get_renderer();
@@ -50,10 +50,10 @@ namespace dukat
 
 		// Set up info text
 		info_text = game->create_text_mesh();
-		info_text->set_size(16.0f);
+		info_text->set_size(24.0f);
 		info_text->transform.position = Vector3(
 			-0.475f * static_cast<float>(window->get_width()),
-			0.225f * static_cast<float>(window->get_height()),
+			0.2f * static_cast<float>(window->get_height()),
 			0.0f);
 		const auto info_str =
 			"<F1>Scrolling text\n"

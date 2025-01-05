@@ -36,7 +36,7 @@ namespace dukat
 		// Creates a new particle.
 		Particle* create_particle(void);
 		// Creates a new particle emitter from a recipe. May return null if pool is at capacity.
-		ParticleEmitter* create_emitter(const ParticleEmitter::Recipe& recipe);
+		ParticleEmitter* create_emitter(const ParticleRecipe& recipe);
 		// Frees up a particle emitter.
 		void remove_emitter(ParticleEmitter* emitter);
 		// Removes all particles and emitters

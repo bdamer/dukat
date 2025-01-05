@@ -194,6 +194,7 @@
     <ClInclude Include="..\include\dukat\mirroreffect2.h" />
     <ClInclude Include="..\include\dukat\objectpool.h" />
     <ClInclude Include="..\include\dukat\particleemitter.h" />
+    <ClInclude Include="..\include\dukat\particlerecipe.h" />
     <ClInclude Include="..\include\dukat\quadtree.h" />
     <ClInclude Include="..\include\dukat\rand.h" />
     <ClInclude Include="..\include\dukat\renderstage2.h" />
@@ -333,6 +334,7 @@
     <ClCompile Include="..\src\mirroreffect2.cpp" />
     <ClCompile Include="..\src\particle.cpp" />
     <ClCompile Include="..\src\particleemitter.cpp" />
+    <ClCompile Include="..\src\particlerecipe.cpp" />
     <ClCompile Include="..\src\playbackdevice.cpp" />
     <ClCompile Include="..\src\rand.cpp" />
     <ClCompile Include="..\src\scene2.cpp" />
