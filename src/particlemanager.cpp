@@ -49,7 +49,8 @@ namespace dukat
 					p.pos.y += p.dp.y * delta;
 
 					// reduce angular speed over time
-					p.dp.x = std::max(0.1f, p.dp.x - delta * 0.125f);
+					const auto reduction = delta * 0.125f;
+					p.dp.x = p.dp.x > 0.f ? std::max(0.1f, p.dp.x - reduction) : std::min(-0.1f, p.dp.x + reduction);
 					p.radius += 10.f * delta;
 				}
 
