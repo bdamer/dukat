@@ -73,6 +73,10 @@ namespace dukat
 		static constexpr auto resources_shaders = "resources.shaders";
 		static constexpr auto resources_textures = "resources.textures";
 
+		// update
+		static constexpr auto update_url = "update.url";
+		static constexpr auto update_dir = "update.dir";
+
 		// video
 		static constexpr auto video_forcesync = "video.forcesync";
 		static constexpr auto video_camera_nearclip = "video.camera.nearclip";

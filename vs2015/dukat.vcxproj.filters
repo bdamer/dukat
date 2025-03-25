@@ -85,6 +85,12 @@
     <Filter Include="Source Files\ui">
       <UniqueIdentifier>{51c3a3f8-28e6-4964-94fe-d679234b383e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\net">
+      <UniqueIdentifier>{41359871-051d-4131-8a63-8a8823f38cd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net">
+      <UniqueIdentifier>{204f8dc8-ed78-4078-88a7-71c4421410ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\dukat\application.h">
@@ -540,6 +546,9 @@
     <ClInclude Include="..\include\dukat\particlerecipe.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\updater.h">
+      <Filter>Header Files\net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -859,6 +868,9 @@
     </ClCompile>
     <ClCompile Include="..\src\particlerecipe.cpp">
       <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\updater.cpp">
+      <Filter>Source Files\net</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

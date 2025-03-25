@@ -210,6 +210,7 @@
     <ClInclude Include="..\include\dukat\textureatlas.h" />
     <ClInclude Include="..\include\dukat\uicontrol.h" />
     <ClInclude Include="..\include\dukat\uimanager.h" />
+    <ClInclude Include="..\include\dukat\updater.h" />
     <ClInclude Include="..\include\dukat\voronoi.h" />
     <ClInclude Include="..\include\dukat\wavemesh.h" />
     <ClInclude Include="..\include\dukat\aabb2.h" />
@@ -345,6 +346,7 @@
     <ClCompile Include="..\src\textbutton.cpp" />
     <ClCompile Include="..\src\textureatlas.cpp" />
     <ClCompile Include="..\src\uimanager.cpp" />
+    <ClCompile Include="..\src\updater.cpp" />
     <ClCompile Include="..\src\voronoi.cpp" />
     <ClCompile Include="..\src\wavemesh.cpp" />
     <ClCompile Include="..\src\aabb2.cpp" />

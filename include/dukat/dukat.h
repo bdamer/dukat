@@ -113,6 +113,9 @@
 #include "voxmodel.h"
 #endif
 
+// Network
+#include "updater.h"
+
 // Video
 #include "blockbuilder.h"
 #ifndef __ANDROID__

@@ -19,7 +19,7 @@ if(ANDROID)
 		scene2.cpp sdlutil.cpp settings.cpp shadercache.cpp shaderprogram.cpp shadoweffect2.cpp sprite.cpp
 		shakycameraeffect.cpp stdafx.cpp string.cpp surface.cpp sysutil.cpp
 		textmeshbuilder.cpp textmeshinstance.cpp texturecache.cpp texture.cpp textureutil.cpp timermanager.cpp transform3.cpp 
-		uimanager.cpp vector2.cpp vector3.cpp window.cpp)
+		uimanager.cpp updater.cpp vector2.cpp vector3.cpp window.cpp)
 endif()
 
 add_library(dukat STATIC ${SOURCE_FILES})

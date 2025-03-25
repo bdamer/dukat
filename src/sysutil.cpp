@@ -151,4 +151,34 @@ namespace dukat
 #endif
 		return res;
 	}
+
+	int execute_command(const std::string& command, std::string& output)
+	{
+		log->debug("Executing: {}", command);
+#ifdef WIN32
+		auto pipe = _popen(command.c_str(), "r");
+#else
+		auto pipe = popen(command.c_str(), "r");
+#endif
+		if (!pipe)
+		{
+			log->error("Failed to execute command: {}", command);
+			return -1;
+		}
+
+		char buffer[128];
+		while (!feof(pipe))
+		{
+			if (fgets(buffer, 128, pipe) != NULL)
+				output += buffer;
+		}
+
+#ifdef WIN32
+		const auto res = _pclose(pipe);
+#else
+		const auto res = pclose(pipe);
+#endif
+		log->debug("Process returned: {}", res);
+		return res;
+	}
 }
