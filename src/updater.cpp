@@ -20,7 +20,7 @@ namespace dukat
 			curl_initialized = true;
 	}
 
-	static void release_curl(void)
+	void release_curl(void)
 	{
 		if (!curl_initialized) return;
 		log->info("Releasing libcurl.");
