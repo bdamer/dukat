@@ -91,10 +91,16 @@ namespace dukat
 			return false;
 		}
 
+#if WIN32
 		FILE* file = nullptr;
 		auto error = fopen_s(&file, target_file.c_str(), "wb");
 		if (error || file == nullptr)
 			throw std::runtime_error("Failed to download file.");
+#else
+		auto file = fopen(target_file.c_str(), "wb");
+		if (file == nullptr)
+			throw std::runtime_error("Failed to download file.");
+#endif
 
 		auto code = curl_easy_setopt(handle, CURLOPT_URL, url.c_str());
 		check_result(code, "set URL");
@@ -112,7 +118,7 @@ namespace dukat
 
 		fclose(file);
 		curl_easy_cleanup(handle);
-	
+
 		return true;
 	}
 }
