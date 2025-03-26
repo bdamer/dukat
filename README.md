@@ -10,6 +10,7 @@
 * SDL2_image 2.0.3
 * SDL2_mixer 2.0.2
 * spdlog 1.5.0
+* libcurl 8.12.0
 
 # Installation
 
@@ -22,6 +23,7 @@ Place header files for the following libraries in include/ directory:
 * SDL2/ SDL Image 2
 * SDL2/ SDL Mixer 2
 * spdlog/ spdlog
+* curl/ CURL
 
 Set BOOST_PATH environment variable to the top-level directory of your boost install (ex: c:\boost_1_58_0).
 
@@ -33,12 +35,14 @@ Place the following static library files in the lib/x86 or lib/x64 directory:
 * SDL2_image.lib
 * SDL2_mixer.lib
 * SDL2main.lib
+* libcurl.lib
 
 # Usage
 
 ## Windows
 Place the following runtime libraries files in the bin/x86 or lib/x64 directory to run the examples:
 * glew32.dll
+* libcurl.dll
 * libFLAC-8.dll
 * libjpeg-9.dll
 * libmodplug-1.dll
