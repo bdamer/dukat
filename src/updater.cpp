@@ -84,6 +84,8 @@ namespace dukat
 	{
 		init_curl();
 
+		log->info("Downloading {} to {}", url, target_file);
+
 		auto handle = curl_easy_init();
 		if (!handle)
 		{

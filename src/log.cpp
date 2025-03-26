@@ -54,7 +54,7 @@ namespace dukat
 			log = spdlog::create<spdlog::sinks::null_sink_st>("null_logger");
 		}
 
-		const auto log_level =  settings.get_string(settings::logging_level, "debug");
+		const auto log_level = settings.get_string(settings::logging_level, "debug");
 		spdlog::level::level_enum level;
 		if (log_level == "error")
 			level = spdlog::level::err;

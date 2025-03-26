@@ -152,17 +152,72 @@ namespace dukat
 		return res;
 	}
 
-	int execute_command(const std::string& command, std::string& output)
-	{
-		log->debug("Executing: {}", command);
 #ifdef WIN32
-		auto pipe = _popen(command.c_str(), "r");
-#else
-		auto pipe = popen(command.c_str(), "r");
+	void win32_check_error(void) 
+	{
+		const auto error = ::GetLastError();
+		if (error == 0) return;
+
+		LPTSTR msg_buf = nullptr;
+		const auto length = FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER |
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			error,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPTSTR)&msg_buf,
+			0, NULL);
+
+		std::vector<char> chars(length + 1);
+		size_t converted = 0;
+		auto res = wcstombs_s(&converted, chars.data(), chars.size(), msg_buf, length);
+		if (res == 0)
+			log->error("win32 error: {}", chars.data());
+		else
+			log->error("Unable to determine error: {}", error);
+
+		LocalFree(msg_buf);
+	}
 #endif
+
+	int execute_command(const std::string& command_line, std::string& output)
+	{
+		log->debug("Executing: {}", command_line);
+#ifdef WIN32
+
+		STARTUPINFOA si = { 0 };
+		si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+		si.wShowWindow = SW_HIDE;
+
+		PROCESS_INFORMATION pi = { 0 };
+
+		auto cmd_ptr = const_cast<char*>(command_line.c_str());
+		const auto result = ::CreateProcessA(NULL, cmd_ptr,
+			NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+		if (result == 0) 
+		{
+			log->error("Failed to execute command: {}", command_line);
+			win32_check_error();
+			return -1;
+		}
+
+		log->debug("Waiting for process to finish...");
+		::WaitForSingleObject(pi.hProcess, INFINITE);
+
+		DWORD retval = 0L;
+		::GetExitCodeProcess(pi.hProcess, &retval);
+		const auto res = static_cast<int>(retval);
+
+		// Close handles to avoid leaks
+		::CloseHandle(pi.hThread);
+		::CloseHandle(pi.hProcess);
+
+#else
+		auto pipe = popen(command_line.c_str(), "r");
 		if (!pipe)
 		{
-			log->error("Failed to execute command: {}", command);
+			log->error("Failed to execute command: {}", command_line);
 			return -1;
 		}
 
@@ -172,12 +227,9 @@ namespace dukat
 			if (fgets(buffer, 128, pipe) != NULL)
 				output += buffer;
 		}
-
-#ifdef WIN32
-		const auto res = _pclose(pipe);
-#else
 		const auto res = pclose(pipe);
 #endif
+
 		log->debug("Process returned: {}", res);
 		return res;
 	}
