@@ -92,6 +92,21 @@ namespace dukat
 	bool copy_file(const std::string& source, const std::string& dest);
 
 	/// <summary>
+	///	Moves a file to a new destination.
+	/// </summary>
+	/// <param name="source">Source path</param>
+	/// <param name="dest">Destination path</param>
+	/// <returns>True if file was moved, otherwise false.</returns>
+	bool move_file(const std::string& source, const std::string& dest);
+
+	/// <summary>
+	/// Deletes a file from the filesystem.
+	/// </summary>
+	/// <param name="path">The path</param>
+	/// <returns>True if file was deleted, otherwise false.</returns>
+	bool delete_file(const std::string& path);
+
+	/// <summary>
 	/// Returns the current working directory.
 	/// </summary>
 	/// <returns>Working directory.</returns>

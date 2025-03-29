@@ -93,6 +93,9 @@ namespace dukat
 
 	bool copy_file(const std::string& source, const std::string& dest)
 	{
+#if WIN32
+		return (CopyFileA(source.c_str(), dest.c_str(), FALSE) != 0);
+#else
 		std::ifstream src(source, std::ios::binary);
 		if (!src)
 			return false;
@@ -104,6 +107,28 @@ namespace dukat
 		dst << src.rdbuf();
 
 		return true;
+#endif
+	}
+
+	bool move_file(const std::string& source, const std::string& dest)
+	{
+#if WIN32
+		return MoveFileA(source.c_str(), dest.c_str()) != 0;
+#else
+		auto res = copy_file(source, dest);
+		if (res)
+			res = delete_file(source);
+		return res;
+#endif
+	}
+
+	bool delete_file(const std::string& path)
+	{
+#if WIN32
+		return DeleteFileA(path.c_str()) != 0;
+#else
+		return (remove(path.c_str()) == 0);
+#endif
 	}
 
 	std::string current_working_directory(void)
