@@ -117,7 +117,8 @@ namespace dukat
 	T* GameBase::add_manager(void)
 	{
 		std::type_index index(typeid(T));
-		managers[index] = std::unique_ptr<T>(new T(this));
+		if (managers.count(index) == 0)
+			managers[index] = std::unique_ptr<T>(new T(this));
 		return static_cast<T*>(managers[index].get());
 	}
 
