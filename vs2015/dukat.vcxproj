@@ -176,6 +176,7 @@
     </ClInclude>
     <ClInclude Include="..\include\dukat\effectpass.h" />
     <ClInclude Include="..\include\dukat\ellipse.h" />
+    <ClInclude Include="..\include\dukat\executor.h" />
     <ClInclude Include="..\include\dukat\feedback.h" />
     <ClInclude Include="..\include\dukat\followercamera2.h" />
     <ClInclude Include="..\include\dukat\followercamera3.h" />
@@ -324,6 +325,7 @@
     <ClCompile Include="..\src\dither.cpp" />
     <ClCompile Include="..\src\draw.cpp" />
     <ClCompile Include="..\src\effectpass.cpp" />
+    <ClCompile Include="..\src\executor.cpp" />
     <ClCompile Include="..\src\feedback.cpp" />
     <ClCompile Include="..\src\fontcache.cpp" />
     <ClCompile Include="..\src\fullscreeneffect2.cpp" />

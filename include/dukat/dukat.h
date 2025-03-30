@@ -77,6 +77,7 @@
 #include "assetloader.h"
 #include "bytestream.h"
 #include "deferred.h"
+#include "executor.h"
 #include "log.h"
 #include "perfcounter.h"
 #include "settings.h"

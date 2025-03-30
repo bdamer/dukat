@@ -549,6 +549,9 @@
     <ClInclude Include="..\include\dukat\updater.h">
       <Filter>Header Files\net</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dukat\executor.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
@@ -871,6 +874,9 @@
     </ClCompile>
     <ClCompile Include="..\src\updater.cpp">
       <Filter>Source Files\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\executor.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
