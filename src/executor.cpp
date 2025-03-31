@@ -2,10 +2,25 @@
 #include <dukat/executor.h>
 #include <dukat/log.h>
 
-#ifdef WIN32
-
 namespace dukat
 {
+#ifdef WIN32
+	// Wraps win32 process execution logic.
+	struct Executor
+	{
+		// Runtime variables
+		HANDLE read_handle;
+		HANDLE write_handle;
+		PROCESS_INFORMATION pi;
+
+		// Command results
+		DWORD exit_code;
+		std::string output;
+
+		Executor(const std::string& command_line);
+		~Executor(void);
+	};
+
 	static int win32_check_error(void)
 	{
 		const auto error = ::GetLastError();
@@ -97,6 +112,34 @@ namespace dukat
 		if (pi.hProcess)
 			CloseHandle(pi.hProcess);
 	}
-}
 
 #endif
+
+	int execute_command(const std::string& command_line, std::string& output)
+	{
+		log->debug("Executing: {}", command_line);
+#ifdef WIN32
+		Executor exec(command_line);
+		output = exec.output;
+		const auto res = static_cast<int>(exec.exit_code);
+#else
+		auto pipe = popen(command_line.c_str(), "r");
+		if (!pipe)
+		{
+			log->error("Failed to execute command: {}", command_line);
+			return -1;
+		}
+
+		char buffer[128];
+		while (!feof(pipe))
+		{
+			if (fgets(buffer, 128, pipe) != NULL)
+				output += buffer;
+		}
+		const auto res = pclose(pipe);
+#endif
+
+		log->debug("Process returned: {}", res);
+		return res;
+	}
+}

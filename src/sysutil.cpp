@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <dukat/sysutil.h>
-#include <dukat/executor.h>
 #include <dukat/log.h>
 
 #ifndef WIN32
@@ -176,33 +175,5 @@ namespace dukat
 		}
 #endif
 		return res;
-	}
-
-	int execute_command(const std::string& command_line, std::string& output)
-	{
-		log->debug("Executing: {}", command_line);
-#ifdef WIN32
-		Executor exec(command_line);
-		output = exec.output;
-		const auto res = static_cast<int>(exec.exit_code);
-#else
-		auto pipe = popen(command_line.c_str(), "r");
-		if (!pipe)
-		{
-			log->error("Failed to execute command: {}", command_line);
-			return -1;
-		}
-
-		char buffer[128];
-		while (!feof(pipe))
-		{
-			if (fgets(buffer, 128, pipe) != NULL)
-				output += buffer;
-		}
-		const auto res = pclose(pipe);
-#endif
-
-		log->debug("Process returned: {}", res);
-		return res;
-	}
+	}	
 }

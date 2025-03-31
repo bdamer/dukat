@@ -118,12 +118,4 @@ namespace dukat
 	/// <param name="path">Directory path</param>
 	/// <returns>A list of file names.</returns>
 	std::vector<std::string> list_files(const std::string& path);
-
-	/// <summary>
-	/// Executes a command and returns the output.
-	/// </summary>
-	/// <param name="command_line">The command to execute.</param>
-	/// <param name="output">The output</param>
-	/// <returns>The exit code of the process.</returns>
-	int execute_command(const std::string& command_line, std::string& output);
 }
