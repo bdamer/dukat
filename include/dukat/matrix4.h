@@ -61,14 +61,14 @@ namespace dukat
 		void setup_rotation(const Vector3& left, const Vector3& up, const Vector3& dir);
 
 		// Sets up a new orthographic projection matrix.
-		void setup_orthographic(float left, float top, float right, float bottom, float near, float far);
+		void setup_orthographic(float left, float top, float right, float bottom, float near_z, float far_z);
 		// Sets up a new perspective projection matrix.
 		// fov - Vertical field of view
 		// aspect - screen aspect ratio
 		// near, far - clipping planes
-		void setup_perspective(float fov_y, float aspect, float near, float far);
+		void setup_perspective(float fov_y, float aspect, float near_z, float far_z);
 		// Sets up a new frustrum projection matrix.
-		void setup_frustrum(float left, float right, float bottom, float top, float near, float far);
+		void setup_frustrum(float left, float right, float bottom, float top, float near_z, float far_z);
 
 		// Extracts rotation axis from orthogonal rotation matrix.
 		void extract_rotation_axis(Vector3& left, Vector3& up, Vector3& dir) const;

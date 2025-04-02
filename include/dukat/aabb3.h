@@ -24,12 +24,11 @@ namespace dukat
 		AABB3(const std::vector<Vector3>& vectors);
 	
 		// Dimension queries
-		Vector3 size() const { return max - min; }
-		float x_size() { return max.x - min.x; }
-		float y_size() { return max.y - min.y; }
-		float z_size() { return max.z - min.z; }
-		Vector3 center() const { return (min + max) * 0.5f; }
-		Vector3 corner(int i) const;
+		Vector3 size(void) const { return max - min; }
+		float x_size(void) { return max.x - min.x; }
+		float y_size(void) { return max.y - min.y; }
+		float z_size(void) { return max.z - min.z; }
+		Vector3 center(void) const { return (min + max) * 0.5f; }
 
 		// Box operations
 		void clear(void);
@@ -47,7 +46,7 @@ namespace dukat
 		// Checks if AABB intersects sphere.
 		bool intersect_sphere(const Vector3& center, float radius) const;
         // Checks if body intersects ray. Will return the distance along intersection ray or no_intersection.
-        float intersect_ray(const Ray3& ray, float near, float far, Vector3* return_normal = nullptr) const;
+        float intersect_ray(const Ray3& ray, float near_z, float far_z, Vector3* return_normal = nullptr) const;
 		// Classify box as being on one side or other other of a plane. 
 		// Will return < 0 if box is completely on the back side of the plane
 		// Will return > 0 if box is completely on the right side of the plane

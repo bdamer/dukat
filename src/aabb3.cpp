@@ -16,7 +16,7 @@ namespace dukat
 		}
 	}
 
-	void AABB3::clear()
+	void AABB3::clear(void)
 	{
 		min.x = min.y = min.z = big_number;
 		max.x = max.y = max.z = -big_number;
@@ -187,7 +187,7 @@ namespace dukat
         return false;
     }
 
-	float AABB3::intersect_ray(const Ray3& ray, float near, float far, Vector3* returnNormal) const 
+	float AABB3::intersect_ray(const Ray3& ray, float near_z, float far_z, Vector3* returnNormal) const 
 	{
 		auto r_inv = ray.dir.inverse();
 		auto tx1 = (min.x - ray.origin.x) * r_inv.x;
@@ -205,7 +205,7 @@ namespace dukat
 		tmin = std::max(tmin, std::min(tz1, tz2));
 		tmax = std::min(tmax, std::max(tz1, tz2));
 
-		if ((tmax < tmin) || ((tmin > far) || (tmax < near)))
+		if ((tmax < tmin) || ((tmin > far_z) || (tmax < near_z)))
 		{
 			return no_intersection;
 		}

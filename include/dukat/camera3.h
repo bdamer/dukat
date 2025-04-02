@@ -55,7 +55,7 @@ namespace dukat
 		float get_vertical_fov(void) const { return fov_v; }
 		float get_horizontal_fov(void) const { return fov_h; }
 		float get_aspect_ratio(void) const { return aspect_ratio; }
-		void set_clip(float near, float far) { near_clip = near; far_clip = far; }
+		void set_clip(float near_z, float far_z) { near_clip = near_z; far_clip = far_z; }
 		const Plane& get_left_clip_plane(void) const { return left_clip_plane; }
 		const Plane& get_right_clip_plane(void) const { return right_clip_plane; }
 		float get_near_clip(void) const { return near_clip; }

@@ -122,33 +122,33 @@ namespace dukat
 		setup_scale(v.x, v.y, v.z);
 	}
 
-	void Matrix4::setup_orthographic(float left, float top, float right, float bottom, float near, float far)
+	void Matrix4::setup_orthographic(float left, float top, float right, float bottom, float near_z, float far_z)
 	{
 		m[0] = 2.0f / (right - left); m[1] = 0.0f; m[2] = 0.0f; m[3] = 0.0f;
 		m[4] = 0.0f; m[5] = 2.0f / (top - bottom); m[6] = 0.0f; m[7] = 0.0f;
-		m[8] = 0.0f; m[9] = 0.0f; m[10] = -2.0f / (far - near); m[11] = 0.0f;
-		m[12] = -(right + left) / (right - left); m[13] = -(top + bottom) / (top - bottom); m[14] = -(far + near) / (far - near); m[15] = 1.0f;
+		m[8] = 0.0f; m[9] = 0.0f; m[10] = -2.0f / (far_z - near_z); m[11] = 0.0f;
+		m[12] = -(right + left) / (right - left); m[13] = -(top + bottom) / (top - bottom); m[14] = -(far_z + near_z) / (far_z - near_z); m[15] = 1.0f;
 	}
 
-	void Matrix4::setup_perspective(float fov_y, float aspect, float near, float far)
+	void Matrix4::setup_perspective(float fov_y, float aspect, float near_z, float far_z)
 	{
-		float t = tan(0.5f * deg_to_rad(fov_y)) * near;
+		float t = tan(0.5f * deg_to_rad(fov_y)) * near_z;
 		float b = -t;
 		float r = aspect * t; 
 		float l = -r;
-		setup_frustrum(l, r, b, t, near, far);
+		setup_frustrum(l, r, b, t, near_z, far_z);
 	}
 
-	void Matrix4::setup_frustrum(float left, float right, float bottom, float top, float near, float far)
+	void Matrix4::setup_frustrum(float left, float right, float bottom, float top, float near_z, float far_z)
 	{
-		float tmp1 = 2.0f * near;
+		float tmp1 = 2.0f * near_z;
 		float tmp2 = right - left;
 		float tmp3 = top - bottom;
-		float tmp4 = far - near;
+		float tmp4 = far_z - near_z;
 		m[0] = tmp1 / tmp2; m[1] = 0.0f; m[2] = 0.0f; m[3] = 0.0f;
 		m[4] = 0.0f; m[5] = tmp1 / tmp3; m[6] = 0.0f; m[7] = 0.0f;
-		m[8] = (right + left) / tmp2; m[9] = (top + bottom) / tmp3; m[10] = (-far - near) / tmp4; m[11] = -1.0f;
-		m[12] = 0.0f; m[13] = 0.0f; m[14] = (-tmp1 * far) / tmp4; m[15] = 0.0f;
+		m[8] = (right + left) / tmp2; m[9] = (top + bottom) / tmp3; m[10] = (-far_z - near_z) / tmp4; m[11] = -1.0f;
+		m[12] = 0.0f; m[13] = 0.0f; m[14] = (-tmp1 * far_z) / tmp4; m[15] = 0.0f;
 	}
 
 	void Matrix4::extract_rotation_axis(Vector3 & left, Vector3 & up, Vector3 & dir) const

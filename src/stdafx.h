@@ -6,11 +6,8 @@
 #pragma once
 
 #ifdef _WIN32
-
 #include "targetver.h"
-
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-
 #endif 
 
 // STL
@@ -41,3 +38,8 @@
 // SDL
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+
+// Logging
+#ifndef __ANDROID__
+#include <spdlog/spdlog.h>
+#endif
