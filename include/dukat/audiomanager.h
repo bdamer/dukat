@@ -19,7 +19,7 @@ namespace dukat
 		static constexpr auto playback_error = -1;
 
 		// Creates an audio manager with a specified number of mixer channels.
-		AudioManager(int num_channels);
+		AudioManager(bool intialize, int num_channels);
 		~AudioManager(void);
 
 		// Returns true if the audio system was successfully initialized. 

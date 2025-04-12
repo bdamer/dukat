@@ -36,6 +36,7 @@ namespace dukat
 	namespace settings
 	{
 		// audio
+		static constexpr auto audio_enabled = "audio.enabled";
 		static constexpr auto audio_channels = "audio.channels";
 		static constexpr auto audio_sample_volume = "audio.sample.volume";
 		static constexpr auto audio_music_volume = "audio.music.volume";

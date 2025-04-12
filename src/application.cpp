@@ -45,7 +45,8 @@ namespace dukat
 			SDL_ShowCursor(SDL_DISABLE);
 
 #ifndef __ANDROID__
-		audio_manager = std::make_unique<AudioManager>(settings.get_int(settings::audio_channels, 16));
+		audio_manager = std::make_unique<AudioManager>(settings.get_bool(settings::audio_enabled, true), 
+			settings.get_int(settings::audio_channels, 16));
 		audio_manager->set_music_volume(settings.get_float(settings::audio_music_volume, 1.0f));
 		audio_manager->set_sample_volume(settings.get_float(settings::audio_sample_volume, 1.0f));
 #endif
