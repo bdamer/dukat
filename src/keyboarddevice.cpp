@@ -215,6 +215,8 @@ namespace dukat
 
 	void KeyboardDevice::clear_profile_mapping(VirtualButton button, const std::string& profile, Settings& settings) const
 	{
+		log->debug("Clear keyboard mapping: {}", profile);
+
 		const auto prefix = settings::input_profile_prefix + profile + ".";
 		for (auto i = 0u; i < mouse_mapping.size(); i++)
 		{
@@ -227,6 +229,8 @@ namespace dukat
 
 	void KeyboardDevice::restore_mapping(const Settings& settings, const std::string& profile)
 	{
+		log->debug("Restore keyboard mapping: {}", profile);
+
 		// Initialize key mapping
 		for (auto i = 0; i < static_cast<int>(VirtualButton::_Count); i++)
 			mapping[i] = get_key_profile_mapping(static_cast<VirtualButton>(i), profile, settings);

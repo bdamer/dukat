@@ -100,9 +100,9 @@ namespace dukat
 		const std::string& get_name(void) const { return name; }
 
 		// Event handlers
-		void on_press(VirtualButton button, std::function<void(void)> handler) { button_handlers[button] = handler; }
+		void on_press(VirtualButton button, std::function<void(void)> handler);
 		bool is_pressed(VirtualButton button) const { return buttons[static_cast<int>(button)] > 0; }
-		void unbind(VirtualButton button) { button_handlers[button] = nullptr; }
+		void unbind(VirtualButton button);
 		// Binds event handler for long-press.
 		void bind_long_press(VirtualButton button, const std::function<void(LongPressHandler::Event)>& handler, Uint32 threshold = 0);
 		void unbind_long_press(VirtualButton button) { long_press_handlers[button] = nullptr; }

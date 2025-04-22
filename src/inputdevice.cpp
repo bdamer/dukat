@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <dukat/inputdevice.h>
+#include <dukat/log.h>
 #include <dukat/settings.h>
 
 namespace dukat
@@ -13,6 +14,18 @@ namespace dukat
 	{
 		std::fill(buttons.begin(), buttons.end(), 0x0);
 		long_press_threshold = settings.get_int(settings::input_longpress, 1000);
+	}
+
+	void InputDevice::on_press(VirtualButton button, std::function<void(void)> handler)
+	{ 
+		log->trace("Binding button: {}", static_cast<int>(button));
+		button_handlers[button] = handler; 
+	}
+
+	void InputDevice::unbind(VirtualButton button) 
+	{ 
+		log->trace("Unbinding button: {}", static_cast<int>(button));
+		button_handlers[button] = nullptr;
 	}
 
 	void InputDevice::bind_long_press(VirtualButton button, const std::function<void(LongPressHandler::Event)>& handler, Uint32 threshold)
