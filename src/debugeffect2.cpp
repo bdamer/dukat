@@ -56,6 +56,19 @@ namespace dukat
 		mesh->render(program);
 	}
 
+	void DebugEffect2::render_line(const std::vector<Vector2>& segments, const Color& color) const
+	{
+		program->set(Renderer::uf_color, color.r, color.g, color.b, color.a);
+		buffer.resize(segments.size());
+		for (auto i = 0u; i < segments.size(); i++)
+		{
+			buffer[i].px = segments[i].x * scale;
+			buffer[i].py = segments[i].y * scale;
+		}
+		mesh->set_vertices(buffer.data(), segments.size());
+		mesh->render(program);
+	}
+
 	void DebugEffect2::render(Renderer2* renderer, const AABB2& camera_bb)
 	{
 		scale = renderer->get_camera()->get_mag_factor();

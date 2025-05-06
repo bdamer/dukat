@@ -18,21 +18,24 @@ namespace dukat
 
 	private:
 		static constexpr int circle_segments = 15;
-		float scale;
-
 		Game2* game;
-		ShaderProgram* program;
-		std::unique_ptr<MeshData> mesh;
 		Flags flags;
+		std::unique_ptr<MeshData> mesh;
 
-	public:
-		DebugEffect2(Game2* game);
-		~DebugEffect2(void);
-		
+	protected:
+		float scale;
+		ShaderProgram* program;
+
 		void render_bounding_box(const AABB2& bb, const Color& color) const;
 		void render_rect(const Vector2& min, const Vector2& max, const Color& color) const;
 		void render_circle(const Vector2& center, float radius, const Color& color) const;
-		void render(Renderer2* renderer, const AABB2& camera_bb);
+		void render_line(const std::vector<Vector2>& segments, const Color& color) const;
+
+	public:
+		DebugEffect2(Game2* game);
+		virtual ~DebugEffect2(void) override;
+		
+		virtual void render(Renderer2* renderer, const AABB2& camera_bb) override;
 
 		void set_flags(Flags flags) { this->flags = flags; }
 	};
