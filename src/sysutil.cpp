@@ -122,6 +122,15 @@ namespace dukat
 #endif
 	}
 
+	bool replace_file(const std::string& source, const std::string& dest)
+	{
+#if WIN32
+		return MoveFileExA(source.c_str(), dest.c_str(), MOVEFILE_REPLACE_EXISTING) != 0;
+#else
+		return std::rename(source.c_str(), dest.c_str()) == 0;
+#endif
+	}
+
 	bool delete_file(const std::string& path)
 	{
 #if WIN32

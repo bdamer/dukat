@@ -100,6 +100,14 @@ namespace dukat
 	bool move_file(const std::string& source, const std::string& dest);
 
 	/// <summary>
+	/// Atomically replaces dest with source, even if dest already exists.
+	/// </summary>
+	/// <param name="source">Source path</param>
+	/// <param name="dest">Destination path (replaced if it exists)</param>
+	/// <returns>True if the replace succeeded, otherwise false.</returns>
+	bool replace_file(const std::string& source, const std::string& dest);
+
+	/// <summary>
 	/// Deletes a file from the filesystem.
 	/// </summary>
 	/// <param name="path">The path</param>

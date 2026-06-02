@@ -3,6 +3,7 @@
 #include <dukat/json.h>
 #include <dukat/log.h>
 #include <dukat/settings.h>
+#include <dukat/sysutil.h>
 #include <json/json.h>
 
 namespace dukat
@@ -63,21 +64,30 @@ namespace dukat
 
 	void save_json(const std::string& filename, const Json::Value& root)
 	{
+		const auto tmp_filename = filename + ".tmp";
 		log->debug("Saving: {}", filename);
-		std::fstream fs(filename, std::fstream::out);
+		std::fstream fs(tmp_filename, std::fstream::out);
 		if (!fs)
 		{
-			log->error("Failed to open stream: {}", filename);
+			log->error("Failed to open stream: {}", tmp_filename);
 			throw std::runtime_error("Failed to write JSON.");
 		}
 
 		Json::StreamWriterBuilder builder;
 #ifndef _DEBUG
 		builder.settings_["indentation"] = "";
-#endif		
+#endif
 		std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
 		writer->write(root, &fs);
 		fs.close();
+
+		if (!replace_file(tmp_filename, filename))
+		{
+			delete_file(tmp_filename);
+			log->error("Failed to replace file: {}", filename);
+			throw std::runtime_error("Failed to write JSON.");
+		}
+
 		log->trace("Save complete: {}", filename);
 	}
 
