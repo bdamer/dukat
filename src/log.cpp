@@ -15,7 +15,7 @@
 namespace dukat
 {
 #ifndef __ANDROID__
-	std::shared_ptr<spdlog::logger> log = spdlog::stdout_logger_st("default");
+	std::shared_ptr<spdlog::logger> log = spdlog::stdout_logger_mt("default");
 #else
 	std::shared_ptr<Logger> log = std::shared_ptr<Logger>();
 #endif
@@ -23,28 +23,28 @@ namespace dukat
 	void init_logging(const Settings& settings)
 	{
 #ifndef __ANDROID__
-		spdlog::set_pattern("[%Y-%m-%d %H-%M-%S.%e] [%l] %v");
+		spdlog::set_pattern("[%Y-%m-%d %H-%M-%S.%e] [%l] [%t] %v");
 		const auto log_output = settings.get_string(settings::logging_output, "console");
 		if (log_output == "console")
 		{
 #ifdef WIN32
-			spdlog::set_pattern("%^[%Y-%m-%d %H-%M-%S.%e] [%l] %v%$");
-			log = spdlog::stdout_color_st("console");
-			auto console_sink = dynamic_cast<spdlog::sinks::wincolor_stdout_sink_st*>(log->sinks().back().get());
+			spdlog::set_pattern("%^[%Y-%m-%d %H-%M-%S.%e] [%l] [%t] %v%$");
+			log = spdlog::stdout_color_mt("console");
+			auto console_sink = dynamic_cast<spdlog::sinks::wincolor_stdout_sink_mt*>(log->sinks().back().get());
 			console_sink->set_color(spdlog::level::trace, console_sink->CYAN);
 			console_sink->set_color(spdlog::level::debug, console_sink->BOLD);
 			console_sink->set_color(spdlog::level::info, console_sink->WHITE);
 			console_sink->set_color(spdlog::level::warn, console_sink->YELLOW);
 			console_sink->set_color(spdlog::level::err, console_sink->RED);
 #else
-			log = spdlog::stdout_logger_st("console");
+			log = spdlog::stdout_logger_mt("console");
 #endif
 		}
 		else if (log_output == "file")
 		{
 			const auto log_file = settings.get_string(settings::logging_file, "run.log");
 			const auto truncate = settings.get_bool(settings::logging_truncate, false);
-			log = spdlog::basic_logger_st("file_logger", log_file, truncate);
+			log = spdlog::basic_logger_mt("file_logger", log_file, truncate);
 			const auto log_flush = settings.get_int(settings::logging_flush, 0);
 			if (log_flush > 0)
 				spdlog::flush_every(std::chrono::seconds(log_flush));

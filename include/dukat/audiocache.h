@@ -1,6 +1,8 @@
 #pragma once
 
+#include <mutex>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <SDL2/SDL_mixer.h>
 
@@ -27,6 +29,8 @@ namespace dukat
 		const std::string music_dir;
 		std::unordered_map<uint32_t, std::unique_ptr<Sample>> sample_map;
 		std::unordered_map<uint32_t, std::unique_ptr<Music>> music_map;
+		std::thread preload_thread;
+		mutable std::mutex sample_mutex;
 
 		std::unique_ptr<Sample> load_sample(const std::string& filename);
 		std::unique_ptr<Music> load_music(const std::string& filename);
@@ -34,7 +38,7 @@ namespace dukat
 	public:
 		AudioCache(const std::string& sample_dir, const std::string& music_dir)
 			: sample_dir(sample_dir), music_dir(music_dir) { }
-		~AudioCache(void) { free_all(); }
+		~AudioCache(void);
 
 		// Preloads all files in sample directory.
 		void preload_samples(void);

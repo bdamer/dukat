@@ -6,26 +6,38 @@
 
 namespace dukat
 {
+	AudioCache::~AudioCache(void)
+	{
+		if (preload_thread.joinable())
+			preload_thread.join();
+		free_all();
+	}
+
 	void AudioCache::preload_samples(void)
 	{
 		log->info("Preloading audio samples from: {}", sample_dir);
-		const auto start = SDL_GetTicks();
-		const auto files = list_files(sample_dir);
-		for (const auto& f : files)
-		{
-			const auto ext = file_extension(f);
-			if (ext == "mp3" || ext == "wav" || ext == "ogg")
+		preload_thread = std::thread([this]() {
+			const auto start = SDL_GetTicks();
+			const auto files = list_files(sample_dir);
+			for (const auto& f : files)
 			{
-				const auto id = compute_hash(f);
-				sample_map[id] = load_sample(f);
+				const auto ext = file_extension(f);
+				if (ext == "mp3" || ext == "wav" || ext == "ogg")
+				{
+					const auto id = compute_hash(f);
+					auto sample = load_sample(f);
+					std::lock_guard<std::mutex> lock(sample_mutex);
+					if (!sample_map.count(id))
+						sample_map[id] = std::move(sample);
+				}
 			}
-		}
-		log->debug("Preload complete in: {}", SDL_GetTicks() - start);
+			log->debug("Preload complete in: {}", SDL_GetTicks() - start);
+		});
 	}
 
 	std::unique_ptr<Sample> AudioCache::load_sample(const std::string& filename)
 	{
-		log->debug("Loading sample [{}]", filename);
+		log->trace("Loading sample [{}]", filename);
 		const auto start = SDL_GetTicks();
 		auto fqn = sample_dir + "/" + filename;
 		auto chunk = Mix_LoadWAV(fqn.c_str());
@@ -54,11 +66,18 @@ namespace dukat
 	Sample* AudioCache::get_sample(const std::string& filename)
 	{
 		const auto id = compute_hash(filename);
-		if (sample_map.count(id) == 0)
 		{
-			sample_map[id] = load_sample(filename);
+			std::lock_guard<std::mutex> lock(sample_mutex);
+			auto it = sample_map.find(id);
+			if (it != sample_map.end())
+				return it->second.get();
 		}
-		return sample_map[id].get();
+		auto sample = load_sample(filename);
+		std::lock_guard<std::mutex> lock(sample_mutex);
+		auto& slot = sample_map[id];
+		if (!slot)
+			slot = std::move(sample);
+		return slot.get();
 	}
 
 	Music* AudioCache::get_music(const std::string& filename)
@@ -82,10 +101,8 @@ namespace dukat
 	void AudioCache::free_sample(const std::string& filename)
 	{
 		auto id = compute_hash(filename);
-		if (sample_map.count(id))
-		{
-			sample_map.erase(id);
-		}
+		std::lock_guard<std::mutex> lock(sample_mutex);
+		sample_map.erase(id);
 	}
 
 	void AudioCache::free_music(const std::string& filename)
