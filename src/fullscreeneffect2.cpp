@@ -70,7 +70,7 @@ namespace dukat
     void FullscreenEffect2::cancel_anim(void)
     {
         log->trace("FX2 cancel_anim");
-        if (state.anim != nullptr)
+        if (state.anim)
         {
             game->get<AnimationManager>()->cancel(state.anim);
             state.anim = nullptr;
@@ -118,5 +118,42 @@ namespace dukat
         state.color = Color{ 0, 0, 0, 1 };
         state.alpha = 0.0f;
         state.anim = nullptr;
+        state.effect_registry.clear();
+    }
+
+    void FullscreenEffect2::push_effect(int id, const Color& color, ShaderProgram* sp)
+    {
+        cancel_anim();
+        state.effect_registry.push_back({ id, color, sp });
+        state.color = color;
+        state.alpha = 1.0f;
+        set_composite_program(sp);
+    }
+
+    void FullscreenEffect2::pop_effect(int id)
+    {
+        cancel_anim();
+        auto it = std::find_if(state.effect_registry.begin(), state.effect_registry.end(),
+            [id](const ActiveEffect& e) { return e.id == id; });
+        if (it != state.effect_registry.end())
+            state.effect_registry.erase(it);
+
+        if (!state.effect_registry.empty())
+        {
+            const auto& top = state.effect_registry.back();
+            state.color = top.color;
+            set_composite_program(top.sp);
+        }
+        else
+        {
+            begin_anim(0.5f, 0.0f, [this]() { reset_composite_program(); });
+        }
+    }
+
+    void FullscreenEffect2::clear_effects(void)
+    {
+        cancel_anim();
+        state.effect_registry.clear();
+        reset_composite_program();
     }
 }

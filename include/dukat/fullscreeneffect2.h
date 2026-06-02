@@ -11,12 +11,20 @@ namespace dukat
     class FullscreenEffect2
     {
 	private:
+		struct ActiveEffect
+		{
+			int id;
+			Color color;
+			ShaderProgram* sp;
+		};
+
 		struct EffectState
 		{
 			Animation* anim;
 			ShaderProgram* sp;
 			Color color; // target color
 			float alpha;
+			std::vector<ActiveEffect> effect_registry;
 
 			EffectState(void) : anim(nullptr), sp(nullptr), color({ 0.f, 0.f, 0.f, 0.f }), alpha(0.f) { }
 		};
@@ -54,5 +62,11 @@ namespace dukat
 		// Stashes and restores effect state under a given ID.
 		void stash(const std::string& id);
 		void restore(const std::string& id);
+
+		// Named effect registry: tracks active overlay effects (e.g. modifier frame borders).
+		// push cancels any running fade and shows the effect immediately; pop fades out when last.
+		void push_effect(int id, const Color& color, ShaderProgram* sp);
+		void pop_effect(int id);
+		void clear_effects(void);
 	};
 }
