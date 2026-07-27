@@ -43,6 +43,10 @@ namespace dukat
 		float scroll_accumulator;
 		std::function<void(void)> scroll_callback;
 		bool rebuild_required;
+		// if true (default), position is treated as relative to the camera
+		// (i.e. pinned to a fixed screen location); if false, position is
+		// interpreted as world space and will pan with the camera.
+		bool relative;
 
 		void create_mesh(void);
 		void update_scroll(float delta);
@@ -72,6 +76,8 @@ namespace dukat
 		float get_max_line_width(void) const { return max_line_width; }
 		void set_font(BitmapFont* font);
 		BitmapFont* get_font(void) const { return font; }
+		void set_relative(bool relative) { this->relative = relative; }
+		bool is_relative(void) const { return relative; }
 		float get_width(void) const { return width * transform.scale.x; }
 		float get_height(void) const { return height * transform.scale.x; }
 

@@ -8,7 +8,7 @@ namespace dukat
 		: text(""), char_width(1.0f), line_height(1.2f), max_line_width(0.0f),
 		halign(Align::Left), valign(Align::Bottom), yorientation(yorientation), 
 		num_vertices(0), font(font), scroll_delay(0.0f), 
-		scroll_accumulator(0.0f), scroll_callback(nullptr), rebuild_required(false)
+		scroll_accumulator(0.0f), scroll_callback(nullptr), rebuild_required(false), relative(true)
 	{
 		create_mesh();
 		set_texture(font->get_texture());

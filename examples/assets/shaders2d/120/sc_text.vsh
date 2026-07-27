@@ -12,6 +12,6 @@ uniform mat4 u_model;
 void main()
 {
 	gl_FrontColor = gl_Color;
-    gl_Position = u_cam_proj_orth * u_model * gl_Vertex;
+    gl_Position = u_cam_proj_orth * u_cam_view * u_model * gl_Vertex;
     gl_TexCoord[0] = gl_MultiTexCoord0;
 }

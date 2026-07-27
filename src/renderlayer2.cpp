@@ -438,14 +438,23 @@ namespace dukat
 
 	void RenderLayer2::render_text(Renderer2* renderer, const AABB2& camera_bb)
 	{
-		// set up matrix once
-		Matrix4 mat_identity;
-		const auto camera_mag = renderer->get_camera()->get_mag_factor();
-		mat_identity.setup_scale(Vector3(camera_mag, camera_mag, 1.0f));
+		auto cam = renderer->get_camera();
+		const auto camera_mag = cam->get_mag_factor();
+		const auto& cam_pos = cam->transform.position;
+
+		// set up matrices once: mat_scale for world-space text, mat_relative
+		// for text pinned to a fixed screen location (see TextMeshInstance::relative)
+		Matrix4 mat_scale;
+		mat_scale.setup_scale(Vector3(camera_mag, camera_mag, 1.0f));
+
+		Matrix4 mat_relative;
+		mat_relative.setup_translation(Vector3(cam_pos.x * camera_mag, cam_pos.y * camera_mag, 0.0f));
+		mat_relative *= mat_scale;
+
 		for (const auto& text : texts)
 		{
 			if (text->visible)
-				text->render(renderer, mat_identity);
+				text->render(renderer, text->is_relative() ? mat_relative : mat_scale);
 		}
 	}
 

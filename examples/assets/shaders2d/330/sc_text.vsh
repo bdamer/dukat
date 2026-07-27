@@ -24,5 +24,5 @@ void main()
 {
 	v_color = a_color;
     v_tex_coord = a_tex_coord;
-    gl_Position = u_cam.proj_orth * u_model * vec4(a_position, 0.0, 1.0);
+    gl_Position = u_cam.proj_orth * u_cam.view * u_model * vec4(a_position, 0.0, 1.0);
 }
