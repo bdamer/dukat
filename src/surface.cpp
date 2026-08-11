@@ -258,43 +258,42 @@ namespace dukat
 		surface = tmp;
 	}
 
+	// Note: rows must be swapped using surface->pitch (bytes), not w * BytesPerPixel -
+	// SDL pads each row to a 4-byte boundary, so the two only match when w * BytesPerPixel
+	// is itself a multiple of 4.
 	void Surface::flip_vertical(void)
 	{
-		const auto size = surface->w * surface->h;
-		switch (surface->format->BytesPerPixel)
+		auto pixels = static_cast<uint8_t*>(surface->pixels);
+		const auto pitch = static_cast<size_t>(surface->pitch);
+		std::vector<uint8_t> row(pitch);
+		for (auto y = 0; y < surface->h / 2; y++)
 		{
-		case 1:
-			dukat::flip_vertical(static_cast<uint8_t*>(surface->pixels), static_cast<uint8_t*>(surface->pixels) + size, static_cast<size_t>(surface->w));
-			break;
-		case 2:
-			dukat::flip_vertical(static_cast<uint16_t*>(surface->pixels), static_cast<uint16_t*>(surface->pixels) + size, static_cast<size_t>(surface->w));
-			break;
-		case 3:
-			dukat::flip_vertical(static_cast<Uint24*>(surface->pixels), static_cast<Uint24*>(surface->pixels) + size, static_cast<size_t>(surface->w));
-			break;
-		case 4:
-			dukat::flip_vertical(static_cast<uint32_t*>(surface->pixels), static_cast<uint32_t*>(surface->pixels) + size, static_cast<size_t>(surface->w));
-			break;
+			auto top = pixels + y * pitch;
+			auto bottom = pixels + (surface->h - 1 - y) * pitch;
+			std::memcpy(row.data(), top, pitch);
+			std::memcpy(top, bottom, pitch);
+			std::memcpy(bottom, row.data(), pitch);
 		}
-		}
+	}
 
 	void Surface::flip_horizontal(void)
 	{
-		const auto size = surface->w * surface->h;
-		switch (surface->format->BytesPerPixel)
+		auto pixels = static_cast<uint8_t*>(surface->pixels);
+		const auto pitch = static_cast<size_t>(surface->pitch);
+		const auto bpp = static_cast<size_t>(surface->format->BytesPerPixel);
+		std::vector<uint8_t> tmp(bpp);
+		for (auto y = 0; y < surface->h; y++)
 		{
-		case 1:
-			dukat::flip_horizontal(static_cast<uint8_t*>(surface->pixels), static_cast<uint8_t*>(surface->pixels) + size, static_cast<size_t>(surface->w));
-			break;
-		case 2:
-			dukat::flip_horizontal(static_cast<uint16_t*>(surface->pixels), static_cast<uint16_t*>(surface->pixels) + size, static_cast<size_t>(surface->w));
-			break;
-		case 3:
-			dukat::flip_horizontal(static_cast<Uint24*>(surface->pixels), static_cast<Uint24*>(surface->pixels) + size, static_cast<size_t>(surface->w));
-			break;
-		case 4:
-			dukat::flip_horizontal(static_cast<uint32_t*>(surface->pixels), static_cast<uint32_t*>(surface->pixels) + size, static_cast<size_t>(surface->w));
-			break;
+			auto left = pixels + y * pitch;
+			auto right = left + (surface->w - 1) * bpp;
+			while (left < right)
+			{
+				std::memcpy(tmp.data(), left, bpp);
+				std::memcpy(left, right, bpp);
+				std::memcpy(right, tmp.data(), bpp);
+				left += bpp;
+				right -= bpp;
+			}
 		}
 	}
 
