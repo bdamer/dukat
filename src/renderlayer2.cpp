@@ -268,7 +268,6 @@ namespace dukat
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 #endif
-		gl_check_error();
 #endif
 	}
 
@@ -432,7 +431,6 @@ namespace dukat
 		glDisableClientState(GL_COLOR_ARRAY);
 #endif
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		gl_check_error();
 #endif
 	}
 

@@ -327,6 +327,13 @@ namespace dukat
 		}
 
 		screen_buffer->unbind();
+#ifdef _DEBUG
+		// Check for GL errors once per frame - glGetError forces a sync with the
+		// driver, so avoid calling it per layer. Done before present so that we
+		// don't wait for the buffer swap; errors from the final composite will be
+		// picked up by next frame's check.
+		gl_check_error();
+#endif
 		render_screenbuffer();
 
 		if (check_flag(render_flags, ForceClear))
