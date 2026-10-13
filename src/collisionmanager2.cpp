@@ -74,10 +74,15 @@ namespace dukat
 		if (this_body->id > other_body->id)
 			std::swap(this_body, other_body); // enforce body order stays consistent across checks
 
+		// Cheap rejection first - most candidate pairs don't touch
+		if (!this_body->bb.overlaps(other_body->bb))
+			return;
+
 		// Check if collision has already been detected during this frame
 		const auto id = hash(this_body, other_body);
-		const auto contact_exists = contacts.contains(id);
-		if (contact_exists && contacts[id].generation == generation)
+		const auto it = contacts.find(id);
+		const auto contact_exists = it != contacts.end();
+		if (contact_exists && it->second.generation == generation)
 			return;
 
 		perfc.inc(PerformanceCounter::BB_CHECKS);
@@ -87,7 +92,7 @@ namespace dukat
 			// Update contact if this is an existing collision
 			if (contact_exists)
 			{
-				auto& old_contact = contacts[id];
+				auto& old_contact = it->second;
 				old_contact.generation = generation;
 				old_contact.collision = c.collision;
 				old_contact.body1 = this_body; // order of bodies can flip, so update them
