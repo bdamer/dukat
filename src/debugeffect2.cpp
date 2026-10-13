@@ -88,6 +88,10 @@ namespace dukat
 				auto t = queue.front();
 				queue.pop();
 
+				// skip nodes that hold no bodies in their entire subtree
+				if (t->empty())
+					continue;
+
 				for (auto i = 0; i < 4; i++)
 				{
 					if (t->has_child(i))

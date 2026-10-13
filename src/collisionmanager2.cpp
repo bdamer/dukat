@@ -173,29 +173,23 @@ namespace dukat
 		}
 
 		// narrow phase - build up set of actual collisions
-		std::queue<QuadTree<Body>*> nodes;
 		for (const auto& b : bodies)
 		{
 			if (!b->active)
 				continue;
 
-			// Start with root, compare with each child
-			nodes.push(tree.get());
+			// Start with root and descend along the path of nodes containing this body
 			auto this_body = b.get();
-			while (!nodes.empty())
+			auto t = tree.get();
+			while (t != nullptr)
 			{
-				auto t = nodes.front();
-				auto idx = t->get_index(this_body);
-				if (idx > -1 && t->has_child(idx))
-				{
-					nodes.push(t->child(idx));
-				}
 				const auto& values = t->get_values();
 				for (auto& it : values)
 				{
 					test_collision(this_body, it);
 				}
-				nodes.pop();
+				const auto idx = t->get_index(this_body);
+				t = (idx > -1) ? t->child(idx) : nullptr;
 			}
 		}
 

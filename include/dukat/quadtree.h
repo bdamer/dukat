@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <memory>
+#include <vector>
 #include "vector2.h"
 
 namespace dukat
@@ -12,7 +14,7 @@ namespace dukat
 	private:
 		const int max_depth;
 		const int depth;
-		std::list<T*> values;
+		std::vector<T*> values;
 		std::unique_ptr<QuadTree<T>> children[4];
 
 	public:
@@ -37,7 +39,9 @@ namespace dukat
 		int get_index(T* value) const;
 		bool has_child(int index) const { return children[index] != nullptr; }
 		QuadTree* child(int index) const { return (children[index] == nullptr) ? nullptr : children[index].get(); }
-		const std::list<T*>& get_values(void) const { return values; }
+		const std::vector<T*>& get_values(void) const { return values; }
+		// Returns true if neither this node nor any of its descendants hold values.
+		bool empty(void) const;
 	};
 
 	template<class T>
@@ -84,18 +88,34 @@ namespace dukat
 		}
 		else
 		{
-			values.remove_if([&](T* t) { return t == value; });
+			values.erase(std::remove(values.begin(), values.end(), value), values.end());
 		}
 	}
 
 	template<class T>
 	inline void QuadTree<T>::clear(void)
 	{
-		children[0] = nullptr;
-		children[1] = nullptr;
-		children[2] = nullptr;
-		children[3] = nullptr;
+		// Keep child nodes and value capacity around so that the tree can be
+		// rebuilt each frame without reallocating.
 		values.clear();
+		for (auto& c : children)
+		{
+			if (c != nullptr)
+				c->clear();
+		}
+	}
+
+	template<class T>
+	bool QuadTree<T>::empty(void) const
+	{
+		if (!values.empty())
+			return false;
+		for (const auto& c : children)
+		{
+			if (c != nullptr && !c->empty())
+				return false;
+		}
+		return true;
 	}
 
 	template<class T>
