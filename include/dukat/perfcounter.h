@@ -56,7 +56,7 @@ namespace dukat
 		void set(int counter, long value) { counters[counter] = value; }
 		long get(int counter) const { return counters[counter]; }
 		void inc(int counter, int val = 1) { counters[counter] += val; }
-		void dec(int counter, int val = 1) { counters[counter] += val; }
+		void dec(int counter, int val = 1) { counters[counter] -= val; }
 		long sum(int counter) { return sums[counter]; }
 		long avg(int counter) { return averages[counter]; }
 	};
