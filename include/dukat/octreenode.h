@@ -11,7 +11,8 @@ namespace dukat
     {
     private:
         std::unique_ptr<T> data;
-        std::unique_ptr<OctreeNode<T>> nodes[8];
+        // Child nodes are stored contiguously; nullptr for leaf nodes.
+        std::unique_ptr<OctreeNode<T>[]> nodes;
 
         // Returns the index of the octant that contains a point.
         int octant_index(const Vector3& point) const;
@@ -28,9 +29,9 @@ namespace dukat
         ~OctreeNode(void) { }
 
         // Checks if this is a leaf node
-        bool is_leaf(void) const { return nodes[0] == nullptr; }
+        bool is_leaf(void) const { return nodes == nullptr; }
         // Returns a child at a give index.
-        OctreeNode<T>* get_child(int idx) const { return nodes[idx].get(); }
+        OctreeNode<T>* get_child(int idx) const { return &nodes[idx]; }
         // Returns the data element for this node.
         T* get_data(void) const { return data.get(); }
         // Sets the data element for this node.
@@ -55,12 +56,8 @@ namespace dukat
 
     template <typename T>
     OctreeNode<T>::OctreeNode(const Vector3& origin, float half_size) 
-        : data(nullptr), origin(origin), half_size(half_size)
+        : data(nullptr), nodes(nullptr), origin(origin), half_size(half_size)
     {
-        for (int i = 0; i < 8; i++)
-        {
-            nodes[i] = nullptr;
-        }
     }
 
     template <typename T>
@@ -139,7 +136,7 @@ namespace dukat
         {
             for (int i = 0; i < 8; i++)
             {
-                res += nodes[i]->count();
+                res += nodes[i].count();
             }
         }
         else
@@ -152,30 +149,29 @@ namespace dukat
     template <typename T>
     void OctreeNode<T>::split(void)
     {
-        assert(nodes[0] == nullptr); // don't split if we already have nodes
+        assert(nodes == nullptr); // don't split if we already have nodes
         data = nullptr;
 
-        auto new_origin = origin;
-        auto new_half_size = half_size * 0.5f;
-        for (int i = 0; i < 8; i++)
-        {
-            Vector3 new_origin = {
-                origin.x + (i & 4 ? new_half_size : -new_half_size),
-                origin.y + (i & 2 ? new_half_size : -new_half_size),
-                origin.z + (i & 1 ? new_half_size : -new_half_size)
-            };
-            nodes[i] = std::make_unique<OctreeNode<T>>(new_origin, new_half_size);
-        }
+        // Children are allocated as a single block; child index bits are XYZ
+        const auto h = half_size * 0.5f;
+        const auto& o = origin;
+        nodes = std::unique_ptr<OctreeNode<T>[]>(new OctreeNode<T>[8] {
+            { Vector3{ o.x - h, o.y - h, o.z - h }, h },
+            { Vector3{ o.x - h, o.y - h, o.z + h }, h },
+            { Vector3{ o.x - h, o.y + h, o.z - h }, h },
+            { Vector3{ o.x - h, o.y + h, o.z + h }, h },
+            { Vector3{ o.x + h, o.y - h, o.z - h }, h },
+            { Vector3{ o.x + h, o.y - h, o.z + h }, h },
+            { Vector3{ o.x + h, o.y + h, o.z - h }, h },
+            { Vector3{ o.x + h, o.y + h, o.z + h }, h }
+        });
     }
 
     template <typename T>
     void OctreeNode<T>::join(void)
     {
-        assert(nodes[0] != nullptr); // don't join if we don't have interior nodes
-        for (int i = 0; i < 8; i++)
-        {
-            nodes[i] = nullptr;
-        }
+        assert(nodes != nullptr); // don't join if we don't have interior nodes
+        nodes = nullptr;
     }
 
     template <typename T>
@@ -200,14 +196,14 @@ namespace dukat
             else
             {
                 split();
-                nodes[octant_index(pos)]->insert(pos, std::move(new_data));
+                nodes[octant_index(pos)].insert(pos, std::move(new_data));
             }
         }
         // the node is an interiror node to the tree - check which child the
         // data belongs to and call insert on it.
         else
         {
-            nodes[octant_index(pos)]->insert(pos, std::move(new_data));
+            nodes[octant_index(pos)].insert(pos, std::move(new_data));
         }
     }
 
@@ -221,19 +217,19 @@ namespace dukat
         bool only_leaves = true;
         for (int i = 0; i < 8; i++)
         {
-            nodes[i]->reduce();
-            only_leaves &= nodes[i]->is_leaf();
+            nodes[i].reduce();
+            only_leaves &= nodes[i].is_leaf();
         }
         if (only_leaves)
         {
             // all children are leaves, check if they all have the same data
             for (int i = 1; i < 8; i++)
             {
-                if (nodes[0]->data != nodes[i]->data)
+                if (nodes[0].data != nodes[i].data)
                     return;
             }
             // all children are equal, so reduce 
-            data = std::move(nodes[0]->data);
+            data = std::move(nodes[0].data);
             join();
         }
     }
@@ -245,7 +241,10 @@ namespace dukat
         {
             return nullptr;
         } 
-        else if (is_leaf()) 
+
+        // Use raw pointer to avoid smart pointer overhead in the hot path
+        const OctreeNode<T>* children = nodes.get();
+        if (children == nullptr) // leaf node
         {
             return data.get();
         }
@@ -254,48 +253,31 @@ namespace dukat
         auto tym = 0.5f * (ty0 + ty1);
         auto tzm = 0.5f * (tz0 + tz1);
         auto cur_node = first_node(tx0, ty0, tz0, txm, tym, tzm);
-        T* res = nullptr;
         while (cur_node < 8)
         {
-            switch (cur_node)
+            // Bits of the child index (XYZ) select lower or upper half of each
+            // parametric interval.
+            const bool bx = (cur_node & 4) != 0;
+            const bool by = (cur_node & 2) != 0;
+            const bool bz = (cur_node & 1) != 0;
+            const auto cx1 = bx ? tx1 : txm;
+            const auto cy1 = by ? ty1 : tym;
+            const auto cz1 = bz ? tz1 : tzm;
+
+            // Empty leaves can never produce a hit, so skip them without recursing
+            const auto& child = children[cur_node ^ oidx];
+            if (child.nodes.get() != nullptr || child.data.get() != nullptr)
             {
-            case 0:
-                res = nodes[oidx]->sample(tx0, ty0, tz0, txm, tym, tzm, oidx);
-                cur_node = next_node(txm, 4, tym, 2, tzm, 1);
-                break;
-            case 1:
-                res = nodes[1^oidx]->sample(tx0, ty0, tzm, txm, tym, tz1, oidx);
-                cur_node = next_node(txm, 5, tym, 3, tz1, 8);
-                break;
-            case 2: 
-                res = nodes[2^oidx]->sample(tx0, tym, tz0, txm, ty1, tzm, oidx);
-                cur_node = next_node(txm, 6, ty1, 8, tzm, 3);
-                break;
-            case 3:
-                res = nodes[3^oidx]->sample(tx0, tym, tzm, txm, ty1, tz1, oidx);
-                cur_node = next_node(txm, 7, ty1, 8, tz1, 8);
-                break;
-            case 4:
-                res = nodes[4^oidx]->sample(txm, ty0, tz0, tx1, tym, tzm, oidx);
-                cur_node = next_node(tx1, 8, tym, 6, tzm, 5);
-                break;
-            case 5:
-                res = nodes[5^oidx]->sample(txm, ty0, tzm, tx1, tym, tz1, oidx);
-                cur_node = next_node(tx1, 8, tym, 7, tz1, 8);
-                break;
-            case 6:
-                res = nodes[6^oidx]->sample(txm, tym, tz0, tx1, ty1, tzm, oidx);
-                cur_node = next_node(tx1, 8, ty1, 8, tzm, 7);
-                break;
-            case 7:
-                res = nodes[7^oidx]->sample(txm, tym, tzm, tx1, ty1, tz1, oidx);
-                cur_node = 8;
-                break;
+                auto res = child.sample(bx ? txm : tx0, by ? tym : ty0, bz ? tzm : tz0, cx1, cy1, cz1, oidx);
+                if (res != nullptr)	// hit
+                    return res;
             }
 
-            if (res != nullptr)	// hit
-                break;
+            // Ray exits the child through the plane with the smallest exit
+            // parameter; once a bit is set, exiting along that axis leaves
+            // this node entirely (8).
+            cur_node = next_node(cx1, bx ? 8 : cur_node | 4, cy1, by ? 8 : cur_node | 2, cz1, bz ? 8 : cur_node | 1);
         }
-        return res;
-    }    
+        return nullptr;
+    }
 }

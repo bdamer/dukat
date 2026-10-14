@@ -12,19 +12,16 @@ namespace dukat
 
     float Entity::intersects(const Ray3& ray, float near_z, float far_z) const
     {
-        perfc.inc(PerformanceCounter::BB_CHECKS);
         return bb_world->intersect_ray(ray, near_z, far_z);
     }
 
     SDL_Color* Entity::sample(const Ray3& ray, float near_z, float far_z) const
     {
-        perfc.inc(PerformanceCounter::SAMPLES);
+        return sample_model(Ray3(point_to_model(ray.origin), dir_to_model(ray.dir)));
+    }
 
-        // We need to transpose the origin of the ray before applying the
-        // inverse rotation. Dir can be immeditaly rotated, since it is a
-        // direction vector.
-        Ray3 r((ray.origin - transform.position) * mr_inv, ray.dir * mr_inv);
-
+    SDL_Color* Entity::sample_model(Ray3 r) const
+    {
         int oidx = 0;	// octant index
 
         // fixes for rs with negative direction
@@ -63,25 +60,26 @@ namespace dukat
             oidx |= 1 ; 
         }
 
-        auto inv_dir = r.dir.inverse();
-        Vector3 half_size(this->root->half_size, this->root->half_size, this->root->half_size);
-        auto t0 = (this->root->origin - half_size - r.origin);
-        auto t1 = (this->root->origin + half_size - r.origin);
-        t0.x *= inv_dir.x;
-        t0.y *= inv_dir.y;
-        t0.z *= inv_dir.z;
-        t1.x *= inv_dir.x;
-        t1.y *= inv_dir.y;
-        t1.z *= inv_dir.z;
+        // Compute parametric entry / exit points of root node bounding box
+        const auto& o = root->origin;
+        const auto h = root->half_size;
+        const auto inv_x = 1.0f / r.dir.x;
+        const auto inv_y = 1.0f / r.dir.y;
+        const auto inv_z = 1.0f / r.dir.z;
+        const auto tx0 = (o.x - h - r.origin.x) * inv_x;
+        const auto ty0 = (o.y - h - r.origin.y) * inv_y;
+        const auto tz0 = (o.z - h - r.origin.z) * inv_z;
+        const auto tx1 = (o.x + h - r.origin.x) * inv_x;
+        const auto ty1 = (o.y + h - r.origin.y) * inv_y;
+        const auto tz1 = (o.z + h - r.origin.z) * inv_z;
 
-        if (t0.max_el() < t1.min_el())
+        if (std::max(tx0, std::max(ty0, tz0)) < std::min(tx1, std::min(ty1, tz1)))
         {
-            return root->sample(t0.x, t0.y, t0.z, t1.x, t1.y, t1.z, oidx);
+            return root->sample(tx0, ty0, tz0, tx1, ty1, tz1, oidx);
         }
         else
         {
             return nullptr;
         }
-
     }
 }

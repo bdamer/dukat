@@ -255,12 +255,32 @@ namespace dukat
 		auto yf = 0.0f;	// shift on the y for position of current ray [-1,1]
 		auto xf = 0.0f;	// shift on the x for position of current ray [-1,1]
 
+		// Ray direction is a linear combination of the camera basis, so transform
+		// the basis into model space once instead of transforming every ray.
+		auto e = entity.get();
+		Ray3 model_ray(e->point_to_model(cam->transform.position), Vector3::origin);
+		const auto model_dir = e->dir_to_model(cam->transform.dir);
+		const auto model_right = e->dir_to_model(cam->transform.right);
+		const auto model_up = e->dir_to_model(cam->transform.up);
+
 		const SDL_Color magenta = { 255, 0, 255, 255 };
 		const SDL_Color empty = { 0, 0, 0, 0 };
 		const SDL_Color* data;
+
+		// Neighboring rays usually hit the same voxel, so cache the last mapped color
+		const SDL_Color* last_data = nullptr;
+		uint32_t last_raw = 0;
+
+		// Count locally and update shared performance counters once per segment
+		int bb_checks = 0;
+		int samples = 0;
+
+		// Surface is ABGR8888, so pixels can be written directly as uint32
+		auto sdl_surface = surface->get_surface();
 		for (auto v = rect.y; v < (rect.y + rect.h); v++)
 		{
-			// Using negative factor to flip y so that -1 is up 
+			auto row = reinterpret_cast<uint32_t*>(static_cast<uint8_t*>(sdl_surface->pixels) + v * sdl_surface->pitch);
+			// Using negative factor to flip y so that -1 is up
 			yf = -fov_y * ((float)(2 * v - texture_height) / (float)texture_height);
 			for (auto u = rect.x; u < (rect.x + rect.w); u++)
 			{
@@ -276,23 +296,36 @@ namespace dukat
 				//for (vector<Entity>::const_iterator it = entities.begin(); it != entities.end(); ++it)
 				for (int i = 0; i < 1; i++)
 				{
-					auto e = entity.get();
+					bb_checks++;
 					auto t = e->intersects(ray, near_z, best_z);
 					if (t == no_intersection)
 						continue;
 					if (show_bounding_body)
 						data = &magenta;
-	
-					auto sample = entity->sample(ray, near_z, best_z);
+
+					samples++;
+					model_ray.dir.x = model_dir.x + model_right.x * xf + model_up.x * yf;
+					model_ray.dir.y = model_dir.y + model_right.y * xf + model_up.y * yf;
+					model_ray.dir.z = model_dir.z + model_right.z * xf + model_up.z * yf;
+					auto sample = e->sample_model(model_ray);
 					if (sample == nullptr)
 						continue;
 					data = sample;
 					best_z = t;
 				}
-				
-				surface->write(u, v, surface->raw_color(*data));
+
+				if (data != last_data)
+				{
+					last_data = data;
+					last_raw = surface->raw_color(*data);
+				}
+				row[u] = last_raw;
 			}
 		}
+
+		std::lock_guard<std::mutex> lk(mtx);
+		perfc.inc(PerformanceCounter::BB_CHECKS, bb_checks);
+		perfc.inc(PerformanceCounter::SAMPLES, samples);
 	}
 
 }
