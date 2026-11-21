@@ -4,13 +4,13 @@
 
 namespace dukat
 {
-	// Draws a line from (x0,y0) to (x1,x0)
+	// Draws a line from (x0,y0) to (x1,y1), including both end points. Pixels outside the surface are clipped.
 	void draw_line(Surface& surface, int x0, int y0, int x1, int y1, const Color& color);
 	// Draws a circle with a given radius around (x,y)
 	void draw_circle(Surface& surface, int x, int y, int radius, const Color& color);
 	// Fills a circle with a given radius around (x,y)
 	void fill_circle(Surface& surface, int x, int y, int radius, const Color& color);
-	// Draws a rectangle with given dimensions. The top-left corner is at (x,y)
+	// Draws a rectangle outline covering width x height pixels (same area as fill_rect). The top-left corner is at (x,y)
 	void draw_rect(Surface& surface, int x, int y, int width, int height, const Color& color);
 	// Fills surface with color.
 	void fill(Surface& s, const Color& color);

@@ -29,17 +29,15 @@ namespace dukat
 		auto error = dx / 2;
 		auto y = y0;
 		const auto y_step = (y0 < y1) ? 1 : -1;
-		for (auto x = x0; x < x1; x++)
+		for (auto x = x0; x <= x1; x++) // inclusive: both end points are drawn
 		{
-			if (x < 0 || x >= surface.width())
-				continue;
-			if (y < 0 || y >= surface.height())
-				continue;
+			// Clip in surface space: for steep lines x/y are swapped, so (y, x) is the actual pixel.
+			// Clipping must not skip the error update below, or the slope of partially clipped lines drifts.
+			const auto px = steep ? y : x;
+			const auto py = steep ? x : y;
+			if (px >= 0 && px < surface.width() && py >= 0 && py < surface.height())
+				surface.set_pixel(px, py, c);
 
-			if (steep)
-				surface.set_pixel(y, x, c);
-			else
-				surface.set_pixel(x, y, c);
 			error = error - dy;
 			if (error < 0)
 			{
@@ -82,10 +80,15 @@ namespace dukat
 
 	void draw_rect(Surface& surface, int x, int y, int width, int height, const Color& color)
 	{
-		draw_line(surface, x, y, x + width, y, color);
-		draw_line(surface, x + width, y, x + width, y + height, color);
-		draw_line(surface, x + width, y + height, x, y + height, color);
-		draw_line(surface, x, y + height, x, y, color);
+		if (width <= 0 || height <= 0)
+			return;
+		// Outline covers exactly width x height pixels, matching fill_rect.
+		const auto x1 = x + width - 1;
+		const auto y1 = y + height - 1;
+		draw_line(surface, x, y, x1, y, color);
+		draw_line(surface, x1, y, x1, y1, color);
+		draw_line(surface, x1, y1, x, y1, color);
+		draw_line(surface, x, y1, x, y, color);
 	}
 
 	void fill_circle(Surface& surface, int x, int y, int radius, const Color& color)
