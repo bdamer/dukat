@@ -56,3 +56,4 @@ bin/*
 GPATH
 GRTAGS
 GTAGS
+*.bak

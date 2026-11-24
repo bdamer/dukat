@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.12)
 project(dukat)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -8,13 +8,20 @@ set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
+option(BOX2D_SUPPORT "Build dukat with Box2D physics support" OFF)
+
 # Libraries
 find_package(SDL2 REQUIRED)
-# FIXME
-set(SDL2_IMAGE_LIBRARIES /usr/lib/x86_64-linux-gnu/libSDL2_image.so)
-set(SDL2_MIXER_LIBRARIES /usr/lib/x86_64-linux-gnu/libSDL2_mixer.so)
-#find_package(SDL2_Image REQUIRED)
-set(BOX2D_LIBRARY /usr/lib/x86_64-linux-gnu/libBox2D.so.2.3.0)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SDL2_IMAGE REQUIRED SDL2_image)
+pkg_check_modules(SDL2_MIXER REQUIRED SDL2_mixer)
+
+if(BOX2D_SUPPORT)
+    find_library(BOX2D_LIBRARY NAMES Box2D box2d)
+    if(NOT BOX2D_LIBRARY)
+        message(FATAL_ERROR "BOX2D_SUPPORT is set but the Box2D library was not found")
+    endif()
+endif()
 
 find_package(GLEW REQUIRED)
 # Set OpenGL preference
@@ -23,6 +30,19 @@ find_package(OpenGL REQUIRED)
 find_package(X11 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(PNG REQUIRED)
+find_package(CURL REQUIRED)
+
+# Common link libraries for example applications
+set(DUKAT_EXAMPLE_LIBS
+    dukat
+    ${SDL2_LIBRARIES}
+    ${SDL2_IMAGE_LINK_LIBRARIES}
+    ${SDL2_MIXER_LINK_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+    ${X11_Xext_LIB}
+    ${CMAKE_THREAD_LIBS_INIT}
+)
 
 # The following folders will be included
 add_subdirectory(src)
@@ -34,6 +54,7 @@ add_subdirectory(examples/grid)
 add_subdirectory(examples/heatmap)
 add_subdirectory(examples/hello)
 add_subdirectory(examples/input)
+add_subdirectory(examples/layers)
 add_subdirectory(examples/lighting)
 add_subdirectory(examples/lighting2d)
 add_subdirectory(examples/mapgen)

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4.1)
 include_directories(../include)
 
 # Define sources
-file(GLOB SOURCE_FILES *.cpp)
+file(GLOB SOURCE_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 if(ANDROID)
 	file (GLOB SOURCE_FILES
 		aabb2.cpp aabb3.cpp animationmanager.cpp animationsequence.cpp application.cpp assetloader.cpp
@@ -23,6 +23,17 @@ if(ANDROID)
 endif()
 
 add_library(dukat STATIC ${SOURCE_FILES})
+
+# curl is required by updater.cpp (found by the top-level CMakeLists)
+if(CURL_FOUND)
+	target_include_directories(dukat PRIVATE ${CURL_INCLUDE_DIRS})
+	target_link_libraries(dukat PUBLIC ${CURL_LIBRARIES})
+endif()
+
+if(BOX2D_SUPPORT)
+	target_compile_definitions(dukat PUBLIC BOX2D_SUPPORT)
+	target_link_libraries(dukat PUBLIC ${BOX2D_LIBRARY})
+endif()
 
 # Define archive dir
 set(archive_dir "${CMAKE_CURRENT_SOURCE_DIR}/../lib")
